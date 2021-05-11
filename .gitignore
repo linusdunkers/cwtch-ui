@@ -45,3 +45,5 @@ android/cwtch/cwtch.aar
 coverage
 test/failures
 .gradle
+libcwtch-go
+ios/cwtch.a
