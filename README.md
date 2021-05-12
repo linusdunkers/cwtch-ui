@@ -46,6 +46,17 @@ You will probably want to disable Analytics on the Flutter Tool: `flutter config
 - Follow the steps above to fetch `libCwtch-go` and `tor` (these will fetch Android versions of these binaries also)
 - run `flutter run` with an Android phone connect via USB (or some other valid debug mode)
 
+### Building Experimental iOS
+
+We currently do not auto build iOS libCwtch-go libraries so you'll need to make your own: 
+
+- `git clone https://git.openprivacy.ca/cwtch.im/libcwtch-go.git`
+- `cd libcwtch-go`
+- `make ios`
+- `cp ios/cwtch.a ../ios` 
+
+then you should be able to build with flutter in the project root
+
 ### Known Platform Issues
 
 - **Windows**: Flutter engine has a [known bug](https://github.com/flutter/flutter/issues/75675) around the Right Shift key being sticky.

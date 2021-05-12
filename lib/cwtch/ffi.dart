@@ -76,7 +76,6 @@ class CwtchFfi implements Cwtch {
     } else if (Platform.isLinux) {
       library = DynamicLibrary.open("libCwtch.so");
     } else if (Platform.isIOS) {
-      print(Platform.environment);
       library = DynamicLibrary.open("cwtch.a");
     } else {
       print("OS ${Platform.operatingSystem} not supported by cwtch/ffi");
