@@ -76,7 +76,7 @@ class CwtchFfi implements Cwtch {
     } else if (Platform.isLinux) {
       library = DynamicLibrary.open("libCwtch.so");
     } else if (Platform.isIOS) {
-      library = DynamicLibrary.open("cwtch.a");
+      library = DynamicLibrary.process();
     } else {
       print("OS ${Platform.operatingSystem} not supported by cwtch/ffi");
       // emergency, ideally the app stays on splash and just posts the error till user closes

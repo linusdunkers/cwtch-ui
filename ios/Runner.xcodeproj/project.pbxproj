@@ -14,8 +14,8 @@
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
-		F46DFE5C26487EE800B3B0AF /* cwtch.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F46DFE5B26487EE800B3B0AF /* cwtch.a */; };
-		F46DFE5D26487EF000B3B0AF /* cwtch.a in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F46DFE5B26487EE800B3B0AF /* cwtch.a */; };
+		F40D366C264E52D500E39EB5 /* cwtch.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F40D366B264E52D500E39EB5 /* cwtch.a */; };
+		F40D366D264E52E000E39EB5 /* cwtch.a in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F40D366B264E52D500E39EB5 /* cwtch.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,7 +25,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				F46DFE5D26487EF000B3B0AF /* cwtch.a in Embed Frameworks */,
+				F40D366D264E52E000E39EB5 /* cwtch.a in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -50,9 +50,9 @@
 		97C146FD1CF9000F007C117D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F40D366B264E52D500E39EB5 /* cwtch.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = cwtch.a; path = "../libcwtch-go/ios/cwtch.a"; sourceTree = "<group>"; };
 		F46DFE4E2648741800B3B0AF /* x86_64.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = x86_64.a; path = "../../libcwtch-go/ios/x86_64.a"; sourceTree = "<group>"; };
 		F46DFE552648764D00B3B0AF /* cwtch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = cwtch.h; path = "../../../libcwtch-go/ios/cwtch.h"; sourceTree = "<group>"; };
-		F46DFE5B26487EE800B3B0AF /* cwtch.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = cwtch.a; path = "../../libcwtch-go/ios/cwtch.a"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,7 +61,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				57A4E41C4075DFE2289DBB05 /* Pods_Runner.framework in Frameworks */,
-				F46DFE5C26487EE800B3B0AF /* cwtch.a in Frameworks */,
+				F40D366C264E52D500E39EB5 /* cwtch.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -92,7 +92,7 @@
 		97C146E51CF9000F007C117D = {
 			isa = PBXGroup;
 			children = (
-				F46DFE5B26487EE800B3B0AF /* cwtch.a */,
+				F40D366B264E52D500E39EB5 /* cwtch.a */,
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
 				97C146EF1CF9000F007C117D /* Products */,
