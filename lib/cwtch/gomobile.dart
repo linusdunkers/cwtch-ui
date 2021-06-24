@@ -1,0 +1,186 @@
+import 'dart:convert';
+
+import 'package:cwtch/config.dart';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:async';
+import 'package:path/path.dart' as path;
+
+import 'cwtch.dart';
+import 'cwtchNotifier.dart';
+
+/*
+TODO: make a reusable plugin for other flutter apps
+
+import 'package:federated_plugin_platform_interface/federated_plugin_platform_interface.dart';
+
+/// It uses [FederatedPluginInterface]
+Future startCwtch() async {
+  return await FederatedPluginInterface.instance.startCwtch();
+}
+ */
+
+class CwtchGomobile implements Cwtch {
+  static const appInfoPlatform = const MethodChannel('test.flutter.dev/applicationInfo');
+  static const cwtchPlatform = const MethodChannel('cwtch');
+
+  final appbusEventChannelName = 'test.flutter.dev/eventBus';
+
+  late Future<dynamic> androidLibraryDir;
+  late Future<dynamic> androidHomeDirectory;
+  late CwtchNotifier cwtchNotifier;
+
+  CwtchGomobile(CwtchNotifier _cwtchNotifier) {
+    print("gomobile.dart: CwtchGomobile()");
+    cwtchNotifier = _cwtchNotifier;
+    androidHomeDirectory = getApplicationDocumentsDirectory();
+    androidLibraryDir = appInfoPlatform.invokeMethod('getNativeLibDir');
+
+    // Method channel to receive libcwtch-go events via Kotlin and dispatch them to _handleAppbusEvent (sends to cwtchNotifier)
+    final appbusEventChannel = MethodChannel(appbusEventChannelName);
+    appbusEventChannel.setMethodCallHandler(this._handleAppbusEvent);
+  }
+
+  // ignore: non_constant_identifier_names
+  Future<void> Start() async {
+    print("gomobile.dart: Start()...");
+    var cwtchDir = path.join((await androidHomeDirectory).path, ".cwtch");
+    if (EnvironmentConfig.BUILD_VER == dev_version) {
+      cwtchDir = path.join(cwtchDir, "dev");
+    }
+    String torPath = path.join(await androidLibraryDir, "libtor.so");
+    print("gomobile.dart: Start invokeMethod Start($cwtchDir, $torPath)...");
+    return cwtchPlatform.invokeMethod("Start", {"appDir": cwtchDir, "torPath": torPath});
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  Future<void> ReconnectCwtchForeground() async {
+    cwtchPlatform.invokeMethod("ReconnectCwtchForeground", {});
+  }
+
+  // Handle libcwtch-go events (received via kotlin) and dispatch to the cwtchNotifier
+  Future<void> _handleAppbusEvent(MethodCall call) async {
+    final String json = call.arguments;
+    var obj = jsonDecode(json);
+    cwtchNotifier.handleMessage(call.method, obj);
+  }
+
+  // ignore: non_constant_identifier_names
+  void SelectProfile(String onion) {
+    cwtchPlatform.invokeMethod("SelectProfile", {"profile": onion});
+  }
+
+  // ignore: non_constant_identifier_names
+  void CreateProfile(String nick, String pass) {
+    cwtchPlatform.invokeMethod("CreateProfile", {"nick": nick, "pass": pass});
+  }
+
+  // ignore: non_constant_identifier_names
+  void LoadProfiles(String pass) {
+    cwtchPlatform.invokeMethod("LoadProfiles", {"pass": pass});
+  }
+
+  // ignore: non_constant_identifier_names
+  void DeleteProfile(String onion, String pass) {
+    cwtchPlatform.invokeMethod("DeleteProfile", {"ProfileOnion": onion, "pass": pass});
+  }
+
+  // ignore: non_constant_identifier_names
+  Future<dynamic> GetMessage(String profile, String handle, int index) {
+    print("gomobile.dart GetMessage " + index.toString());
+    return cwtchPlatform.invokeMethod("GetMessage", {"profile": profile, "contact": handle, "index": index});
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void SendProfileEvent(String onion, String jsonEvent) {
+    cwtchPlatform.invokeMethod("SendProfileEvent", {"onion": onion, "jsonEvent": jsonEvent});
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void SendAppEvent(String jsonEvent) {
+    cwtchPlatform.invokeMethod("SendAppEvent", {"jsonEvent": jsonEvent});
+  }
+
+  @override
+  void dispose() => {};
+
+  @override
+  // ignore: non_constant_identifier_names
+  void AcceptContact(String profileOnion, String contactHandle) {
+    cwtchPlatform.invokeMethod("AcceptContact", {"ProfileOnion": profileOnion, "handle": contactHandle});
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void BlockContact(String profileOnion, String contactHandle) {
+    cwtchPlatform.invokeMethod("BlockContact", {"ProfileOnion": profileOnion, "handle": contactHandle});
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void SendMessage(String profileOnion, String contactHandle, String message) {
+    cwtchPlatform.invokeMethod("SendMessage", {"ProfileOnion": profileOnion, "handle": contactHandle, "message": message});
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void SendInvitation(String profileOnion, String contactHandle, String target) {
+    cwtchPlatform.invokeMethod("SendInvitation", {"ProfileOnion": profileOnion, "handle": contactHandle, "target": target});
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void ResetTor() {
+    cwtchPlatform.invokeMethod("ResetTor", {});
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void ImportBundle(String profileOnion, String bundle) {
+    cwtchPlatform.invokeMethod("ImportBundle", {"ProfileOnion": profileOnion, "bundle": bundle});
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void SetGroupAttribute(String profileOnion, String groupHandle, String key, String value) {
+    cwtchPlatform.invokeMethod("SetGroupAttribute", {"ProfileOnion": profileOnion, "groupHandle": groupHandle, "key": key, "value": value});
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void RejectInvite(String profileOnion, String groupHandle) {
+    cwtchPlatform.invokeMethod("RejectInvite", {"ProfileOnion": profileOnion, "groupHandle": groupHandle});
+  }
+
+  @override
+  void CreateGroup(String profileOnion, String server, String groupName) {
+    cwtchPlatform.invokeMethod("CreateGroup", {"ProfileOnion": profileOnion, "server": server, "groupName": groupName});
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void LeaveGroup(String profileOnion, String groupHandle) {
+    cwtchPlatform.invokeMethod("LeaveGroup", {"ProfileOnion": profileOnion, "groupHandle": groupHandle});
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void LeaveConversation(String profileOnion, String contactHandle) {
+    cwtchPlatform.invokeMethod("LeaveConversation", {"ProfileOnion": profileOnion, "contactHandle": contactHandle});
+  }
+
+  @override
+  void UpdateMessageFlags(String profile, String handle, int index, int flags) {
+    print("gomobile.dart UpdateMessageFlags " + index.toString());
+    cwtchPlatform.invokeMethod("UpdateMessageFlags", {"profile": profile, "contact": handle, "index": index, "flags": flags});
+  }
+
+  @override
+  Future<void> Shutdown() async {
+    print("gomobile.dart Shutdown");
+    cwtchPlatform.invokeMethod("Shutdown", {});
+  }
+}

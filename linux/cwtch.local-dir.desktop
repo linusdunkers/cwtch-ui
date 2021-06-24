@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Cwtch
+Comment=Metadata Resistant Chat
+Exec=env LD_LIBRARY_PATH=./lib/ ./cwtch
+Icon=cwtch
+Terminal=false
+Categories=Network;InstantMessaging;
+Keywords=Internet;IM;Instant Messaging;Messaging;Chat

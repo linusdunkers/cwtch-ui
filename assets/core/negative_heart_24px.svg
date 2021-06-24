@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generator: Adobe Illustrator 24.2.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   id="Layer_1"
+   x="0px"
+   y="0px"
+   viewBox="0 0 24 24"
+   style="enable-background:new 0 0 24 24;"
+   xml:space="preserve"
+   sodipodi:docname="negative_heart_24px.svg"
+   inkscape:export-filename="/home/sarah/PARA/projects/cwtch/assets/core/negative_heart_256px.png"
+   inkscape:export-xdpi="1024"
+   inkscape:export-ydpi="1024"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"><metadata
+   id="metadata14"><rdf:RDF><cc:Work
+       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
+   id="defs12" /><sodipodi:namedview
+   pagecolor="#ffffff"
+   bordercolor="#666666"
+   borderopacity="1"
+   objecttolerance="10"
+   gridtolerance="10"
+   guidetolerance="10"
+   inkscape:pageopacity="0"
+   inkscape:pageshadow="2"
+   inkscape:window-width="1920"
+   inkscape:window-height="1020"
+   id="namedview10"
+   showgrid="false"
+   inkscape:zoom="9.8333333"
+   inkscape:cx="-5.8983051"
+   inkscape:cy="14.281162"
+   inkscape:window-x="0"
+   inkscape:window-y="31"
+   inkscape:window-maximized="1"
+   inkscape:current-layer="Layer_1" />
+<style
+   type="text/css"
+   id="style2">
+	.st0{fill:none;}
+</style>
+
+
+<g
+   id="g824"
+   transform="translate(4.0677965,4.0677965)"><path
+     style="fill:none;stroke-width:0.66101694"
+     inkscape:connector-curvature="0"
+     id="path4"
+     d="M 0,0 H 15.864407 V 15.864407 H 0 Z"
+     class="st0" /><path
+     style="stroke-width:0.66101694"
+     inkscape:connector-curvature="0"
+     d="m 12.228814,10.576271 v 0 L 3.5033898,2.9084746 c 0.661017,-0.5949153 1.520339,-0.9254238 2.4457627,-0.9254238 1.1237289,0 2.181356,0.4627119 2.9084746,1.3220339 0.7271187,-0.859322 1.7847459,-1.3220339 2.9084749,-1.3220339 1.850847,0 3.437288,1.520339 3.437288,3.4372882 0,0 0,0.066102 0,0.066102 0,0.3966101 -0.0661,0.859322 -0.198305,1.2559322 -0.132204,0.4627118 -0.330509,0.859322 -0.594916,1.2559322 -0.462711,0.7271186 -1.123728,1.520339 -2.181355,2.5779656 z"
+     id="Subtraction_1" /><path
+     style="stroke-width:0.66101694"
+     inkscape:connector-curvature="0"
+     id="path7"
+     d="M 13.352542,12.294915 1.520339,2.0491525 0.66101695,3.040678 2.379661,4.4949153 C 2.1152542,4.9576271 1.9830508,5.5525424 1.9830508,6.0813559 c 0,2.4457627 2.181356,4.3627121 5.4864407,7.4033901 l 0.9254238,0.859322 0.9254237,-0.859322 c 0.5949152,-0.528814 1.123729,-1.057627 1.652542,-1.520339 l 1.520339,1.322034 z" /></g>
+</svg>

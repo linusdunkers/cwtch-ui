@@ -1,0 +1,284 @@
+---
+kind: pipeline
+type: docker
+name: linux-android-test
+
+clone:
+  disable: true
+
+steps:
+  - name: clone
+    image: cirrusci/flutter:dev
+    environment:
+      buildbot_key_b64:
+          from_secret: buildbot_key_b64
+    commands:
+      - mkdir ~/.ssh
+      - echo $buildbot_key_b64 > ~/.ssh/id_rsa.b64
+      - base64 -d ~/.ssh/id_rsa.b64 > ~/.ssh/id_rsa
+      - chmod 400 ~/.ssh/id_rsa
+      # force by pass of ssh host key check, less secure
+      - ssh-keyscan -H git.openprivacy.ca >> ~/.ssh/known_hosts
+      - git clone gogs@git.openprivacy.ca:flutter/flutter_app.git .
+      - git checkout $DRONE_COMMIT
+
+  - name: fetch
+    image: cirrusci/flutter:dev
+    volumes:
+      - name: deps
+        path: /root/.pub-cache
+    commands:
+      - ./fetch-tor.sh
+      - echo `git describe --tags` > VERSION
+      - echo `date +%G-%m-%d-%H-%M` > BUILDDATE
+      - flutter pub get
+      - mkdir deploy
+      - ./fetch-libcwtch-go.sh
+
+  #- name: quality
+  #  image: golang
+  #  volumes:
+  #    - name: deps
+  #      path: /go
+  #  commands:
+  #    - go list ./... | xargs go vet
+  #    - go list ./... | xargs golint
+  #    #Todo: fix all the lint errors and add `-set_exit_status` above to enforce linting
+
+  - name: build-linux
+    image: openpriv/flutter-desktop:linux-dev
+    volumes:
+      - name: deps
+        path: /root/.pub-cache
+    commands:
+      - flutter build linux --dart-define BUILD_VER=`cat VERSION` --dart-define BUILD_DATE=`cat BUILDDATE`
+      - mkdir deploy/linux
+      - cp -r build/linux/x64/release/bundle/* deploy/linux
+      - cp linux/cwtch.*.desktop deploy/linux
+      - cp linux/install-*.sh deploy/linux
+      - cp linux/cwtch.png deploy/linux
+      - cp linux/libCwtch.so deploy/linux/lib/
+      # should not be needed, should be in data/flutter_assets and work from there
+      #- cp /sdks/flutter/bin/cache/artifacts/engine/linux-x64/icudtl.dat deploy/linux
+      - cp linux/tor deploy/linux
+      - cd deploy
+      - mv linux cwtch
+      - tar -czf cwtch-`cat ../VERSION`.tar.gz cwtch
+      - rm -r cwtch
+
+  - name: test-build-android
+    image: cirrusci/flutter:dev
+    when: 
+      event: pull_request 
+    volumes:
+      - name: deps
+        path: /root/.pub-cache
+    commands:
+      - flutter build apk --debug
+
+  - name: build-android
+    image: cirrusci/flutter:dev
+    when:
+      event: push
+    environment:
+      upload_jks_file_b64:
+        from_secret: upload_jks_file_b64
+      upload_jks_pass:
+        from_secret: upload_jks_pass
+    volumes:
+      - name: deps
+        path: /root/.pub-cache
+    commands:
+      - echo $upload_jks_file_b64 > upload-keystore.jks.b64
+      - base64 -i --decode upload-keystore.jks.b64 > android/app/upload-keystore.jks
+      - sed -i "s/%jks-password%/$upload_jks_pass/g" android/key.properties
+      - flutter build appbundle --dart-define BUILD_VER=`cat VERSION` --dart-define BUILD_DATE=`cat BUILDDATE`
+      # cant do debug for final release, this is just a stop gap
+      - flutter build apk --dart-define BUILD_VER=`cat VERSION` --dart-define BUILD_DATE=`cat BUILDDATE`
+      # or build apk --split-per-abi ?
+      - cp build/app/outputs/bundle/release/app-release.aab deploy/
+      - cp build/app/outputs/apk/release/app-release.apk deploy/
+      #- cp build/app/outputs/flutter-apk/app-debug.apk deploy/android
+
+  - name: widget-tests
+    image: cirrusci/flutter:dev
+    volumes:
+      - name: deps
+        path: /root/.pub-cache
+    commands:
+  #    - flutter config --enable-linux-desktop
+      - flutter test --coverage
+      - genhtml coverage/lcov.info -o coverage/html
+
+  # Todo: gonna need more work on container
+  #   https://flutter.dev/desktop
+  #   requirements: Visual Studio 2019 (not to be confused with Visual Studio Code) with the “Desktop development with C++” workload installed, including all of its default components
+  #- name: build-windows
+  #  image: cirrusci/flutter:dev
+  #- volumes:
+  #    - name: deps
+  #      path: /root/.pub-cache
+  #  commands:
+  #    - flutter config --enable-windows-desktop
+  #    - flutter build windows
+
+  - name: deploy-buildfiles
+    image: kroniak/ssh-client
+    environment:
+      BUILDFILES_KEY:
+        from_secret: buildfiles_key
+    secrets: [gogs_account_token]
+    when:
+      event: push
+      status: [ success ]
+    commands:
+      - echo $BUILDFILES_KEY > ~/id_rsab64
+      - base64 -d ~/id_rsab64 > ~/id_rsa
+      - chmod 400 ~/id_rsa
+      - export DIR=flwtch-`cat VERSION`-`cat BUILDDATE`
+      - mv deploy $DIR
+      - cp -r coverage/html $DIR/coverage-tests
+      - cp -r test/failures $DIR/test-failures || true
+      - cd $DIR
+      - find . -type f -exec sha256sum {} \; > ./../sha256s.txt
+      - mv ./../sha256s.txt .
+      - cd ..
+      # TODO: do deployment once files actaully compile
+      - scp -r -o StrictHostKeyChecking=no -i ~/id_rsa $DIR buildfiles@openprivacy.ca:/home/buildfiles/buildfiles/
+
+  - name: notify-email
+    image: drillster/drone-email
+    settings:
+      host: build.openprivacy.ca
+      port: 25
+      skip_verify: true
+      from: drone@openprivacy.ca
+    when:
+      status: [ failure ]
+
+  - name: notify-gogs
+    image: openpriv/drone-gogs
+    when:
+      event: pull_request
+      status: [ success, changed, failure ]
+    environment:
+      GOGS_ACCOUNT_TOKEN:
+        from_secret: gogs_account_token
+    settings:
+      gogs_url: https://git.openprivacy.ca
+
+volumes:
+  - name: deps
+    temp: {}
+
+trigger:
+  repo: flutter/flutter_app
+  branch: trunk
+  event:
+    - push
+    - pull_request
+
+---
+kind: pipeline
+type: docker
+name: windows
+
+platform:
+  os: windows
+  #arch: amd64
+  version: 1809
+
+clone:
+  disable: true
+
+steps:
+  - name: clone
+    image: openpriv/flutter-desktop:windows-sdk30-fdev2.3rc
+    environment:
+      buildbot_key_b64:
+        from_secret: buildbot_key_b64
+    commands:
+      #- # force by pass of ssh host key check, less secure
+      #- ssh-keyscan -H git.openprivacy.ca >> ..\known_hosts
+      - echo $Env:buildbot_key_b64 > ..\id_rsa.b64
+      - certutil -decode ..\id_rsa.b64 ..\id_rsa
+      - git init
+      # -o UserKnownHostsFile=../known_hosts
+      - git config core.sshCommand 'ssh -o StrictHostKeyChecking=no -i ../id_rsa'
+      - git remote add origin gogs@git.openprivacy.ca:flutter/flutter_app.git
+      - git pull origin trunk
+      - git fetch --tags
+      - git checkout $DRONE_COMMIT
+
+  - name: fetch
+    image: openpriv/flutter-desktop:windows-sdk30-fdev2.3rc
+    commands:
+      - powershell -command "Invoke-WebRequest -Uri https://dist.torproject.org/torbrowser/10.0.18/tor-win64-0.4.5.9.zip -OutFile tor.zip"
+      - powershell -command "if ((Get-FileHash tor.zip -Algorithm sha512).Hash -ne '72764eb07ad8ab511603aba0734951ca003989f5f4686af91ba220217b4a8a4bcc5f571b59f52c847932f6efedf847b111621983050fcddbb8099d43ca66fb07' ) { Write-Error 'tor.zip sha512sum mismatch' }"
+      - git describe --tags > VERSION
+      - powershell -command "Get-Date -Format 'yyyy-MM-dd-HH-mm'" > BUILDDATE
+      - .\fetch-libcwtch-go.ps1
+
+  - name: build-windows
+    image: openpriv/flutter-desktop:windows-sdk30-fdev2.3rc
+    environment:
+      pfx:
+        from_secret: pfx
+      pfx_pass:
+        from_secret: pfx_pass
+    commands:
+      - move pubspec.yaml pubspec.yaml.orig
+      - (Get-Content -path pubspec.yaml.orig -Raw) -Replace 'pfx_pass',"$Env:pfx_pass" | Set-Content -path pubspec.yaml
+      - flutter pub get
+      - $Env:version += type .\VERSION
+      - $Env:builddate += type .\BUILDDATE
+      - $Env:buildname = 'flwtch-win-' + $Env:version + '-' + $Env:builddate
+      - $Env:builddir = $Env:buildname
+      - $Env:zip = 'deploy\\' + $Env:builddir +'\\cwtch-' + $Env:version + '.zip'
+      - $Env:zipsha = $Env:zip + '.sha512'
+      - $Env:msix = 'cwtch-install-' + $Env:version + '.msix'
+      - $Env:msixsha = $Env:msix + '.sha512'
+      - $Env:releasedir = "build\\windows\\runner\\Release\\"
+      - echo $Env:releasedir
+      - echo $Env:builddir
+      - echo $Env:zip
+      - flutter build windows --dart-define BUILD_VER=$Env:version --dart-define BUILD_DATE=$Env:builddate
+      - copy windows\libCwtch.dll $Env:releasedir
+      # flutter hasn't worked out it's packaging of required dll's so we have to resort to this manual nonsense
+      # https://github.com/google/flutter-desktop-embedding/issues/587
+      # https://github.com/flutter/flutter/issues/53167
+      - copy C:\BuildTools\VC\Redist\MSVC\14.29.30036\x64\Microsoft.VC142.CRT\vcruntime140.dll $Env:releasedir
+      - copy C:\BuildTools\VC\Redist\MSVC\14.29.30036\x64\Microsoft.VC142.CRT\vcruntime140_1.dll $Env:releasedir
+      - copy C:\BuildTools\VC\Redist\MSVC\14.29.30036\x64\Microsoft.VC142.CRT\msvcp140.dll $Env:releasedir
+      - powershell -command "Expand-Archive -Path tor.zip -DestinationPath $Env:releasedir\Tor"
+      - dir $Env:releasedir
+      - echo $Env:pfx > codesign.pfx.b64
+      - certutil -decode codesign.pfx.b64 codesign.pfx
+      - flutter pub run msix:create
+      - mkdir deploy
+      - mkdir deploy\$Env:builddir
+      - dir deploy
+      - powershell -command "move $Env:releasedir\cwtch.msix deploy\$Env:builddir\$Env:msix"
+      - move $Env:releasedir $Env:builddir
+      - powershell -command "Compress-Archive -Path $Env:builddir -DestinationPath $Env:zip"
+      #- powershell -command "move $Env:zip deploy\$Env:builddir\$Env:zip"
+      #- powershell -command "(Get-FileHash $Env:zip -Algorithm sha512).Hash" > ${Env:zipsha}
+      
+  - name: deploy-windows
+    image: openpriv/flutter-desktop:windows-sdk30-fdev2.3rc
+    when:
+        event: push
+        status: [ success ]
+    environment:
+      BUILDFILES_KEY:
+        from_secret: buildfiles_key
+    commands:
+      - echo $Env:BUILDFILES_KEY > id_rsab64
+      - certutil -decode id_rsab64 id_rsa
+      - scp -r -o StrictHostKeyChecking=no -i id_rsa deploy\\* buildfiles@openprivacy.ca:/home/buildfiles/buildfiles/
+
+trigger:
+  repo: flutter/flutter_app
+  branch: trunk
+  event:
+    - push
