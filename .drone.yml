@@ -19,7 +19,7 @@ steps:
       - chmod 400 ~/.ssh/id_rsa
       # force by pass of ssh host key check, less secure
       - ssh-keyscan -H git.openprivacy.ca >> ~/.ssh/known_hosts
-      - git clone gogs@git.openprivacy.ca:flutter/flutter_app.git .
+      - git clone gogs@git.openprivacy.ca:cwtch.im/cwtch-ui.git .
       - git checkout $DRONE_COMMIT
 
   - name: fetch
@@ -110,18 +110,6 @@ steps:
       - flutter test --coverage
       - genhtml coverage/lcov.info -o coverage/html
 
-  # Todo: gonna need more work on container
-  #   https://flutter.dev/desktop
-  #   requirements: Visual Studio 2019 (not to be confused with Visual Studio Code) with the “Desktop development with C++” workload installed, including all of its default components
-  #- name: build-windows
-  #  image: cirrusci/flutter:dev
-  #- volumes:
-  #    - name: deps
-  #      path: /root/.pub-cache
-  #  commands:
-  #    - flutter config --enable-windows-desktop
-  #    - flutter build windows
-
   - name: deploy-buildfiles
     image: kroniak/ssh-client
     environment:
@@ -172,7 +160,7 @@ volumes:
     temp: {}
 
 trigger:
-  repo: flutter/flutter_app
+  repo: cwtch.im/cwtch-ui
   branch: trunk
   event:
     - push
@@ -205,7 +193,7 @@ steps:
       - git init
       # -o UserKnownHostsFile=../known_hosts
       - git config core.sshCommand 'ssh -o StrictHostKeyChecking=no -i ../id_rsa'
-      - git remote add origin gogs@git.openprivacy.ca:flutter/flutter_app.git
+      - git remote add origin gogs@git.openprivacy.ca:cwtch.im/cwtch-ui.git
       - git pull origin trunk
       - git fetch --tags
       - git checkout $DRONE_COMMIT
@@ -278,7 +266,7 @@ steps:
       - scp -r -o StrictHostKeyChecking=no -i id_rsa deploy\\* buildfiles@openprivacy.ca:/home/buildfiles/buildfiles/
 
 trigger:
-  repo: flutter/flutter_app
+  repo: cwtch.im/cwtch-ui
   branch: trunk
   event:
     - push
