@@ -57,7 +57,6 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
 
                 Log.i("FlwtchWorker.kt", "startCwtch success, starting coroutine AppbusEvent loop...")
                 while(true) {
-                    Log.i("FlwtchWorker.kt", "while(true)getAppbusEvent()")
                     val evt = MainActivity.AppbusEvent(Cwtch.getAppBusEvent())
                     if (evt.EventType == "NewMessageFromPeer" || evt.EventType == "NewMessageFromGroup") {
                         val data = JSONObject(evt.Data)
@@ -119,7 +118,6 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                 val profile = (a.get("profile") as? String) ?: ""
                 val handle = (a.get("contact") as? String) ?: ""
                 val indexI = a.getInt("index")
-                Log.i("FlwtchWorker.kt", "indexI = $indexI")
                 return Result.success(Data.Builder().putString("result", Cwtch.getMessage(profile, handle, indexI.toLong())).build())
             }
             "UpdateMessageFlags" -> {
