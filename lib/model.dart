@@ -227,7 +227,6 @@ class ProfileInfoState extends ChangeNotifier {
   // Parse out the server list json into our server info state struct...
   void replaceServers(String serversJson) {
     if (serversJson != "" && serversJson != "null") {
-      print("got serversJson");
       List<dynamic> servers = jsonDecode(serversJson);
       this._servers.replace(servers.map((server) {
         // TODO Keys...
