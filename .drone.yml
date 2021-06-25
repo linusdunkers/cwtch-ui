@@ -215,21 +215,16 @@ steps:
       pfx_pass:
         from_secret: pfx_pass
     commands:
-      - move pubspec.yaml pubspec.yaml.orig
-      - (Get-Content -path pubspec.yaml.orig -Raw) -Replace 'pfx_pass',"$Env:pfx_pass" | Set-Content -path pubspec.yaml
       - flutter pub get
       - $Env:version += type .\VERSION
       - $Env:builddate += type .\BUILDDATE
       - $Env:buildname = 'flwtch-win-' + $Env:version + '-' + $Env:builddate
       - $Env:builddir = $Env:buildname
-      - $Env:zip = 'deploy\\' + $Env:builddir +'\\cwtch-' + $Env:version + '.zip'
+      - $Env:zip = 'cwtch-' + $Env:version + '.zip'
       - $Env:zipsha = $Env:zip + '.sha512'
       - $Env:msix = 'cwtch-install-' + $Env:version + '.msix'
       - $Env:msixsha = $Env:msix + '.sha512'
       - $Env:releasedir = "build\\windows\\runner\\Release\\"
-      - echo $Env:releasedir
-      - echo $Env:builddir
-      - echo $Env:zip
       - flutter build windows --dart-define BUILD_VER=$Env:version --dart-define BUILD_DATE=$Env:builddate
       - copy windows\libCwtch.dll $Env:releasedir
       # flutter hasn't worked out it's packaging of required dll's so we have to resort to this manual nonsense
@@ -239,19 +234,17 @@ steps:
       - copy C:\BuildTools\VC\Redist\MSVC\14.29.30036\x64\Microsoft.VC142.CRT\vcruntime140_1.dll $Env:releasedir
       - copy C:\BuildTools\VC\Redist\MSVC\14.29.30036\x64\Microsoft.VC142.CRT\msvcp140.dll $Env:releasedir
       - powershell -command "Expand-Archive -Path tor.zip -DestinationPath $Env:releasedir\Tor"
-      - dir $Env:releasedir
       - echo $Env:pfx > codesign.pfx.b64
       - certutil -decode codesign.pfx.b64 codesign.pfx
-      - flutter pub run msix:create
+      - C:\MSIX-Toolkit\MSIX-Toolkit.x64\signtool sign /v /fd sha256 /a /f codesign.pfx /p $Env:pfx_pass /tr http://timestamp.digicert.com $Env:releasedir\cwtch.exe
       - mkdir deploy
       - mkdir deploy\$Env:builddir
-      - dir deploy
-      - powershell -command "move $Env:releasedir\cwtch.msix deploy\$Env:builddir\$Env:msix"
       - move $Env:releasedir $Env:builddir
-      - powershell -command "Compress-Archive -Path $Env:builddir -DestinationPath $Env:zip"
-      #- powershell -command "move $Env:zip deploy\$Env:builddir\$Env:zip"
-      #- powershell -command "(Get-FileHash $Env:zip -Algorithm sha512).Hash" > ${Env:zipsha}
-      
+      - powershell -command "Compress-Archive -Path $Env:builddir -DestinationPath cwtch.zip"
+      - powershell -command "(Get-FileHash cwtch.zip -Algorithm sha512).Hash" > $Env:zipsha
+      - move cwtch.zip deploy\$Env:builddir\$Env:zip
+      - move $Env:zipsha deploy\$Env:builddir
+
   - name: deploy-windows
     image: openpriv/flutter-desktop:windows-sdk30-fdev2.3rc
     when:
