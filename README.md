@@ -1,4 +1,4 @@
-# flwtch
+# Cwtch UI
 
 A Flutter based Cwtch UI
 
