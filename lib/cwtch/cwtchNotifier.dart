@@ -150,7 +150,7 @@ class CwtchNotifier {
         profileCN.getProfile(data["Identity"])?.contactList.getContact(contactHandle)!.totalMessages = int.parse(data["Data"]);
         break;
       case "IndexedFailure":
-        print("IndexedFailure: $data");
+        print("IndexedFailure");
         var idx = data["Index"];
         var key = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["RemotePeer"])!.getMessageKey(idx);
         try {
@@ -162,7 +162,7 @@ class CwtchNotifier {
         break;
       case "SendMessageToGroupError":
         // from me (already displayed - do not update counter)
-        print("SendMessageToGroupError: $data");
+        print("SendMessageToGroupError");
         var idx = data["Signature"];
         var key = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"])!.getMessageKey(idx);
         if (key == null) break;
@@ -190,7 +190,7 @@ class CwtchNotifier {
         if (data["Key"] == "public.name") {
           profileCN.getProfile(data["ProfileOnion"])?.nickname = data["Data"];
         } else {
-          print("unhandled set attribute event: $type $data");
+          print("unhandled set attribute event: ${data['Key']}");
         }
         break;
       case "NetworkError":
@@ -209,18 +209,16 @@ class CwtchNotifier {
         profileCN.getProfile(data["ProfileOnion"])?.replaceServers(data["ServerList"]);
         break;
       case "NewGroup":
-        print("new group: $data");
+        print("new group");
         String invite = data["GroupInvite"].toString();
         if (invite.startsWith("torv3")) {
           String inviteJson = new String.fromCharCodes(base64Decode(invite.substring(5)));
           dynamic groupInvite = jsonDecode(inviteJson);
-          print("group invite: $groupInvite");
 
           // Retrieve Server Status from Cache...
           String status = "";
           ServerInfoState? serverInfoState = profileCN.getProfile(data["ProfileOnion"])!.serverList.getServer(groupInvite["ServerHost"]);
           if (serverInfoState != null) {
-            print("Got server status: " + serverInfoState.status);
             status = serverInfoState.status;
           }
 
@@ -238,13 +236,12 @@ class CwtchNotifier {
         }
         break;
       case "AcceptGroupInvite":
-        print("accept group invite: $data");
+        print("accept group invite");
 
         profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"])!.isInvitation = false;
         profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(data["GroupID"], DateTime.now());
         break;
       case "ServerStateChange":
-        print("server state change: $data");
         // Update the Server Cache
         profileCN.getProfile(data["ProfileOnion"])?.updateServerStatusCache(data["GroupServer"], data["ConnectionState"]);
         profileCN.getProfile(data["ProfileOnion"])?.contactList.contacts.forEach((contact) {
@@ -260,7 +257,7 @@ class CwtchNotifier {
             profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"])!.nickname = data["Data"];
           }
         } else {
-          print("unhandled set group attribute event: $type $data");
+          print("unhandled set group attribute event: ${data['Key']}");
         }
         break;
       case "NewRetValMessageFromPeer":
@@ -270,11 +267,11 @@ class CwtchNotifier {
             profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["RemotePeer"])!.nickname = data["Data"];
           }
         } else {
-          print("unhandled peer attribute event: $type $data");
+          print("unhandled peer attribute event: ${data['Path']}");
         }
         break;
       default:
-        print("unhandled event: $type $data");
+        print("unhandled event: $type");
     }
   }
 }
