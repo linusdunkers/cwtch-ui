@@ -1,6 +1,8 @@
 {
     "@@locale": "es",
-    "@@last_modified": "2021-06-24T23:32:06+02:00",
+    "@@last_modified": "2021-06-25T18:57:59+02:00",
+    "notificationNewMessageFromGroup": "New message in a group!",
+    "notificationNewMessageFromPeer": "New message from a contact!",
     "tooltipHidePassword": "Hide Password",
     "tooltipShowPassword": "Show Password",
     "serverNotSynced": "Fuera de sincronización con el servidor",

@@ -131,6 +131,7 @@ class CwtchNotifier {
           }
           profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"])!.totalMessages++;
           profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(data["GroupID"], DateTime.now());
+          notificationManager.notify("New Message From Group!");
         } else {
           // from me (already displayed - do not update counter)
           var idx = data["Signature"];
