@@ -47,7 +47,7 @@ class FlwtchState extends State<Flwtch> {
   late Cwtch cwtch;
   late ProfileListState profs;
   final MethodChannel notificationClickChannel = MethodChannel('im.cwtch.flwtch/notificationClickHandler');
-  final MethodChannel shutdownMethodChannel = MethodChannel('im.cwtch.flwtch/shutdown');
+  final MethodChannel shutdownMethodChannel = MethodChannel('im.cwtch.flwtch/shutdownClickHandler');
   final GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
 
   @override
@@ -58,7 +58,7 @@ class FlwtchState extends State<Flwtch> {
     print("initState: registering notification, shutdown handlers...");
     profs = ProfileListState();
     notificationClickChannel.setMethodCallHandler(_externalNotificationClicked);
-    shutdownMethodChannel.setMethodCallHandler(shutdown);
+    shutdownMethodChannel.setMethodCallHandler(modalShutdown);
     print("initState: creating cwtchnotifier, ffi");
     if (Platform.isAndroid) {
       var cwtchNotifier = new CwtchNotifier(profs, globalSettings, globalErrorHandler, globalTorStatus, NullNotificationsManager(), globalAppState);
@@ -111,7 +111,45 @@ class FlwtchState extends State<Flwtch> {
     );
   }
 
-  Future<void> shutdown(MethodCall call) async {
+  // invoked from either ProfileManagerView's appbar close button, or a ShutdownClicked event on
+  // the MyBroadcastReceiver method channel
+  Future<void> modalShutdown(MethodCall mc) async {
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: Text(AppLocalizations.of(navKey.currentContext!)!.cancel),
+      onPressed: () {
+        Navigator.of(navKey.currentContext!).pop(); // dismiss dialog
+      },
+    );
+    Widget continueButton = TextButton(
+        child: Text(AppLocalizations.of(navKey.currentContext!)!.shutdownCwtchAction),
+        onPressed: () {
+          // Directly call the shutdown command, Android will do this for us...
+          Provider.of<FlwtchState>(navKey.currentContext!, listen: false).shutdown();
+          Provider.of<AppState>(navKey.currentContext!, listen: false).cwtchIsClosing = true;
+        });
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text(AppLocalizations.of(navKey.currentContext!)!.shutdownCwtchDialogTitle),
+      content: Text(AppLocalizations.of(navKey.currentContext!)!.shutdownCwtchDialog),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: navKey.currentContext!,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  Future<void> shutdown() async {
     cwtch.Shutdown();
     // Wait a few seconds as shutting down things takes a little time..
     Future.delayed(Duration(seconds: 2)).then((value) {

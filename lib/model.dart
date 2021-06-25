@@ -63,6 +63,7 @@ class ProfileListState extends ChangeNotifier {
 
 class AppState extends ChangeNotifier {
   bool cwtchInit = false;
+  bool cwtchIsClosing = false;
   String appError = "";
   String? _selectedProfile;
   String? _selectedConversation;

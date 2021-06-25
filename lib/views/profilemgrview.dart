@@ -28,8 +28,6 @@ class ProfileMgrView extends StatefulWidget {
 class _ProfileMgrViewState extends State<ProfileMgrView> {
   final ctrlrPassword = TextEditingController();
 
-  bool closeApp = false;
-
   @override
   void dispose() {
     ctrlrPassword.dispose();
@@ -45,8 +43,8 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
       builder: (context, settings, child) =>
           WillPopScope(
               onWillPop: () async {
-                _showShutdown();
-                return closeApp;
+                _modalShutdown();
+                return Provider.of<AppState>(context, listen: false).cwtchIsClosing;
               },
               child: Scaffold(
                 backgroundColor: settings.theme.backgroundMainColor(),
@@ -108,45 +106,14 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
     // Global Settings
     actions.add(IconButton(icon: Icon(Icons.settings), tooltip: AppLocalizations.of(context)!.tooltipOpenSettings, onPressed: _pushGlobalSettings));
 
-    actions.add(IconButton(icon: Icon(Icons.close), tooltip: AppLocalizations.of(context)!.shutdownCwtchTooltip, onPressed: _showShutdown));
+    // shutdown cwtch
+    actions.add(IconButton(icon: Icon(Icons.close), tooltip: AppLocalizations.of(context)!.shutdownCwtchTooltip, onPressed: _modalShutdown));
 
     return actions;
   }
 
-  _showShutdown() {
-    // set up the buttons
-    Widget cancelButton = TextButton(
-      child: Text(AppLocalizations.of(context)!.cancel),
-      onPressed: () {
-        Navigator.of(context).pop(); // dismiss dialog
-      },
-    );
-    Widget continueButton = TextButton(
-        child: Text(AppLocalizations.of(context)!.shutdownCwtchAction),
-        onPressed: () {
-          // Directly call the shutdown command, Android will do this for us...
-          Provider.of<FlwtchState>(context, listen: false).shutdown(MethodCall(""));
-          closeApp = true;
-        });
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text(AppLocalizations.of(context)!.shutdownCwtchDialogTitle),
-      content: Text(AppLocalizations.of(context)!.shutdownCwtchDialog),
-      actions: [
-        cancelButton,
-        continueButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
+  void _modalShutdown() {
+    Provider.of<FlwtchState>(context, listen: false).modalShutdown(MethodCall(""));
   }
 
   void _pushGlobalSettings() {
