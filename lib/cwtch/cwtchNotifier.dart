@@ -124,7 +124,7 @@ class CwtchNotifier {
         break;
       case "NewMessageFromGroup":
         if (data["ProfileOnion"] != data["RemotePeer"]) {
-          //not from me
+          //if not currently open
           if (appState.selectedProfile != data["ProfileOnion"] || appState.selectedConversation != data["GroupID"]) {
             profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"])!.unreadMessages++;
           }

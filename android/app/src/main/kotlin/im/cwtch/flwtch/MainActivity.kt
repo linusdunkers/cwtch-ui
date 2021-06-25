@@ -36,27 +36,36 @@ class MainActivity: FlutterActivity() {
     // Channel to send eventbus events on
     private val CWTCH_EVENTBUS = "test.flutter.dev/eventBus"
 
-    // Channel to trigger contactview when an external notification is clicked
+    // Channels to trigger actions when an external notification is clicked
     private val CHANNEL_NOTIF_CLICK = "im.cwtch.flwtch/notificationClickHandler"
+    private val CHANNEL_SHUTDOWN_CLICK = "im.cwtch.flwtch/shutdownClickHandler"
 
     // WorkManager tag applied to all Start() infinite coroutines
     val WORKER_TAG = "cwtchEventBusWorker"
 
     private var myReceiver: MyBroadcastReceiver? = null
-    private var methodChan: MethodChannel? = null
+    private var notificationClickChannel: MethodChannel? = null
+    private var shutdownClickChannel: MethodChannel? = null
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        if (methodChan == null || intent.extras == null) return
-        if (!intent.extras!!.containsKey("ProfileOnion") || !intent.extras!!.containsKey("RemotePeer")) {
-            Log.i("onNewIntent", "got intent with no onions")
-            return
+        if (notificationClickChannel == null || intent.extras == null) return
+
+        if (intent.extras!!.getString("EventType") == "NotificationClicked") {
+            if (!intent.extras!!.containsKey("ProfileOnion") || !intent.extras!!.containsKey("RemotePeer")) {
+                Log.i("onNewIntent", "got notification clicked intent with no onions")
+                return
+            }
+            val profile = intent.extras!!.getString("ProfileOnion")
+            val handle = intent.extras!!.getString("RemotePeer")
+            val mappo = mapOf("ProfileOnion" to profile, "RemotePeer" to handle)
+            val j = JSONObject(mappo)
+            notificationClickChannel!!.invokeMethod("NotificationClicked", j.toString())
+        } else if (intent.extras!!.getString("EventType") == "ShutdownClicked") {
+            shutdownClickChannel!!.invokeMethod("ShutdownClicked", "")
+        } else {
+            print("warning: received intent with unknown method; ignoring")
         }
-        val profile = intent.extras!!.getString("ProfileOnion")
-        val handle = intent.extras!!.getString("RemotePeer")
-        val mappo = mapOf("ProfileOnion" to profile, "RemotePeer" to handle)
-        val j = JSONObject(mappo)
-        methodChan!!.invokeMethod("NotificationClicked", j.toString())
     }
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
@@ -66,7 +75,8 @@ class MainActivity: FlutterActivity() {
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL_APP_INFO).setMethodCallHandler { call, result -> handleAppInfo(call, result) }
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL_CWTCH).setMethodCallHandler { call, result -> handleCwtch(call, result) }
-        methodChan = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL_NOTIF_CLICK)
+        notificationClickChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL_NOTIF_CLICK)
+        shutdownClickChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL_SHUTDOWN_CLICK)
     }
 
     private fun handleAppInfo(@NonNull call: MethodCall, @NonNull result: Result) {
