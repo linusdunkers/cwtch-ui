@@ -1,28 +1,39 @@
 # Cwtch UI
 
-A Flutter based Cwtch UI
+A Flutter based [Cwtch](https://cwtch.im) UI.
+
+This README covers build instructions, for information on Cwtch itself please go to [https://cwtch.im](https://cwtch.im)
 
 ## Getting Started
 
-click the play button in android studio
+First you will need a valid [flutter sdk installation](https://flutter.dev/docs/get-started/install)
+and run `flutter pub get` to fetch dependencies.
 
-### Linux
+You will probably want to disable Analytics on the Flutter Tool: `flutter config --no-analytics`
 
-- libCwtch-go: required to be on the link path (linux/cwtch.destktop demonstrates with `env LD_LIBRARY_PATH=./lib/` on the front of the comman)
-	- fetch-libcwtch-go.sh will fetch a prebuilt version
-	- or compile from source from libcwtch-go with `make linux`
-- `tor` should be in the PATH
+### Building on Linux (for Linux)
 
-### Windows
+- run `fetch-libcwtch-go.sh`libCwtch-go to fetch a prebuild version of `libCwtch-go.so` go to `./linux`. Include `./linux` in `LD_LIBRARY_PATH`
+- run `fetch-tor.sh` and/or ensure that `tor` is in `$PATH`
+- run `flutter run -d linux`
 
-- run `fetch-libcwtch-go.ps1` to get `libCwtch.dll` which is required to run
+### Building on Windows (for Windows)
+
+- run `fetch-libcwtch-go.ps1` to fetch a prebuild version of `libCwtch.dll`
 - run `fetch-tor-win.ps1` to fetch Tor for windows
+- run `flutter run -d windows`
 
-#### Issues
+### Building on Linux/Windows (for Android)
 
-- Flutter engine has a [known bug](https://github.com/flutter/flutter/issues/75675) around the Right Shift key being sticky. We have implemented the mostly work around, but until it is fixed, right shift occasionally acts permenent. If this happens, just tap left shift and it will reset
+- Follow the steps above to fetch `libCwtch-go` and `tor` (these will fetch Android versions of these binaries also)
+- run `flutter run` with an Android phone connect via USB (or some other valid debug mode)
 
-## l10n
+#### Known Platform Issues
+
+- **Windows**: Flutter engine has a [known bug](https://github.com/flutter/flutter/issues/75675) around the Right Shift key being sticky.
+We have implemented a partial workaround, if this happens, tap left shift and it will reset.
+
+## l10n Instructions
 
 ### Adding a new string
 
