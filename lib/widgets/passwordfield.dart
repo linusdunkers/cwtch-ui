@@ -4,14 +4,17 @@ import 'package:provider/provider.dart';
 import '../settings.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+const hints = [AutofillHints.password];
+
 // Provides a styled Password Input Field for use in Form Widgets.
 // Callers must provide a text controller, label helper text and a validator.
 class CwtchPasswordField extends StatefulWidget {
-  CwtchPasswordField({required this.controller, required this.validator, this.action, this.autofocus = false});
+  CwtchPasswordField({required this.controller, required this.validator, this.action, this.autofocus = false, this.autoFillHints = hints});
   final TextEditingController controller;
   final FormFieldValidator validator;
   final Function(String)? action;
   final bool autofocus;
+  final Iterable<String> autoFillHints;
 
   @override
   _CwtchTextFieldState createState() => _CwtchTextFieldState();
@@ -34,6 +37,7 @@ class _CwtchTextFieldState extends State<CwtchPasswordField> {
         controller: widget.controller,
         validator: widget.validator,
         obscureText: obscureText,
+        autofillHints: widget.autoFillHints,
         autovalidateMode: AutovalidateMode.always,
         onFieldSubmitted: widget.action,
         textInputAction: TextInputAction.unspecified,

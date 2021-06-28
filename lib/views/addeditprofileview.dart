@@ -163,6 +163,7 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                         ),
                                         CwtchPasswordField(
                                           controller: ctrlrOldPass,
+                                          autoFillHints: [AutofillHints.newPassword],
                                           validator: (value) {
                                             // Password field can be empty when just updating the profile, not on creation
                                             if (Provider.of<ProfileInfoState>(context).isEncrypted && Provider.of<ProfileInfoState>(context, listen: false).onion.isEmpty && value.isEmpty && usePassword) {
