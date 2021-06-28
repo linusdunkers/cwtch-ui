@@ -64,7 +64,7 @@ class FlwtchState extends State<Flwtch> {
       var cwtchNotifier = new CwtchNotifier(profs, globalSettings, globalErrorHandler, globalTorStatus, NullNotificationsManager(), globalAppState);
       cwtch = CwtchGomobile(cwtchNotifier);
     } else if (Platform.isLinux) {
-      var cwtchNotifier = new CwtchNotifier(profs, globalSettings, globalErrorHandler, globalTorStatus, LinuxNotificationsManager(), globalAppState);
+      var cwtchNotifier = new CwtchNotifier(profs, globalSettings, globalErrorHandler, globalTorStatus, newDesktopNotificationsManager(), globalAppState);
       cwtch = CwtchFfi(cwtchNotifier);
     } else {
       var cwtchNotifier = new CwtchNotifier(profs, globalSettings, globalErrorHandler, globalTorStatus, NullNotificationsManager(), globalAppState);

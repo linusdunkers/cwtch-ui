@@ -16,10 +16,28 @@ class NullNotificationsManager implements NotificationsManager {
 // the standard dbus-powered linux desktop notifications.
 class LinuxNotificationsManager implements NotificationsManager {
   int previous_id = 0;
-  final NotificationsClient client = NotificationsClient();
-  LinuxNotificationsManager() {}
-  Future<void> notify(String message) async {
-    var icon_path = Uri.file(path.join(path.current, "cwtch.png"));
-    client.notify(message, appName: "cwtch", appIcon: icon_path.toString(), replacesId: this.previous_id).then((Notification value) => previous_id = value.id);
+  late NotificationsClient client;
+  LinuxNotificationsManager(NotificationsClient client) {
+    this.client = client;
   }
+  Future<void> notify(String message) async {
+    var iconPath = Uri.file(path.join(path.current, "cwtch.png"));
+      client.notify(message, appName: "cwtch",
+          appIcon: iconPath.toString(),
+          replacesId: this.previous_id).then((Notification value) =>
+      previous_id = value.id);
+  }
+}
+
+NotificationsManager newDesktopNotificationsManager() {
+  try {
+    // Test that we can actually access DBUS. Otherwise return a null
+    // notifications manager...
+    NotificationsClient client = NotificationsClient();
+    client.getCapabilities();
+    return LinuxNotificationsManager(client);
+  } catch (e) {
+    print("Attempted to access DBUS for notifications but failed. Switching off notifications.");
+  }
+  return NullNotificationsManager();
 }
