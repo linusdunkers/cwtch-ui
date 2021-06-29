@@ -167,8 +167,8 @@ class FlwtchState extends State<Flwtch> {
   Future<void> _externalNotificationClicked(MethodCall call) async {
     var args = jsonDecode(call.arguments);
     var profile = profs.getProfile(args["ProfileOnion"])!;
-    var contact = profile.contactList.getContact(args["RemotePeer"])!;
-    contact.unreadMessages = 0;
+    var convo = profile.contactList.getContact(args["Handle"])!;
+    convo.unreadMessages = 0;
 
     // single pane mode pushes; double pane mode reads AppState.selectedProfile/Conversation
     var isLandscape = Provider.of<AppState>(navKey.currentContext!, listen: false).isLandscape(navKey.currentContext!);
@@ -183,7 +183,7 @@ class FlwtchState extends State<Flwtch> {
             return MultiProvider(
               providers: [
                 ChangeNotifierProvider.value(value: profile),
-                ChangeNotifierProvider.value(value: contact),
+                ChangeNotifierProvider.value(value: convo),
               ],
               builder: (context, child) => MessageView(),
             );
@@ -192,7 +192,7 @@ class FlwtchState extends State<Flwtch> {
       );
     } else { //dual pane
       Provider.of<AppState>(navKey.currentContext!, listen: false).selectedProfile = args["ProfileOnion"];
-      Provider.of<AppState>(navKey.currentContext!, listen: false).selectedConversation = args["RemotePeer"];
+      Provider.of<AppState>(navKey.currentContext!, listen: false).selectedConversation = args["Handle"];
     }
   }
 

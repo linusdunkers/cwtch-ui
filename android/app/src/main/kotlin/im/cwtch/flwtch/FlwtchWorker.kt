@@ -60,10 +60,11 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                     val evt = MainActivity.AppbusEvent(Cwtch.getAppBusEvent())
                     if (evt.EventType == "NewMessageFromPeer" || evt.EventType == "NewMessageFromGroup") {
                         val data = JSONObject(evt.Data)
+                        val handle = if (evt.EventType == "NewMessageFromPeer") data.getString("RemotePeer") else data.getString("GroupID");
                         if (data["RemotePeer"] != data["ProfileOnion"]) {
                             val channelId =
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                        createMessageNotificationChannel(data.getString("RemotePeer"), data.getString("RemotePeer"))
+                                        createMessageNotificationChannel(handle, handle)
                                     } else {
                                         // If earlier version channel ID is not used
                                         // https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#NotificationCompat.Builder(android.content.Context)
@@ -74,11 +75,12 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                             val key = loader.getLookupKeyForAsset("assets/" + data.getString("Picture"))//"assets/profiles/001-centaur.png")
                             val fh = applicationContext.assets.open(key)
 
+
                             val clickIntent = Intent(applicationContext, MainActivity::class.java).also { intent ->
                                 intent.action = Intent.ACTION_RUN
                                 intent.putExtra("EventType", "NotificationClicked")
                                 intent.putExtra("ProfileOnion", data.getString("ProfileOnion"))
-                                intent.putExtra("RemotePeer", if (evt.EventType == "NewMessageFromPeer") data.getString("RemotePeer") else data.getString("GroupID"))
+                                intent.putExtra("Handle", handle)
                             }
 
                             val newNotification = NotificationCompat.Builder(applicationContext, channelId)
@@ -89,7 +91,7 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                                     .setContentIntent(PendingIntent.getActivity(applicationContext, 1, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT))
                                     .setAutoCancel(true)
                                     .build()
-                            notificationManager.notify(getNotificationID(data.getString("ProfileOnion"), data.getString("RemotePeer")), newNotification)
+                            notificationManager.notify(getNotificationID(data.getString("ProfileOnion"), handle), newNotification)
                         }
                     }
 
