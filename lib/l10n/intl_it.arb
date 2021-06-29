@@ -1,6 +1,8 @@
 {
     "@@locale": "it",
-    "@@last_modified": "2021-06-25T18:57:59+02:00",
+    "@@last_modified": "2021-06-29T19:15:43+02:00",
+    "tooltipRejectContactRequest": "Reject this contact request",
+    "tooltipAcceptContactRequest": "Accept this contact request.",
     "notificationNewMessageFromGroup": "New message in a group!",
     "notificationNewMessageFromPeer": "New message from a contact!",
     "tooltipHidePassword": "Hide Password",
