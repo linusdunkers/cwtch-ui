@@ -60,13 +60,15 @@ class _ContactRowState extends State<ContactRow> {
                       IconButton(
                         padding: EdgeInsets.zero,
                         iconSize: 16,
-                        icon: Icon(Icons.favorite, color: Provider.of<Settings>(context).theme.mainTextColor()),
+                        icon: Icon(Icons.favorite, color: Provider.of<Settings>(context).theme.mainTextColor(),),
+                        tooltip: AppLocalizations.of(context)!.tooltipAcceptContactRequest,
                         onPressed: _btnApprove,
                       ),
                       IconButton(
                         padding: EdgeInsets.zero,
                         iconSize: 16,
                         icon: Icon(Icons.delete, color: Provider.of<Settings>(context).theme.mainTextColor()),
+                        tooltip: AppLocalizations.of(context)!.tooltipRejectContactRequest,
                         onPressed: _btnReject,
                       )
                     ])
