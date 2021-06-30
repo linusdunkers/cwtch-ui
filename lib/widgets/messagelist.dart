@@ -16,10 +16,18 @@ class _MessageListState extends State<MessageList> {
 
   @override
   Widget build(BuildContext outerContext) {
-    bool showEphemeralWarning = (Provider.of<ContactInfoState>(context).isGroup == false && Provider.of<ContactInfoState>(context).savePeerHistory != "SaveHistory");
+
+    bool isP2P =  !Provider.of<ContactInfoState>(context).isGroup;
+    bool isGroupAndSyncing = Provider.of<ContactInfoState>(context).isGroup == true && Provider.of<ContactInfoState>(context).status == "Authenticated";
+    bool isGroupAndSynced = Provider.of<ContactInfoState>(context).isGroup && Provider.of<ContactInfoState>(context).status == "Synced";
+    bool isGroupAndNotAuthenticated= Provider.of<ContactInfoState>(context).isGroup && Provider.of<ContactInfoState>(context).status != "Authenticated";
+
+    bool showEphemeralWarning = (isP2P && Provider.of<ContactInfoState>(context).savePeerHistory != "SaveHistory");
     bool showOfflineWarning = Provider.of<ContactInfoState>(context).isOnline() == false;
-    bool showMessageWarning = showEphemeralWarning || showOfflineWarning;
-    bool showSyncing = Provider.of<ContactInfoState>(context).isGroup == true && Provider.of<ContactInfoState>(context).status != "Synced";
+    bool showSyncing = isGroupAndSyncing;
+    bool showMessageWarning = showEphemeralWarning || showOfflineWarning || showSyncing;
+    // Only load historical messages when the conversation is with a p2p contact OR the conversation is a server and *not* syncing.
+    bool loadMessages = isP2P || (isGroupAndSynced || isGroupAndNotAuthenticated);
 
     return RepaintBoundary(
         child: Container(
@@ -56,7 +64,7 @@ class _MessageListState extends State<MessageList> {
                               image: AssetImage("assets/core/negative_heart_512px.png"),
                               colorFilter: ColorFilter.mode(Provider.of<Settings>(context).theme.hilightElementTextColor(), BlendMode.srcIn))),
                  // Don't load messages for syncing server...
-                  child: ListView.builder(
+                  child: loadMessages ? ListView.builder(
                     controller: ctrlr1,
                     itemCount: Provider.of<ContactInfoState>(outerContext).totalMessages,
                     reverse: true, // NOTE: There seems to be a bug in flutter that corrects the mouse wheel scroll, but not the drag direction...
@@ -78,7 +86,7 @@ class _MessageListState extends State<MessageList> {
                             return RepaintBoundary(child: MessageRow(key: Provider.of<ContactInfoState>(bcontext).getMessageKey(idx)));
                           });
                     },
-                  ))))
+                  ) : null )))
     ])));
   }
 }

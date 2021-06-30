@@ -52,13 +52,13 @@ class MainActivity: FlutterActivity() {
         if (notificationClickChannel == null || intent.extras == null) return
 
         if (intent.extras!!.getString("EventType") == "NotificationClicked") {
-            if (!intent.extras!!.containsKey("ProfileOnion") || !intent.extras!!.containsKey("RemotePeer")) {
+            if (!intent.extras!!.containsKey("ProfileOnion") || !intent.extras!!.containsKey("Handle")) {
                 Log.i("onNewIntent", "got notification clicked intent with no onions")
                 return
             }
             val profile = intent.extras!!.getString("ProfileOnion")
-            val handle = intent.extras!!.getString("RemotePeer")
-            val mappo = mapOf("ProfileOnion" to profile, "RemotePeer" to handle)
+            val handle = intent.extras!!.getString("Handle")
+            val mappo = mapOf("ProfileOnion" to profile, "Handle" to handle)
             val j = JSONObject(mappo)
             notificationClickChannel!!.invokeMethod("NotificationClicked", j.toString())
         } else if (intent.extras!!.getString("EventType") == "ShutdownClicked") {
