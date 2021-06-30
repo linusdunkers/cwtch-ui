@@ -245,6 +245,7 @@ class CwtchNotifier {
         break;
       case "ServerStateChange":
         // Update the Server Cache
+        EnvironmentConfig.debugLog("server state changes $data");
         profileCN.getProfile(data["ProfileOnion"])?.updateServerStatusCache(data["GroupServer"], data["ConnectionState"]);
         profileCN.getProfile(data["ProfileOnion"])?.contactList.contacts.forEach((contact) {
           if (contact.isGroup == true && contact.server == data["GroupServer"]) {

@@ -152,9 +152,14 @@ class _AddContactViewState extends State<AddContactView> {
 
                   Future.delayed(const Duration(milliseconds: 500), () {
                     if (globalErrorHandler.importBundleSuccess) {
-                      final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.successfullAddedContact + importBundle));
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                      Navigator.pop(context);
+                      // TODO: This isn't ideal, but because onChange can be fired during this future check
+                      // and because the context can change after being popped we have this kind of double assertion...
+                      // There is probably a better pattern to handle this...
+                      if (AppLocalizations.of(context) != null) {
+                        final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.successfullAddedContact + importBundle));
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        Navigator.popUntil(context, (route) => route.settings.name == "conversations");
+                      }
                     }
                   });
                 },
