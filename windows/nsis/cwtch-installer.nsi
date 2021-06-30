@@ -53,7 +53,7 @@ ShowInstDetails show
                               Cwtch is a platform for building consentful, decentralized, untrusted infrastructure using metadata resistant group communication applications. Currently there is a selfnamed instant messaging prototype app that is driving development and testing. Many Further apps are planned as the platform matures."
 
 !define MUI_FINISHPAGE_TITLE "Enjoy Cwtch"
-!define MUI_FINISHPAGE_RUN $INSTDIR/ui.exe
+!define MUI_FINISHPAGE_RUN $INSTDIR/cwtch.exe
 !define MUI_FINISHPAGE_TEXT "You can keep up-to-date on Cwtch and report any issues you have at https://cwtch.im"
 !define MUI_FINISHPAGE_LINK "https://cwtch.im"
 !define MUI_FINISHPAGE_LINK_LOCATION "https://cwtch.im"
