@@ -40,45 +40,41 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
       // Prevents Android back button from closing the app on the profile manager screen
       // (which would shutdown connections and all kinds of other expensive to generate things)
       // TODO pop up a dialogue regarding closing the app?
-      builder: (context, settings, child) =>
-          WillPopScope(
-              onWillPop: () async {
-                _modalShutdown();
-                return Provider.of<AppState>(context, listen: false).cwtchIsClosing;
-              },
-              child: Scaffold(
-                backgroundColor: settings.theme.backgroundMainColor(),
-                appBar: AppBar(
-                  title: Row(children: [
-                    Image(
-                      image: AssetImage("assets/core/knott-white.png"),
-                      filterQuality: FilterQuality.medium,
-                      isAntiAlias: true,
-                      width: 32,
-                      height: 32,
-                      colorBlendMode: BlendMode.dstIn,
-                      color: Provider
-                          .of<Settings>(context)
-                          .theme
-                          .backgroundHilightElementColor(),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Expanded(child: Text(AppLocalizations.of(context)!.titleManageProfiles, style: TextStyle(color: settings.current().mainTextColor())))
-                  ]),
-                  actions: getActions(),
+      builder: (context, settings, child) => WillPopScope(
+          onWillPop: () async {
+            _modalShutdown();
+            return Provider.of<AppState>(context, listen: false).cwtchIsClosing;
+          },
+          child: Scaffold(
+            backgroundColor: settings.theme.backgroundMainColor(),
+            appBar: AppBar(
+              title: Row(children: [
+                Image(
+                  image: AssetImage("assets/core/knott-white.png"),
+                  filterQuality: FilterQuality.medium,
+                  isAntiAlias: true,
+                  width: 32,
+                  height: 32,
+                  colorBlendMode: BlendMode.dstIn,
+                  color: Provider.of<Settings>(context).theme.backgroundHilightElementColor(),
                 ),
-                floatingActionButton: FloatingActionButton(
-                  onPressed: _pushAddEditProfile,
-                  tooltip: AppLocalizations.of(context)!.addNewProfileBtn,
-                  child: Icon(
-                    Icons.add,
-                    semanticLabel: AppLocalizations.of(context)!.addNewProfileBtn,
-                  ),
+                SizedBox(
+                  width: 10,
                 ),
-                body: _buildProfileManager(),
-              )),
+                Expanded(child: Text(AppLocalizations.of(context)!.titleManageProfiles, style: TextStyle(color: settings.current().mainTextColor())))
+              ]),
+              actions: getActions(),
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: _pushAddEditProfile,
+              tooltip: AppLocalizations.of(context)!.addNewProfileBtn,
+              child: Icon(
+                Icons.add,
+                semanticLabel: AppLocalizations.of(context)!.addNewProfileBtn,
+              ),
+            ),
+            body: _buildProfileManager(),
+          )),
     );
   }
 
