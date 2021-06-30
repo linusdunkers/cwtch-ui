@@ -9,7 +9,14 @@ RunLoop::RunLoop() {}
 RunLoop::~RunLoop() {}
 
 void RunLoop::Run() {
-  bool keep_running = true;
+  // Fix/workaround for Windows high CPU usage
+  // https://github.com/flutter/flutter/issues/78517#issuecomment-814843107
+  MSG msg;
+  while (GetMessage(&msg, nullptr, 0, 0)) {
+    TranslateMessage(&msg);
+    DispatchMessage(&msg);
+  }
+  /*bool keep_running = true;
   TimePoint next_flutter_event_time = TimePoint::clock::now();
   while (keep_running) {
     std::chrono::nanoseconds wait_duration =
@@ -40,7 +47,7 @@ void RunLoop::Run() {
       next_flutter_event_time =
           std::min(next_flutter_event_time, ProcessFlutterMessages());
     }
-  }
+  }*/
 }
 
 void RunLoop::RegisterFlutterInstance(
