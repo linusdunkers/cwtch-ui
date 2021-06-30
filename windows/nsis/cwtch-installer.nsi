@@ -27,14 +27,14 @@ InstallDirRegKey HKCU "Software\Cwtch" "installLocation"
 !define MUI_INSTALLCOLORS "DFB9DE 281831"
 
 ; 128x128, 32bit
-!define MUI_ICON "windows/runner/resources/knot_128.ico"
+!define MUI_ICON "../runner/resources/knot_128.ico"
 
 !define MUI_HEADERIMAGE
-!define MUI_HEADERIMAGE_BITMAP "windows/nsis/cwtch_title.bmp"
+!define MUI_HEADERIMAGE_BITMAP "cwtch_title.bmp"
 
 !define MUI_TEXTCOLOR "350052"
 
-!define MUI_WELCOMEFINISHPAGE_BITMAP "windows/nsis/brand_side.bmp"
+!define MUI_WELCOMEFINISHPAGE_BITMAP "brand_side.bmp"
 !define MUI_WELCOMEFINISHPAGE_BITMAP_STRETCH NoStretchNoCrop
 
 !define MUI_INSTFILESPAGE_COLORS "DFB9DE 281831"
@@ -60,7 +60,7 @@ ShowInstDetails show
 !define MUI_FINISHPAGE_LINK_COLOR "D01972"
 
 !insertmacro MUI_PAGE_WELCOME
-!insertmacro MUI_PAGE_LICENSE "LICENSE"
+!insertmacro MUI_PAGE_LICENSE "../../LICENSE"
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
 !insertmacro MUI_PAGE_FINISH
@@ -78,7 +78,7 @@ Section
     # define what to install and place it in the output path
     # Filler for .sh to populate with contents of deploy/windows
     #FILESLISTSTART
-        FILE /r "build/windows/runner/Release/"
+        FILE /r "..\..\build\windows\runner\Release\"
     #FILESLISTEND
 
 

@@ -1,6 +1,0 @@
-- cp nsis/cwtch-installer.nsi deploy/
-- cd deploy
-- makensis -V3 cwtch-installer.nsi
-- export BUILDDATE=`date +%G-%m-%d-%H-%M`
-- export FILENAME=cwtch-installer-$BUILDDATE.exe
-- mv cwtch-installer.exe $FILENAME
