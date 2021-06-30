@@ -66,18 +66,18 @@ class InvitationBubbleState extends State<InvitationBubble> {
       return MalformedBubble();
     }
 
-    var wdgMessage = isGroup && !showGroupInvite ?
-          Text(AppLocalizations.of(context)!.groupInviteSettingsWarning) :
-          fromMe
-        ? senderInviteChrome(AppLocalizations.of(context)!.sendAnInvitation,
-            isGroup ? Provider.of<ProfileInfoState>(context).contactList.getContact(Provider.of<MessageState>(context).inviteTarget)!.nickname : Provider.of<MessageState>(context).message, myKey)
-        : (inviteChrome(isGroup ? AppLocalizations.of(context)!.inviteToGroup : AppLocalizations.of(context)!.contactSuggestion, Provider.of<MessageState>(context).inviteNick,
-            Provider.of<MessageState>(context).inviteTarget, myKey));
+    var wdgMessage = isGroup && !showGroupInvite
+        ? Text(AppLocalizations.of(context)!.groupInviteSettingsWarning)
+        : fromMe
+            ? senderInviteChrome(AppLocalizations.of(context)!.sendAnInvitation,
+                isGroup ? Provider.of<ProfileInfoState>(context).contactList.getContact(Provider.of<MessageState>(context).inviteTarget)!.nickname : Provider.of<MessageState>(context).message, myKey)
+            : (inviteChrome(isGroup ? AppLocalizations.of(context)!.inviteToGroup : AppLocalizations.of(context)!.contactSuggestion, Provider.of<MessageState>(context).inviteNick,
+                Provider.of<MessageState>(context).inviteTarget, myKey));
 
     Widget wdgDecorations;
     if (isGroup && !showGroupInvite) {
       wdgDecorations = Text('\u202F');
-    } else  if (fromMe) {
+    } else if (fromMe) {
       wdgDecorations = MessageBubbleDecoration(ackd: Provider.of<MessageState>(context).ackd, errored: Provider.of<MessageState>(context).error, fromMe: fromMe, prettyDate: prettyDate);
     } else if (isAccepted) {
       wdgDecorations = Text(AppLocalizations.of(context)!.accepted + '\u202F');
@@ -113,7 +113,8 @@ class InvitationBubbleState extends State<InvitationBubble> {
                   child: Padding(
                       padding: EdgeInsets.all(9.0),
                       child: Wrap(runAlignment: WrapAlignment.spaceEvenly, alignment: WrapAlignment.spaceEvenly, runSpacing: 1.0, crossAxisAlignment: WrapCrossAlignment.center, children: [
-                        Center(widthFactor: 1, child: Padding(padding: EdgeInsets.all(10.0), child: Icon(isGroup && !showGroupInvite ? CwtchIcons.enable_experiments :  CwtchIcons.send_invite, size: 32))),
+                        Center(
+                            widthFactor: 1, child: Padding(padding: EdgeInsets.all(10.0), child: Icon(isGroup && !showGroupInvite ? CwtchIcons.enable_experiments : CwtchIcons.send_invite, size: 32))),
                         Center(
                           widthFactor: 1.0,
                           child: Column(

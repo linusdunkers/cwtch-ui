@@ -50,17 +50,19 @@ class _MessageViewState extends State<MessageView> {
           appBar: AppBar(
             // setting leading to null makes it do the default behaviour; container() hides it
             leading: Provider.of<Settings>(context).uiColumns(appState.isLandscape(context)).length > 1 ? Container() : null,
-            title:  Row(children: [
-            ProfileImage(
-            imagePath: Provider.of<ContactInfoState>(context).imagePath,
-            diameter: 42,
-            border: Provider.of<Settings>(context).current().portraitOnlineBorderColor(),
-            badgeTextColor: Colors.red,
-            badgeColor: Colors.red,
-          ),
-          SizedBox(
-            width: 10,
-          ),Text(Provider.of<ContactInfoState>(context).nickname)]),
+            title: Row(children: [
+              ProfileImage(
+                imagePath: Provider.of<ContactInfoState>(context).imagePath,
+                diameter: 42,
+                border: Provider.of<Settings>(context).current().portraitOnlineBorderColor(),
+                badgeTextColor: Colors.red,
+                badgeColor: Colors.red,
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Text(Provider.of<ContactInfoState>(context).nickname)
+            ]),
             actions: [
               //IconButton(icon: Icon(Icons.chat), onPressed: _pushContactSettings),
               //IconButton(icon: Icon(Icons.list), onPressed: _pushContactSettings),

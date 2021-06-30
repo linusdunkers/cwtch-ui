@@ -161,26 +161,40 @@ class Settings extends ChangeNotifier {
 
   List<int> uiColumns(bool isLandscape) {
     var m = (!isLandscape || uiColumnModeLandscape == DualpaneMode.CopyPortrait) ? uiColumnModePortrait : uiColumnModeLandscape;
-    switch(m) {
-      case DualpaneMode.Single: return [1];
-      case DualpaneMode.Dual1to2: return [1, 2];
-      case DualpaneMode.Dual1to4: return [1, 4];
+    switch (m) {
+      case DualpaneMode.Single:
+        return [1];
+      case DualpaneMode.Dual1to2:
+        return [1, 2];
+      case DualpaneMode.Dual1to4:
+        return [1, 4];
     }
     print("impossible column configuration: portrait/$uiColumnModePortrait landscape/$uiColumnModeLandscape");
     return [1];
   }
 
   static List<DualpaneMode> uiColumnModeOptions(bool isLandscape) {
-    if (isLandscape) return [DualpaneMode.CopyPortrait, DualpaneMode.Single, DualpaneMode.Dual1to2, DualpaneMode.Dual1to4,];
-    else return [DualpaneMode.Single, DualpaneMode.Dual1to2, DualpaneMode.Dual1to4];
+    if (isLandscape)
+      return [
+        DualpaneMode.CopyPortrait,
+        DualpaneMode.Single,
+        DualpaneMode.Dual1to2,
+        DualpaneMode.Dual1to4,
+      ];
+    else
+      return [DualpaneMode.Single, DualpaneMode.Dual1to2, DualpaneMode.Dual1to4];
   }
 
   static DualpaneMode uiColumnModeFromString(String m) {
-    switch(m) {
-      case "DualpaneMode.Single": return DualpaneMode.Single;
-      case "DualpaneMode.Dual1to2": return DualpaneMode.Dual1to2;
-      case "DualpaneMode.Dual1to4": return DualpaneMode.Dual1to4;
-      case "DualpaneMode.CopyPortrait": return DualpaneMode.CopyPortrait;
+    switch (m) {
+      case "DualpaneMode.Single":
+        return DualpaneMode.Single;
+      case "DualpaneMode.Dual1to2":
+        return DualpaneMode.Dual1to2;
+      case "DualpaneMode.Dual1to4":
+        return DualpaneMode.Dual1to4;
+      case "DualpaneMode.CopyPortrait":
+        return DualpaneMode.CopyPortrait;
     }
     print("Error: ui requested translation of column mode [$m] which doesn't exist");
     return DualpaneMode.Single;
@@ -188,11 +202,15 @@ class Settings extends ChangeNotifier {
 
   static String uiColumnModeToString(DualpaneMode m) {
     // todo: translate
-    switch(m) {
-      case DualpaneMode.Single: return "Single";
-      case DualpaneMode.Dual1to2: return "Double (1:2)";
-      case DualpaneMode.Dual1to4: return "Double (1:4)";
-      case DualpaneMode.CopyPortrait: return "Same as portrait mode setting";
+    switch (m) {
+      case DualpaneMode.Single:
+        return "Single";
+      case DualpaneMode.Dual1to2:
+        return "Double (1:2)";
+      case DualpaneMode.Dual1to4:
+        return "Double (1:4)";
+      case DualpaneMode.CopyPortrait:
+        return "Same as portrait mode setting";
     }
   }
 

@@ -166,7 +166,10 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                           autoFillHints: [AutofillHints.newPassword],
                                           validator: (value) {
                                             // Password field can be empty when just updating the profile, not on creation
-                                            if (Provider.of<ProfileInfoState>(context).isEncrypted && Provider.of<ProfileInfoState>(context, listen: false).onion.isEmpty && value.isEmpty && usePassword) {
+                                            if (Provider.of<ProfileInfoState>(context).isEncrypted &&
+                                                Provider.of<ProfileInfoState>(context, listen: false).onion.isEmpty &&
+                                                value.isEmpty &&
+                                                usePassword) {
                                               return AppLocalizations.of(context)!.passwordErrorEmpty;
                                             }
                                             if (Provider.of<ErrorHandler>(context).deleteProfileError == true) {

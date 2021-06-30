@@ -22,10 +22,7 @@ class LinuxNotificationsManager implements NotificationsManager {
   }
   Future<void> notify(String message) async {
     var iconPath = Uri.file(path.join(path.current, "cwtch.png"));
-      client.notify(message, appName: "cwtch",
-          appIcon: iconPath.toString(),
-          replacesId: this.previous_id).then((Notification value) =>
-      previous_id = value.id);
+    client.notify(message, appName: "cwtch", appIcon: iconPath.toString(), replacesId: this.previous_id).then((Notification value) => previous_id = value.id);
   }
 }
 

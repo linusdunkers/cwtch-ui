@@ -314,7 +314,6 @@ abstract class OpaqueThemeType {
   double contactOnionTextSize() {
     return 18;
   }
-
 }
 
 class OpaqueDark extends OpaqueThemeType {

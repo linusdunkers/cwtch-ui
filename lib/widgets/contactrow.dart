@@ -33,7 +33,11 @@ class _ContactRowState extends State<ContactRow> {
                   diameter: 64.0,
                   imagePath: contact.imagePath,
                   maskOut: !contact.isOnline(),
-                  border: contact.isOnline() ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor() : contact.isBlocked ? Provider.of<Settings>(context).theme.portraitBlockedBorderColor() : Provider.of<Settings>(context).theme.portraitOfflineBorderColor()),
+                  border: contact.isOnline()
+                      ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor()
+                      : contact.isBlocked
+                          ? Provider.of<Settings>(context).theme.portraitBlockedBorderColor()
+                          : Provider.of<Settings>(context).theme.portraitOfflineBorderColor()),
             ),
             Expanded(
                 child: Padding(
@@ -44,13 +48,16 @@ class _ContactRowState extends State<ContactRow> {
                         Text(
                           contact.nickname, //(contact.isInvitation ? "invite " : "non-invite ") + (contact.isBlocked ? "blokt" : "nonblokt"),//
 
-                          style: TextStyle(fontSize: Provider.of<Settings>(context).theme.contactOnionTextSize(),
-                              color: contact.isBlocked ? Provider.of<Settings>(context).theme.portraitBlockedTextColor() : Provider.of<Settings>(context).theme.mainTextColor()), //Provider.of<FlwtchState>(context).biggerFont,
+                          style: TextStyle(
+                              fontSize: Provider.of<Settings>(context).theme.contactOnionTextSize(),
+                              color: contact.isBlocked
+                                  ? Provider.of<Settings>(context).theme.portraitBlockedTextColor()
+                                  : Provider.of<Settings>(context).theme.mainTextColor()), //Provider.of<FlwtchState>(context).biggerFont,
                           softWrap: true,
                           overflow: TextOverflow.visible,
                         ),
                         Text(contact.onion,
-                          style: TextStyle(color: contact.isBlocked ? Provider.of<Settings>(context).theme.portraitBlockedTextColor() : Provider.of<Settings>(context).theme.mainTextColor())),
+                            style: TextStyle(color: contact.isBlocked ? Provider.of<Settings>(context).theme.portraitBlockedTextColor() : Provider.of<Settings>(context).theme.mainTextColor())),
                       ],
                     ))),
             Padding(
@@ -60,7 +67,10 @@ class _ContactRowState extends State<ContactRow> {
                       IconButton(
                         padding: EdgeInsets.zero,
                         iconSize: 16,
-                        icon: Icon(Icons.favorite, color: Provider.of<Settings>(context).theme.mainTextColor(),),
+                        icon: Icon(
+                          Icons.favorite,
+                          color: Provider.of<Settings>(context).theme.mainTextColor(),
+                        ),
                         tooltip: AppLocalizations.of(context)!.tooltipAcceptContactRequest,
                         onPressed: _btnApprove,
                       ),
