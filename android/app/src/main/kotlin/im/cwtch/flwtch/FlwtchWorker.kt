@@ -238,7 +238,7 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                 .setOngoing(true)
                 // Add the cancel action to the notification which can
                 // be used to cancel the worker
-                .addAction(android.R.drawable.ic_delete, cancel, PendingIntent.getActivity(applicationContext, 1, cancelIntent, PendingIntent.FLAG_UPDATE_CURRENT))
+                .addAction(android.R.drawable.ic_delete, cancel, PendingIntent.getActivity(applicationContext, 2, cancelIntent, PendingIntent.FLAG_UPDATE_CURRENT))
                 .build()
 
         return ForegroundInfo(101, notification)
