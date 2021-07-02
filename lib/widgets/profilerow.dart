@@ -30,43 +30,29 @@ class _ProfileRowState extends State<ProfileRow> {
                   padding: const EdgeInsets.all(2.0), //border size
                   child: ProfileImage(
                       badgeCount: 0,
-                      badgeColor: Provider
-                          .of<Settings>(context)
-                          .theme
-                          .portraitProfileBadgeColor(),
-                      badgeTextColor: Provider
-                          .of<Settings>(context)
-                          .theme
-                          .portraitProfileBadgeTextColor(),
+                      badgeColor: Provider.of<Settings>(context).theme.portraitProfileBadgeColor(),
+                      badgeTextColor: Provider.of<Settings>(context).theme.portraitProfileBadgeTextColor(),
                       diameter: 64.0,
                       imagePath: profile.imagePath,
-                      border: profile.isOnline ? Provider
-                          .of<Settings>(context)
-                          .theme
-                          .portraitOnlineBorderColor() : Provider
-                          .of<Settings>(context)
-                          .theme
-                          .portraitOfflineBorderColor())),
+                      border: profile.isOnline ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor() : Provider.of<Settings>(context).theme.portraitOfflineBorderColor())),
               Expanded(
                   child: Column(
-                    children: [
-                      Text(
-                        profile.nickname,
-                        semanticsLabel: profile.nickname,
-                        style: Provider
-                            .of<FlwtchState>(context)
-                            .biggerFont,
-                        softWrap: true,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      ExcludeSemantics(
-                          child: Text(
-                            profile.onion,
-                            softWrap: true,
-                            overflow: TextOverflow.ellipsis,
-                          ))
-                    ],
-                  )),
+                children: [
+                  Text(
+                    profile.nickname,
+                    semanticsLabel: profile.nickname,
+                    style: Provider.of<FlwtchState>(context).biggerFont,
+                    softWrap: true,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  ExcludeSemantics(
+                      child: Text(
+                    profile.onion,
+                    softWrap: true,
+                    overflow: TextOverflow.ellipsis,
+                  ))
+                ],
+              )),
               IconButton(
                 enableFeedback: true,
                 tooltip: AppLocalizations.of(context)!.editProfile + " " + profile.nickname,
@@ -83,7 +69,7 @@ class _ProfileRowState extends State<ProfileRow> {
               appState.selectedProfile = profile.onion;
               appState.selectedConversation = null;
 
-              _pushContactList(profile, appState.isLandscape(context));//orientation == Orientation.landscape);
+              _pushContactList(profile, appState.isLandscape(context)); //orientation == Orientation.landscape);
             });
           },
         ));
@@ -94,19 +80,17 @@ class _ProfileRowState extends State<ProfileRow> {
       MaterialPageRoute<void>(
         settings: RouteSettings(name: "conversations"),
         builder: (BuildContext buildcontext) {
-          return OrientationBuilder(
-              builder: (orientationBuilderContext, orientation) {
-                return MultiProvider(
-                  providers: [
-                    ChangeNotifierProvider<ProfileInfoState>.value(value: profile),
-                    ChangeNotifierProvider<ContactListState>.value(value: profile.contactList),
-                  ],
-                  builder: (innercontext, widget) {
-                    var appState = Provider.of<AppState>(context);
-                    var settings = Provider.of<Settings>(context);
-                    return settings.uiColumns(appState.isLandscape(innercontext)).length > 1 ? DoubleColumnView() : ContactsView();
-                  }
-                );
+          return OrientationBuilder(builder: (orientationBuilderContext, orientation) {
+            return MultiProvider(
+                providers: [
+                  ChangeNotifierProvider<ProfileInfoState>.value(value: profile),
+                  ChangeNotifierProvider<ContactListState>.value(value: profile.contactList),
+                ],
+                builder: (innercontext, widget) {
+                  var appState = Provider.of<AppState>(context);
+                  var settings = Provider.of<Settings>(context);
+                  return settings.uiColumns(appState.isLandscape(innercontext)).length > 1 ? DoubleColumnView() : ContactsView();
+                });
           });
         },
       ),

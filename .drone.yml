@@ -11,7 +11,7 @@ steps:
     image: cirrusci/flutter:dev
     environment:
       buildbot_key_b64:
-          from_secret: buildbot_key_b64
+        from_secret: buildbot_key_b64
     commands:
       - mkdir ~/.ssh
       - echo $buildbot_key_b64 > ~/.ssh/id_rsa.b64
@@ -68,8 +68,8 @@ steps:
 
   - name: test-build-android
     image: cirrusci/flutter:dev
-    when: 
-      event: pull_request 
+    when:
+      event: pull_request
     volumes:
       - name: deps
         path: /root/.pub-cache
@@ -106,7 +106,7 @@ steps:
       - name: deps
         path: /root/.pub-cache
     commands:
-  #    - flutter config --enable-linux-desktop
+      # - flutter config --enable-linux-desktop
       - flutter test --coverage
       - genhtml coverage/lcov.info -o coverage/html
 
@@ -209,21 +209,10 @@ steps:
 
   - name: build-windows
     image: openpriv/flutter-desktop:windows-sdk30-fdev2.3rc
-    environment:
-      pfx:
-        from_secret: pfx
-      pfx_pass:
-        from_secret: pfx_pass
     commands:
       - flutter pub get
       - $Env:version += type .\VERSION
       - $Env:builddate += type .\BUILDDATE
-      - $Env:buildname = 'flwtch-win-' + $Env:version + '-' + $Env:builddate
-      - $Env:builddir = $Env:buildname
-      - $Env:zip = 'cwtch-' + $Env:version + '.zip'
-      - $Env:zipsha = $Env:zip + '.sha512'
-      - $Env:msix = 'cwtch-install-' + $Env:version + '.msix'
-      - $Env:msixsha = $Env:msix + '.sha512'
       - $Env:releasedir = "build\\windows\\runner\\Release\\"
       - flutter build windows --dart-define BUILD_VER=$Env:version --dart-define BUILD_DATE=$Env:builddate
       - copy windows\libCwtch.dll $Env:releasedir
@@ -234,22 +223,46 @@ steps:
       - copy C:\BuildTools\VC\Redist\MSVC\14.29.30036\x64\Microsoft.VC142.CRT\vcruntime140_1.dll $Env:releasedir
       - copy C:\BuildTools\VC\Redist\MSVC\14.29.30036\x64\Microsoft.VC142.CRT\msvcp140.dll $Env:releasedir
       - powershell -command "Expand-Archive -Path tor.zip -DestinationPath $Env:releasedir\Tor"
+
+  - name: package-windows
+    image: openpriv/nsis:latest
+    environment:
+      pfx:
+        from_secret: pfx
+      pfx_pass:
+        from_secret: pfx_pass
+    commands:
+      - $Env:version += type .\VERSION
+      - $Env:builddate += type .\BUILDDATE
+      - $Env:releasedir = "build\\windows\\runner\\Release\\"
+      - $Env:zip = 'cwtch-' + $Env:version + '.zip'
+      - $Env:zipsha = $Env:zip + '.sha512'
+      - $Env:msix = 'cwtch-install-' + $Env:version + '.msix'
+      - $Env:msixsha = $Env:msix + '.sha512'
+      - $Env:buildname = 'flwtch-win-' + $Env:version + '-' + $Env:builddate
+      - $Env:builddir = $Env:buildname
       - echo $Env:pfx > codesign.pfx.b64
       - certutil -decode codesign.pfx.b64 codesign.pfx
-      - C:\MSIX-Toolkit\MSIX-Toolkit.x64\signtool sign /v /fd sha256 /a /f codesign.pfx /p $Env:pfx_pass /tr http://timestamp.digicert.com $Env:releasedir\cwtch.exe
+      - signtool sign /v /fd sha256 /a /f codesign.pfx /p $Env:pfx_pass /tr http://timestamp.digicert.com $Env:releasedir\cwtch.exe
+      - copy windows\runner\resources\knot_128.ico $Env:releasedir\cwtch.ico
+      - makensis windows\nsis\cwtch-installer.nsi
+      - move windows\nsis\cwtch-installer.exe cwtch-installer.exe
+      - signtool sign /v /fd sha256 /a /f codesign.pfx /p $Env:pfx_pass /tr http://timestamp.digicert.com cwtch-installer.exe
+      - powershell -command "(Get-FileHash cwtch-installer.exe -Algorithm sha512).Hash" > cwtch-installer.sha512
       - mkdir deploy
       - mkdir deploy\$Env:builddir
       - move $Env:releasedir $Env:builddir
       - powershell -command "Compress-Archive -Path $Env:builddir -DestinationPath cwtch.zip"
       - powershell -command "(Get-FileHash cwtch.zip -Algorithm sha512).Hash" > $Env:zipsha
+      - move cwtch-installer.exe deploy\$Env:builddir\cwtch-installer.exe
       - move cwtch.zip deploy\$Env:builddir\$Env:zip
-      - move $Env:zipsha deploy\$Env:builddir
+      - move *.sha512 deploy\$Env:builddir
 
   - name: deploy-windows
     image: openpriv/flutter-desktop:windows-sdk30-fdev2.3rc
     when:
-        event: push
-        status: [ success ]
+      event: push
+      status: [ success ]
     environment:
       BUILDFILES_KEY:
         from_secret: buildfiles_key

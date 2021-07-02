@@ -190,7 +190,8 @@ class FlwtchState extends State<Flwtch> {
           },
         ),
       );
-    } else { //dual pane
+    } else {
+      //dual pane
       Provider.of<AppState>(navKey.currentContext!, listen: false).selectedProfile = args["ProfileOnion"];
       Provider.of<AppState>(navKey.currentContext!, listen: false).selectedConversation = args["Handle"];
     }

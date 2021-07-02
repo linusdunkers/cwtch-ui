@@ -169,7 +169,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                           )),
                       AboutListTile(
                         icon: Icon(Icons.info, color: settings.current().mainTextColor()),
-                        applicationIcon: Padding(padding:EdgeInsets.all(5), child: Icon(CwtchIcons.cwtch_knott)),
+                        applicationIcon: Padding(padding: EdgeInsets.all(5), child: Icon(CwtchIcons.cwtch_knott)),
                         applicationName: "Cwtch (Flutter UI)",
                         applicationVersion: AppLocalizations.of(context)!.versionBuilddate.replaceAll("%1", EnvironmentConfig.BUILD_VER).replaceAll("%2", EnvironmentConfig.BUILD_DATE),
                         applicationLegalese: '\u{a9} 2021 Open Privacy Research Society',

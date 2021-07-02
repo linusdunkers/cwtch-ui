@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cwtch/views/peersettingsview.dart';
 import 'package:cwtch/widgets/DropdownContacts.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -50,17 +51,19 @@ class _MessageViewState extends State<MessageView> {
           appBar: AppBar(
             // setting leading to null makes it do the default behaviour; container() hides it
             leading: Provider.of<Settings>(context).uiColumns(appState.isLandscape(context)).length > 1 ? Container() : null,
-            title:  Row(children: [
-            ProfileImage(
-            imagePath: Provider.of<ContactInfoState>(context).imagePath,
-            diameter: 42,
-            border: Provider.of<Settings>(context).current().portraitOnlineBorderColor(),
-            badgeTextColor: Colors.red,
-            badgeColor: Colors.red,
-          ),
-          SizedBox(
-            width: 10,
-          ),Text(Provider.of<ContactInfoState>(context).nickname)]),
+            title: Row(children: [
+              ProfileImage(
+                imagePath: Provider.of<ContactInfoState>(context).imagePath,
+                diameter: 42,
+                border: Provider.of<Settings>(context).current().portraitOnlineBorderColor(),
+                badgeTextColor: Colors.red,
+                badgeColor: Colors.red,
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Text(Provider.of<ContactInfoState>(context).nickname)
+            ]),
             actions: [
               //IconButton(icon: Icon(Icons.chat), onPressed: _pushContactSettings),
               //IconButton(icon: Icon(Icons.list), onPressed: _pushContactSettings),
@@ -100,11 +103,13 @@ class _MessageViewState extends State<MessageView> {
   }
 
   void _sendMessage([String? ignoredParam]) {
-    ChatMessage cm = new ChatMessage(o: 1, d: ctrlrCompose.value.text);
-    Provider.of<FlwtchState>(context, listen: false)
-        .cwtch
-        .SendMessage(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).onion, jsonEncode(cm));
-    _sendMessageHelper();
+    if (ctrlrCompose.value.text.isNotEmpty) {
+      ChatMessage cm = new ChatMessage(o: 1, d: ctrlrCompose.value.text);
+      Provider.of<FlwtchState>(context, listen: false)
+          .cwtch
+          .SendMessage(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).onion, jsonEncode(cm));
+      _sendMessageHelper();
+    }
   }
 
   void _sendInvitation([String? ignoredParam]) {
@@ -135,12 +140,18 @@ class _MessageViewState extends State<MessageView> {
           Expanded(
             child: Container(
                 decoration: BoxDecoration(border: Border(top: BorderSide(color: Provider.of<Settings>(context).theme.defaultButtonActiveColor()))),
+                child: RawKeyboardListener(
+                focusNode: FocusNode(),
+                onKey: handleKeyPress,
                 child: TextFormField(
                     key: Key('txtCompose'),
                     controller: ctrlrCompose,
-                    autofocus: !Platform.isAndroid,
                     focusNode: focusNode,
-                    textInputAction: TextInputAction.send,
+                    autofocus: !Platform.isAndroid,
+                    textInputAction: TextInputAction.newline,
+                    keyboardType: TextInputType.multiline,
+                    minLines: 1,
+                    maxLines: null,
                     onFieldSubmitted: _sendMessage,
                     decoration: InputDecoration(
                       enabledBorder: InputBorder.none,
@@ -158,11 +169,24 @@ class _MessageViewState extends State<MessageView> {
                         tooltip: AppLocalizations.of(context)!.sendMessage,
                         onPressed: _sendMessage,
                       ),
-                    ))),
+                    )))),
           ),
         ],
       ),
     );
+  }
+
+  // Send the message if enter is pressed without the shift key...
+  void handleKeyPress(event) {
+      var data = event.data as RawKeyEventData;
+      if (data.logicalKey == LogicalKeyboardKey.enter && !event.isShiftPressed) {
+        final messageWithoutNewLine = ctrlrCompose.value.text.trimRight();
+        ctrlrCompose.value = TextEditingValue(
+          text: messageWithoutNewLine
+        );
+        _sendMessage();
+
+      }
   }
 
   void placeHolder() => {};

@@ -178,7 +178,7 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
             "CreateGroup" -> {
                 val profile = (a.get("ProfileOnion") as? String) ?: ""
                 val server = (a.get("server") as? String) ?: ""
-                val groupName = (a.get("groupname") as? String) ?: ""
+                val groupName = (a.get("groupName") as? String) ?: ""
                 Cwtch.createGroup(profile, server, groupName)
             }
             "DeleteProfile" -> {
