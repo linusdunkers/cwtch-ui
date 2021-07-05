@@ -98,6 +98,7 @@ class _ContactRowState extends State<ContactRow> {
               Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(contact.onion)!.unreadMessages = 0;
               // triggers update in Double/TripleColumnView
               Provider.of<AppState>(context, listen: false).selectedConversation = contact.onion;
+              Provider.of<AppState>(context, listen: false).selectedIndex = null;
               // if in singlepane mode, push to the stack
               var isLandscape = Provider.of<AppState>(context, listen: false).isLandscape(context);
               if (Provider.of<Settings>(context, listen: false).uiColumns(isLandscape).length == 1) _pushMessageView(contact.onion);

@@ -183,4 +183,9 @@ class CwtchGomobile implements Cwtch {
     print("gomobile.dart Shutdown");
     cwtchPlatform.invokeMethod("Shutdown", {});
   }
+
+  @override
+  Future GetMessageByContentHash(String profile, String handle, String contentHash) {
+    return cwtchPlatform.invokeMethod("GetMessageByContentHash", {"profile": profile, "contact": handle, "contentHash": contentHash});
+  }
 }

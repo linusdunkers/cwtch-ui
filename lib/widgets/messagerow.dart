@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cwtch/widgets/quotedmessage.dart';
 import 'package:flutter/material.dart';
 import 'package:cwtch/widgets/profileimage.dart';
 import 'package:provider/provider.dart';
@@ -33,14 +34,18 @@ class _MessageRowState extends State<MessageRow> {
 
     Widget wdgBubble =
         Flexible(flex: 3, fit: FlexFit.loose, child: Provider.of<MessageState>(context).loaded == true ? widgetForOverlay(Provider.of<MessageState>(context).overlay) : MessageLoadingBubble());
-    Widget wdgIcons = Icon(Icons.delete_forever_outlined, color: Provider.of<Settings>(context).theme.dropShadowColor());
+    Widget wdgIcons = IconButton(
+        onPressed: () {
+          Provider.of<AppState>(context, listen: false).selectedIndex = Provider.of<MessageState>(context).messageIndex;
+        },
+        icon: Icon(Icons.reply, color: Provider.of<Settings>(context).theme.dropShadowColor()));
     Widget wdgSpacer = Expanded(child: SizedBox(width: 60, height: 10));
     var widgetRow = <Widget>[];
 
     if (fromMe) {
       widgetRow = <Widget>[
         wdgSpacer,
-        //wdgIcons,
+        wdgIcons,
         wdgBubble,
       ];
     } else {
@@ -60,7 +65,7 @@ class _MessageRowState extends State<MessageRow> {
       widgetRow = <Widget>[
         wdgPortrait,
         wdgBubble,
-        //wdgIcons,
+        wdgIcons,
         wdgSpacer,
       ];
     }
@@ -75,6 +80,8 @@ class _MessageRowState extends State<MessageRow> {
       case 100:
       case 101:
         return InvitationBubble();
+      case 10:
+        return QuotedMessageBubble();
     }
     return MalformedBubble();
   }

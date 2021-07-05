@@ -57,9 +57,9 @@ typedef GetIntFromStrStrFn = int Function(Pointer<Utf8>, int, Pointer<Utf8>, int
 typedef get_json_blob_from_str_str_int_function = Pointer<Utf8> Function(Pointer<Utf8>, Int32, Pointer<Utf8>, Int32, Int32);
 typedef GetJsonBlobFromStrStrIntFn = Pointer<Utf8> Function(Pointer<Utf8>, int, Pointer<Utf8>, int, int);
 
-//func GetMessages(profile_ptr *C.char, profile_len C.int, handle_ptr *C.char, handle_len C.int, start C.int, end C.int) *C.char {
-typedef get_json_blob_from_str_str_int_int_function = Pointer<Utf8> Function(Pointer<Utf8>, Int32, Pointer<Utf8>, Int32, Int32, Int32);
-typedef GetJsonBlobFromStrStrIntIntFn = Pointer<Utf8> Function(Pointer<Utf8>, int, Pointer<Utf8>, int, int, int);
+// func c_GetMessagesByContentHash(profile_ptr *C.char, profile_len C.int, handle_ptr *C.char, handle_len C.int, contenthash_ptr *C.char, contenthash_len C.int) *C.char
+typedef get_json_blob_from_str_str_str_function = Pointer<Utf8> Function(Pointer<Utf8>, Int32, Pointer<Utf8>, Int32, Pointer<Utf8>, Int32);
+typedef GetJsonBlobFromStrStrStrFn = Pointer<Utf8> Function(Pointer<Utf8>, int, Pointer<Utf8>, int, Pointer<Utf8>, int);
 
 typedef appbus_events_function = Pointer<Utf8> Function();
 typedef AppbusEventsFn = Pointer<Utf8> Function();
@@ -396,5 +396,18 @@ class CwtchFfi implements Cwtch {
 
     _receivePort.close();
     print("Receive Port Closed");
+  }
+
+  @override
+  Future GetMessageByContentHash(String profile, String handle, String contentHash) async {
+    var getMessagesByContentHashC = library.lookup<NativeFunction<get_json_blob_from_str_str_str_function>>("c_GetMessagesByContentHash");
+    // ignore: non_constant_identifier_names
+    final GetMessagesByContentHash = getMessagesByContentHashC.asFunction<GetJsonBlobFromStrStrStrFn>();
+    final utf8profile = profile.toNativeUtf8();
+    final utf8handle = handle.toNativeUtf8();
+    final utf8contentHash = contentHash.toNativeUtf8();
+    Pointer<Utf8> jsonMessageBytes = GetMessagesByContentHash(utf8profile, utf8profile.length, utf8handle, utf8handle.length, utf8contentHash, utf8contentHash.length);
+    String jsonMessage = jsonMessageBytes.toDartString();
+    return jsonMessage;
   }
 }

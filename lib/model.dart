@@ -67,6 +67,7 @@ class AppState extends ChangeNotifier {
   String appError = "";
   String? _selectedProfile;
   String? _selectedConversation;
+  int? _selectedIndex;
 
   void SetCwtchInit() {
     cwtchInit = true;
@@ -87,6 +88,12 @@ class AppState extends ChangeNotifier {
   String? get selectedConversation => _selectedConversation;
   set selectedConversation(String? newVal) {
     this._selectedConversation = newVal;
+    notifyListeners();
+  }
+
+  int? get selectedIndex => _selectedIndex;
+  set selectedIndex(int? newVal) {
+    this._selectedIndex = newVal;
     notifyListeners();
   }
 
@@ -457,7 +464,7 @@ class MessageState extends ChangeNotifier {
   final String profileOnion;
   final String contactHandle;
   final int messageIndex;
-  late String _message;
+  late dynamic _message;
   late int _overlay;
   late String _inviteTarget;
   late String _inviteNick;
@@ -535,7 +542,7 @@ class MessageState extends ChangeNotifier {
           return;
         }
         dynamic message = jsonDecode(messageWrapper['Message']);
-        this._message = message['d'];
+        this._message = message['d'] as dynamic;
         this._overlay = int.parse(message['o'].toString());
         this._timestamp = DateTime.tryParse(messageWrapper['Timestamp'])!;
         this._senderOnion = messageWrapper['PeerID'];
