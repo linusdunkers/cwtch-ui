@@ -76,8 +76,16 @@ static void my_application_activate(GApplication* application) {
 
   // Check if assets folder is relative to the executable or if we can use a system copy
   struct stat info;
+  // if we're not in freshly compiled structure
   if (stat(fl_dart_project_get_assets_path(project), &info ) != 0 ) {
-    if( stat("/usr/share/cwtch/data/flutter_assets", &info ) != 0 ) {
+    if( stat("lib/cwtch", &info) == 0) {
+      // use local dir structure
+      project->assets_path = g_build_filename("data", "flutter_assets", nullptr);
+      project->aot_library_path = g_build_filename("lib", "libapp.so", nullptr);
+      project->icu_data_path = g_build_filename("data", "icudtl.dat", nullptr);
+      gtk_window_set_icon_from_file(window,  "./cwtch.png", NULL);
+    } else if( stat("/usr/share/cwtch/data/flutter_assets", &info ) != 0 ) {
+      // if we're non in sys installed structure, use home dir structure
       struct passwd *pw = getpwuid(getuid());
       const char *homedir = pw->pw_dir;
       // /home/$USER/.local/share/cwtch/data/flutter_assets
@@ -88,6 +96,7 @@ static void my_application_activate(GApplication* application) {
       project->icu_data_path = g_build_filename(homedir, ".local", "share", "cwtch", "data", "icudtl.dat", nullptr);
       gtk_window_set_icon_from_file(window,  g_build_filename(homedir, ".local", "share", "icons", "cwtch.png", nullptr), NULL);
     } else {
+      // else assume we are in sys installed structure
       // /usr/share/cwtch/data/flutter_assets
       project->assets_path = g_build_filename("/", "usr", "share", "cwtch", "data", "flutter_assets", nullptr);
       // /usr/lib/cwtch
@@ -96,9 +105,8 @@ static void my_application_activate(GApplication* application) {
       project->icu_data_path = g_build_filename("/", "usr", "share", "cwtch", "data", "icudtl.dat", nullptr);
       gtk_window_set_icon_from_file(window, "/usr/share/icons/cwtch.png", NULL);
     }
-  } else {
-    gtk_window_set_icon_from_file(window, "./cwtch.png", NULL);
   }
+  printf("my_application.cc: using aot_library_path or '%s'\n", project->aot_library_path);
   fl_dart_project_set_dart_entrypoint_arguments(project, self->dart_entrypoint_arguments);
 
   FlView* view = fl_view_new(project);
