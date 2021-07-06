@@ -19,7 +19,8 @@ steps:
       - chmod 400 ~/.ssh/id_rsa
       # force by pass of ssh host key check, less secure
       - ssh-keyscan -H git.openprivacy.ca >> ~/.ssh/known_hosts
-      - git clone gogs@git.openprivacy.ca:cwtch.im/cwtch-ui.git .
+      # use Drone ssh var instead of hardcode to allow forks to build (gogs@git.openprivacy.ca:cwtch.im/cwtch-ui.git)
+      - git clone $DRONE_GIT_SSH_URL .
       - git checkout $DRONE_COMMIT
 
   - name: fetch
@@ -186,7 +187,7 @@ steps:
       - git init
       # -o UserKnownHostsFile=../known_hosts
       - git config core.sshCommand 'ssh -o StrictHostKeyChecking=no -i ../id_rsa'
-      - git remote add origin gogs@git.openprivacy.ca:cwtch.im/cwtch-ui.git
+      - git remote add origin $DRONE_GIT_SSH_URL
       - git pull origin trunk
       - git fetch --tags
       - git checkout $DRONE_COMMIT
