@@ -173,9 +173,9 @@ class FlwtchState extends State<Flwtch> {
     // single pane mode pushes; double pane mode reads AppState.selectedProfile/Conversation
     var isLandscape = Provider.of<AppState>(navKey.currentContext!, listen: false).isLandscape(navKey.currentContext!);
     if (Provider.of<Settings>(navKey.currentContext!, listen: false).uiColumns(isLandscape).length == 1) {
-      if (navKey.currentContext?.findAncestorWidgetOfExactType<MessageView>() != null) {
+      while (navKey.currentState!.canPop()) {
         print("messageview already open; popping before pushing replacement");
-        navKey.currentState?.pop();
+        navKey.currentState!.pop();
       }
       navKey.currentState?.push(
         MaterialPageRoute<void>(
