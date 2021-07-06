@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cp cwtch /usr/bin/
+cp cwtch.sys.sh /usr/bin/cwtch
 
 cp cwtch.png /usr/share/icons
 
