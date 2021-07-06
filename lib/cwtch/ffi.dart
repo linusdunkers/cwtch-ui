@@ -90,7 +90,17 @@ class CwtchFfi implements Cwtch {
     Map<String, String> envVars = Platform.environment;
     if (Platform.isLinux) {
       home = (envVars['HOME'])!;
-      bundledTor = "./tor";
+      if (await File("linux/tor").exists()) {
+        bundledTor = "linux/tor";
+      } else if (await File("lib/tor").exists()) {
+        bundledTor = "lib/tor";
+      } else if (await File(path.join(home, ".local/lib/cwtch/tor")).exists()) {
+        bundledTor = path.join(home, ".local/lib/cwtch/tor");
+      } else if (await File("/usr/lib/cwtch/tor").exists()) {
+        bundledTor = "/usr/lib/cwtch/tor";
+      } else {
+        bundledTor = "tor";
+      }
     } else if (Platform.isWindows) {
       home = (envVars['UserProfile'])!;
       bundledTor = "Tor\\Tor\\tor.exe";
@@ -99,7 +109,7 @@ class CwtchFfi implements Cwtch {
     if (EnvironmentConfig.BUILD_VER == dev_version) {
       cwtchDir = path.join(cwtchDir, "dev");
     }
-    print("cwtchDir $cwtchDir");
+    print("StartCwtch( cwtchdir: $cwtchDir, torPath: $bundledTor )");
 
     var startCwtchC = library.lookup<NativeFunction<start_cwtch_function>>("c_StartCwtch");
     // ignore: non_constant_identifier_names

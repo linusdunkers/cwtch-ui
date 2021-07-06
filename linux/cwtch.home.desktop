@@ -3,7 +3,7 @@ Version=1.0
 Type=Application
 Name=Cwtch
 Comment=Metadata Resistant Chat
-Exec=env LD_LIBRARY_PATH=~/.local/lib/cwtch/ ~/.local/bin/cwtch
+Exec=~/.local/bin/cwtch
 Icon=cwtch
 Terminal=false
 Categories=Network;InstantMessaging;

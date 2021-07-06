@@ -4,7 +4,23 @@ A Flutter based [Cwtch](https://cwtch.im) UI.
 
 This README covers build instructions, for information on Cwtch itself please go to [https://cwtch.im](https://cwtch.im)
 
-## Getting Started
+## Installing
+
+- Android: Available from the Google Play Store (currently patrons only) or from [https://cwtch.im/download/](https://cwtch.im/download/) as an APK
+- Windows: Available from [https://cwtch.im/download/](https://cwtch.im/download/) as an installer or .zip file
+- Linux: Available from [https://cwtch.im/download/](https://cwtch.im/download/) as a .tar.gz
+    - `install.home.sh` installs the app into your home directory
+    - `install.sys.sh` as root to install system wide
+
+## Running
+
+Cwtch logging is controlable with the following environment variables:
+- `LOG_FILE=` will reroute all of libcwtch-go's logging to the specified file instead of the console 
+- `LOG_LEVEL=debug` will set the log level to debug instead of info
+
+## Building
+
+### Getting Started
 
 First you will need a valid [flutter sdk installation](https://flutter.dev/docs/get-started/install)
 and run `flutter pub get` to fetch dependencies.
@@ -28,7 +44,7 @@ You will probably want to disable Analytics on the Flutter Tool: `flutter config
 - Follow the steps above to fetch `libCwtch-go` and `tor` (these will fetch Android versions of these binaries also)
 - run `flutter run` with an Android phone connect via USB (or some other valid debug mode)
 
-#### Known Platform Issues
+### Known Platform Issues
 
 - **Windows**: Flutter engine has a [known bug](https://github.com/flutter/flutter/issues/75675) around the Right Shift key being sticky.
 We have implemented a partial workaround, if this happens, tap left shift and it will reset.

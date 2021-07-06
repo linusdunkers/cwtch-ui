@@ -52,17 +52,10 @@ steps:
         path: /root/.pub-cache
     commands:
       - flutter build linux --dart-define BUILD_VER=`cat VERSION` --dart-define BUILD_DATE=`cat BUILDDATE`
-      - mkdir deploy/linux
-      - cp -r build/linux/x64/release/bundle/* deploy/linux
-      - cp linux/cwtch.*.desktop deploy/linux
-      - cp linux/install-*.sh deploy/linux
-      - cp linux/cwtch.png deploy/linux
-      - cp linux/libCwtch.so deploy/linux/lib/
-      # should not be needed, should be in data/flutter_assets and work from there
-      #- cp /sdks/flutter/bin/cache/artifacts/engine/linux-x64/icudtl.dat deploy/linux
-      - cp linux/tor deploy/linux
+      - linux/package-release.sh
+      - mkdir -p deploy/cwtch
+      - cp -r build/linux/x64/release/bundle/* deploy/cwtch
       - cd deploy
-      - mv linux cwtch
       - tar -czf cwtch-`cat ../VERSION`.tar.gz cwtch
       - rm -r cwtch
 
@@ -222,6 +215,8 @@ steps:
       - copy C:\BuildTools\VC\Redist\MSVC\14.29.30036\x64\Microsoft.VC142.CRT\vcruntime140.dll $Env:releasedir
       - copy C:\BuildTools\VC\Redist\MSVC\14.29.30036\x64\Microsoft.VC142.CRT\vcruntime140_1.dll $Env:releasedir
       - copy C:\BuildTools\VC\Redist\MSVC\14.29.30036\x64\Microsoft.VC142.CRT\msvcp140.dll $Env:releasedir
+      - copy README.md $Env:releasedir\
+      - copy windows\*.bat $Env:releasedir\
       - powershell -command "Expand-Archive -Path tor.zip -DestinationPath $Env:releasedir\Tor"
 
   - name: package-windows
