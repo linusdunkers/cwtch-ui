@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:crypto/crypto.dart';
 import 'package:cwtch/cwtch_icons_icons.dart';
+import 'package:cwtch/models/message.dart';
 import 'package:cwtch/widgets/malformedbubble.dart';
 import 'package:cwtch/widgets/profileimage.dart';
 import 'package:flutter/cupertino.dart';
@@ -108,24 +109,23 @@ class _MessageViewState extends State<MessageView> {
       if (Provider.of<AppState>(context).selectedConversation != null && Provider.of<AppState>(context).selectedIndex != null) {
         Provider.of<FlwtchState>(context)
             .cwtch
-            .GetMessage(Provider.of<AppState>(context).selectedProfile!, Provider.of<AppState>(context).selectedConversation!, Provider.of<AppState>(context).selectedIndex!).then((data) {
-              try {
-                var messageWrapper = jsonDecode(data! as String);
-                var bytes1 = utf8.encode(messageWrapper["PeerID"]+messageWrapper['Message']);
-                var digest1 = sha256.convert(bytes1);
-                var contentHash = base64Encode(digest1.bytes);
-                var quotedMessage = "{\"quotedHash\":\""+contentHash+"\",\"body\":\""+ctrlrCompose.value.text+"\"}";
-                ChatMessage cm = new ChatMessage(o: 10, d: quotedMessage);
-                Provider.of<FlwtchState>(context, listen: false)
-                    .cwtch
-                    .SendMessage(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).onion, jsonEncode(cm));
-              } catch (e) {
-
-              }
-              Provider.of<AppState>(context, listen: false).selectedIndex = null;
-              _sendMessageHelper();
+            .GetMessage(Provider.of<AppState>(context).selectedProfile!, Provider.of<AppState>(context).selectedConversation!, Provider.of<AppState>(context).selectedIndex!)
+            .then((data) {
+          try {
+            var messageWrapper = jsonDecode(data! as String);
+            var bytes1 = utf8.encode(messageWrapper["PeerID"] + messageWrapper['Message']);
+            var digest1 = sha256.convert(bytes1);
+            var contentHash = base64Encode(digest1.bytes);
+            var quotedMessage = "{\"quotedHash\":\"" + contentHash + "\",\"body\":\"" + ctrlrCompose.value.text + "\"}";
+            ChatMessage cm = new ChatMessage(o: 10, d: quotedMessage);
+            Provider.of<FlwtchState>(context, listen: false)
+                .cwtch
+                .SendMessage(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).onion, jsonEncode(cm));
+          } catch (e) {}
+          Provider.of<AppState>(context, listen: false).selectedIndex = null;
+          _sendMessageHelper();
         });
-             } else {
+      } else {
         ChatMessage cm = new ChatMessage(o: 1, d: ctrlrCompose.value.text);
         Provider.of<FlwtchState>(context, listen: false)
             .cwtch
@@ -201,24 +201,17 @@ class _MessageViewState extends State<MessageView> {
     var children;
     if (Provider.of<AppState>(context).selectedConversation != null && Provider.of<AppState>(context).selectedIndex != null) {
       var quoted = FutureBuilder(
-        future: Provider.of<FlwtchState>(context)
-            .cwtch
-            .GetMessage(Provider.of<AppState>(context).selectedProfile!, Provider.of<AppState>(context).selectedConversation!, Provider.of<AppState>(context).selectedIndex!),
+        future: messageHandler(context, Provider.of<AppState>(context).selectedProfile!, Provider.of<AppState>(context).selectedConversation!, Provider.of<AppState>(context).selectedIndex!),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            try {
-              var messageWrapper = jsonDecode(snapshot.data! as String);
-              dynamic message = jsonDecode(messageWrapper['Message']);
-              return Container(
-                  margin: EdgeInsets.all(5),
-                  padding: EdgeInsets.all(5),
-                  color: messageWrapper['PeerID'] != Provider.of<AppState>(context).selectedProfile
-                      ? Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor()
-                      : Provider.of<Settings>(context).theme.messageFromMeBackgroundColor(),
-                  child: Text(message["d"]));
-            } catch (e) {
-              return MalformedBubble();
-            }
+            var message = snapshot.data! as Message;
+            return Container(
+                margin: EdgeInsets.all(5),
+                padding: EdgeInsets.all(5),
+                color: message.getMetadata().senderHandle != Provider.of<AppState>(context).selectedProfile
+                    ? Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor()
+                    : Provider.of<Settings>(context).theme.messageFromMeBackgroundColor(),
+                child: message.getPreviewWidget(context));
           } else {
             return Text("");
           }

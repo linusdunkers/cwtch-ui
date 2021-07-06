@@ -1,3 +1,4 @@
+import 'package:cwtch/models/message.dart';
 import 'package:cwtch/widgets/malformedbubble.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +9,10 @@ import '../settings.dart';
 import 'messagebubbledecorations.dart';
 
 class MessageBubble extends StatefulWidget {
+  final String content;
+
+  MessageBubble(this.content);
+
   @override
   MessageBubbleState createState() => MessageBubbleState();
 }
@@ -17,33 +22,30 @@ class MessageBubbleState extends State<MessageBubble> {
 
   @override
   Widget build(BuildContext context) {
-    var fromMe = Provider.of<MessageState>(context).senderOnion == Provider.of<ProfileInfoState>(context).onion;
+    var fromMe = Provider.of<MessageMetadata>(context).senderHandle == Provider.of<ProfileInfoState>(context).onion;
     var prettyDate = "";
     var borderRadiousEh = 15.0;
-    var myKey = Provider.of<MessageState>(context).profileOnion + "::" + Provider.of<MessageState>(context).contactHandle + "::" + Provider.of<MessageState>(context).messageIndex.toString();
+    // var myKey = Provider.of<MessageState>(context).profileOnion + "::" + Provider.of<MessageState>(context).contactHandle + "::" + Provider.of<MessageState>(context).messageIndex.toString();
 
-    if (Provider.of<MessageState>(context).timestamp != null) {
-      // user-configurable timestamps prolly ideal? #todo
-      DateTime messageDate = Provider.of<MessageState>(context).timestamp;
-      prettyDate = DateFormat.yMd().add_jm().format(messageDate.toLocal());
-    }
+    DateTime messageDate = Provider.of<MessageMetadata>(context).timestamp;
+    prettyDate = DateFormat.yMd().add_jm().format(messageDate.toLocal());
 
     // If the sender is not us, then we want to give them a nickname...
     var senderDisplayStr = "";
-    if (!fromMe && Provider.of<MessageState>(context).senderOnion != null) {
-      ContactInfoState? contact = Provider.of<ProfileInfoState>(context).contactList.getContact(Provider.of<MessageState>(context).senderOnion);
+    if (!fromMe) {
+      ContactInfoState? contact = Provider.of<ProfileInfoState>(context).contactList.getContact(Provider.of<MessageMetadata>(context).senderHandle);
       if (contact != null) {
         senderDisplayStr = contact.nickname;
       } else {
-        senderDisplayStr = Provider.of<MessageState>(context).senderOnion;
+        senderDisplayStr = Provider.of<MessageMetadata>(context).senderHandle;
       }
     }
     var wdgSender = SelectableText(senderDisplayStr,
         style: TextStyle(fontSize: 9.0, color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor() : Provider.of<Settings>(context).theme.messageFromOtherTextColor()));
 
     var wdgMessage = SelectableText(
-      (Provider.of<MessageState>(context).message ?? "") + '\u202F',
-      key: Key(myKey),
+      widget.content + '\u202F',
+      //key: Key(myKey),
       focusNode: _focus,
       style: TextStyle(
         color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor() : Provider.of<Settings>(context).theme.messageFromOtherTextColor(),
@@ -52,9 +54,9 @@ class MessageBubbleState extends State<MessageBubble> {
       textWidthBasis: TextWidthBasis.longestLine,
     );
 
-    var wdgDecorations = MessageBubbleDecoration(ackd: Provider.of<MessageState>(context).ackd, errored: Provider.of<MessageState>(context).error, fromMe: fromMe, prettyDate: prettyDate);
+    var wdgDecorations = MessageBubbleDecoration(ackd: Provider.of<MessageMetadata>(context).ackd, errored: Provider.of<MessageMetadata>(context).error, fromMe: fromMe, prettyDate: prettyDate);
 
-    var error = Provider.of<MessageState>(context).error;
+    var error = Provider.of<MessageMetadata>(context).error;
 
     return LayoutBuilder(builder: (context, constraints) {
       //print(constraints.toString()+", "+constraints.maxWidth.toString());

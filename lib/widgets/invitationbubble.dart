@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cwtch/cwtch_icons_icons.dart';
+import 'package:cwtch/models/message.dart';
 import 'package:cwtch/widgets/malformedbubble.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +16,12 @@ import 'messagebubbledecorations.dart';
 // Like MessageBubble but for displaying chat overlay 100/101 invitations
 // Offers the user an accept/reject button if they don't have a matching contact already
 class InvitationBubble extends StatefulWidget {
+  final int overlay;
+  final String inviteTarget;
+  final String inviteNick;
+
+  InvitationBubble(this.overlay, this.inviteTarget, this.inviteNick);
+
   @override
   InvitationBubbleState createState() => InvitationBubbleState();
 }
@@ -25,32 +32,22 @@ class InvitationBubbleState extends State<InvitationBubble> {
 
   @override
   Widget build(BuildContext context) {
-    if (Provider.of<MessageState>(context).malformed) {
-      return MalformedBubble();
-    }
-
-    var fromMe = Provider.of<MessageState>(context).senderOnion == Provider.of<ProfileInfoState>(context).onion;
-    var isGroup = Provider.of<MessageState>(context).overlay == 101;
-    isAccepted = Provider.of<ProfileInfoState>(context).contactList.getContact(Provider.of<MessageState>(context).inviteTarget) != null;
-    var prettyDate = "";
+    var fromMe = Provider.of<MessageMetadata>(context).senderHandle == Provider.of<ProfileInfoState>(context).onion;
+    var isGroup = widget.overlay == 101;
+    isAccepted = Provider.of<ProfileInfoState>(context).contactList.getContact(widget.inviteTarget) != null;
     var borderRadiousEh = 15.0;
     var showGroupInvite = Provider.of<Settings>(context).isExperimentEnabled(TapirGroupsExperiment);
-    rejected = Provider.of<MessageState>(context).flags & 0x01 == 0x01;
-    var myKey = Provider.of<MessageState>(context).profileOnion + "::" + Provider.of<MessageState>(context).contactHandle + "::" + Provider.of<MessageState>(context).messageIndex.toString();
-
-    if (Provider.of<MessageState>(context).timestamp != null) {
-      // user-configurable timestamps prolly ideal? #todo
-      prettyDate = DateFormat.yMd().add_jm().format(Provider.of<MessageState>(context).timestamp);
-    }
+    rejected = Provider.of<MessageMetadata>(context).flags & 0x01 == 0x01;
+    var prettyDate = DateFormat.yMd().add_jm().format(Provider.of<MessageMetadata>(context).timestamp);
 
     // If the sender is not us, then we want to give them a nickname...
     var senderDisplayStr = "";
-    if (!fromMe && Provider.of<MessageState>(context).senderOnion != null) {
-      ContactInfoState? contact = Provider.of<ProfileInfoState>(context).contactList.getContact(Provider.of<MessageState>(context).senderOnion);
+    if (!fromMe) {
+      ContactInfoState? contact = Provider.of<ProfileInfoState>(context).contactList.getContact(Provider.of<MessageMetadata>(context).senderHandle);
       if (contact != null) {
         senderDisplayStr = contact.nickname;
       } else {
-        senderDisplayStr = Provider.of<MessageState>(context).senderOnion;
+        senderDisplayStr = Provider.of<MessageMetadata>(context).senderHandle;
       }
     }
 
@@ -61,7 +58,7 @@ class InvitationBubbleState extends State<InvitationBubble> {
 
     // If we receive an invite for ourselves, treat it as a bug. The UI no longer allows this so it could have only come from
     // some kind of malfeasance.
-    var selfInvite = Provider.of<MessageState>(context).inviteNick == Provider.of<ProfileInfoState>(context).onion;
+    var selfInvite = widget.inviteNick == Provider.of<ProfileInfoState>(context).onion;
     if (selfInvite) {
       return MalformedBubble();
     }
@@ -69,16 +66,15 @@ class InvitationBubbleState extends State<InvitationBubble> {
     var wdgMessage = isGroup && !showGroupInvite
         ? Text(AppLocalizations.of(context)!.groupInviteSettingsWarning)
         : fromMe
-            ? senderInviteChrome(AppLocalizations.of(context)!.sendAnInvitation,
-                isGroup ? Provider.of<ProfileInfoState>(context).contactList.getContact(Provider.of<MessageState>(context).inviteTarget)!.nickname : Provider.of<MessageState>(context).message, myKey)
-            : (inviteChrome(isGroup ? AppLocalizations.of(context)!.inviteToGroup : AppLocalizations.of(context)!.contactSuggestion, Provider.of<MessageState>(context).inviteNick,
-                Provider.of<MessageState>(context).inviteTarget, myKey));
+            ? senderInviteChrome(
+                AppLocalizations.of(context)!.sendAnInvitation, isGroup ? Provider.of<ProfileInfoState>(context).contactList.getContact(widget.inviteTarget)!.nickname : widget.inviteTarget)
+            : (inviteChrome(isGroup ? AppLocalizations.of(context)!.inviteToGroup : AppLocalizations.of(context)!.contactSuggestion, widget.inviteNick, widget.inviteTarget));
 
     Widget wdgDecorations;
     if (isGroup && !showGroupInvite) {
       wdgDecorations = Text('\u202F');
     } else if (fromMe) {
-      wdgDecorations = MessageBubbleDecoration(ackd: Provider.of<MessageState>(context).ackd, errored: Provider.of<MessageState>(context).error, fromMe: fromMe, prettyDate: prettyDate);
+      wdgDecorations = MessageBubbleDecoration(ackd: Provider.of<MessageMetadata>(context).ackd, errored: Provider.of<MessageMetadata>(context).error, fromMe: fromMe, prettyDate: prettyDate);
     } else if (isAccepted) {
       wdgDecorations = Text(AppLocalizations.of(context)!.accepted + '\u202F');
     } else if (this.rejected) {
@@ -131,22 +127,22 @@ class InvitationBubbleState extends State<InvitationBubble> {
     setState(() {
       var profileOnion = Provider.of<ProfileInfoState>(context, listen: false).onion;
       var contact = Provider.of<ContactInfoState>(context, listen: false).onion;
-      var idx = Provider.of<MessageState>(context, listen: false).messageIndex;
-      Provider.of<FlwtchState>(context, listen: false).cwtch.UpdateMessageFlags(profileOnion, contact, idx, Provider.of<MessageState>(context, listen: false).flags | 0x01);
-      Provider.of<MessageState>(context).flags |= 0x01;
+      var idx = Provider.of<MessageMetadata>(context, listen: false).messageIndex;
+      Provider.of<FlwtchState>(context, listen: false).cwtch.UpdateMessageFlags(profileOnion, contact, idx, Provider.of<MessageMetadata>(context, listen: false).flags | 0x01);
+      Provider.of<MessageMetadata>(context).flags |= 0x01;
     });
   }
 
   void _btnAccept() {
     setState(() {
       var profileOnion = Provider.of<ProfileInfoState>(context, listen: false).onion;
-      Provider.of<FlwtchState>(context, listen: false).cwtch.ImportBundle(profileOnion, Provider.of<MessageState>(context, listen: false).message);
+      Provider.of<FlwtchState>(context, listen: false).cwtch.ImportBundle(profileOnion, widget.inviteTarget);
       isAccepted = true;
     });
   }
 
   // Construct an invite chrome for the sender
-  Widget senderInviteChrome(String chrome, String targetName, String myKey) {
+  Widget senderInviteChrome(String chrome, String targetName) {
     return Wrap(children: [
       SelectableText(
         chrome + '\u202F',
@@ -159,7 +155,6 @@ class InvitationBubbleState extends State<InvitationBubble> {
       ),
       SelectableText(
         targetName + '\u202F',
-        key: Key(myKey),
         style: TextStyle(
           color: Provider.of<Settings>(context).theme.messageFromMeTextColor(),
         ),
@@ -171,7 +166,7 @@ class InvitationBubbleState extends State<InvitationBubble> {
   }
 
   // Construct an invite chrome
-  Widget inviteChrome(String chrome, String targetName, String targetId, String myKey) {
+  Widget inviteChrome(String chrome, String targetName, String targetId) {
     return Wrap(children: [
       SelectableText(
         chrome + '\u202F',
@@ -184,7 +179,6 @@ class InvitationBubbleState extends State<InvitationBubble> {
       ),
       SelectableText(
         targetName + '\u202F',
-        key: Key(myKey),
         style: TextStyle(color: Provider.of<Settings>(context).theme.messageFromOtherTextColor()),
         textAlign: TextAlign.left,
         maxLines: 2,

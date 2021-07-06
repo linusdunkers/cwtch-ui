@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cwtch/widgets/messagerow.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cwtch/models/servers.dart';
 import 'package:cwtch/widgets/messagebubble.dart';
@@ -343,7 +344,7 @@ class ContactInfoState extends ChangeNotifier {
   late int _unreadMessages = 0;
   late int _totalMessages = 0;
   late DateTime _lastMessageTime;
-  late Map<String, GlobalKey<MessageBubbleState>> keys;
+  late Map<String, GlobalKey<MessageRowState>> keys;
 
   // todo: a nicer way to model contacts, groups and other "entities"
   late bool _isGroup;
@@ -375,7 +376,7 @@ class ContactInfoState extends ChangeNotifier {
     this._savePeerHistory = savePeerHistory;
     this._lastMessageTime = lastMessageTime == null ? DateTime.fromMillisecondsSinceEpoch(0) : lastMessageTime;
     this._server = server;
-    keys = Map<String, GlobalKey<MessageBubbleState>>();
+    keys = Map<String, GlobalKey<MessageRowState>>();
   }
 
   String get nickname => this._nickname;
@@ -451,137 +452,11 @@ class ContactInfoState extends ChangeNotifier {
     }
   }
 
-  GlobalKey<MessageBubbleState> getMessageKey(String index) {
+  GlobalKey<MessageRowState> getMessageKey(String index) {
     if (keys[index] == null) {
-      keys[index] = GlobalKey<MessageBubbleState>();
+      keys[index] = GlobalKey<MessageRowState>();
     }
-    GlobalKey<MessageBubbleState> ret = keys[index]!;
+    GlobalKey<MessageRowState> ret = keys[index]!;
     return ret;
-  }
-}
-
-class MessageState extends ChangeNotifier {
-  final String profileOnion;
-  final String contactHandle;
-  final int messageIndex;
-  late dynamic _message;
-  late int _overlay;
-  late String _inviteTarget;
-  late String _inviteNick;
-  late DateTime _timestamp;
-  late String _senderOnion;
-  late int _flags;
-  String? _senderImage;
-  late String _signature = "";
-  late bool _ackd = false;
-  late bool _error = false;
-  late bool _loaded = false;
-  late bool _malformed = false;
-
-  MessageState({
-    required BuildContext context,
-    required this.profileOnion,
-    required this.contactHandle,
-    required this.messageIndex,
-  }) {
-    this._senderOnion = profileOnion;
-    tryLoad(context);
-  }
-
-  get message => this._message;
-  get overlay => this._overlay;
-  get timestamp => this._timestamp;
-  int get flags => this._flags;
-  set flags(int newVal) {
-    this._flags = newVal;
-    notifyListeners();
-  }
-
-  bool get ackd => this._ackd;
-  bool get error => this._error;
-  bool get malformed => this._malformed;
-  bool get loaded => this._loaded;
-  get senderOnion => this._senderOnion;
-  get senderImage => this._senderImage;
-  get signature => this._signature;
-  get isInvite => this.overlay == 100 || this.overlay == 101;
-  get inviteTarget => this._inviteTarget;
-  get inviteNick => this._inviteNick;
-
-  set ackd(bool newVal) {
-    this._ackd = newVal;
-    notifyListeners();
-  }
-
-  set error(bool newVal) {
-    this._error = newVal;
-    notifyListeners();
-  }
-
-  set malformed(bool newVal) {
-    this._malformed = newVal;
-    notifyListeners();
-  }
-
-  set loaded(bool newVal) {
-    // quickly-arriving messages get discarded before loading sometimes
-    if (!hasListeners) return;
-    this._loaded = newVal;
-    notifyListeners();
-  }
-
-  void tryLoad(BuildContext context) {
-    Provider.of<FlwtchState>(context, listen: false).cwtch.GetMessage(profileOnion, contactHandle, messageIndex).then((jsonMessage) {
-      try {
-        dynamic messageWrapper = jsonDecode(jsonMessage);
-        if (messageWrapper['Message'] == null || messageWrapper['Message'] == '' || messageWrapper['Message'] == '{}') {
-          this._senderOnion = profileOnion;
-          Future.delayed(const Duration(milliseconds: 2), () {
-            tryLoad(context);
-          });
-          return;
-        }
-        dynamic message = jsonDecode(messageWrapper['Message']);
-        this._message = message['d'] as dynamic;
-        this._overlay = int.parse(message['o'].toString());
-        this._timestamp = DateTime.tryParse(messageWrapper['Timestamp'])!;
-        this._senderOnion = messageWrapper['PeerID'];
-        this._senderImage = messageWrapper['ContactImage'];
-        this._flags = int.parse(messageWrapper['Flags'].toString(), radix: 2);
-
-        // If this is a group, store the signature
-        if (contactHandle.length == 32) {
-          this._signature = messageWrapper['Signature'];
-        }
-
-        // if this is an invite, get the contact handle
-        if (this.isInvite) {
-          if (message['d'].toString().length == 56) {
-            this._inviteTarget = message['d'];
-            var targetContact = Provider.of<ProfileInfoState>(context).contactList.getContact(this._inviteTarget);
-            this._inviteNick = targetContact == null ? message['d'] : targetContact.nickname;
-          } else {
-            var parts = message['d'].toString().split("||");
-            if (parts.length == 2) {
-              var jsonObj = jsonDecode(utf8.fuse(base64).decode(parts[1].substring(5)));
-              this._inviteTarget = jsonObj['GroupID'];
-              this._inviteNick = jsonObj['GroupName'];
-            }
-          }
-        }
-
-        this.loaded = true;
-
-        //update ackd and error last as they are changenotified
-        this.ackd = messageWrapper['Acknowledged'];
-        if (messageWrapper['Error'] != null) {
-          this.error = true;
-        }
-      } catch (e) {
-        this._overlay = -1;
-        this.loaded = true;
-        this.malformed = true;
-      }
-    });
   }
 }

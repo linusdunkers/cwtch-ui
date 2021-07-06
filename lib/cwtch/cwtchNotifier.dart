@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cwtch/models/message.dart';
 import 'package:cwtch/models/servers.dart';
 import 'package:cwtch/notification_manager.dart';
 import 'package:provider/provider.dart';
@@ -115,7 +116,7 @@ class CwtchNotifier {
         var key = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["RemotePeer"])!.getMessageKey(idx);
         if (key == null) break;
         try {
-          var message = Provider.of<MessageState>(key.currentContext!, listen: false);
+          var message = Provider.of<MessageMetadata>(key.currentContext!, listen: false);
           if (message == null) break;
           message.ackd = true;
         } catch (e) {
@@ -138,7 +139,7 @@ class CwtchNotifier {
           var key = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"])!.getMessageKey(idx);
           if (key == null) break;
           try {
-            var message = Provider.of<MessageState>(key.currentContext!, listen: false);
+            var message = Provider.of<MessageMetadata>(key.currentContext!, listen: false);
             if (message == null) break;
             message.ackd = true;
           } catch (e) {
@@ -156,7 +157,7 @@ class CwtchNotifier {
         var idx = data["Index"];
         var key = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["RemotePeer"])!.getMessageKey(idx);
         try {
-          var message = Provider.of<MessageState>(key!.currentContext!, listen: false);
+          var message = Provider.of<MessageMetadata>(key!.currentContext!, listen: false);
           message.error = true;
         } catch (e) {
           // ignore, we likely have an old key that has been replaced with an actual signature
@@ -169,7 +170,7 @@ class CwtchNotifier {
         var key = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"])!.getMessageKey(idx);
         if (key == null) break;
         try {
-          var message = Provider.of<MessageState>(key.currentContext!, listen: false);
+          var message = Provider.of<MessageMetadata>(key.currentContext!, listen: false);
           if (message == null) break;
           message.error = true;
         } catch (e) {
