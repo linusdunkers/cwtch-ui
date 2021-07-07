@@ -187,10 +187,10 @@ steps:
       - git init
       # -o UserKnownHostsFile=../known_hosts
       - git config core.sshCommand 'ssh -o StrictHostKeyChecking=no -i ../id_rsa'
-      - git remote add origin $DRONE_GIT_SSH_URL
+      - git remote add origin $Env:DRONE_GIT_SSH_URL
       - git pull origin trunk
       - git fetch --tags
-      - git checkout $DRONE_COMMIT
+      - git checkout $Env:DRONE_COMMIT
 
   - name: fetch
     image: openpriv/flutter-desktop:windows-sdk30-fdev2.3rc
@@ -222,6 +222,9 @@ steps:
 
   - name: package-windows
     image: openpriv/nsis:latest
+    when:
+      event: push
+      status: [ success ]
     environment:
       pfx:
         from_secret: pfx
@@ -272,3 +275,4 @@ trigger:
   branch: trunk
   event:
     - push
+    - pull_request
