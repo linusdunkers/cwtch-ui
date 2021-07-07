@@ -122,6 +122,12 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                 val indexI = a.getInt("index")
                 return Result.success(Data.Builder().putString("result", Cwtch.getMessage(profile, handle, indexI.toLong())).build())
             }
+            "GetMessageByContentHash" -> {
+                val profile = (a.get("profile") as? String) ?: ""
+                val handle = (a.get("contact") as? String) ?: ""
+                val contentHash = (a.get("contentHash") as? String) ?: ""
+                return Result.success(Data.Builder().putString("result", Cwtch.getMessagesByContentHash(profile, handle, contentHash)).build())
+            }
             "UpdateMessageFlags" -> {
                 val profile = (a.get("profile") as? String) ?: ""
                 val handle = (a.get("contact") as? String) ?: ""

@@ -1,7 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
-
+import 'package:crypto/crypto.dart';
 import 'package:cwtch/cwtch_icons_icons.dart';
+import 'package:cwtch/models/message.dart';
+import 'package:cwtch/widgets/malformedbubble.dart';
+import 'package:cwtch/widgets/messageloadingbubble.dart';
 import 'package:cwtch/widgets/profileimage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -104,11 +107,32 @@ class _MessageViewState extends State<MessageView> {
 
   void _sendMessage([String? ignoredParam]) {
     if (ctrlrCompose.value.text.isNotEmpty) {
-      ChatMessage cm = new ChatMessage(o: 1, d: ctrlrCompose.value.text);
-      Provider.of<FlwtchState>(context, listen: false)
-          .cwtch
-          .SendMessage(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).onion, jsonEncode(cm));
-      _sendMessageHelper();
+      if (Provider.of<AppState>(context).selectedConversation != null && Provider.of<AppState>(context).selectedIndex != null) {
+        Provider.of<FlwtchState>(context)
+            .cwtch
+            .GetMessage(Provider.of<AppState>(context).selectedProfile!, Provider.of<AppState>(context).selectedConversation!, Provider.of<AppState>(context).selectedIndex!)
+            .then((data) {
+          try {
+            var messageWrapper = jsonDecode(data! as String);
+            var bytes1 = utf8.encode(messageWrapper["PeerID"] + messageWrapper['Message']);
+            var digest1 = sha256.convert(bytes1);
+            var contentHash = base64Encode(digest1.bytes);
+            var quotedMessage = "{\"quotedHash\":\"" + contentHash + "\",\"body\":\"" + ctrlrCompose.value.text + "\"}";
+            ChatMessage cm = new ChatMessage(o: QuotedMessageOverlay, d: quotedMessage);
+            Provider.of<FlwtchState>(context, listen: false)
+                .cwtch
+                .SendMessage(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).onion, jsonEncode(cm));
+          } catch (e) {}
+          Provider.of<AppState>(context, listen: false).selectedIndex = null;
+          _sendMessageHelper();
+        });
+      } else {
+        ChatMessage cm = new ChatMessage(o: TextMessageOverlay, d: ctrlrCompose.value.text);
+        Provider.of<FlwtchState>(context, listen: false)
+            .cwtch
+            .SendMessage(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).onion, jsonEncode(cm));
+        _sendMessageHelper();
+      }
     }
   }
 
@@ -130,7 +154,7 @@ class _MessageViewState extends State<MessageView> {
   }
 
   Widget _buildComposeBox() {
-    return Container(
+    var composeBox = Container(
       color: Provider.of<Settings>(context).theme.backgroundMainColor(),
       padding: EdgeInsets.all(2),
       margin: EdgeInsets.all(2),
@@ -141,52 +165,88 @@ class _MessageViewState extends State<MessageView> {
             child: Container(
                 decoration: BoxDecoration(border: Border(top: BorderSide(color: Provider.of<Settings>(context).theme.defaultButtonActiveColor()))),
                 child: RawKeyboardListener(
-                focusNode: FocusNode(),
-                onKey: handleKeyPress,
-                child: TextFormField(
-                    key: Key('txtCompose'),
-                    controller: ctrlrCompose,
-                    focusNode: focusNode,
-                    autofocus: !Platform.isAndroid,
-                    textInputAction: TextInputAction.newline,
-                    keyboardType: TextInputType.multiline,
-                    minLines: 1,
-                    maxLines: null,
-                    onFieldSubmitted: _sendMessage,
-                    decoration: InputDecoration(
-                      enabledBorder: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      enabled: true,
-                      prefixIcon: IconButton(
-                          icon: Icon(CwtchIcons.send_invite, size: 24, color: Provider.of<Settings>(context).theme.mainTextColor()),
-                          tooltip: AppLocalizations.of(context)!.sendInvite,
-                          enableFeedback: true,
-                          splashColor: Provider.of<Settings>(context).theme.defaultButtonActiveColor(),
-                          hoverColor: Provider.of<Settings>(context).theme.defaultButtonActiveColor(),
-                          onPressed: () => _modalSendInvitation(context)),
-                      suffixIcon: IconButton(
-                        icon: Icon(CwtchIcons.send_24px, size: 24, color: Provider.of<Settings>(context).theme.mainTextColor()),
-                        tooltip: AppLocalizations.of(context)!.sendMessage,
-                        onPressed: _sendMessage,
-                      ),
-                    )))),
+                    focusNode: FocusNode(),
+                    onKey: handleKeyPress,
+                    child: TextFormField(
+                        key: Key('txtCompose'),
+                        controller: ctrlrCompose,
+                        focusNode: focusNode,
+                        autofocus: !Platform.isAndroid,
+                        textInputAction: TextInputAction.newline,
+                        keyboardType: TextInputType.multiline,
+                        minLines: 1,
+                        maxLines: null,
+                        onFieldSubmitted: _sendMessage,
+                        decoration: InputDecoration(
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          enabled: true,
+                          prefixIcon: IconButton(
+                              icon: Icon(CwtchIcons.send_invite, size: 24, color: Provider.of<Settings>(context).theme.mainTextColor()),
+                              tooltip: AppLocalizations.of(context)!.sendInvite,
+                              enableFeedback: true,
+                              splashColor: Provider.of<Settings>(context).theme.defaultButtonActiveColor(),
+                              hoverColor: Provider.of<Settings>(context).theme.defaultButtonActiveColor(),
+                              onPressed: () => _modalSendInvitation(context)),
+                          suffixIcon: IconButton(
+                            icon: Icon(CwtchIcons.send_24px, size: 24, color: Provider.of<Settings>(context).theme.mainTextColor()),
+                            tooltip: AppLocalizations.of(context)!.sendMessage,
+                            onPressed: _sendMessage,
+                          ),
+                        )))),
           ),
         ],
       ),
     );
+
+    var children;
+    if (Provider.of<AppState>(context).selectedConversation != null && Provider.of<AppState>(context).selectedIndex != null) {
+      var quoted = FutureBuilder(
+        future: messageHandler(context, Provider.of<AppState>(context).selectedProfile!, Provider.of<AppState>(context).selectedConversation!, Provider.of<AppState>(context).selectedIndex!),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            var message = snapshot.data! as Message;
+            return Container(
+                margin: EdgeInsets.all(5),
+                padding: EdgeInsets.all(5),
+                color: message.getMetadata().senderHandle != Provider.of<AppState>(context).selectedProfile
+                    ? Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor()
+                    : Provider.of<Settings>(context).theme.messageFromMeBackgroundColor(),
+                child: Wrap(runAlignment: WrapAlignment.spaceEvenly, alignment: WrapAlignment.spaceEvenly, runSpacing: 1.0, crossAxisAlignment: WrapCrossAlignment.center, children: [
+                  Center(widthFactor: 1, child: Padding(padding: EdgeInsets.all(10.0), child: Icon(Icons.reply, size: 32))),
+                  Center(widthFactor: 1.0, child: message.getPreviewWidget(context)),
+                  Center(
+                      widthFactor: 1.0,
+                      child: IconButton(
+                        icon: Icon(Icons.highlight_remove),
+                        tooltip: AppLocalizations.of(context)!.tooltipRemoveThisQuotedMessage,
+                        onPressed: () {
+                          Provider.of<AppState>(context, listen: false).selectedIndex = null;
+                        },
+                      ))
+                ]));
+          } else {
+            return MessageLoadingBubble();
+          }
+        },
+      );
+
+      children = [quoted, composeBox];
+    } else {
+      children = [composeBox];
+    }
+
+    return Column(mainAxisSize: MainAxisSize.min, children: children);
   }
 
   // Send the message if enter is pressed without the shift key...
   void handleKeyPress(event) {
-      var data = event.data as RawKeyEventData;
-      if (data.logicalKey == LogicalKeyboardKey.enter && !event.isShiftPressed) {
-        final messageWithoutNewLine = ctrlrCompose.value.text.trimRight();
-        ctrlrCompose.value = TextEditingValue(
-          text: messageWithoutNewLine
-        );
-        _sendMessage();
-
-      }
+    var data = event.data as RawKeyEventData;
+    if (data.logicalKey == LogicalKeyboardKey.enter && !event.isShiftPressed) {
+      final messageWithoutNewLine = ctrlrCompose.value.text.trimRight();
+      ctrlrCompose.value = TextEditingValue(text: messageWithoutNewLine);
+      _sendMessage();
+    }
   }
 
   void placeHolder() => {};

@@ -35,6 +35,7 @@ dependencies:
   ffi: ^1.0.0
   path_provider: ^2.0.0
   desktop_notifications: 0.5.0
+  crypto: 3.0.1
 
   glob: any
   flutter_test:

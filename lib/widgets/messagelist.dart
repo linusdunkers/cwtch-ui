@@ -1,7 +1,12 @@
+import 'package:cwtch/models/message.dart';
+import 'package:cwtch/models/messages/malformedmessage.dart';
+import 'package:cwtch/widgets/malformedbubble.dart';
+import 'package:cwtch/widgets/messageloadingbubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../main.dart';
 import '../model.dart';
 import '../settings.dart';
 import 'messagerow.dart';
@@ -68,22 +73,22 @@ class _MessageListState extends State<MessageList> {
                           itemCount: Provider.of<ContactInfoState>(outerContext).totalMessages,
                           reverse: true, // NOTE: There seems to be a bug in flutter that corrects the mouse wheel scroll, but not the drag direction...
                           itemBuilder: (itemBuilderContext, index) {
-                            var trueIndex = Provider.of<ContactInfoState>(outerContext).totalMessages - index - 1;
-                            return ChangeNotifierProvider(
-                                key: ValueKey(trueIndex),
-                                create: (x) => MessageState(
-                                      context: itemBuilderContext,
-                                      profileOnion: Provider.of<ProfileInfoState>(outerContext, listen: false).onion,
-                                      // We don't want to listen for updates to the contact handle...
-                                      contactHandle: Provider.of<ContactInfoState>(x, listen: false).onion,
-                                      messageIndex: trueIndex,
-                                    ),
-                                builder: (bcontext, child) {
-                                  String idx = Provider.of<ContactInfoState>(outerContext).isGroup == true && Provider.of<MessageState>(bcontext).signature.isEmpty == false
-                                      ? Provider.of<MessageState>(bcontext).signature
-                                      : trueIndex.toString();
-                                  return RepaintBoundary(child: MessageRow(key: Provider.of<ContactInfoState>(bcontext).getMessageKey(idx)));
-                                });
+                            var profileOnion = Provider.of<ProfileInfoState>(outerContext, listen: false).onion;
+                            var contactHandle = Provider.of<ContactInfoState>(outerContext, listen: false).onion;
+                            var messageIndex = Provider.of<ContactInfoState>(outerContext).totalMessages - index - 1;
+
+                            return FutureBuilder(
+                              future: messageHandler(outerContext, profileOnion, contactHandle, messageIndex),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  var message = snapshot.data as Message;
+                                  // Already includes MessageRow,,
+                                  return message.getWidget(context);
+                                } else {
+                                  return MessageLoadingBubble();
+                                }
+                              },
+                            );
                           },
                         )
                       : null)))

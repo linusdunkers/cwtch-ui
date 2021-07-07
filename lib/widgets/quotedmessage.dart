@@ -1,5 +1,6 @@
 import 'package:cwtch/models/message.dart';
 import 'package:cwtch/widgets/malformedbubble.dart';
+import 'package:cwtch/widgets/messageloadingbubble.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../model.dart';
@@ -8,16 +9,17 @@ import 'package:intl/intl.dart';
 import '../settings.dart';
 import 'messagebubbledecorations.dart';
 
-class MessageBubble extends StatefulWidget {
-  final String content;
+class QuotedMessageBubble extends StatefulWidget {
+  final Future<Message> quotedMessage;
+  final String body;
 
-  MessageBubble(this.content);
+  QuotedMessageBubble(this.body, this.quotedMessage);
 
   @override
-  MessageBubbleState createState() => MessageBubbleState();
+  QuotedMessageBubbleState createState() => QuotedMessageBubbleState();
 }
 
-class MessageBubbleState extends State<MessageBubble> {
+class QuotedMessageBubbleState extends State<QuotedMessageBubble> {
   FocusNode _focus = FocusNode();
 
   @override
@@ -25,7 +27,6 @@ class MessageBubbleState extends State<MessageBubble> {
     var fromMe = Provider.of<MessageMetadata>(context).senderHandle == Provider.of<ProfileInfoState>(context).onion;
     var prettyDate = "";
     var borderRadiousEh = 15.0;
-    // var myKey = Provider.of<MessageState>(context).profileOnion + "::" + Provider.of<MessageState>(context).contactHandle + "::" + Provider.of<MessageState>(context).messageIndex.toString();
 
     DateTime messageDate = Provider.of<MessageMetadata>(context).timestamp;
     prettyDate = DateFormat.yMd().add_jm().format(messageDate.toLocal());
@@ -44,8 +45,7 @@ class MessageBubbleState extends State<MessageBubble> {
         style: TextStyle(fontSize: 9.0, color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor() : Provider.of<Settings>(context).theme.messageFromOtherTextColor()));
 
     var wdgMessage = SelectableText(
-      widget.content + '\u202F',
-      //key: Key(myKey),
+      widget.body + '\u202F',
       focusNode: _focus,
       style: TextStyle(
         color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor() : Provider.of<Settings>(context).theme.messageFromOtherTextColor(),
@@ -54,12 +54,37 @@ class MessageBubbleState extends State<MessageBubble> {
       textWidthBasis: TextWidthBasis.longestLine,
     );
 
+    var wdgQuote = FutureBuilder(
+      future: widget.quotedMessage,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          try {
+            var qMessage = (snapshot.data! as Message);
+            // Swap the background color for quoted tweets..
+            return Container(
+                margin: EdgeInsets.all(5),
+                padding: EdgeInsets.all(5),
+                color: fromMe ? Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor() : Provider.of<Settings>(context).theme.messageFromMeBackgroundColor(),
+                child: Wrap(runAlignment: WrapAlignment.spaceEvenly, alignment: WrapAlignment.spaceEvenly, runSpacing: 1.0, crossAxisAlignment: WrapCrossAlignment.center, children: [
+                  Center(widthFactor: 1, child: Padding(padding: EdgeInsets.all(10.0), child: Icon(Icons.reply, size: 32))),
+                  Center(widthFactor: 1.0, child: qMessage.getPreviewWidget(context))
+                ]));
+          } catch (e) {
+            print(e);
+            return MalformedBubble();
+          }
+        } else {
+          // This should be almost instantly resolved, any failure likely means an issue in decoding...
+          return MessageLoadingBubble();
+        }
+      },
+    );
+
     var wdgDecorations = MessageBubbleDecoration(ackd: Provider.of<MessageMetadata>(context).ackd, errored: Provider.of<MessageMetadata>(context).error, fromMe: fromMe, prettyDate: prettyDate);
 
     var error = Provider.of<MessageMetadata>(context).error;
 
     return LayoutBuilder(builder: (context, constraints) {
-      //print(constraints.toString()+", "+constraints.maxWidth.toString());
       return RepaintBoundary(
           child: Container(
               child: Container(
@@ -85,7 +110,7 @@ class MessageBubbleState extends State<MessageBubble> {
                           crossAxisAlignment: fromMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                           mainAxisAlignment: fromMe ? MainAxisAlignment.end : MainAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
-                          children: fromMe ? [wdgMessage, wdgDecorations] : [wdgSender, wdgMessage, wdgDecorations])))));
+                          children: fromMe ? [wdgQuote, wdgMessage, wdgDecorations] : [wdgSender, wdgQuote, wdgMessage, wdgDecorations])))));
     });
   }
 }
