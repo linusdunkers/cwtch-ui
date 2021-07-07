@@ -54,6 +54,11 @@ class QuotedMessage extends Message {
   Widget getWidget(BuildContext context) {
     try {
       dynamic message = jsonDecode(this.content);
+
+      if (message["body"] == null || message["quotedHash"] == null) {
+        return MalformedMessage(this.metadata).getWidget(context);
+      }
+
       var quotedMessagePotentials = Provider.of<FlwtchState>(context).cwtch.GetMessageByContentHash(metadata.profileOnion, metadata.contactHandle, message["quotedHash"]);
       int messageIndex = metadata.messageIndex;
       Future<LocallyIndexedMessage?> quotedMessage = quotedMessagePotentials.then((matchingMessages) {
@@ -89,7 +94,6 @@ class QuotedMessage extends Message {
                 key: Provider.of<ContactInfoState>(bcontext).getMessageKey(idx));
           });
     } catch (e) {
-      print("Quoted message exception" + e.toString());
       return MalformedMessage(this.metadata).getWidget(context);
     }
   }
