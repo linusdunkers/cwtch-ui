@@ -19,6 +19,9 @@ const InviteGroupOverlay = 101;
 // it will likely be prudent to define a proper Contact wrapper.
 const TorV3ContactHandleLength = 56;
 
+// Defines the length of a Cwtch v2 Group.
+const GroupConversationHandleLength = 32;
+
 abstract class Message {
   MessageMetadata getMetadata();
   Widget getWidget(BuildContext context);
@@ -55,7 +58,7 @@ Future<Message> messageHandler(BuildContext context, String profileOnion, String
       var error = messageWrapper['Error'] != null;
       String? signature;
       // If this is a group, store the signature
-      if (contactHandle.length == 32) {
+      if (contactHandle.length == GroupConversationHandleLength) {
         signature = messageWrapper['Signature'];
       }
       var metadata = MessageMetadata(profileOnion, contactHandle, index, timestamp, senderHandle, senderImage, signature, flags, ackd, error);
