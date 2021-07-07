@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:cwtch/models/message.dart';
 import 'package:cwtch/models/messages/malformedmessage.dart';
-import 'package:cwtch/widgets/messagebubble.dart';
 import 'package:cwtch/widgets/messagerow.dart';
 import 'package:cwtch/widgets/quotedmessage.dart';
 import 'package:flutter/widgets.dart';
@@ -39,7 +38,7 @@ class QuotedMessage extends Message {
         builder: (bcontext, child) {
           try {
             dynamic message = jsonDecode(this.content);
-            return MessageBubble(message["body"]);
+            return Text(message["body"]);
           } catch (e) {
             return MalformedMessage(this.metadata).getWidget(context);
           }
@@ -55,10 +54,12 @@ class QuotedMessage extends Message {
   Widget getWidget(BuildContext context) {
     try {
       dynamic message = jsonDecode(this.content);
-
       var quotedMessagePotentials = Provider.of<FlwtchState>(context).cwtch.GetMessageByContentHash(metadata.profileOnion, metadata.contactHandle, message["quotedHash"]);
       int messageIndex = metadata.messageIndex;
-      var quotedMessage = quotedMessagePotentials.then((matchingMessages) {
+      Future<LocallyIndexedMessage?> quotedMessage = quotedMessagePotentials.then((matchingMessages) {
+        if (matchingMessages == "[]") {
+          return null;
+        }
         // reverse order the messages from newest to oldest and return the
         // first matching message where it's index is less than the index of this
         // message
@@ -79,15 +80,16 @@ class QuotedMessage extends Message {
           builder: (bcontext, child) {
             String idx = Provider.of<ContactInfoState>(context).isGroup == true && this.metadata.signature != null ? this.metadata.signature! : this.metadata.messageIndex.toString();
             return MessageRow(
-                QuotedMessageBubble(message["body"], quotedMessage.then((localIndex) {
+                QuotedMessageBubble(message["body"], quotedMessage.then((LocallyIndexedMessage? localIndex) {
                   if (localIndex != null) {
                     return messageHandler(context, metadata.profileOnion, metadata.contactHandle, localIndex.index);
                   }
-                  return Future.value(MalformedMessage(this.metadata));
+                  return MalformedMessage(this.metadata);
                 })),
                 key: Provider.of<ContactInfoState>(bcontext).getMessageKey(idx));
           });
     } catch (e) {
+      print("Quoted message exception" + e.toString());
       return MalformedMessage(this.metadata).getWidget(context);
     }
   }

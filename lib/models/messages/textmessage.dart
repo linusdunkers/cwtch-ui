@@ -9,6 +9,7 @@ import '../../model.dart';
 class TextMessage extends Message {
   final MessageMetadata metadata;
   final String content;
+
   TextMessage(this.metadata, this.content);
 
   @override
@@ -16,7 +17,7 @@ class TextMessage extends Message {
     return ChangeNotifierProvider.value(
         value: this.metadata,
         builder: (bcontext, child) {
-          return MessageBubble(this.content);
+          return Text(this.content);
         });
   }
 

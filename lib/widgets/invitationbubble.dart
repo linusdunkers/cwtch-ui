@@ -33,7 +33,7 @@ class InvitationBubbleState extends State<InvitationBubble> {
   @override
   Widget build(BuildContext context) {
     var fromMe = Provider.of<MessageMetadata>(context).senderHandle == Provider.of<ProfileInfoState>(context).onion;
-    var isGroup = widget.overlay == 101;
+    var isGroup = widget.overlay == InviteGroupOverlay;
     isAccepted = Provider.of<ProfileInfoState>(context).contactList.getContact(widget.inviteTarget) != null;
     var borderRadiousEh = 15.0;
     var showGroupInvite = Provider.of<Settings>(context).isExperimentEnabled(TapirGroupsExperiment);

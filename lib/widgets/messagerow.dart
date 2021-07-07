@@ -28,6 +28,7 @@ class MessageRowState extends State<MessageRow> {
     Widget wdgIcons = Visibility(
         visible: this.showMenu,
         child: IconButton(
+            tooltip: AppLocalizations.of(context)!.tooltipReplyToThisMessage,
             onPressed: () {
               Provider.of<AppState>(context, listen: false).selectedIndex = Provider.of<MessageMetadata>(context).messageIndex;
             },

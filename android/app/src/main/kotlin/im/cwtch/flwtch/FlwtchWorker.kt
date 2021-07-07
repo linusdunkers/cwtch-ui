@@ -126,7 +126,7 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                 val profile = (a.get("profile") as? String) ?: ""
                 val handle = (a.get("contact") as? String) ?: ""
                 val contentHash = (a.get("contentHash") as? String) ?: ""
-                return Result.success(Data.Builder().putString("result", Cwtch.getMessageByContentHash(profile, handle, contentHash)).build())
+                return Result.success(Data.Builder().putString("result", Cwtch.getMessagesByContentHash(profile, handle, contentHash)).build())
             }
             "UpdateMessageFlags" -> {
                 val profile = (a.get("profile") as? String) ?: ""

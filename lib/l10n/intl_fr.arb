@@ -1,6 +1,8 @@
 {
     "@@locale": "fr",
-    "@@last_modified": "2021-07-05T21:26:10+02:00",
+    "@@last_modified": "2021-07-07T18:42:50+02:00",
+    "tooltipRemoveThisQuotedMessage": "Remove quoted message.",
+    "tooltipReplyToThisMessage": "Reply to this message",
     "tooltipRejectContactRequest": "Refuser cette demande de contact",
     "tooltipAcceptContactRequest": "Acceptez cette demande de contact.",
     "notificationNewMessageFromGroup": "Nouveau message dans un groupe !",

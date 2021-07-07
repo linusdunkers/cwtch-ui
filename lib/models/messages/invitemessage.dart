@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:cwtch/models/message.dart';
 import 'package:cwtch/widgets/invitationbubble.dart';
 import 'package:cwtch/widgets/malformedbubble.dart';
-import 'package:cwtch/widgets/messagebubble.dart';
 import 'package:cwtch/widgets/messagerow.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +26,7 @@ class InviteMessage extends Message {
           String inviteTarget;
           String inviteNick;
 
-          if (this.content.length == 56) {
+          if (this.content.length == TorV3ContactHandleLength) {
             inviteTarget = this.content;
             var targetContact = Provider.of<ProfileInfoState>(context).contactList.getContact(inviteTarget);
             inviteNick = targetContact == null ? this.content : targetContact.nickname;
@@ -53,7 +52,7 @@ class InviteMessage extends Message {
           String inviteTarget;
           String inviteNick;
 
-          if (this.content.length == 56) {
+          if (this.content.length == TorV3ContactHandleLength) {
             inviteTarget = this.content;
             var targetContact = Provider.of<ProfileInfoState>(context).contactList.getContact(inviteTarget);
             inviteNick = targetContact == null ? this.content : targetContact.nickname;
