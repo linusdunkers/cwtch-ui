@@ -1,9 +1,7 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:cwtch/cwtch_icons_icons.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:cwtch/opaque.dart';
 import 'package:cwtch/settings.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -80,7 +78,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                         secondary: Icon(CwtchIcons.change_theme, color: settings.current().mainTextColor()),
                       ),
                       ListTile(
-                          title: Text(/*AppLocalizations.of(context)!.settingLanguage*/ "UI Columns in Portrait Mode", style: TextStyle(color: settings.current().mainTextColor())),
+                          title: Text(AppLocalizations.of(context)!.settingUIColumnPortrait, style: TextStyle(color: settings.current().mainTextColor())),
                           leading: Icon(Icons.table_chart, color: settings.current().mainTextColor()),
                           trailing: DropdownButton(
                               value: settings.uiColumnModePortrait.toString(),
@@ -91,11 +89,11 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                               items: Settings.uiColumnModeOptions(false).map<DropdownMenuItem<String>>((DualpaneMode value) {
                                 return DropdownMenuItem<String>(
                                   value: value.toString(),
-                                  child: Text(Settings.uiColumnModeToString(value)),
+                                  child: Text(Settings.uiColumnModeToString(value, context)),
                                 );
                               }).toList())),
                       ListTile(
-                          title: Text(/*AppLocalizations.of(context)!.settingLanguage*/ "UI Columns in Landscape Mode", style: TextStyle(color: settings.current().mainTextColor())),
+                          title: Text(AppLocalizations.of(context)!.settingUIColumnLandscape, style: TextStyle(color: settings.current().mainTextColor())),
                           leading: Icon(Icons.table_chart, color: settings.current().mainTextColor()),
                           trailing: DropdownButton(
                               value: settings.uiColumnModeLandscape.toString(),
@@ -106,7 +104,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                               items: Settings.uiColumnModeOptions(true).map<DropdownMenuItem<String>>((DualpaneMode value) {
                                 return DropdownMenuItem<String>(
                                   value: value.toString(),
-                                  child: Text(Settings.uiColumnModeToString(value)),
+                                  child: Text(Settings.uiColumnModeToString(value, context)),
                                 );
                               }).toList())),
                       SwitchListTile(
@@ -208,6 +206,9 @@ String getLanguageFull(context, String languageCode) {
   }
   if (languageCode == "it") {
     return AppLocalizations.of(context)!.localeIt;
+  }
+  if (languageCode == "pl") {
+    return AppLocalizations.of(context)!.localePl;
   }
   return languageCode;
 }

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import 'opaque.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 const TapirGroupsExperiment = "tapir-groups-experiment";
 
@@ -200,17 +201,16 @@ class Settings extends ChangeNotifier {
     return DualpaneMode.Single;
   }
 
-  static String uiColumnModeToString(DualpaneMode m) {
-    // todo: translate
+  static String uiColumnModeToString(DualpaneMode m, BuildContext context) {
     switch (m) {
       case DualpaneMode.Single:
-        return "Single";
+        return AppLocalizations.of(context)!.settingUIColumnSingle;
       case DualpaneMode.Dual1to2:
-        return "Double (1:2)";
+        return AppLocalizations.of(context)!.settingUIColumnDouble12Ratio;
       case DualpaneMode.Dual1to4:
-        return "Double (1:4)";
+        return AppLocalizations.of(context)!.settingUIColumnDouble14Ratio;
       case DualpaneMode.CopyPortrait:
-        return "Same as portrait mode setting";
+        return AppLocalizations.of(context)!.settingUIColumnOptionSame;
     }
   }
 

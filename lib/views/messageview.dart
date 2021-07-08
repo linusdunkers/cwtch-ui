@@ -107,10 +107,11 @@ class _MessageViewState extends State<MessageView> {
 
   void _sendMessage([String? ignoredParam]) {
     if (ctrlrCompose.value.text.isNotEmpty) {
-      if (Provider.of<AppState>(context).selectedConversation != null && Provider.of<AppState>(context).selectedIndex != null) {
-        Provider.of<FlwtchState>(context)
+      if (Provider.of<AppState>(context, listen: false).selectedConversation != null && Provider.of<AppState>(context, listen: false).selectedIndex != null) {
+        Provider.of<FlwtchState>(context, listen: false)
             .cwtch
-            .GetMessage(Provider.of<AppState>(context).selectedProfile!, Provider.of<AppState>(context).selectedConversation!, Provider.of<AppState>(context).selectedIndex!)
+            .GetMessage(Provider.of<AppState>(context, listen: false).selectedProfile!, Provider.of<AppState>(context, listen: false).selectedConversation!,
+                Provider.of<AppState>(context, listen: false).selectedIndex!)
             .then((data) {
           try {
             var messageWrapper = jsonDecode(data! as String);
