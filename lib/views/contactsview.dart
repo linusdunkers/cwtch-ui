@@ -49,7 +49,7 @@ class _ContactsViewState extends State<ContactsView> {
             ),
             Expanded(
                 child: Text("%1 » %2".replaceAll("%1", Provider.of<ProfileInfoState>(context).nickname).replaceAll("%2", AppLocalizations.of(context)!.titleManageContacts),
-                    overflow: TextOverflow.ellipsis, style: TextStyle(color: Provider.of<Settings>(context).current().mainTextColor()))), //todo
+                    overflow: TextOverflow.ellipsis, style: TextStyle(color: Provider.of<Settings>(context).current().mainTextColor()))),
           ])),
           actions: [
             IconButton(icon: TorIcon(), onPressed: _pushTorStatus),
