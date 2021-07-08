@@ -11,10 +11,12 @@ This README covers build instructions, for information on Cwtch itself please go
 - Linux: Available from [https://cwtch.im/download/](https://cwtch.im/download/) as a .tar.gz
     - `install.home.sh` installs the app into your home directory
     - `install.sys.sh` as root to install system wide
+    - or run out of the unziped directory
 
 ## Running
 
-Cwtch logging is controlable with the following environment variables:
+Cwtch processes the following environment variables:
+- `CWTCH_HOME=` overrides the default storage path of `~/.cwtch` with what ever you choose
 - `LOG_FILE=` will reroute all of libcwtch-go's logging to the specified file instead of the console 
 - `LOG_LEVEL=debug` will set the log level to debug instead of info
 

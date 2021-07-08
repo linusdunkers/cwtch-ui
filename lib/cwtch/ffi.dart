@@ -89,7 +89,7 @@ class CwtchFfi implements Cwtch {
     String bundledTor = "";
     Map<String, String> envVars = Platform.environment;
     if (Platform.isLinux) {
-      home = (envVars['HOME'])!;
+      home = envVars['HOME']!;
       if (await File("linux/tor").exists()) {
         bundledTor = "linux/tor";
       } else if (await File("lib/tor").exists()) {
@@ -102,10 +102,11 @@ class CwtchFfi implements Cwtch {
         bundledTor = "tor";
       }
     } else if (Platform.isWindows) {
-      home = (envVars['UserProfile'])!;
+      home = envVars['UserProfile']!;
       bundledTor = "Tor\\Tor\\tor.exe";
     }
-    var cwtchDir = path.join(home, ".cwtch");
+
+    var cwtchDir = envVars['CWTCH_HOME'] ?? path.join(home, ".cwtch");
     if (EnvironmentConfig.BUILD_VER == dev_version) {
       cwtchDir = path.join(cwtchDir, "dev");
     }
