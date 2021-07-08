@@ -47,6 +47,12 @@ class _MessageViewState extends State<MessageView> {
 
   @override
   Widget build(BuildContext context) {
+
+    // After leaving a conversation the selected conversation is set to null...
+    if (Provider.of<ContactInfoState>(context).profileOnion == "") {
+      return Card(child: Center(child: Text(AppLocalizations.of(context)!.addContactFirst)));
+    }
+
     var appState = Provider.of<AppState>(context);
     return WillPopScope(
         onWillPop: _onWillPop,
@@ -65,7 +71,8 @@ class _MessageViewState extends State<MessageView> {
               SizedBox(
                 width: 10,
               ),
-              Text(Provider.of<ContactInfoState>(context).nickname)
+          Expanded(
+              child:Text(Provider.of<ContactInfoState>(context).nickname, overflow: TextOverflow.ellipsis,))
             ]),
             actions: [
               //IconButton(icon: Icon(Icons.chat), onPressed: _pushContactSettings),
