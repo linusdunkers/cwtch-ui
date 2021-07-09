@@ -213,8 +213,7 @@ class ProfileInfoState extends ChangeNotifier {
             nickname: contact["name"],
             status: contact["status"],
             imagePath: contact["picture"],
-            isBlocked: contact["authorization"] == "blocked",
-            isInvitation: contact["authorization"] == "unknown",
+            authorization: stringToContactAuthorization(contact["authorization"]),
             savePeerHistory: contact["saveConversationHistory"],
             numMessages: contact["numMessages"],
             numUnread: contact["numUnread"],
@@ -316,8 +315,7 @@ class ProfileInfoState extends ChangeNotifier {
                 nickname: contact["name"],
                 status: contact["status"],
                 imagePath: contact["picture"],
-                isBlocked: contact["authorization"] == "blocked",
-                isInvitation: contact["authorization"] == "unknown",
+                authorization: stringToContactAuthorization(contact["authorization"]),
                 savePeerHistory: contact["saveConversationHistory"],
                 numMessages: contact["numMessages"],
                 numUnread: contact["numUnread"],
@@ -331,13 +329,30 @@ class ProfileInfoState extends ChangeNotifier {
   }
 }
 
+enum ContactAuthorization {
+  unknown,
+  approved,
+  blocked
+}
+
+ContactAuthorization stringToContactAuthorization(String authStr) {
+  switch(authStr) {
+    case "approved":
+      return ContactAuthorization.approved;
+    case "blocked":
+      return ContactAuthorization.blocked;
+    default:
+      return ContactAuthorization.unknown;
+  }
+}
+
+
 class ContactInfoState extends ChangeNotifier {
   final String profileOnion;
   final String onion;
   late String _nickname;
 
-  late bool _isInvitation;
-  late bool _isBlocked;
+  late ContactAuthorization _authorization;
   late String _status;
   late String _imagePath;
   late String _savePeerHistory;
@@ -355,8 +370,7 @@ class ContactInfoState extends ChangeNotifier {
     this.onion, {
     nickname = "",
     isGroup = false,
-    isInvitation = false,
-    isBlocked = false,
+    authorization = ContactAuthorization.unknown,
     status = "",
     imagePath = "",
     savePeerHistory = "DeleteHistoryConfirmed",
@@ -367,8 +381,7 @@ class ContactInfoState extends ChangeNotifier {
   }) {
     this._nickname = nickname;
     this._isGroup = isGroup;
-    this._isInvitation = isInvitation;
-    this._isBlocked = isBlocked;
+    this._authorization = authorization;
     this._status = status;
     this._imagePath = imagePath;
     this._totalMessages = numMessages;
@@ -398,15 +411,13 @@ class ContactInfoState extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool get isBlocked => this._isBlocked;
-  set isBlocked(bool newVal) {
-    this._isBlocked = newVal;
-    notifyListeners();
-  }
+  bool get isBlocked => this._authorization == ContactAuthorization.blocked;
 
-  bool get isInvitation => this._isInvitation;
-  set isInvitation(bool newVal) {
-    this._isInvitation = newVal;
+  bool get isInvitation => this._authorization == ContactAuthorization.unknown;
+
+  ContactAuthorization get authorization => this._authorization;
+  set authorization(ContactAuthorization newAuth) {
+    this._authorization = newAuth;
     notifyListeners();
   }
 

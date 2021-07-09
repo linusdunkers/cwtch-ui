@@ -49,8 +49,7 @@ class CwtchNotifier {
               nickname: data["nick"],
               status: data["status"],
               imagePath: data["picture"],
-              isBlocked: data["authorization"] == "blocked",
-              isInvitation: data["authorization"] == "unknown",
+              authorization: stringToContactAuthorization(data["authorization"]),
               savePeerHistory: data["saveConversationHistory"] == null ? "DeleteHistoryConfirmed" : data["saveConversationHistory"],
               numMessages: int.parse(data["numMessages"]),
               numUnread: int.parse(data["unread"]),
@@ -69,7 +68,7 @@ class CwtchNotifier {
         }
         if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"]) == null) {
           profileCN.getProfile(data["ProfileOnion"])?.contactList.add(ContactInfoState(data["ProfileOnion"], data["GroupID"],
-              isInvitation: false, imagePath: data["PicturePath"], nickname: data["GroupName"], status: status, server: data["GroupServer"], isGroup: true, lastMessageTime: DateTime.now()));
+              authorization: ContactAuthorization.approved, imagePath: data["PicturePath"], nickname: data["GroupName"], status: status, server: data["GroupServer"], isGroup: true, lastMessageTime: DateTime.now()));
           profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(data["GroupID"], DateTime.now());
         }
         break;
@@ -91,8 +90,7 @@ class CwtchNotifier {
             contact.status = data["ConnectionState"];
           }
           if (data["authorization"] != null) {
-            contact.isInvitation = data["authorization"] == "unknown";
-            contact.isBlocked = data["authorization"] == "blocked";
+            contact.authorization = stringToContactAuthorization(data["authorization"]);
           }
           // contact.[status/isBlocked] might change the list's sort order
           profileCN.getProfile(data["ProfileOnion"])?.contactList.resort();
@@ -227,7 +225,7 @@ class CwtchNotifier {
 
           if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(groupInvite["GroupID"]) == null) {
             profileCN.getProfile(data["ProfileOnion"])?.contactList.add(ContactInfoState(data["ProfileOnion"], groupInvite["GroupID"],
-                isInvitation: false,
+                authorization: ContactAuthorization.approved,
                 imagePath: data["PicturePath"],
                 nickname: groupInvite["GroupName"],
                 server: groupInvite["ServerHost"],
@@ -241,7 +239,7 @@ class CwtchNotifier {
       case "AcceptGroupInvite":
         EnvironmentConfig.debugLog("accept group invite");
 
-        profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"])!.isInvitation = false;
+        profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"])!.authorization = ContactAuthorization.approved;
         profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(data["GroupID"], DateTime.now());
         break;
       case "ServerStateChange":

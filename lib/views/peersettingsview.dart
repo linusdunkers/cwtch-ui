@@ -114,7 +114,7 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
                               value: Provider.of<ContactInfoState>(context).isBlocked,
                               onChanged: (bool blocked) {
                                 // Save local blocked status
-                                Provider.of<ContactInfoState>(context, listen: false).isBlocked = blocked;
+                                Provider.of<ContactInfoState>(context, listen: false).authorization = ContactAuthorization.blocked;
 
                                 // Save New peer authorization
                                 var profileOnion = Provider.of<ContactInfoState>(context, listen: false).profileOnion;
@@ -216,7 +216,7 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
   showAlertDialog(BuildContext context) {
     // set up the buttons
     Widget cancelButton = TextButton(
-      child: Text("Cancel"),
+      child: Text(AppLocalizations.of(context)!.cancel),
       style: ButtonStyle(padding: MaterialStateProperty.all(EdgeInsets.all(20))),
       onPressed: () {
         Navigator.of(context).pop(); // dismiss dialog

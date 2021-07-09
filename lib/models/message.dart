@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 import '../main.dart';
+import '../model.dart';
 import 'messages/invitemessage.dart';
 import 'messages/malformedmessage.dart';
 import 'messages/quotedmessage.dart';
@@ -21,6 +22,8 @@ const TorV3ContactHandleLength = 56;
 
 // Defines the length of a Cwtch v2 Group.
 const GroupConversationHandleLength = 32;
+
+
 
 abstract class Message {
   MessageMetadata getMetadata();
