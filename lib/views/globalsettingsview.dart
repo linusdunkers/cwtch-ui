@@ -93,20 +93,31 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                 );
                               }).toList())),
                       ListTile(
-                          title: Text(AppLocalizations.of(context)!.settingUIColumnLandscape, style: TextStyle(color: settings.current().mainTextColor())),
+                          title: Text(
+                            AppLocalizations.of(context)!.settingUIColumnLandscape,
+                            textWidthBasis: TextWidthBasis.longestLine,
+                            softWrap: true,
+                            style: TextStyle(color: settings.current().mainTextColor()),
+                          ),
                           leading: Icon(Icons.table_chart, color: settings.current().mainTextColor()),
-                          trailing: DropdownButton(
-                              value: settings.uiColumnModeLandscape.toString(),
-                              onChanged: (String? newValue) {
-                                settings.uiColumnModeLandscape = Settings.uiColumnModeFromString(newValue!);
-                                saveSettings(context);
-                              },
-                              items: Settings.uiColumnModeOptions(true).map<DropdownMenuItem<String>>((DualpaneMode value) {
-                                return DropdownMenuItem<String>(
-                                  value: value.toString(),
-                                  child: Text(Settings.uiColumnModeToString(value, context)),
-                                );
-                              }).toList())),
+                          trailing: Container(
+                              width: 200.0,
+                              child: DropdownButton(
+                                  isExpanded: true,
+                                  value: settings.uiColumnModeLandscape.toString(),
+                                  onChanged: (String? newValue) {
+                                    settings.uiColumnModeLandscape = Settings.uiColumnModeFromString(newValue!);
+                                    saveSettings(context);
+                                  },
+                                  items: Settings.uiColumnModeOptions(true).map<DropdownMenuItem<String>>((DualpaneMode value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value.toString(),
+                                      child: Text(
+                                        Settings.uiColumnModeToString(value, context),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    );
+                                  }).toList()))),
                       SwitchListTile(
                         title: Text(AppLocalizations.of(context)!.blockUnknownLabel, style: TextStyle(color: settings.current().mainTextColor())),
                         subtitle: Text(AppLocalizations.of(context)!.descriptionBlockUnknownConnections),

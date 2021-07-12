@@ -173,6 +173,7 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
         var handle = Provider.of<ContactInfoState>(context, listen: false).onion;
         Provider.of<FlwtchState>(context, listen: false).cwtch.LeaveGroup(profileOnion, handle);
         Future.delayed(Duration(milliseconds: 500), () {
+          Provider.of<AppState>(context, listen: false).selectedConversation = null;
           Navigator.of(context).popUntil((route) => route.settings.name == "conversations"); // dismiss dialog
         });
       },

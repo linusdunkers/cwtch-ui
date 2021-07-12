@@ -103,6 +103,14 @@ class CwtchNotifier {
         }
         profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["RemotePeer"])!.totalMessages++;
         profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(data["RemotePeer"], DateTime.now());
+
+        // We only ever see messages from authenticated peers.
+        // If the contact is marked as offline then override this - can happen when the contact is removed from the front
+        // end during syncing.
+        if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["RemotePeer"])!.isOnline() == false) {
+          profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["RemotePeer"])!.status = "Authenticated";
+        }
+
         break;
       case "PeerAcknowledgement":
         // We don't use these anymore, IndexedAcknowledgement is more suited to the UI front end...
@@ -116,6 +124,12 @@ class CwtchNotifier {
         try {
           var message = Provider.of<MessageMetadata>(key.currentContext!, listen: false);
           if (message == null) break;
+          // We only ever see acks from authenticated peers.
+          // If the contact is marked as offline then override this - can happen when the contact is removed from the front
+          // end during syncing.
+          if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["RemotePeer"])!.isOnline() == false) {
+            profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["RemotePeer"])!.status = "Authenticated";
+          }
           message.ackd = true;
         } catch (e) {
           // ignore, we received an ack for a message that hasn't loaded onto the screen yet...
@@ -134,7 +148,7 @@ class CwtchNotifier {
         } else {
           // from me (already displayed - do not update counter)
           var idx = data["Signature"];
-          var key = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"])!.getMessageKey(idx);
+          var key = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"])?.getMessageKey(idx);
           if (key == null) break;
           try {
             var message = Provider.of<MessageMetadata>(key.currentContext!, listen: false);
@@ -153,7 +167,7 @@ class CwtchNotifier {
       case "IndexedFailure":
         EnvironmentConfig.debugLog("IndexedFailure");
         var idx = data["Index"];
-        var key = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["RemotePeer"])!.getMessageKey(idx);
+        var key = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["RemotePeer"])?.getMessageKey(idx);
         try {
           var message = Provider.of<MessageMetadata>(key!.currentContext!, listen: false);
           message.error = true;

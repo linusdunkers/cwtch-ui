@@ -230,6 +230,7 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
         var handle = Provider.of<ContactInfoState>(context, listen: false).onion;
         Provider.of<FlwtchState>(context, listen: false).cwtch.LeaveConversation(profileOnion, handle);
         Future.delayed(Duration(milliseconds: 500), () {
+          Provider.of<AppState>(context, listen: false).selectedConversation = null;
           Navigator.of(context).popUntil((route) => route.settings.name == "conversations"); // dismiss dialog
         });
       },
