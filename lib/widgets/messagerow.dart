@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cwtch/models/message.dart';
+import 'package:cwtch/views/contactsview.dart';
 import 'package:flutter/material.dart';
 import 'package:cwtch/widgets/profileimage.dart';
 import 'package:provider/provider.dart';
@@ -24,6 +25,17 @@ class MessageRowState extends State<MessageRow> {
   @override
   Widget build(BuildContext context) {
     var fromMe = Provider.of<MessageMetadata>(context).senderHandle == Provider.of<ProfileInfoState>(context).onion;
+    var isContact = Provider.of<ContactListState>(context).getContact(Provider.of<MessageMetadata>(context).senderHandle) != null;
+
+    var senderDisplayStr = "";
+    if (!fromMe) {
+      ContactInfoState? contact = Provider.of<ProfileInfoState>(context).contactList.getContact(Provider.of<MessageMetadata>(context).senderHandle);
+      if (contact != null) {
+        senderDisplayStr = contact.nickname;
+      } else {
+        senderDisplayStr = Provider.of<MessageMetadata>(context).senderHandle;
+      }
+    }
 
     Widget wdgIcons = Visibility(
         visible: this.showMenu,
@@ -45,7 +57,7 @@ class MessageRowState extends State<MessageRow> {
     } else {
       var contact = Provider.of<ContactInfoState>(context);
       Widget wdgPortrait = GestureDetector(
-          onTap: _btnAdd,
+          onTap: isContact ? _btnGoto : _btnAdd,
           child: Padding(
               padding: EdgeInsets.all(4.0),
               child: ProfileImage(
@@ -54,6 +66,7 @@ class MessageRowState extends State<MessageRow> {
                 //maskOut: contact.status != "Authenticated",
                 border: contact.status == "Authenticated" ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor() : Provider.of<Settings>(context).theme.portraitOfflineBorderColor(),
                 badgeTextColor: Colors.red, badgeColor: Colors.red,
+                tooltip: isContact ? AppLocalizations.of(context)!.contactGoto.replaceFirst("%1", senderDisplayStr) : AppLocalizations.of(context)!.addContact,
               )));
 
       widgetRow = <Widget>[
@@ -86,25 +99,62 @@ class MessageRowState extends State<MessageRow> {
             child: Padding(padding: EdgeInsets.all(2), child: Row(mainAxisAlignment: fromMe ? MainAxisAlignment.end : MainAxisAlignment.start, children: widgetRow))));
   }
 
+  void _btnGoto() {
+    selectConversation(context, Provider.of<MessageMetadata>(context, listen: false).senderHandle);
+  }
+
   void _btnAdd() {
     var sender = Provider.of<MessageMetadata>(context, listen: false).senderHandle;
     if (sender == null || sender == "") {
       print("sender not yet loaded");
       return;
     }
-
     var profileOnion = Provider.of<ProfileInfoState>(context, listen: false).onion;
-    final setPeerAttribute = {
-      "EventType": "AddContact",
-      "Data": {"ImportString": sender},
-    };
-    final setPeerAttributeJson = jsonEncode(setPeerAttribute);
-    Provider.of<FlwtchState>(context, listen: false).cwtch.SendProfileEvent(profileOnion, setPeerAttributeJson);
 
-    final snackBar = SnackBar(
-      content: Text(AppLocalizations.of(context)!.successfullAddedContact),
-      duration: Duration(seconds: 2),
+    showAddContactConfirmAlertDialog(context, profileOnion, sender);
+  }
+
+  showAddContactConfirmAlertDialog(BuildContext context, String profileOnion, String senderOnion) {
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: Text(AppLocalizations.of(context)!.cancel),
+      style: ButtonStyle(padding: MaterialStateProperty.all(EdgeInsets.all(20))),
+      onPressed: () {
+        Navigator.of(context).pop(); // dismiss dialog
+      },
     );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    Widget continueButton = TextButton(
+      style: ButtonStyle(padding: MaterialStateProperty.all(EdgeInsets.all(20))),
+      child: Text(AppLocalizations.of(context)!.addContact),
+      onPressed: () {
+        Provider
+            .of<FlwtchState>(context, listen: false)
+            .cwtch
+            .ImportBundle(profileOnion, senderOnion);
+        final snackBar = SnackBar(
+          content: Text(AppLocalizations.of(context)!.successfullAddedContact),
+          duration: Duration(seconds: 2),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        Navigator.of(context).pop(); // dismiss dialog
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text(AppLocalizations.of(context)!.addContactConfirm.replaceFirst("%1", senderOnion)),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }

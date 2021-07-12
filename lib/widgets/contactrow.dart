@@ -1,3 +1,4 @@
+import 'package:cwtch/views/contactsview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:cwtch/views/messageview.dart';
@@ -93,39 +94,12 @@ class _ContactRowState extends State<ContactRow> {
             ),
           ]),
           onTap: () {
-            setState(() {
-              // requery instead of using contactinfostate directly because sometimes listview gets confused about data that resorts
-              Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(contact.onion)!.unreadMessages = 0;
-              // triggers update in Double/TripleColumnView
-              Provider.of<AppState>(context, listen: false).selectedConversation = contact.onion;
-              Provider.of<AppState>(context, listen: false).selectedIndex = null;
-              // if in singlepane mode, push to the stack
-              var isLandscape = Provider.of<AppState>(context, listen: false).isLandscape(context);
-              if (Provider.of<Settings>(context, listen: false).uiColumns(isLandscape).length == 1) _pushMessageView(contact.onion);
-            });
+            selectConversation(context, contact.onion);
           },
         ));
   }
 
-  void _pushMessageView(String handle) {
-    var profileOnion = Provider.of<ProfileInfoState>(context, listen: false).onion;
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (BuildContext builderContext) {
-          // assert we have an actual profile...
-          // We need to listen for updates to the profile in order to update things like invitation message bubbles.
-          var profile = Provider.of<FlwtchState>(builderContext).profs.getProfile(profileOnion)!;
-          return MultiProvider(
-            providers: [
-              ChangeNotifierProvider.value(value: profile),
-              ChangeNotifierProvider.value(value: profile.contactList.getContact(handle)!),
-            ],
-            builder: (context, child) => MessageView(),
-          );
-        },
-      ),
-    );
-  }
+
 
   void _btnApprove() {
     Provider.of<FlwtchState>(context, listen: false)

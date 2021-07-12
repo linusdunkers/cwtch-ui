@@ -12,11 +12,45 @@ import 'addcontactview.dart';
 import '../model.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'messageview.dart';
+
 class ContactsView extends StatefulWidget {
   const ContactsView({Key? key}) : super(key: key);
 
   @override
   _ContactsViewState createState() => _ContactsViewState();
+}
+
+// selectConversation can be called from anywhere to set the active conversation
+void selectConversation(BuildContext context, String handle) {
+  // requery instead of using contactinfostate directly because sometimes listview gets confused about data that resorts
+  Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(handle)!.unreadMessages = 0;
+  // triggers update in Double/TripleColumnView
+  Provider.of<AppState>(context, listen: false).selectedConversation = handle;
+  Provider.of<AppState>(context, listen: false).selectedIndex = null;
+  // if in singlepane mode, push to the stack
+  var isLandscape = Provider.of<AppState>(context, listen: false).isLandscape(context);
+  if (Provider.of<Settings>(context, listen: false).uiColumns(isLandscape).length == 1) _pushMessageView(context, handle);
+}
+
+void _pushMessageView(BuildContext context, String handle) {
+  var profileOnion = Provider.of<ProfileInfoState>(context, listen: false).onion;
+  Navigator.of(context).push(
+    MaterialPageRoute<void>(
+      builder: (BuildContext builderContext) {
+        // assert we have an actual profile...
+        // We need to listen for updates to the profile in order to update things like invitation message bubbles.
+        var profile = Provider.of<FlwtchState>(builderContext).profs.getProfile(profileOnion)!;
+        return MultiProvider(
+          providers: [
+            ChangeNotifierProvider.value(value: profile),
+            ChangeNotifierProvider.value(value: profile.contactList.getContact(handle)!),
+          ],
+          builder: (context, child) => MessageView(),
+        );
+      },
+    ),
+  );
 }
 
 class _ContactsViewState extends State<ContactsView> {
