@@ -164,6 +164,8 @@ class _MessageViewState extends State<MessageView> {
   }
 
   Widget _buildComposeBox() {
+    bool isOffline = Provider.of<ContactInfoState>(context).isOnline() == false;
+
     var composeBox = Container(
       color: Provider.of<Settings>(context).theme.backgroundMainColor(),
       padding: EdgeInsets.all(2),
@@ -187,6 +189,7 @@ class _MessageViewState extends State<MessageView> {
                         minLines: 1,
                         maxLines: null,
                         onFieldSubmitted: _sendMessage,
+                        enabled: !isOffline,
                         decoration: InputDecoration(
                           enabledBorder: InputBorder.none,
                           focusedBorder: InputBorder.none,
@@ -201,7 +204,7 @@ class _MessageViewState extends State<MessageView> {
                           suffixIcon: IconButton(
                             icon: Icon(CwtchIcons.send_24px, size: 24, color: Provider.of<Settings>(context).theme.mainTextColor()),
                             tooltip: AppLocalizations.of(context)!.sendMessage,
-                            onPressed: _sendMessage,
+                            onPressed: isOffline ? null :_sendMessage,
                           ),
                         )))),
           ),
