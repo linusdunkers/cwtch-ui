@@ -329,14 +329,10 @@ class ProfileInfoState extends ChangeNotifier {
   }
 }
 
-enum ContactAuthorization {
-  unknown,
-  approved,
-  blocked
-}
+enum ContactAuthorization { unknown, approved, blocked }
 
 ContactAuthorization stringToContactAuthorization(String authStr) {
-  switch(authStr) {
+  switch (authStr) {
     case "approved":
       return ContactAuthorization.approved;
     case "blocked":
@@ -345,7 +341,6 @@ ContactAuthorization stringToContactAuthorization(String authStr) {
       return ContactAuthorization.unknown;
   }
 }
-
 
 class ContactInfoState extends ChangeNotifier {
   final String profileOnion;

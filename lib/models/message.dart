@@ -23,8 +23,6 @@ const TorV3ContactHandleLength = 56;
 // Defines the length of a Cwtch v2 Group.
 const GroupConversationHandleLength = 32;
 
-
-
 abstract class Message {
   MessageMetadata getMetadata();
   Widget getWidget(BuildContext context);

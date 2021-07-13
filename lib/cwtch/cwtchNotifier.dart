@@ -68,7 +68,13 @@ class CwtchNotifier {
         }
         if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"]) == null) {
           profileCN.getProfile(data["ProfileOnion"])?.contactList.add(ContactInfoState(data["ProfileOnion"], data["GroupID"],
-              authorization: ContactAuthorization.approved, imagePath: data["PicturePath"], nickname: data["GroupName"], status: status, server: data["GroupServer"], isGroup: true, lastMessageTime: DateTime.now()));
+              authorization: ContactAuthorization.approved,
+              imagePath: data["PicturePath"],
+              nickname: data["GroupName"],
+              status: status,
+              server: data["GroupServer"],
+              isGroup: true,
+              lastMessageTime: DateTime.now()));
           profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(data["GroupID"], DateTime.now());
         }
         break;
