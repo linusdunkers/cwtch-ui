@@ -95,6 +95,7 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
     // Unlock Profiles
     actions.add(IconButton(
       icon: Icon(CwtchIcons.lock_open_24px),
+      color: Provider.of<ProfileListState>(context).profiles.isEmpty ? Provider.of<Settings>(context).theme.defaultButtonColor() : Provider.of<Settings>(context).theme.mainTextColor(),
       tooltip: AppLocalizations.of(context)!.tooltipUnlockProfiles,
       onPressed: _modalUnlockProfiles,
     ));
