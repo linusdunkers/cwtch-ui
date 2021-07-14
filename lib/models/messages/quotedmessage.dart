@@ -10,6 +10,17 @@ import 'package:provider/provider.dart';
 import '../../main.dart';
 import '../../model.dart';
 
+class QuotedMessageStructure {
+  final String quotedHash;
+  final String body;
+  QuotedMessageStructure(this.quotedHash, this.body);
+
+  Map<String, dynamic> toJson() => {
+        'quotedHash': quotedHash,
+        'body': body,
+      };
+}
+
 class LocallyIndexedMessage {
   final dynamic message;
   final int index;

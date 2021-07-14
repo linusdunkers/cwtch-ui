@@ -54,7 +54,7 @@ class _TorStatusView extends State<TorStatusView> {
                       ),
                       ListTile(
                         title: Text(AppLocalizations.of(context)!.torVersion),
-                        subtitle: Text(torStatus.version),
+                        subtitle: SelectableText(torStatus.version),
                       ),
                     ]))));
       });
