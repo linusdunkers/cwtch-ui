@@ -6,7 +6,6 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 import '../../model.dart';
-import '../../settings.dart';
 
 class TextMessage extends Message {
   final MessageMetadata metadata;

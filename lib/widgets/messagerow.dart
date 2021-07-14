@@ -146,9 +146,11 @@ class MessageRowState extends State<MessageRow> {
         child: GestureDetector(
 
             // Swipe to quote on Android
-            onHorizontalDragEnd: Platform.isAndroid ? (details) {
-              Provider.of<AppState>(context, listen: false).selectedIndex = Provider.of<MessageMetadata>(context, listen: false).messageIndex;
-            } : null,
+            onHorizontalDragEnd: Platform.isAndroid
+                ? (details) {
+                    Provider.of<AppState>(context, listen: false).selectedIndex = Provider.of<MessageMetadata>(context, listen: false).messageIndex;
+                  }
+                : null,
             child: Padding(padding: EdgeInsets.all(2), child: Row(mainAxisAlignment: fromMe ? MainAxisAlignment.end : MainAxisAlignment.start, children: widgetRow))));
   }
 
