@@ -136,6 +136,11 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                               // We only allow setting password types on profile creation
                               Visibility(
                                   visible: Provider.of<ProfileInfoState>(context).onion.isEmpty,
+                                  child: SizedBox(
+                                    height: 20,
+                              )),
+                              Visibility(
+                                  visible: Provider.of<ProfileInfoState>(context).onion.isEmpty,
                                   child: Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
                                     Checkbox(
                                       value: usePassword,
@@ -147,7 +152,12 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                       AppLocalizations.of(context)!.radioUsePassword,
                                       style: TextStyle(color: theme.current().mainTextColor()),
                                     ),
-                                  ])),
+                                    Flexible(
+                                        child: Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: 24),
+                                      child: Text( usePassword ?  AppLocalizations.of(context)!.encryptedProfileDescription : AppLocalizations.of(context)!.plainProfileDescription,
+                                        textAlign: TextAlign.left,
+                                      )))])),
                               SizedBox(
                                 height: 20,
                               ),

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cwtch/config.dart';
 import 'package:cwtch/notification_manager.dart';
 import 'package:cwtch/views/messageview.dart';
 import 'package:cwtch/widgets/rightshiftfixer.dart';
@@ -28,7 +29,7 @@ var globalTorStatus = TorStatus();
 var globalAppState = AppState();
 
 void main() {
-  print("main()");
+  print("Cwtch version: ${EnvironmentConfig.BUILD_VER} built on: ${EnvironmentConfig.BUILD_DATE}");
   LicenseRegistry.addLicense(() => licenses());
   WidgetsFlutterBinding.ensureInitialized();
   print("runApp()");

@@ -68,6 +68,7 @@ In Lokalise, hit Download and make sure:
 * Format is set to "Flutter (.arb)
 * Output filename is set to `l10n/intl_%LANG_ISO%.%FORMAT%`
 * Empty translations is set to "Replace with base language"
+* Order "Last Update"
 
 Build, download and unzip the output, overwriting `lib/l10n`. The next time Flwtch is built, Flutter will notice the changes and update `app_localizations.dart` accordingly (thanks to `generate:true` in `pubspec.yaml`).
 
