@@ -19,8 +19,9 @@ class InvitationBubble extends StatefulWidget {
   final int overlay;
   final String inviteTarget;
   final String inviteNick;
+  final String invite;
 
-  InvitationBubble(this.overlay, this.inviteTarget, this.inviteNick);
+  InvitationBubble(this.overlay, this.inviteTarget, this.inviteNick, this.invite);
 
   @override
   InvitationBubbleState createState() => InvitationBubbleState();
@@ -136,7 +137,7 @@ class InvitationBubbleState extends State<InvitationBubble> {
   void _btnAccept() {
     setState(() {
       var profileOnion = Provider.of<ProfileInfoState>(context, listen: false).onion;
-      Provider.of<FlwtchState>(context, listen: false).cwtch.ImportBundle(profileOnion, widget.inviteTarget);
+      Provider.of<FlwtchState>(context, listen: false).cwtch.ImportBundle(profileOnion, widget.invite);
       isAccepted = true;
     });
   }

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cwtch/cwtch_icons_icons.dart';
 import 'package:cwtch/models/message.dart';
 import 'package:cwtch/views/contactsview.dart';
 import 'package:flutter/material.dart';
@@ -21,11 +22,13 @@ class MessageRow extends StatefulWidget {
 
 class MessageRowState extends State<MessageRow> {
   bool showMenu = false;
-
+  bool showBlockedMessage = false;
   @override
   Widget build(BuildContext context) {
     var fromMe = Provider.of<MessageMetadata>(context).senderHandle == Provider.of<ProfileInfoState>(context).onion;
     var isContact = Provider.of<ProfileInfoState>(context).contactList.getContact(Provider.of<MessageMetadata>(context).senderHandle) != null;
+    var isBlocked = isContact ? Provider.of<ProfileInfoState>(context).contactList.getContact(Provider.of<MessageMetadata>(context).senderHandle)!.isBlocked : false;
+    var actualMessage = Flexible(flex: 3, fit: FlexFit.loose, child: widget.child);
 
     var senderDisplayStr = "";
     if (!fromMe) {
@@ -53,7 +56,55 @@ class MessageRowState extends State<MessageRow> {
       widgetRow = <Widget>[
         wdgSpacer,
         wdgIcons,
-        Flexible(flex: 3, fit: FlexFit.loose, child: widget.child),
+        actualMessage,
+      ];
+    } else if (isBlocked && !showBlockedMessage) {
+      Color blockedMessageBackground = Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor();
+      Widget wdgPortrait = Padding(padding: EdgeInsets.all(4.0), child: Icon(CwtchIcons.account_blocked));
+      widgetRow = <Widget>[
+        wdgPortrait,
+        Container(
+            padding: EdgeInsets.all(2.0),
+            decoration: BoxDecoration(
+                color: blockedMessageBackground,
+                border: Border.all(color: blockedMessageBackground, width: 2),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(15.0),
+                  topRight: Radius.circular(15.0),
+                  bottomLeft: Radius.circular(15.0),
+                  bottomRight: Radius.circular(15.0),
+                )),
+            child: Padding(
+                padding: EdgeInsets.all(9.0),
+                child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                  SelectableText(
+                    AppLocalizations.of(context)!.blockedMessageMessage,
+                    //key: Key(myKey),
+                    style: TextStyle(
+                      color: Provider.of<Settings>(context).theme.messageFromOtherTextColor(),
+                    ),
+                    textAlign: TextAlign.center,
+                    textWidthBasis: TextWidthBasis.longestLine,
+                  ),
+                  Padding(
+                      padding: EdgeInsets.all(1.0),
+                      child: TextButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(blockedMessageBackground),
+                            overlayColor: MaterialStateProperty.all(blockedMessageBackground),
+                          ),
+                          child: Text(
+                            AppLocalizations.of(context)!.showMessageButton + '\u202F',
+                            style: TextStyle(decoration: TextDecoration.underline),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              this.showBlockedMessage = true;
+                            });
+                          })),
+                ]))),
+        wdgIcons,
+        wdgSpacer,
       ];
     } else {
       var contact = Provider.of<ContactInfoState>(context);
@@ -72,7 +123,7 @@ class MessageRowState extends State<MessageRow> {
 
       widgetRow = <Widget>[
         wdgPortrait,
-        Flexible(flex: 3, fit: FlexFit.loose, child: widget.child),
+        actualMessage,
         wdgIcons,
         wdgSpacer,
       ];

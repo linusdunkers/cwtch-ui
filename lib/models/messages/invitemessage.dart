@@ -25,6 +25,7 @@ class InviteMessage extends Message {
 
           String inviteTarget;
           String inviteNick;
+          String invite = this.content;
 
           if (this.content.length == TorV3ContactHandleLength) {
             inviteTarget = this.content;
@@ -40,7 +41,7 @@ class InviteMessage extends Message {
               return MessageRow(MalformedBubble());
             }
           }
-          return MessageRow(InvitationBubble(overlay, inviteTarget, inviteNick), key: Provider.of<ContactInfoState>(bcontext).getMessageKey(idx));
+          return MessageRow(InvitationBubble(overlay, inviteTarget, inviteNick, invite), key: Provider.of<ContactInfoState>(bcontext).getMessageKey(idx));
         });
   }
 
@@ -51,7 +52,7 @@ class InviteMessage extends Message {
         builder: (bcontext, child) {
           String inviteTarget;
           String inviteNick;
-
+          String invite = this.content;
           if (this.content.length == TorV3ContactHandleLength) {
             inviteTarget = this.content;
             var targetContact = Provider.of<ProfileInfoState>(context).contactList.getContact(inviteTarget);
@@ -66,7 +67,7 @@ class InviteMessage extends Message {
               return MalformedBubble();
             }
           }
-          return InvitationBubble(overlay, inviteTarget, inviteNick);
+          return InvitationBubble(overlay, inviteTarget, inviteNick, invite);
         });
   }
 
