@@ -30,7 +30,7 @@ steps:
         path: /root/.pub-cache
     commands:
       - ./fetch-tor.sh
-      - echo `git describe --tags` > VERSION
+      - echo `git describe --tags --abbrev=1` > VERSION
       - echo `date +%G-%m-%d-%H-%M` > BUILDDATE
       - flutter pub get
       - mkdir deploy
@@ -197,7 +197,7 @@ steps:
     commands:
       - powershell -command "Invoke-WebRequest -Uri https://dist.torproject.org/torbrowser/10.0.18/tor-win64-0.4.5.9.zip -OutFile tor.zip"
       - powershell -command "if ((Get-FileHash tor.zip -Algorithm sha512).Hash -ne '72764eb07ad8ab511603aba0734951ca003989f5f4686af91ba220217b4a8a4bcc5f571b59f52c847932f6efedf847b111621983050fcddbb8099d43ca66fb07' ) { Write-Error 'tor.zip sha512sum mismatch' }"
-      - git describe --tags > VERSION
+        - git describe --tags --abbrev=1 > VERSION
       - powershell -command "Get-Date -Format 'yyyy-MM-dd-HH-mm'" > BUILDDATE
       - .\fetch-libcwtch-go.ps1
 

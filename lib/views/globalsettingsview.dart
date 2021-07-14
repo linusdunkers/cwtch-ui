@@ -34,6 +34,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
   Widget _buildSettingsList() {
     return Consumer<Settings>(builder: (context, settings, child) {
       return LayoutBuilder(builder: (BuildContext context, BoxConstraints viewportConstraints) {
+        var appIcon = Icon(Icons.info, color: settings.current().mainTextColor());
         return Scrollbar(
             isAlwaysShown: true,
             child: SingleChildScrollView(
@@ -177,12 +178,14 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                             ],
                           )),
                       AboutListTile(
-                        icon: Icon(Icons.info, color: settings.current().mainTextColor()),
+                        icon: appIcon,
                         applicationIcon: Padding(padding: EdgeInsets.all(5), child: Icon(CwtchIcons.cwtch_knott)),
                         applicationName: "Cwtch (Flutter UI)",
-                        applicationVersion: AppLocalizations.of(context)!.versionBuilddate.replaceAll("%1", EnvironmentConfig.BUILD_VER).replaceAll("%2", EnvironmentConfig.BUILD_DATE),
                         applicationLegalese: '\u{a9} 2021 Open Privacy Research Society',
-                      ),
+                        aboutBoxChildren: <Widget>[Padding(
+                                padding: EdgeInsets.fromLTRB(24.0 + 10.0 + (appIcon.size ?? 24.0), 16.0, 0.0, 0.0), // About has 24 padding (ln 389) and there appears to be another 10 of padding in the widget
+                                child: SelectableText(AppLocalizations.of(context)!.versionBuilddate.replaceAll("%1", EnvironmentConfig.BUILD_VER).replaceAll("%2", EnvironmentConfig.BUILD_DATE)),
+                              )]),
                     ]))));
       });
     });

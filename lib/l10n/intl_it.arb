@@ -1,6 +1,8 @@
 {
     "@@locale": "it",
-    "@@last_modified": "2021-07-10T17:32:01+02:00",
+    "@@last_modified": "2021-07-14T01:50:27+02:00",
+    "plainProfileDescription": "We recommend that you protect your Cwtch profiles with a password. If you do not set a password on this profile then anyone who has access to this device may be able to access information about this profile, including contacts, messages and sensitive cryptographic keys.",
+    "encryptedProfileDescription": "Encrypting a profile with a password protects it from other people who may also use this device. Encrypted profiles cannot be decrypted, displayed or accessed until the correct password is entered to unlock them.",
     "addContactConfirm": "Add contact %1",
     "addContact": "Add contact",
     "contactGoto": "Go to conversation with %1",
