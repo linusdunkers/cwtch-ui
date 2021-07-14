@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:crypto/crypto.dart';
 import 'package:cwtch/cwtch_icons_icons.dart';
 import 'package:cwtch/models/message.dart';
+import 'package:cwtch/models/messages/quotedmessage.dart';
 import 'package:cwtch/widgets/malformedbubble.dart';
 import 'package:cwtch/widgets/messageloadingbubble.dart';
 import 'package:cwtch/widgets/profileimage.dart';
@@ -127,7 +128,7 @@ class _MessageViewState extends State<MessageView> {
             var bytes1 = utf8.encode(messageWrapper["PeerID"] + messageWrapper['Message']);
             var digest1 = sha256.convert(bytes1);
             var contentHash = base64Encode(digest1.bytes);
-            var quotedMessage = "{\"quotedHash\":\"" + contentHash + "\",\"body\":\"" + ctrlrCompose.value.text + "\"}";
+            var quotedMessage = jsonEncode(QuotedMessageStructure(contentHash, ctrlrCompose.value.text));
             ChatMessage cm = new ChatMessage(o: QuotedMessageOverlay, d: quotedMessage);
             Provider.of<FlwtchState>(context, listen: false)
                 .cwtch
@@ -204,7 +205,7 @@ class _MessageViewState extends State<MessageView> {
                           suffixIcon: IconButton(
                             icon: Icon(CwtchIcons.send_24px, size: 24, color: Provider.of<Settings>(context).theme.mainTextColor()),
                             tooltip: AppLocalizations.of(context)!.sendMessage,
-                            onPressed: isOffline ? null :_sendMessage,
+                            onPressed: isOffline ? null : _sendMessage,
                           ),
                         )))),
           ),

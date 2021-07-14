@@ -99,8 +99,6 @@ class _ContactRowState extends State<ContactRow> {
         ));
   }
 
-
-
   void _btnApprove() {
     Provider.of<FlwtchState>(context, listen: false)
         .cwtch

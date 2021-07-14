@@ -39,6 +39,7 @@ class MessageRowState extends State<MessageRow> {
 
     Widget wdgIcons = Visibility(
         visible: this.showMenu,
+        maintainSize: true,
         child: IconButton(
             tooltip: AppLocalizations.of(context)!.tooltipReplyToThisMessage,
             onPressed: () {
@@ -127,10 +128,7 @@ class MessageRowState extends State<MessageRow> {
       style: ButtonStyle(padding: MaterialStateProperty.all(EdgeInsets.all(20))),
       child: Text(AppLocalizations.of(context)!.addContact),
       onPressed: () {
-        Provider
-            .of<FlwtchState>(context, listen: false)
-            .cwtch
-            .ImportBundle(profileOnion, senderOnion);
+        Provider.of<FlwtchState>(context, listen: false).cwtch.ImportBundle(profileOnion, senderOnion);
         final snackBar = SnackBar(
           content: Text(AppLocalizations.of(context)!.successfullAddedContact),
           duration: Duration(seconds: 2),
