@@ -1,7 +1,10 @@
 {
     "@@locale": "fr",
-    "@@last_modified": "2021-07-10T17:32:01+02:00",
-    "addContactConfirm": "Add contact %1",
+    "@@last_modified": "2021-07-14T21:46:10+02:00",
+    "placeholderEnterMessage": "Type a message...",
+    "plainProfileDescription": "Nous vous recommandons de protéger vos profils Cwtch par un mot de passe. Si vous ne définissez pas de mot de passe sur ce profil, toute personne ayant accès à cet appareil peut être en mesure d'accéder aux informations relatives à ce profil, y compris les contacts, les messages et les clés de chiffrement sensibles.",
+    "encryptedProfileDescription": "Le chiffrement d'un profil à l'aide d'un mot de passe le protège des autres personnes susceptibles d'utiliser également cet appareil. Les profils chiffrés ne peuvent pas être déchiffrés , affichés ou accessibles tant que le mot de passe correct n'a pas été saisi pour les déverrouiller.",
+    "addContactConfirm": "Ajouter le contact %1",
     "addContact": "Ajouter le contact",
     "contactGoto": "Aller à la conversation avec %1",
     "settingUIColumnOptionSame": "Même réglage que pour le mode portrait",
