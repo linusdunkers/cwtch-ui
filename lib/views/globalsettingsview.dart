@@ -178,14 +178,17 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                             ],
                           )),
                       AboutListTile(
-                        icon: appIcon,
-                        applicationIcon: Padding(padding: EdgeInsets.all(5), child: Icon(CwtchIcons.cwtch_knott)),
-                        applicationName: "Cwtch (Flutter UI)",
-                        applicationLegalese: '\u{a9} 2021 Open Privacy Research Society',
-                        aboutBoxChildren: <Widget>[Padding(
-                                padding: EdgeInsets.fromLTRB(24.0 + 10.0 + (appIcon.size ?? 24.0), 16.0, 0.0, 0.0), // About has 24 padding (ln 389) and there appears to be another 10 of padding in the widget
-                                child: SelectableText(AppLocalizations.of(context)!.versionBuilddate.replaceAll("%1", EnvironmentConfig.BUILD_VER).replaceAll("%2", EnvironmentConfig.BUILD_DATE)),
-                              )]),
+                          icon: appIcon,
+                          applicationIcon: Padding(padding: EdgeInsets.all(5), child: Icon(CwtchIcons.cwtch_knott)),
+                          applicationName: "Cwtch (Flutter UI)",
+                          applicationLegalese: '\u{a9} 2021 Open Privacy Research Society',
+                          aboutBoxChildren: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(
+                                  24.0 + 10.0 + (appIcon.size ?? 24.0), 16.0, 0.0, 0.0), // About has 24 padding (ln 389) and there appears to be another 10 of padding in the widget
+                              child: SelectableText(AppLocalizations.of(context)!.versionBuilddate.replaceAll("%1", EnvironmentConfig.BUILD_VER).replaceAll("%2", EnvironmentConfig.BUILD_DATE)),
+                            )
+                          ]),
                     ]))));
       });
     });

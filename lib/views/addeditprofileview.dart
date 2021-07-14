@@ -138,10 +138,10 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                   visible: Provider.of<ProfileInfoState>(context).onion.isEmpty,
                                   child: SizedBox(
                                     height: 20,
-                              )),
+                                  )),
                               Visibility(
                                   visible: Provider.of<ProfileInfoState>(context).onion.isEmpty,
-                                  child: Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+                                  child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
                                     Checkbox(
                                       value: usePassword,
                                       fillColor: MaterialStateProperty.all(theme.current().defaultButtonColor()),
@@ -152,12 +152,17 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                       AppLocalizations.of(context)!.radioUsePassword,
                                       style: TextStyle(color: theme.current().mainTextColor()),
                                     ),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
                                     Flexible(
                                         child: Padding(
-                                      padding: EdgeInsets.symmetric(horizontal: 24),
-                                      child: Text( usePassword ?  AppLocalizations.of(context)!.encryptedProfileDescription : AppLocalizations.of(context)!.plainProfileDescription,
-                                        textAlign: TextAlign.left,
-                                      )))])),
+                                            padding: EdgeInsets.symmetric(horizontal: 24),
+                                            child: Text(
+                                              usePassword ? AppLocalizations.of(context)!.encryptedProfileDescription : AppLocalizations.of(context)!.plainProfileDescription,
+                                              textAlign: TextAlign.center,
+                                            )))
+                                  ])),
                               SizedBox(
                                 height: 20,
                               ),
