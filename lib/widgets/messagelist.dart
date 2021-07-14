@@ -39,20 +39,22 @@ class _MessageListState extends State<MessageList> {
       Visibility(
           visible: showMessageWarning,
           child: Container(
-            padding: EdgeInsets.all(5.0),
-            color: Provider.of<Settings>(context).theme.defaultButtonActiveColor(),
-            child: showSyncing
-                ? Text(AppLocalizations.of(context)!.serverNotSynced, textAlign: TextAlign.center)
-                : showOfflineWarning
-                    ? Text(Provider.of<ContactInfoState>(context).isGroup ? AppLocalizations.of(context)!.serverConnectivityDisconnected : AppLocalizations.of(context)!.peerOfflineMessage,
-                        textAlign: TextAlign.center)
-                    // Only show the ephemeral status for peer conversations, not for groups...
-                    : (showEphemeralWarning
-                        ? Text(AppLocalizations.of(context)!.chatHistoryDefault, textAlign: TextAlign.center)
-                        :
-                        // We are not allowed to put null here, so put an empty text widge
-                        Text("")),
-          )),
+              padding: EdgeInsets.all(5.0),
+              color: Provider.of<Settings>(context).theme.defaultButtonActiveColor(),
+              child: DefaultTextStyle(
+                style: TextStyle(color: Provider.of<Settings>(context).theme.defaultButtonTextColor()),
+                child: showSyncing
+                    ? Text(AppLocalizations.of(context)!.serverNotSynced, textAlign: TextAlign.center)
+                    : showOfflineWarning
+                        ? Text(Provider.of<ContactInfoState>(context).isGroup ? AppLocalizations.of(context)!.serverConnectivityDisconnected : AppLocalizations.of(context)!.peerOfflineMessage,
+                            textAlign: TextAlign.center)
+                        // Only show the ephemeral status for peer conversations, not for groups...
+                        : (showEphemeralWarning
+                            ? Text(AppLocalizations.of(context)!.chatHistoryDefault, textAlign: TextAlign.center)
+                            :
+                            // We are not allowed to put null here, so put an empty text widge
+                            Text("")),
+              ))),
       Expanded(
           child: Scrollbar(
               controller: ctrlr1,

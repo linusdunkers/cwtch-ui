@@ -1,6 +1,7 @@
 import 'package:cwtch/models/message.dart';
 import 'package:cwtch/widgets/messagebubble.dart';
 import 'package:cwtch/widgets/messagerow.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
