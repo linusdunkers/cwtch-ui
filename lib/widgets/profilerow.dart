@@ -22,12 +22,13 @@ class _ProfileRowState extends State<ProfileRow> {
     var profile = Provider.of<ProfileInfoState>(context);
     return Card(
         clipBehavior: Clip.antiAlias,
+        margin: EdgeInsets.all(0.0),
         child: InkWell(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Padding(
-                  padding: const EdgeInsets.all(2.0), //border size
+                  padding: const EdgeInsets.all(6.0), //border size
                   child: ProfileImage(
                       badgeCount: 0,
                       badgeColor: Provider.of<Settings>(context).theme.portraitProfileBadgeColor(),

@@ -23,10 +23,11 @@ class _ContactRowState extends State<ContactRow> {
         clipBehavior: Clip.antiAlias,
         color: Provider.of<AppState>(context).selectedConversation == contact.onion ? Provider.of<Settings>(context).theme.backgroundHilightElementColor() : null,
         borderOnForeground: false,
+        margin: EdgeInsets.all(0.0),
         child: InkWell(
           child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             Padding(
-              padding: const EdgeInsets.all(2.0), //border size
+              padding: const EdgeInsets.all(6.0), //border size
               child: ProfileImage(
                   badgeCount: contact.unreadMessages,
                   badgeColor: Provider.of<Settings>(context).theme.portraitContactBadgeColor(),

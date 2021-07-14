@@ -1,10 +1,12 @@
 import 'package:cwtch/models/message.dart';
 import 'package:cwtch/widgets/messagebubble.dart';
 import 'package:cwtch/widgets/messagerow.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 import '../../model.dart';
+import '../../settings.dart';
 
 class TextMessage extends Message {
   final MessageMetadata metadata;

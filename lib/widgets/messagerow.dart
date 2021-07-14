@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:cwtch/cwtch_icons_icons.dart';
 import 'package:cwtch/models/message.dart';
@@ -144,10 +145,10 @@ class MessageRowState extends State<MessageRow> {
         },
         child: GestureDetector(
 
-            // Swipe to quote
-            onHorizontalDragEnd: (details) {
+            // Swipe to quote on Android
+            onHorizontalDragEnd: Platform.isAndroid ? (details) {
               Provider.of<AppState>(context, listen: false).selectedIndex = Provider.of<MessageMetadata>(context, listen: false).messageIndex;
-            },
+            } : null,
             child: Padding(padding: EdgeInsets.all(2), child: Row(mainAxisAlignment: fromMe ? MainAxisAlignment.end : MainAxisAlignment.start, children: widgetRow))));
   }
 
