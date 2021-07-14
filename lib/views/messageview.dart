@@ -192,7 +192,7 @@ class _MessageViewState extends State<MessageView> {
                         onFieldSubmitted: _sendMessage,
                         enabled: !isOffline,
                         decoration: InputDecoration(
-                          hintText: AppLocalizations.of(context)!.placeholderEnterMessage,
+                          hintText: isOffline ? "" : AppLocalizations.of(context)!.placeholderEnterMessage,
                           hintStyle: TextStyle(color: Provider.of<Settings>(context).theme.altTextColor()),
                           enabledBorder: InputBorder.none,
                           focusedBorder: InputBorder.none,
