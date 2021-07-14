@@ -354,7 +354,7 @@ class OpaqueDark extends OpaqueThemeType {
   }
 
   Color altTextColor() {
-    return whitePurple;
+    return mauvePurple;
   }
 
   Color hilightElementTextColor() {
