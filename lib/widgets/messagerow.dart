@@ -25,7 +25,7 @@ class MessageRowState extends State<MessageRow> {
   @override
   Widget build(BuildContext context) {
     var fromMe = Provider.of<MessageMetadata>(context).senderHandle == Provider.of<ProfileInfoState>(context).onion;
-    var isContact = Provider.of<ContactListState>(context).getContact(Provider.of<MessageMetadata>(context).senderHandle) != null;
+    var isContact = Provider.of<ProfileInfoState>(context).contactList.getContact(Provider.of<MessageMetadata>(context).senderHandle) != null;
 
     var senderDisplayStr = "";
     if (!fromMe) {
