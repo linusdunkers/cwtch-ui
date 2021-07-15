@@ -262,8 +262,8 @@ class CwtchNotifier {
                 server: groupInvite["ServerHost"],
                 status: status,
                 isGroup: true,
-                lastMessageTime: DateTime.now()));
-            profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(groupInvite["GroupID"], DateTime.now());
+                lastMessageTime: DateTime.fromMillisecondsSinceEpoch(0)));
+            profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(groupInvite["GroupID"], DateTime.fromMillisecondsSinceEpoch(0));
           }
         }
         break;
@@ -271,7 +271,7 @@ class CwtchNotifier {
         EnvironmentConfig.debugLog("accept group invite");
 
         profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"])!.authorization = ContactAuthorization.approved;
-        profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(data["GroupID"], DateTime.now());
+        profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(data["GroupID"], DateTime.fromMillisecondsSinceEpoch(0));
         break;
       case "ServerStateChange":
         // Update the Server Cache

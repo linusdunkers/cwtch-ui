@@ -58,6 +58,11 @@ class _ContactRowState extends State<ContactRow> {
                           softWrap: true,
                           overflow: TextOverflow.visible,
                         ),
+                        Visibility(
+                            visible: contact.isGroup && contact.status == "Authenticated",
+                            child: LinearProgressIndicator(
+                              color: Provider.of<Settings>(context).theme.defaultButtonActiveColor(),
+                            )),
                         Text(contact.onion,
                             style: TextStyle(color: contact.isBlocked ? Provider.of<Settings>(context).theme.portraitBlockedTextColor() : Provider.of<Settings>(context).theme.mainTextColor())),
                       ],
