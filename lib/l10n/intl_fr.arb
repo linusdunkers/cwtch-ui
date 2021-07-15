@@ -1,8 +1,8 @@
 {
     "@@locale": "fr",
-    "@@last_modified": "2021-07-14T22:29:25+02:00",
-    "showMessageButton": "Show Message",
-    "blockedMessageMessage": "This message is from a profile you have blocked.",
+    "@@last_modified": "2021-07-14T23:49:07+02:00",
+    "showMessageButton": "Afficher le message",
+    "blockedMessageMessage": "Ce message provient d'un profil que vous avez bloqué.",
     "placeholderEnterMessage": "saisissez un message",
     "plainProfileDescription": "Nous vous recommandons de protéger vos profils Cwtch par un mot de passe. Si vous ne définissez pas de mot de passe sur ce profil, toute personne ayant accès à cet appareil peut être en mesure d'accéder aux informations relatives à ce profil, y compris les contacts, les messages et les clés de chiffrement sensibles.",
     "encryptedProfileDescription": "Le chiffrement d'un profil à l'aide d'un mot de passe le protège des autres personnes susceptibles d'utiliser également cet appareil. Les profils chiffrés ne peuvent pas être déchiffrés , affichés ou accessibles tant que le mot de passe correct n'a pas été saisi pour les déverrouiller.",
