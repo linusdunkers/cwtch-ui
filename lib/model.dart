@@ -153,12 +153,21 @@ class ContactListState extends ChangeNotifier {
     //} </todo>
   }
 
-  void updateLastMessageTime(String forOnion, DateTime newVal) {
+  void updateLastMessageTime(String forOnion, DateTime newMessageTime) {
     var contact = getContact(forOnion);
     if (contact == null) return;
 
-    contact.lastMessageTime = newVal;
-    resort();
+    // Assert that the new time is after the current last message time AND that
+    // new message time is before the current time.
+    if (newMessageTime.isAfter(contact.lastMessageTime)) {
+      if (newMessageTime.isBefore(DateTime.now().toLocal())) {
+        contact.lastMessageTime = newMessageTime;
+      } else {
+        // Otherwise set the last message time to now...
+        contact.lastMessageTime = DateTime.now().toLocal();
+      }
+      resort();
+    }
   }
 
   List<ContactInfoState> get contacts => _contacts.sublist(0); //todo: copy?? dont want caller able to bypass changenotifier
