@@ -39,7 +39,6 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
     return Consumer<Settings>(
       // Prevents Android back button from closing the app on the profile manager screen
       // (which would shutdown connections and all kinds of other expensive to generate things)
-      // TODO pop up a dialogue regarding closing the app?
       builder: (context, settings, child) => WillPopScope(
           onWillPop: () async {
             _modalShutdown();
@@ -49,14 +48,9 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
             backgroundColor: settings.theme.backgroundMainColor(),
             appBar: AppBar(
               title: Row(children: [
-                Image(
-                  image: AssetImage("assets/core/knott-white.png"),
-                  filterQuality: FilterQuality.medium,
-                  isAntiAlias: true,
-                  width: 32,
-                  height: 32,
-                  colorBlendMode: BlendMode.dstIn,
-                  color: Provider.of<Settings>(context).theme.backgroundHilightElementColor(),
+                Icon(
+                  CwtchIcons.cwtch_knott,
+                  size: 36,
                 ),
                 SizedBox(
                   width: 10,

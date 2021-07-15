@@ -155,13 +155,12 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                     SizedBox(
                                       height: 20,
                                     ),
-                                    Flexible(
-                                        child: Padding(
-                                            padding: EdgeInsets.symmetric(horizontal: 24),
-                                            child: Text(
-                                              usePassword ? AppLocalizations.of(context)!.encryptedProfileDescription : AppLocalizations.of(context)!.plainProfileDescription,
-                                              textAlign: TextAlign.center,
-                                            )))
+                                    Padding(
+                                        padding: EdgeInsets.symmetric(horizontal: 24),
+                                        child: Text(
+                                          usePassword ? AppLocalizations.of(context)!.encryptedProfileDescription : AppLocalizations.of(context)!.plainProfileDescription,
+                                          textAlign: TextAlign.center,
+                                        ))
                                   ])),
                               SizedBox(
                                 height: 20,
