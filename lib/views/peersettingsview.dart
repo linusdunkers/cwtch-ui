@@ -114,7 +114,11 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
                               value: Provider.of<ContactInfoState>(context).isBlocked,
                               onChanged: (bool blocked) {
                                 // Save local blocked status
-                                Provider.of<ContactInfoState>(context, listen: false).authorization = ContactAuthorization.blocked;
+                                if (blocked) {
+                                  Provider.of<ContactInfoState>(context, listen: false).authorization = ContactAuthorization.blocked;
+                                } else {
+                                  Provider.of<ContactInfoState>(context, listen: false).authorization = ContactAuthorization.unknown;
+                                }
 
                                 // Save New peer authorization
                                 var profileOnion = Provider.of<ContactInfoState>(context, listen: false).profileOnion;
