@@ -87,7 +87,7 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                                     .setContentTitle(data.getString("Nick"))
                                     .setContentText("New message")//todo: translate
                                     .setLargeIcon(BitmapFactory.decodeStream(fh))
-                                    .setSmallIcon(R.mipmap.knott)
+                                    .setSmallIcon(R.mipmap.knott_transparent)
                                     .setContentIntent(PendingIntent.getActivity(applicationContext, 1, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT))
                                     .setAutoCancel(true)
                                     .build()
@@ -240,7 +240,7 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                 .setContentTitle(title)
                 .setTicker(title)
                 .setContentText(progress)
-                .setSmallIcon(R.mipmap.knott)
+                .setSmallIcon(R.mipmap.knott_transparent)
                 .setOngoing(true)
                 // Add the cancel action to the notification which can
                 // be used to cancel the worker

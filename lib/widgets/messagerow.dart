@@ -44,6 +44,9 @@ class MessageRowState extends State<MessageRow> {
     Widget wdgIcons = Visibility(
         visible: this.showMenu,
         maintainSize: true,
+        maintainAnimation: true,
+        maintainState: true,
+        maintainInteractivity: false,
         child: IconButton(
             tooltip: AppLocalizations.of(context)!.tooltipReplyToThisMessage,
             onPressed: () {
