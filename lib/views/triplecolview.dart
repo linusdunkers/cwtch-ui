@@ -35,7 +35,7 @@ class _TripleColumnViewState extends State<TripleColumnView> {
         child: appState.selectedConversation == null
             ? Center(child: Text(AppLocalizations.of(context)!.addContactFirst))
             : //dev
-            Container(child: MessageView()),
+            Container(child: MessageView(0/*todo:setme*/)),
       ),
     ]);
   }

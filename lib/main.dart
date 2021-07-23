@@ -169,6 +169,7 @@ class FlwtchState extends State<Flwtch> {
     var args = jsonDecode(call.arguments);
     var profile = profs.getProfile(args["ProfileOnion"])!;
     var convo = profile.contactList.getContact(args["Handle"])!;
+    var initialIndex = convo.unreadMessages;
     convo.unreadMessages = 0;
 
     // single pane mode pushes; double pane mode reads AppState.selectedProfile/Conversation
@@ -186,7 +187,7 @@ class FlwtchState extends State<Flwtch> {
                 ChangeNotifierProvider.value(value: profile),
                 ChangeNotifierProvider.value(value: convo),
               ],
-              builder: (context, child) => MessageView(),
+              builder: (context, child) => MessageView(initialIndex),
             );
           },
         ),

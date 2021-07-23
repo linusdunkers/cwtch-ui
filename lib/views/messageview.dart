@@ -4,7 +4,6 @@ import 'package:crypto/crypto.dart';
 import 'package:cwtch/cwtch_icons_icons.dart';
 import 'package:cwtch/models/message.dart';
 import 'package:cwtch/models/messages/quotedmessage.dart';
-import 'package:cwtch/widgets/malformedbubble.dart';
 import 'package:cwtch/widgets/messageloadingbubble.dart';
 import 'package:cwtch/widgets/profileimage.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,6 +13,7 @@ import 'package:cwtch/widgets/DropdownContacts.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../main.dart';
 import '../model.dart';
@@ -22,6 +22,9 @@ import '../widgets/messagelist.dart';
 import 'groupsettingsview.dart';
 
 class MessageView extends StatefulWidget {
+  int initialIndex;
+  MessageView(this.initialIndex);
+
   @override
   _MessageViewState createState() => _MessageViewState();
 }
@@ -30,14 +33,28 @@ class _MessageViewState extends State<MessageView> {
   final ctrlrCompose = TextEditingController();
   final focusNode = FocusNode();
   String selectedContact = "";
+  ItemPositionsListener scrollListener = ItemPositionsListener.create();
+  ItemScrollController scrollController = ItemScrollController();
 
-  // @override
-  // void didChangeDependencies() {
-  //   super.didChangeDependencies();
-  //   if (Provider.of<ContactInfoState>(context, listen: false).unreadMessages > 0) {
-  //     Provider.of<ContactInfoState>(context, listen: false).unreadMessages = 0;
-  //   }
-  // }
+  @override
+  void initState() {
+    // using "8" because "# of messages that fit on one screen" isnt trivial to calculate at this point
+    if (widget.initialIndex > 8) {
+      WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback((timeStamp) {
+        Provider.of<AppState>(context, listen: false).unreadMessagesBelow = true;
+      });
+    }
+
+    scrollListener.itemPositions.addListener(() {
+      var first = scrollListener.itemPositions.value.first.index;
+      var last = scrollListener.itemPositions.value.last.index;
+      // sometimes these go hi->lo and sometimes they go lo->hi because [who tf knows]
+      if (first == 0 || last == 0) {
+        Provider.of<AppState>(context, listen: false).unreadMessagesBelow = false;
+      }
+    });
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -57,6 +74,9 @@ class _MessageViewState extends State<MessageView> {
     return WillPopScope(
         onWillPop: _onWillPop,
         child: Scaffold(
+          floatingActionButton: appState.unreadMessagesBelow ? FloatingActionButton(child: Icon(Icons.arrow_downward), onPressed: (){
+            scrollController.scrollTo(index: 0, duration: Duration(milliseconds: 600));
+          }) : null,
           appBar: AppBar(
             // setting leading to null makes it do the default behaviour; container() hides it
             leading: Provider.of<Settings>(context).uiColumns(appState.isLandscape(context)).length > 1 ? Container() : null,
@@ -87,13 +107,14 @@ class _MessageViewState extends State<MessageView> {
                   onPressed: _pushContactSettings),
             ],
           ),
-          body: Padding(padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 108.0), child: MessageList()),
+          body: Padding(padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 108.0), child: MessageList(widget.initialIndex, scrollController, scrollListener)),
           bottomSheet: _buildComposeBox(),
         ));
   }
 
   Future<bool> _onWillPop() async {
     Provider.of<ContactInfoState>(context, listen: false).unreadMessages = 0;
+    Provider.of<AppState>(context, listen: false).selectedConversation = null;
     return true;
   }
 

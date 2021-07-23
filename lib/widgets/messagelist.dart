@@ -1,24 +1,24 @@
 import 'package:cwtch/models/message.dart';
-import 'package:cwtch/models/messages/malformedmessage.dart';
-import 'package:cwtch/widgets/malformedbubble.dart';
 import 'package:cwtch/widgets/messageloadingbubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../main.dart';
 import '../model.dart';
 import '../settings.dart';
-import 'messagerow.dart';
 
 class MessageList extends StatefulWidget {
+  int initialIndex;
+  ItemScrollController scrollController;
+  ItemPositionsListener scrollListener;
+  MessageList(this.initialIndex, this.scrollController, this.scrollListener);
+
   @override
   _MessageListState createState() => _MessageListState();
 }
 
 class _MessageListState extends State<MessageList> {
-  ScrollController ctrlr1 = ScrollController();
-
   @override
   Widget build(BuildContext outerContext) {
     bool isP2P = !Provider.of<ContactInfoState>(context).isGroup;
@@ -52,12 +52,11 @@ class _MessageListState extends State<MessageList> {
                         : (showEphemeralWarning
                             ? Text(AppLocalizations.of(context)!.chatHistoryDefault, textAlign: TextAlign.center)
                             :
-                            // We are not allowed to put null here, so put an empty text widge
+                            // We are not allowed to put null here, so put an empty text widget
                             Text("")),
               ))),
       Expanded(
           child: Scrollbar(
-              controller: ctrlr1,
               child: Container(
                   // Only show broken heart is the contact is offline...
                   decoration: BoxDecoration(
@@ -70,8 +69,10 @@ class _MessageListState extends State<MessageList> {
                               colorFilter: ColorFilter.mode(Provider.of<Settings>(context).theme.hilightElementTextColor(), BlendMode.srcIn))),
                   // Don't load messages for syncing server...
                   child: loadMessages
-                      ? ListView.builder(
-                          controller: ctrlr1,
+                      ? ScrollablePositionedList.builder(
+                          itemPositionsListener: widget.scrollListener,
+                          itemScrollController: widget.scrollController,
+                          initialScrollIndex: widget.initialIndex,
                           itemCount: Provider.of<ContactInfoState>(outerContext).totalMessages,
                           reverse: true, // NOTE: There seems to be a bug in flutter that corrects the mouse wheel scroll, but not the drag direction...
                           itemBuilder: (itemBuilderContext, index) {
