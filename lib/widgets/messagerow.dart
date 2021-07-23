@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:cwtch/cwtch_icons_icons.dart';
@@ -50,7 +49,7 @@ class MessageRowState extends State<MessageRow> {
         child: IconButton(
             tooltip: AppLocalizations.of(context)!.tooltipReplyToThisMessage,
             onPressed: () {
-              Provider.of<AppState>(context, listen: false).selectedIndex = Provider.of<MessageMetadata>(context).messageIndex;
+              Provider.of<AppState>(context, listen: false).selectedIndex = Provider.of<MessageMetadata>(context, listen: false).messageIndex;
             },
             icon: Icon(Icons.reply, color: Provider.of<Settings>(context).theme.dropShadowColor())));
     Widget wdgSpacer = Expanded(child: SizedBox(width: 60, height: 10));

@@ -45,6 +45,5 @@ class _MessageBubbleDecoration extends State<MessageBubbleDecoration> {
                                 child: Icon(Icons.hourglass_bottom_outlined, color: Provider.of<Settings>(context).theme.messageFromMeTextColor(), size: 16))))
           ],
         ));
-    ;
   }
 }
