@@ -46,7 +46,13 @@ You will probably want to disable Analytics on the Flutter Tool: `flutter config
 - Follow the steps above to fetch `libCwtch-go` and `tor` (these will fetch Android versions of these binaries also)
 - run `flutter run` with an Android phone connect via USB (or some other valid debug mode)
 
+### Building on Mac (for Mac)
+
+Currently unsupported but we are investigating support for this platform.
+
 ### Building Experimental iOS
+
+iOS builds of cwtch-ui is currently experimental and does not have the full support other platforms do. We are working on making it buildable for developers to experiment with for now.
 
 We currently do not auto build iOS libCwtch-go libraries so you'll need to make your own: 
 
