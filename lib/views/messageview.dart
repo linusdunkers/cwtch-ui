@@ -187,6 +187,7 @@ class _MessageViewState extends State<MessageView> {
                         autofocus: !Platform.isAndroid,
                         textInputAction: TextInputAction.newline,
                         keyboardType: TextInputType.multiline,
+                        enableIMEPersonalizedLearning: false,
                         minLines: 1,
                         maxLines: null,
                         onFieldSubmitted: _sendMessage,
