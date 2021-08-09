@@ -23,6 +23,7 @@ class ContactsView extends StatefulWidget {
 
 // selectConversation can be called from anywhere to set the active conversation
 void selectConversation(BuildContext context, String handle) {
+  var initialIndex = Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(handle)!.unreadMessages;
   // requery instead of using contactinfostate directly because sometimes listview gets confused about data that resorts
   Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(handle)!.unreadMessages = 0;
   // triggers update in Double/TripleColumnView
@@ -30,10 +31,10 @@ void selectConversation(BuildContext context, String handle) {
   Provider.of<AppState>(context, listen: false).selectedIndex = null;
   // if in singlepane mode, push to the stack
   var isLandscape = Provider.of<AppState>(context, listen: false).isLandscape(context);
-  if (Provider.of<Settings>(context, listen: false).uiColumns(isLandscape).length == 1) _pushMessageView(context, handle);
+  if (Provider.of<Settings>(context, listen: false).uiColumns(isLandscape).length == 1) _pushMessageView(context, handle, initialIndex);
 }
 
-void _pushMessageView(BuildContext context, String handle) {
+void _pushMessageView(BuildContext context, String handle, int initialIndex) {
   var profileOnion = Provider.of<ProfileInfoState>(context, listen: false).onion;
   Navigator.of(context).push(
     MaterialPageRoute<void>(
@@ -46,7 +47,7 @@ void _pushMessageView(BuildContext context, String handle) {
             ChangeNotifierProvider.value(value: profile),
             ChangeNotifierProvider.value(value: profile.contactList.getContact(handle)!),
           ],
-          builder: (context, child) => MessageView(),
+          builder: (context, child) => MessageView(initialIndex),
         );
       },
     ),
