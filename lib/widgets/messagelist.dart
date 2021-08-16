@@ -9,10 +9,9 @@ import '../model.dart';
 import '../settings.dart';
 
 class MessageList extends StatefulWidget {
-  int initialIndex;
   ItemScrollController scrollController;
   ItemPositionsListener scrollListener;
-  MessageList(this.initialIndex, this.scrollController, this.scrollListener);
+  MessageList(this.scrollController, this.scrollListener);
 
   @override
   _MessageListState createState() => _MessageListState();
@@ -21,6 +20,7 @@ class MessageList extends StatefulWidget {
 class _MessageListState extends State<MessageList> {
   @override
   Widget build(BuildContext outerContext) {
+    var initi = Provider.of<AppState>(outerContext, listen: false).initialScrollIndex;
     bool isP2P = !Provider.of<ContactInfoState>(context).isGroup;
     bool isGroupAndSyncing = Provider.of<ContactInfoState>(context).isGroup == true && Provider.of<ContactInfoState>(context).status == "Authenticated";
     bool isGroupAndSynced = Provider.of<ContactInfoState>(context).isGroup && Provider.of<ContactInfoState>(context).status == "Synced";
@@ -72,7 +72,7 @@ class _MessageListState extends State<MessageList> {
                       ? ScrollablePositionedList.builder(
                           itemPositionsListener: widget.scrollListener,
                           itemScrollController: widget.scrollController,
-                          initialScrollIndex: widget.initialIndex,
+                          initialScrollIndex: Provider.of<AppState>(outerContext, listen: false).initialScrollIndex,
                           itemCount: Provider.of<ContactInfoState>(outerContext).totalMessages,
                           reverse: true, // NOTE: There seems to be a bug in flutter that corrects the mouse wheel scroll, but not the drag direction...
                           itemBuilder: (itemBuilderContext, index) {

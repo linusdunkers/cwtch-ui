@@ -23,18 +23,19 @@ class ContactsView extends StatefulWidget {
 
 // selectConversation can be called from anywhere to set the active conversation
 void selectConversation(BuildContext context, String handle) {
-  var initialIndex = Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(handle)!.unreadMessages;
   // requery instead of using contactinfostate directly because sometimes listview gets confused about data that resorts
+  var initialIndex = Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(handle)!.unreadMessages;
   Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(handle)!.unreadMessages = 0;
   // triggers update in Double/TripleColumnView
+  Provider.of<AppState>(context, listen: false).initialScrollIndex = initialIndex;
   Provider.of<AppState>(context, listen: false).selectedConversation = handle;
   Provider.of<AppState>(context, listen: false).selectedIndex = null;
   // if in singlepane mode, push to the stack
   var isLandscape = Provider.of<AppState>(context, listen: false).isLandscape(context);
-  if (Provider.of<Settings>(context, listen: false).uiColumns(isLandscape).length == 1) _pushMessageView(context, handle, initialIndex);
+  if (Provider.of<Settings>(context, listen: false).uiColumns(isLandscape).length == 1) _pushMessageView(context, handle);
 }
 
-void _pushMessageView(BuildContext context, String handle, int initialIndex) {
+void _pushMessageView(BuildContext context, String handle) {
   var profileOnion = Provider.of<ProfileInfoState>(context, listen: false).onion;
   Navigator.of(context).push(
     MaterialPageRoute<void>(
@@ -47,7 +48,7 @@ void _pushMessageView(BuildContext context, String handle, int initialIndex) {
             ChangeNotifierProvider.value(value: profile),
             ChangeNotifierProvider.value(value: profile.contactList.getContact(handle)!),
           ],
-          builder: (context, child) => MessageView(initialIndex),
+          builder: (context, child) => MessageView(),
         );
       },
     ),

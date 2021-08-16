@@ -22,9 +22,6 @@ import '../widgets/messagelist.dart';
 import 'groupsettingsview.dart';
 
 class MessageView extends StatefulWidget {
-  int initialIndex;
-  MessageView(this.initialIndex);
-
   @override
   _MessageViewState createState() => _MessageViewState();
 }
@@ -38,22 +35,29 @@ class _MessageViewState extends State<MessageView> {
 
   @override
   void initState() {
-    // using "8" because "# of messages that fit on one screen" isnt trivial to calculate at this point
-    if (widget.initialIndex > 8) {
-      WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback((timeStamp) {
-        Provider.of<AppState>(context, listen: false).unreadMessagesBelow = true;
-      });
-    }
-
     scrollListener.itemPositions.addListener(() {
       var first = scrollListener.itemPositions.value.first.index;
       var last = scrollListener.itemPositions.value.last.index;
       // sometimes these go hi->lo and sometimes they go lo->hi because [who tf knows]
-      if (first == 0 || last == 0) {
+      if ((first == 0 || last == 0) && Provider.of<AppState>(context, listen: false).unreadMessagesBelow == true) {
+        Provider.of<AppState>(context, listen: false).initialScrollIndex = 0;
         Provider.of<AppState>(context, listen: false).unreadMessagesBelow = false;
       }
     });
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    var appState = Provider.of<AppState>(context, listen: false);
+
+    // using "8" because "# of messages that fit on one screen" isnt trivial to calculate at this point
+    if (appState.initialScrollIndex > 8 && appState.unreadMessagesBelow == false) {
+      WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback((timeStamp) {
+        appState.unreadMessagesBelow = true;
+      });
+    }
+    super.didChangeDependencies();
   }
 
   @override
@@ -107,7 +111,7 @@ class _MessageViewState extends State<MessageView> {
                   onPressed: _pushContactSettings),
             ],
           ),
-          body: Padding(padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 108.0), child: MessageList(widget.initialIndex, scrollController, scrollListener)),
+          body: Padding(padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 108.0), child: MessageList(scrollController, scrollListener)),
           bottomSheet: _buildComposeBox(),
         ));
   }
