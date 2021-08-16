@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:cwtch/cwtch_icons_icons.dart';
 import 'package:cwtch/models/message.dart';
@@ -39,7 +40,7 @@ class InvitationBubbleState extends State<InvitationBubble> {
     var borderRadiousEh = 15.0;
     var showGroupInvite = Provider.of<Settings>(context).isExperimentEnabled(TapirGroupsExperiment);
     rejected = Provider.of<MessageMetadata>(context).flags & 0x01 == 0x01;
-    var prettyDate = DateFormat.yMd().add_jm().format(Provider.of<MessageMetadata>(context).timestamp);
+    var prettyDate = DateFormat.yMd(Platform.localeName).add_jm().format(Provider.of<MessageMetadata>(context).timestamp);
 
     // If the sender is not us, then we want to give them a nickname...
     var senderDisplayStr = "";
