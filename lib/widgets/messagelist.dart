@@ -21,7 +21,6 @@ class _MessageListState extends State<MessageList> {
   @override
   Widget build(BuildContext outerContext) {
     var initi = Provider.of<AppState>(outerContext, listen: false).initialScrollIndex;
-    print("building message list with initial index = $initi");
     bool isP2P = !Provider.of<ContactInfoState>(context).isGroup;
     bool isGroupAndSyncing = Provider.of<ContactInfoState>(context).isGroup == true && Provider.of<ContactInfoState>(context).status == "Authenticated";
     bool isGroupAndSynced = Provider.of<ContactInfoState>(context).isGroup && Provider.of<ContactInfoState>(context).status == "Synced";

@@ -40,7 +40,7 @@ class _MessageViewState extends State<MessageView> {
       var last = scrollListener.itemPositions.value.last.index;
       // sometimes these go hi->lo and sometimes they go lo->hi because [who tf knows]
       if ((first == 0 || last == 0) && Provider.of<AppState>(context, listen: false).unreadMessagesBelow == true) {
-        print("show the button = false");
+        Provider.of<AppState>(context, listen: false).initialScrollIndex = 0;
         Provider.of<AppState>(context, listen: false).unreadMessagesBelow = false;
       }
     });
@@ -49,14 +49,11 @@ class _MessageViewState extends State<MessageView> {
 
   @override
   void didChangeDependencies() {
-    print("messageview didChangeDependencies");
     var appState = Provider.of<AppState>(context, listen: false);
 
     // using "8" because "# of messages that fit on one screen" isnt trivial to calculate at this point
     if (appState.initialScrollIndex > 8 && appState.unreadMessagesBelow == false) {
-      print("initScroll > 8");
       WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback((timeStamp) {
-        print("show the button = true");
         appState.unreadMessagesBelow = true;
       });
     }
