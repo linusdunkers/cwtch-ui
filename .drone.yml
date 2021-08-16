@@ -126,7 +126,7 @@ steps:
       - mv ./../sha256s.txt .
       - cd ..
       # TODO: do deployment once files actaully compile
-      - scp -r -o StrictHostKeyChecking=no -i ~/id_rsa $DIR buildfiles@openprivacy.ca:/home/buildfiles/buildfiles/
+      - scp -r -o StrictHostKeyChecking=no -i ~/id_rsa $DIR buildfiles@build.openprivacy.ca:/home/buildfiles/buildfiles/
 
   - name: notify-email
     image: drillster/drone-email
@@ -268,7 +268,7 @@ steps:
     commands:
       - echo $Env:BUILDFILES_KEY > id_rsab64
       - certutil -decode id_rsab64 id_rsa
-      - scp -r -o StrictHostKeyChecking=no -i id_rsa deploy\\* buildfiles@openprivacy.ca:/home/buildfiles/buildfiles/
+      - scp -r -o StrictHostKeyChecking=no -i id_rsa deploy\\* buildfiles@build.openprivacy.ca:/home/buildfiles/buildfiles/
 
 trigger:
   repo: cwtch.im/cwtch-ui
