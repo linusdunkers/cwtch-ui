@@ -17,7 +17,6 @@ class _DoubleColumnViewState extends State<DoubleColumnView> {
   Widget build(BuildContext context) {
     var flwtch = Provider.of<AppState>(context);
     var cols = Provider.of<Settings>(context).uiColumns(true);
-    var initialIndex = flwtch.selectedConversation == null ? 0 : Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(flwtch.selectedConversation!)!.unreadMessages;
     return Flex(
       direction: Axis.horizontal,
       children: <Widget>[
@@ -36,7 +35,7 @@ class _DoubleColumnViewState extends State<DoubleColumnView> {
                   ChangeNotifierProvider.value(value: Provider.of<ProfileInfoState>(context)),
                   ChangeNotifierProvider.value(
                       value: flwtch.selectedConversation != null ? Provider.of<ProfileInfoState>(context).contactList.getContact(flwtch.selectedConversation!)! : ContactInfoState("", "")),
-                ], child: Container(child: MessageView(initialIndex))),
+                ], child: Container(child: MessageView())),
         ),
       ],
     );
