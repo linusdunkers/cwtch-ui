@@ -37,6 +37,7 @@ class _CwtchTextFieldState extends State<CwtchPasswordField> {
         controller: widget.controller,
         validator: widget.validator,
         obscureText: obscureText,
+        enableIMEPersonalizedLearning: false,
         autofillHints: widget.autoFillHints,
         autovalidateMode: AutovalidateMode.always,
         onFieldSubmitted: widget.action,
