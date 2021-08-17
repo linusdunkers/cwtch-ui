@@ -30,6 +30,7 @@ class AppState extends ChangeNotifier {
   String appError = "";
   String? _selectedProfile;
   String? _selectedConversation;
+  int _initialScrollIndex = 0;
   int? _selectedIndex;
   bool _unreadMessagesBelow = false;
 
@@ -64,6 +65,12 @@ class AppState extends ChangeNotifier {
   bool get unreadMessagesBelow => _unreadMessagesBelow;
   set unreadMessagesBelow(bool newVal) {
     this._unreadMessagesBelow = newVal;
+    notifyListeners();
+  }
+
+  int get initialScrollIndex => _initialScrollIndex;
+  set initialScrollIndex(int newVal) {
+    this._initialScrollIndex = newVal;
     notifyListeners();
   }
 
