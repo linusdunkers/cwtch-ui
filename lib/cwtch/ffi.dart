@@ -11,6 +11,9 @@ import 'package:cwtch/cwtch/cwtch.dart';
 
 import '../config.dart';
 
+import "package:path/path.dart" show dirname, join;
+import 'dart:io' show Platform;
+
 /////////////////////
 ///   Cwtch API   ///
 /////////////////////
@@ -67,6 +70,9 @@ class CwtchFfi implements Cwtch {
       library = DynamicLibrary.open("libCwtch.dll");
     } else if (Platform.isLinux) {
       library = DynamicLibrary.open("libCwtch.so");
+    } else if (Platform.isMacOS) {
+      print(dirname(Platform.script.path));
+      library = DynamicLibrary.open("libCwtch.dylib");
     } else {
       print("OS ${Platform.operatingSystem} not supported by cwtch/ffi");
       // emergency, ideally the app stays on splash and just posts the error till user closes
