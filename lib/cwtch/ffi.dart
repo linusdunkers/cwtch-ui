@@ -4,7 +4,6 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:io' show Platform;
 import 'package:cwtch/cwtch/cwtchNotifier.dart';
-import 'package:flutter/src/services/text_input.dart';
 import 'package:path/path.dart' as path;
 
 import 'package:ffi/ffi.dart';
@@ -22,6 +21,9 @@ typedef StartCwtchFn = int Function(Pointer<Utf8> dir, int len, Pointer<Utf8> to
 typedef void_from_void_funtion = Void Function();
 typedef VoidFromVoidFunction = void Function();
 
+typedef free_function = Void Function(Pointer<Utf8>);
+typedef FreeFn = void Function(Pointer<Utf8>);
+
 typedef void_from_string_string_function = Void Function(Pointer<Utf8>, Int32, Pointer<Utf8>, Int32);
 typedef VoidFromStringStringFn = void Function(Pointer<Utf8>, int, Pointer<Utf8>, int);
 
@@ -34,24 +36,14 @@ typedef VoidFromStringStringStringStringFn = void Function(Pointer<Utf8>, int, P
 typedef void_from_string_string_int_int_function = Void Function(Pointer<Utf8>, Int32, Pointer<Utf8>, Int32, Int64, Int64);
 typedef VoidFromStringStringIntIntFn = void Function(Pointer<Utf8>, int, Pointer<Utf8>, int, int, int);
 
-typedef access_cwtch_eventbus_function = Void Function();
-typedef NextEventFn = void Function();
-
 typedef string_to_void_function = Void Function(Pointer<Utf8> str, Int32 length);
 typedef StringFn = void Function(Pointer<Utf8> dir, int);
 
 typedef string_string_to_void_function = Void Function(Pointer<Utf8> str, Int32 length, Pointer<Utf8> str2, Int32 length2);
 typedef StringStringFn = void Function(Pointer<Utf8>, int, Pointer<Utf8>, int);
 
-typedef get_json_blob_void_function = Pointer<Utf8> Function();
-typedef GetJsonBlobVoidFn = Pointer<Utf8> Function();
-
 typedef get_json_blob_string_function = Pointer<Utf8> Function(Pointer<Utf8> str, Int32 length);
 typedef GetJsonBlobStringFn = Pointer<Utf8> Function(Pointer<Utf8> str, int len);
-
-//func NumMessages(profile_ptr *C.char, profile_len C.int, handle_ptr *C.char, handle_len C.int) (n C.int) {
-typedef get_int_from_str_str_function = Int32 Function(Pointer<Utf8>, Int32, Pointer<Utf8>, Int32);
-typedef GetIntFromStrStrFn = int Function(Pointer<Utf8>, int, Pointer<Utf8>, int);
 
 //func GetMessage(profile_ptr *C.char, profile_len C.int, handle_ptr *C.char, handle_len C.int, message_index C.int) *C.char {
 typedef get_json_blob_from_str_str_int_function = Pointer<Utf8> Function(Pointer<Utf8>, Int32, Pointer<Utf8>, Int32, Int32);
@@ -138,9 +130,7 @@ class CwtchFfi implements Cwtch {
   // Called on object being disposed to (presumably on app close) to close the isolate that's listening to libcwtch-go events
   @override
   void dispose() {
-    if (cwtchIsolate != null) {
-      cwtchIsolate.kill(priority: Isolate.immediate);
-    }
+    cwtchIsolate.kill(priority: Isolate.immediate);
   }
 
   // Entry point for an isolate to listen to a stream of events pulled from libcwtch-go and return them on the sendPort
@@ -165,9 +155,21 @@ class CwtchFfi implements Cwtch {
     // ignore: non_constant_identifier_names
     final GetAppbusEvent = getAppbusEventC.asFunction<AppbusEventsFn>();
 
-    while (true) {
+    // Embedded Version of _UnsafeFreePointerAnyUseOfThisFunctionMustBeDoubleApproved
+    var free = library.lookup<NativeFunction<free_function>>("c_FreePointer");
+    final Free = free.asFunction<FreeFn>();
+
+    // ignore: non_constant_identifier_names
+    final GetAppBusEvent = () {
+      // ignore: non_constant_identifier_names
       Pointer<Utf8> result = GetAppbusEvent();
       String event = result.toDartString();
+      Free(result);
+      return event;
+    };
+
+    while (true) {
+      final event = GetAppBusEvent();
 
       if (event.startsWith("{\"EventType\":\"Shutdown\"")) {
         print("Shutting down isolate thread: $event");
@@ -184,6 +186,7 @@ class CwtchFfi implements Cwtch {
     final SelectProfile = selectProfileC.asFunction<GetJsonBlobStringFn>();
     final ut8Onion = onion.toNativeUtf8();
     SelectProfile(ut8Onion, ut8Onion.length);
+    malloc.free(ut8Onion);
   }
 
   // ignore: non_constant_identifier_names
@@ -194,6 +197,8 @@ class CwtchFfi implements Cwtch {
     final utf8nick = nick.toNativeUtf8();
     final ut8pass = pass.toNativeUtf8();
     CreateProfile(utf8nick, utf8nick.length, ut8pass, ut8pass.length);
+    malloc.free(utf8nick);
+    malloc.free(ut8pass);
   }
 
   // ignore: non_constant_identifier_names
@@ -203,6 +208,7 @@ class CwtchFfi implements Cwtch {
     final LoadProfiles = loadProfileC.asFunction<StringFn>();
     final ut8pass = pass.toNativeUtf8();
     LoadProfiles(ut8pass, ut8pass.length);
+    malloc.free(ut8pass);
   }
 
   // ignore: non_constant_identifier_names
@@ -214,6 +220,9 @@ class CwtchFfi implements Cwtch {
     final utf8handle = handle.toNativeUtf8();
     Pointer<Utf8> jsonMessageBytes = GetMessage(utf8profile, utf8profile.length, utf8handle, utf8handle.length, index);
     String jsonMessage = jsonMessageBytes.toDartString();
+    _UnsafeFreePointerAnyUseOfThisFunctionMustBeDoubleApproved(jsonMessageBytes);
+    malloc.free(utf8profile);
+    malloc.free(utf8handle);
     return jsonMessage;
   }
 
@@ -226,6 +235,8 @@ class CwtchFfi implements Cwtch {
     final utf8onion = onion.toNativeUtf8();
     final utf8json = json.toNativeUtf8();
     SendAppBusEvent(utf8onion, utf8onion.length, utf8json, utf8json.length);
+    malloc.free(utf8onion);
+    malloc.free(utf8json);
   }
 
   @override
@@ -236,6 +247,7 @@ class CwtchFfi implements Cwtch {
     final SendAppBusEvent = sendAppBusEvent.asFunction<StringFn>();
     final utf8json = json.toNativeUtf8();
     SendAppBusEvent(utf8json, utf8json.length);
+    malloc.free(utf8json);
   }
 
   @override
@@ -247,6 +259,8 @@ class CwtchFfi implements Cwtch {
     final u1 = profileOnion.toNativeUtf8();
     final u2 = contactHandle.toNativeUtf8();
     AcceptContact(u1, u1.length, u2, u2.length);
+    malloc.free(u1);
+    malloc.free(u2);
   }
 
   @override
@@ -258,6 +272,8 @@ class CwtchFfi implements Cwtch {
     final u1 = profileOnion.toNativeUtf8();
     final u2 = contactHandle.toNativeUtf8();
     BlockContact(u1, u1.length, u2, u2.length);
+    malloc.free(u1);
+    malloc.free(u2);
   }
 
   @override
@@ -270,6 +286,9 @@ class CwtchFfi implements Cwtch {
     final u2 = contactHandle.toNativeUtf8();
     final u3 = message.toNativeUtf8();
     SendMessage(u1, u1.length, u2, u2.length, u3, u3.length);
+    malloc.free(u1);
+    malloc.free(u2);
+    malloc.free(u3);
   }
 
   @override
@@ -282,6 +301,9 @@ class CwtchFfi implements Cwtch {
     final u2 = contactHandle.toNativeUtf8();
     final u3 = target.toNativeUtf8();
     SendInvitation(u1, u1.length, u2, u2.length, u3, u3.length);
+    malloc.free(u1);
+    malloc.free(u2);
+    malloc.free(u3);
   }
 
   @override
@@ -302,6 +324,8 @@ class CwtchFfi implements Cwtch {
     final u1 = profileOnion.toNativeUtf8();
     final u2 = bundle.toNativeUtf8();
     ImportBundle(u1, u1.length, u2, u2.length);
+    malloc.free(u1);
+    malloc.free(u2);
   }
 
   @override
@@ -315,6 +339,10 @@ class CwtchFfi implements Cwtch {
     final u3 = key.toNativeUtf8();
     final u4 = value.toNativeUtf8();
     SetGroupAttribute(u1, u1.length, u2, u2.length, u3, u3.length, u4, u4.length);
+    malloc.free(u1);
+    malloc.free(u2);
+    malloc.free(u3);
+    malloc.free(u4);
   }
 
   @override
@@ -326,9 +354,12 @@ class CwtchFfi implements Cwtch {
     final u1 = profileOnion.toNativeUtf8();
     final u2 = groupHandle.toNativeUtf8();
     RejectInvite(u1, u1.length, u2, u2.length);
+    malloc.free(u1);
+    malloc.free(u2);
   }
 
   @override
+  // ignore: non_constant_identifier_names
   void CreateGroup(String profileOnion, String server, String groupName) {
     var createGroup = library.lookup<NativeFunction<void_from_string_string_string_function>>("c_CreateGroup");
     // ignore: non_constant_identifier_names
@@ -337,6 +368,10 @@ class CwtchFfi implements Cwtch {
     final u2 = server.toNativeUtf8();
     final u3 = groupName.toNativeUtf8();
     CreateGroup(u1, u1.length, u2, u2.length, u3, u3.length);
+
+    malloc.free(u1);
+    malloc.free(u2);
+    malloc.free(u3);
   }
 
   @override
@@ -348,6 +383,8 @@ class CwtchFfi implements Cwtch {
     final u1 = profileOnion.toNativeUtf8();
     final u2 = handle.toNativeUtf8();
     LeaveConversation(u1, u1.length, u2, u2.length);
+    malloc.free(u1);
+    malloc.free(u2);
   }
 
   @override
@@ -359,9 +396,12 @@ class CwtchFfi implements Cwtch {
     final u1 = profileOnion.toNativeUtf8();
     final u2 = groupHandle.toNativeUtf8();
     LeaveGroup(u1, u1.length, u2, u2.length);
+    malloc.free(u1);
+    malloc.free(u2);
   }
 
   @override
+  // ignore: non_constant_identifier_names
   void UpdateMessageFlags(String profile, String handle, int index, int flags) {
     var updateMessageFlagsC = library.lookup<NativeFunction<void_from_string_string_int_int_function>>("c_UpdateMessageFlags");
     // ignore: non_constant_identifier_names
@@ -369,6 +409,8 @@ class CwtchFfi implements Cwtch {
     final utf8profile = profile.toNativeUtf8();
     final utf8handle = handle.toNativeUtf8();
     updateMessageFlags(utf8profile, utf8profile.length, utf8handle, utf8handle.length, index, flags);
+    malloc.free(utf8profile);
+    malloc.free(utf8handle);
   }
 
   @override
@@ -380,14 +422,18 @@ class CwtchFfi implements Cwtch {
     final u1 = onion.toNativeUtf8();
     final u2 = currentPassword.toNativeUtf8();
     DeleteProfile(u1, u1.length, u2, u2.length);
+    malloc.free(u1);
+    malloc.free(u2);
   }
 
   @override
+  // ignore: non_constant_identifier_names
   Future<void> Shutdown() async {
     var shutdown = library.lookup<NativeFunction<void_from_void_funtion>>("c_ShutdownCwtch");
     // ignore: non_constant_identifier_names
 
     // Shutdown Cwtch + Tor...
+    // ignore: non_constant_identifier_names
     final Shutdown = shutdown.asFunction<VoidFromVoidFunction>();
     Shutdown();
 
@@ -400,6 +446,7 @@ class CwtchFfi implements Cwtch {
   }
 
   @override
+  // ignore: non_constant_identifier_names
   Future GetMessageByContentHash(String profile, String handle, String contentHash) async {
     var getMessagesByContentHashC = library.lookup<NativeFunction<get_json_blob_from_str_str_str_function>>("c_GetMessagesByContentHash");
     // ignore: non_constant_identifier_names
@@ -409,6 +456,20 @@ class CwtchFfi implements Cwtch {
     final utf8contentHash = contentHash.toNativeUtf8();
     Pointer<Utf8> jsonMessageBytes = GetMessagesByContentHash(utf8profile, utf8profile.length, utf8handle, utf8handle.length, utf8contentHash, utf8contentHash.length);
     String jsonMessage = jsonMessageBytes.toDartString();
+
+    _UnsafeFreePointerAnyUseOfThisFunctionMustBeDoubleApproved(jsonMessageBytes);
+    malloc.free(utf8profile);
+    malloc.free(utf8handle);
+    malloc.free(utf8contentHash);
     return jsonMessage;
+  }
+
+  // ignore: non_constant_identifier_names
+  // Incredibly dangerous function which invokes a free in libCwtch, should only be used
+  // as documented in `MEMORY.md` in libCwtch repo.
+  void _UnsafeFreePointerAnyUseOfThisFunctionMustBeDoubleApproved(Pointer<Utf8> ptr) {
+    var free = library.lookup<NativeFunction<free_function>>("c_FreePointer");
+    final Free = free.asFunction<FreeFn>();
+    Free(ptr);
   }
 }
