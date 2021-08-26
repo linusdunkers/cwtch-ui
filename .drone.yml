@@ -24,7 +24,7 @@ steps:
       - git checkout $DRONE_COMMIT
 
   - name: fetch
-    image: cirrusci/flutter:dev
+    image: cirrusci/flutter:2.5.0-6.0.pre
     volumes:
       - name: deps
         path: /root/.pub-cache
@@ -47,7 +47,7 @@ steps:
   #    #Todo: fix all the lint errors and add `-set_exit_status` above to enforce linting
 
   - name: build-linux
-    image: openpriv/flutter-desktop:linux-dev
+    image: openpriv/flutter-desktop:linux-fdev2.5rc
     volumes:
       - name: deps
         path: /root/.pub-cache
@@ -61,7 +61,7 @@ steps:
       - rm -r cwtch
 
   - name: test-build-android
-    image: cirrusci/flutter:dev
+    image: cirrusci/flutter:2.5.0-6.0.pre
     when:
       event: pull_request
     volumes:
@@ -71,7 +71,7 @@ steps:
       - flutter build apk --debug
 
   - name: build-android
-    image: cirrusci/flutter:dev
+    image: cirrusci/flutter:2.5.0-6.0.pre
     when:
       event: push
     environment:
@@ -95,7 +95,7 @@ steps:
       #- cp build/app/outputs/flutter-apk/app-debug.apk deploy/android
 
   - name: widget-tests
-    image: cirrusci/flutter:dev
+    image: cirrusci/flutter:2.5.0-6.0.pre
     volumes:
       - name: deps
         path: /root/.pub-cache
@@ -126,7 +126,7 @@ steps:
       - mv ./../sha256s.txt .
       - cd ..
       # TODO: do deployment once files actaully compile
-      - scp -r -o StrictHostKeyChecking=no -i ~/id_rsa $DIR buildfiles@openprivacy.ca:/home/buildfiles/buildfiles/
+      - scp -r -o StrictHostKeyChecking=no -i ~/id_rsa $DIR buildfiles@build.openprivacy.ca:/home/buildfiles/buildfiles/
 
   - name: notify-email
     image: drillster/drone-email
@@ -175,7 +175,7 @@ clone:
 
 steps:
   - name: clone
-    image: openpriv/flutter-desktop:windows-sdk30-fdev2.3rc
+    image: openpriv/flutter-desktop:windows-sdk30-fdev2.5rc
     environment:
       buildbot_key_b64:
         from_secret: buildbot_key_b64
@@ -193,16 +193,16 @@ steps:
       - git checkout $Env:DRONE_COMMIT
 
   - name: fetch
-    image: openpriv/flutter-desktop:windows-sdk30-fdev2.3rc
+    image: openpriv/flutter-desktop:windows-sdk30-fdev2.5rc
     commands:
-      - powershell -command "Invoke-WebRequest -Uri https://dist.torproject.org/torbrowser/10.5a17/tor-win64-0.4.6.5.zip -OutFile tor.zip"
+      - powershell -command "Invoke-WebRequest -Uri https://git.openprivacy.ca/openprivacy/buildfiles/raw/branch/master/tor/tor-win64-0.4.6.5.zip -OutFile tor.zip"
       - powershell -command "if ((Get-FileHash tor.zip -Algorithm sha512).Hash -ne '7917561a7a063440a1ddfa9cb544ab9ffd09de84cea3dd66e3cc9cd349dd9f85b74a522ec390d7a974bc19b424c4d53af60e57bbc47e763d13cab6a203c4592f' ) { Write-Error 'tor.zip sha512sum mismatch' }"
       - git describe --tags --abbrev=1 > VERSION
       - powershell -command "Get-Date -Format 'yyyy-MM-dd-HH-mm'" > BUILDDATE
       - .\fetch-libcwtch-go.ps1
 
   - name: build-windows
-    image: openpriv/flutter-desktop:windows-sdk30-fdev2.3rc
+    image: openpriv/flutter-desktop:windows-sdk30-fdev2.5rc
     commands:
       - flutter pub get
       - $Env:version += type .\VERSION
@@ -213,9 +213,9 @@ steps:
       # flutter hasn't worked out it's packaging of required dll's so we have to resort to this manual nonsense
       # https://github.com/google/flutter-desktop-embedding/issues/587
       # https://github.com/flutter/flutter/issues/53167
-      - copy C:\BuildTools\VC\Redist\MSVC\14.29.30036\x64\Microsoft.VC142.CRT\vcruntime140.dll $Env:releasedir
-      - copy C:\BuildTools\VC\Redist\MSVC\14.29.30036\x64\Microsoft.VC142.CRT\vcruntime140_1.dll $Env:releasedir
-      - copy C:\BuildTools\VC\Redist\MSVC\14.29.30036\x64\Microsoft.VC142.CRT\msvcp140.dll $Env:releasedir
+      - copy C:\BuildTools\VC\Redist\MSVC\14.29.30133\x64\Microsoft.VC142.CRT\vcruntime140.dll $Env:releasedir
+      - copy C:\BuildTools\VC\Redist\MSVC\14.29.30133\x64\Microsoft.VC142.CRT\vcruntime140_1.dll $Env:releasedir
+      - copy C:\BuildTools\VC\Redist\MSVC\14.29.30133\x64\Microsoft.VC142.CRT\msvcp140.dll $Env:releasedir
       - copy README.md $Env:releasedir\
       - copy windows\*.bat $Env:releasedir\
       - powershell -command "Expand-Archive -Path tor.zip -DestinationPath $Env:releasedir\Tor"
@@ -258,7 +258,7 @@ steps:
       - move *.sha512 deploy\$Env:builddir
 
   - name: deploy-windows
-    image: openpriv/flutter-desktop:windows-sdk30-fdev2.3rc
+    image: openpriv/flutter-desktop:windows-sdk30-fdev2.5rc
     when:
       event: push
       status: [ success ]
@@ -268,7 +268,7 @@ steps:
     commands:
       - echo $Env:BUILDFILES_KEY > id_rsab64
       - certutil -decode id_rsab64 id_rsa
-      - scp -r -o StrictHostKeyChecking=no -i id_rsa deploy\\* buildfiles@openprivacy.ca:/home/buildfiles/buildfiles/
+      - scp -r -o StrictHostKeyChecking=no -i id_rsa deploy\\* buildfiles@build.openprivacy.ca:/home/buildfiles/buildfiles/
 
 trigger:
   repo: cwtch.im/cwtch-ui

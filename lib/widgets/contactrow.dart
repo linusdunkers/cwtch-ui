@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cwtch/views/contactsview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -127,9 +129,9 @@ class _ContactRowState extends State<ContactRow> {
     }
     // If the last message was over a day ago, just state the date
     if (DateTime.now().difference(date).inDays > 1) {
-      return DateFormat.yMd().format(date.toLocal());
+      return DateFormat.yMd(Platform.localeName).format(date.toLocal());
     }
     // Otherwise just state the time.
-    return DateFormat.Hm().format(date.toLocal());
+    return DateFormat.Hm(Platform.localeName).format(date.toLocal());
   }
 }

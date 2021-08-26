@@ -37,6 +37,7 @@ class _CwtchButtonTextFieldState extends State<CwtchButtonTextField> {
         readOnly: widget.readonly,
         showCursor: !widget.readonly,
         focusNode: _focusNode,
+        enableIMEPersonalizedLearning: false,
         decoration: InputDecoration(
             suffixIcon: IconButton(
               onPressed: widget.onPressed,

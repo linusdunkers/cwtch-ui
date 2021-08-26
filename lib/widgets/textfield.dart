@@ -39,6 +39,7 @@ class _CwtchTextFieldState extends State<CwtchTextField> {
         validator: widget.validator,
         onChanged: widget.onChanged,
         autofocus: widget.autofocus,
+        enableIMEPersonalizedLearning: false,
         focusNode: _focusNode,
         decoration: InputDecoration(
             labelText: widget.labelText,

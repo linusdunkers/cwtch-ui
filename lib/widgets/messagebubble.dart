@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cwtch/models/message.dart';
 import 'package:cwtch/widgets/malformedbubble.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +30,7 @@ class MessageBubbleState extends State<MessageBubble> {
     // var myKey = Provider.of<MessageState>(context).profileOnion + "::" + Provider.of<MessageState>(context).contactHandle + "::" + Provider.of<MessageState>(context).messageIndex.toString();
 
     DateTime messageDate = Provider.of<MessageMetadata>(context).timestamp;
-    prettyDate = DateFormat.yMd().add_jm().format(messageDate.toLocal());
+    prettyDate = DateFormat.yMd(Platform.localeName).add_jm().format(messageDate.toLocal());
 
     // If the sender is not us, then we want to give them a nickname...
     var senderDisplayStr = "";
