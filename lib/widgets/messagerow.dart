@@ -5,6 +5,7 @@ import 'package:cwtch/models/message.dart';
 import 'package:cwtch/views/contactsview.dart';
 import 'package:flutter/material.dart';
 import 'package:cwtch/widgets/profileimage.dart';
+import 'package:flutter/physics.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -20,15 +21,43 @@ class MessageRow extends StatefulWidget {
   MessageRowState createState() => MessageRowState();
 }
 
-class MessageRowState extends State<MessageRow> {
+class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMixin {
   bool showMenu = false;
   bool showBlockedMessage = false;
+  late AnimationController _controller;
+  late Animation<Alignment> _animation;
+  late Alignment _dragAlignment = Alignment.center;
+  Alignment _dragAffinity = Alignment.center;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this);
+    _controller.addListener(() {
+      setState(() {
+        _dragAlignment = _animation.value;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     var fromMe = Provider.of<MessageMetadata>(context).senderHandle == Provider.of<ProfileInfoState>(context).onion;
     var isContact = Provider.of<ProfileInfoState>(context).contactList.getContact(Provider.of<MessageMetadata>(context).senderHandle) != null;
     var isBlocked = isContact ? Provider.of<ProfileInfoState>(context).contactList.getContact(Provider.of<MessageMetadata>(context).senderHandle)!.isBlocked : false;
     var actualMessage = Flexible(flex: 3, fit: FlexFit.loose, child: widget.child);
+
+    _dragAffinity = fromMe ? Alignment.centerRight : Alignment.centerLeft;
+
+    if (_dragAlignment == Alignment.center) {
+      _dragAlignment = fromMe ? Alignment.centerRight : Alignment.centerLeft;
+    }
 
     var senderDisplayStr = "";
     if (!fromMe) {
@@ -52,7 +81,7 @@ class MessageRowState extends State<MessageRow> {
               Provider.of<AppState>(context, listen: false).selectedIndex = Provider.of<MessageMetadata>(context, listen: false).messageIndex;
             },
             icon: Icon(Icons.reply, color: Provider.of<Settings>(context).theme.dropShadowColor())));
-    Widget wdgSpacer = Expanded(child: SizedBox(width: 60, height: 10));
+    Widget wdgSpacer = Flexible(child: SizedBox(width: 60, height: 10));
     var widgetRow = <Widget>[];
 
     if (fromMe) {
@@ -131,10 +160,9 @@ class MessageRowState extends State<MessageRow> {
         wdgSpacer,
       ];
     }
-
+    var size = MediaQuery.of(context).size;
     return MouseRegion(
         // For desktop...
-
         onHover: (event) {
           setState(() {
             this.showMenu = true;
@@ -146,14 +174,55 @@ class MessageRowState extends State<MessageRow> {
           });
         },
         child: GestureDetector(
+            onPanUpdate: (details) {
+              setState(() {
+                _dragAlignment += Alignment(
+                  details.delta.dx / (size.width * 0.5),
+                  0,
+                );
+              });
+            },
+            onPanDown: (details) {
+              _controller.stop();
+            },
+            onPanEnd: (details) {
+              _runAnimation(details.velocity.pixelsPerSecond, size);
+              Provider.of<AppState>(context, listen: false).selectedIndex = Provider.of<MessageMetadata>(context, listen: false).messageIndex;
+            },
+            child: Padding(
+                padding: EdgeInsets.all(2),
+                child: Align(
+                    widthFactor: 1,
+                    alignment: _dragAlignment,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: widgetRow,
+                    )))));
+  }
 
-            // Swipe to quote on Android
-            onHorizontalDragEnd: Platform.isAndroid
-                ? (details) {
-                    Provider.of<AppState>(context, listen: false).selectedIndex = Provider.of<MessageMetadata>(context, listen: false).messageIndex;
-                  }
-                : null,
-            child: Padding(padding: EdgeInsets.all(2), child: Row(mainAxisAlignment: fromMe ? MainAxisAlignment.end : MainAxisAlignment.start, children: widgetRow))));
+  void _runAnimation(Offset pixelsPerSecond, Size size) {
+    _animation = _controller.drive(
+      AlignmentTween(
+        begin: _dragAlignment,
+        end: _dragAffinity,
+      ),
+    );
+    // Calculate the velocity relative to the unit interval, [0,1],
+    // used by the animation controller.
+    final unitsPerSecondX = pixelsPerSecond.dx / size.width;
+    final unitsPerSecondY = pixelsPerSecond.dy / size.height;
+    final unitsPerSecond = Offset(unitsPerSecondX, unitsPerSecondY);
+    final unitVelocity = unitsPerSecond.distance;
+
+    const spring = SpringDescription(
+      mass: 30,
+      stiffness: 1,
+      damping: 1,
+    );
+
+    final simulation = SpringSimulation(spring, 0, 1, -unitVelocity);
+    _controller.animateWith(simulation);
   }
 
   void _btnGoto() {
