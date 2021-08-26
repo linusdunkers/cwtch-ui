@@ -96,15 +96,17 @@ class _ContactsViewState extends State<ContactsView> {
         ),
         body: showSearchBar || Provider.of<ContactListState>(context).isFiltered ? _buildFilterable() : _buildContactList());
   }
-  
+
   List<Widget> getActions(context) {
     var actions = List<Widget>.empty(growable: true);
-    if (Provider.of<Settings>(context).blockUnknownConnections ) {
+    if (Provider.of<Settings>(context).blockUnknownConnections) {
       actions.add(Tooltip(message: AppLocalizations.of(context)!.blockUnknownConnectionsEnabledDescription, child: Icon(CwtchIcons.block_unknown)));
     }
-    actions.add(  IconButton(icon: TorIcon(), onPressed: _pushTorStatus),);
+    actions.add(
+      IconButton(icon: TorIcon(), onPressed: _pushTorStatus),
+    );
     actions.add(IconButton(
-      // need both conditions for displaying initial empty textfield and also allowing filters to be cleared if this widget gets lost/reset
+        // need both conditions for displaying initial empty textfield and also allowing filters to be cleared if this widget gets lost/reset
         icon: Icon(showSearchBar || Provider.of<ContactListState>(context).isFiltered ? Icons.search_off : Icons.search),
         onPressed: () {
           Provider.of<ContactListState>(context, listen: false).filter = "";
