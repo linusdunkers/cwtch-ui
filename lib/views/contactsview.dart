@@ -87,18 +87,7 @@ class _ContactsViewState extends State<ContactsView> {
                 child: Text("%1 » %2".replaceAll("%1", Provider.of<ProfileInfoState>(context).nickname).replaceAll("%2", AppLocalizations.of(context)!.titleManageContacts),
                     overflow: TextOverflow.ellipsis, style: TextStyle(color: Provider.of<Settings>(context).current().mainTextColor()))),
           ])),
-          actions: [
-            IconButton(icon: TorIcon(), onPressed: _pushTorStatus),
-            IconButton(
-                // need both conditions for displaying initial empty textfield and also allowing filters to be cleared if this widget gets lost/reset
-                icon: Icon(showSearchBar || Provider.of<ContactListState>(context).isFiltered ? Icons.search_off : Icons.search),
-                onPressed: () {
-                  Provider.of<ContactListState>(context, listen: false).filter = "";
-                  setState(() {
-                    showSearchBar = !showSearchBar;
-                  });
-                })
-          ],
+          actions: getActions(context),
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: _pushAddContact,
@@ -106,6 +95,24 @@ class _ContactsViewState extends State<ContactsView> {
           child: const Icon(CwtchIcons.person_add_alt_1_24px),
         ),
         body: showSearchBar || Provider.of<ContactListState>(context).isFiltered ? _buildFilterable() : _buildContactList());
+  }
+  
+  List<Widget> getActions(context) {
+    var actions = List<Widget>.empty(growable: true);
+    if (Provider.of<Settings>(context).blockUnknownConnections ) {
+      actions.add(Tooltip(message: AppLocalizations.of(context)!.blockUnknownConnectionsEnabledDescription, child: Icon(CwtchIcons.block_unknown)));
+    }
+    actions.add(  IconButton(icon: TorIcon(), onPressed: _pushTorStatus),);
+    actions.add(IconButton(
+      // need both conditions for displaying initial empty textfield and also allowing filters to be cleared if this widget gets lost/reset
+        icon: Icon(showSearchBar || Provider.of<ContactListState>(context).isFiltered ? Icons.search_off : Icons.search),
+        onPressed: () {
+          Provider.of<ContactListState>(context, listen: false).filter = "";
+          setState(() {
+            showSearchBar = !showSearchBar;
+          });
+        }));
+    return actions;
   }
 
   Widget _buildFilterable() {
