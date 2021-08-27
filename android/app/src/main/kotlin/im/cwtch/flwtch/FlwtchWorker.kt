@@ -200,7 +200,7 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
             "DeleteContact" -> {
                 val profile = (a.get("ProfileOnion") as? String) ?: ""
                 val handle = (a.get("handle") as? String) ?: ""
-                Cwtch.deleteConversation(profile, handle)
+                Cwtch.deleteContact(profile, handle)
             }
             "RejectInvite" -> {
                 val profile = (a.get("ProfileOnion") as? String) ?: ""
