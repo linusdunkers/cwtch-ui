@@ -55,6 +55,7 @@ class CwtchNotifier {
               numUnread: int.parse(data["unread"]),
               isGroup: data["isGroup"] == true,
               server: data["groupServer"],
+              archived: data["isArchived"] == true,
               lastMessageTime: DateTime.now(), //show at the top of the contact list even if no messages yet
             ));
         break;
@@ -288,6 +289,23 @@ class CwtchNotifier {
         if (data["Key"] == "local.name") {
           if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"]) != null) {
             profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"])!.nickname = data["Data"];
+          }
+        } else if (data["Key"] == "local.archived") {
+          if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"]) != null) {
+            profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"])!.isArchived = data["Data"] == "true";
+          }
+        } else {
+          EnvironmentConfig.debugLog("unhandled set group attribute event: ${data['Key']}");
+        }
+        break;
+      case "SetContactAttribute":
+        if (data["Key"] == "local.name") {
+          if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["RemotePeer"]) != null) {
+            profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["RemotePeer"])!.nickname = data["Data"];
+          }
+        } else if (data["Key"] == "local.archived") {
+          if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["RemotePeer"]) != null) {
+            profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["RemotePeer"])!.isArchived = data["Data"] == "true";
           }
         } else {
           EnvironmentConfig.debugLog("unhandled set group attribute event: ${data['Key']}");

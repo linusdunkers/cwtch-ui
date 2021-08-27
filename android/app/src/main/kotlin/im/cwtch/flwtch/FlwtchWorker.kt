@@ -192,15 +192,15 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                 val pass = (a.get("pass") as? String) ?: ""
                 Cwtch.deleteProfile(profile, pass)
             }
-            "LeaveConversation" -> {
+            "ArchiveConversation" -> {
                 val profile = (a.get("ProfileOnion") as? String) ?: ""
-                val contactHandle = (a.get("contactHandle") as? String) ?: ""
-                Cwtch.leaveConversation(profile, contactHandle)
+                val contactHandle = (a.get("handle") as? String) ?: ""
+                Cwtch.archiveConversation(profile, contactHandle)
             }
-            "LeaveGroup" -> {
+            "DeleteContact" -> {
                 val profile = (a.get("ProfileOnion") as? String) ?: ""
-                val groupHandle = (a.get("groupHandle") as? String) ?: ""
-                Cwtch.leaveGroup(profile, groupHandle)
+                val handle = (a.get("handle") as? String) ?: ""
+                Cwtch.deleteConversation(profile, handle)
             }
             "RejectInvite" -> {
                 val profile = (a.get("ProfileOnion") as? String) ?: ""

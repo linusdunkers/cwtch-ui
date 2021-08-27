@@ -41,12 +41,12 @@ abstract class Cwtch {
   void SendInvitation(String profile, String handle, String target);
 
   // ignore: non_constant_identifier_names
-  void LeaveConversation(String profile, String handle);
+  void ArchiveConversation(String profile, String handle);
+  // ignore: non_constant_identifier_names
+  void DeleteContact(String profile, String handle);
 
   // ignore: non_constant_identifier_names
   void CreateGroup(String profile, String server, String groupName);
-  // ignore: non_constant_identifier_names
-  void LeaveGroup(String profile, String groupID);
 
   // ignore: non_constant_identifier_names
   void ImportBundle(String profile, String bundle);

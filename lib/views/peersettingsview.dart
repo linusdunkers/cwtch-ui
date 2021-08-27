@@ -196,13 +196,21 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
                             ),
                             Row(crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.end, children: [
                               Tooltip(
-                                  message: AppLocalizations.of(context)!.leaveGroup,
+                                  message: AppLocalizations.of(context)!.archiveConversation,
                                   child: ElevatedButton.icon(
                                     onPressed: () {
-                                      showAlertDialog(context);
+                                      var profileOnion = Provider.of<ContactInfoState>(context, listen: false).profileOnion;
+                                      var handle = Provider.of<ContactInfoState>(context, listen: false).onion;
+                                      // locally update cache...
+                                      Provider.of<ContactInfoState>(context, listen: false).isArchived = true;
+                                      Provider.of<FlwtchState>(context, listen: false).cwtch.ArchiveConversation(profileOnion, handle);
+                                      Future.delayed(Duration(milliseconds: 500), () {
+                                        Provider.of<AppState>(context, listen: false).selectedConversation = null;
+                                        Navigator.of(context).popUntil((route) => route.settings.name == "conversations"); // dismiss dialog
+                                      });
                                     },
                                     icon: Icon(CwtchIcons.leave_chat),
-                                    label: Text(AppLocalizations.of(context)!.leaveGroup),
+                                    label: Text(AppLocalizations.of(context)!.archiveConversation),
                                   ))
                             ])
                           ]),
@@ -232,7 +240,9 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
       onPressed: () {
         var profileOnion = Provider.of<ContactInfoState>(context, listen: false).profileOnion;
         var handle = Provider.of<ContactInfoState>(context, listen: false).onion;
-        Provider.of<FlwtchState>(context, listen: false).cwtch.LeaveConversation(profileOnion, handle);
+        // locally update cache...
+        Provider.of<ContactInfoState>(context, listen: false).isArchived = true;
+        Provider.of<FlwtchState>(context, listen: false).cwtch.DeleteContact(profileOnion, handle);
         Future.delayed(Duration(milliseconds: 500), () {
           Provider.of<AppState>(context, listen: false).selectedConversation = null;
           Navigator.of(context).popUntil((route) => route.settings.name == "conversations"); // dismiss dialog

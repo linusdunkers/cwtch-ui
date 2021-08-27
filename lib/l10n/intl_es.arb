@@ -1,6 +1,7 @@
 {
     "@@locale": "es",
-    "@@last_modified": "2021-08-26T23:44:51+02:00",
+    "@@last_modified": "2021-08-27T21:54:52+02:00",
+    "archiveConversation": "Archive this Conversation",
     "profileOnionLabel": "Envía esta dirección a los contactos con los que quieras conectarte",
     "addPeerTab": "Agregar Contacto",
     "addPeer": "Agregar Contacto",
