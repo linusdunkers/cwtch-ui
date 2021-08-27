@@ -56,7 +56,6 @@ class _MessageListState extends State<MessageList> {
                             Text("")),
               ))),
       Expanded(
-          child: Scrollbar(
               child: Container(
                   // Only show broken heart is the contact is offline...
                   decoration: BoxDecoration(
@@ -94,7 +93,7 @@ class _MessageListState extends State<MessageList> {
                             );
                           },
                         )
-                      : null)))
+                      : null))
     ])));
   }
 }
