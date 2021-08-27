@@ -298,7 +298,7 @@ class CwtchNotifier {
           EnvironmentConfig.debugLog("unhandled set group attribute event: ${data['Key']}");
         }
         break;
-      case "SetContactAttribute":
+      case "SetPeerAttribute":
         if (data["Key"] == "local.name") {
           if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["RemotePeer"]) != null) {
             profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["RemotePeer"])!.nickname = data["Data"];
@@ -308,7 +308,7 @@ class CwtchNotifier {
             profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["RemotePeer"])!.isArchived = data["Data"] == "true";
           }
         } else {
-          EnvironmentConfig.debugLog("unhandled set group attribute event: ${data['Key']}");
+          EnvironmentConfig.debugLog("unhandled set peer attribute event: ${data['Key']}");
         }
         break;
       case "NewRetValMessageFromPeer":
