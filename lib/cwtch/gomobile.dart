@@ -162,14 +162,14 @@ class CwtchGomobile implements Cwtch {
 
   @override
   // ignore: non_constant_identifier_names
-  void LeaveGroup(String profileOnion, String groupHandle) {
-    cwtchPlatform.invokeMethod("LeaveGroup", {"ProfileOnion": profileOnion, "groupHandle": groupHandle});
+  void DeleteContact(String profileOnion, String handle) {
+    cwtchPlatform.invokeMethod("DeleteContact", {"ProfileOnion": profileOnion, "handle": handle});
   }
 
   @override
   // ignore: non_constant_identifier_names
-  void LeaveConversation(String profileOnion, String contactHandle) {
-    cwtchPlatform.invokeMethod("LeaveConversation", {"ProfileOnion": profileOnion, "contactHandle": contactHandle});
+  void ArchiveConversation(String profileOnion, String contactHandle) {
+    cwtchPlatform.invokeMethod("ArchiveConversation", {"ProfileOnion": profileOnion, "handle": contactHandle});
   }
 
   @override

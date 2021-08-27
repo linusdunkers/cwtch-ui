@@ -376,29 +376,30 @@ class CwtchFfi implements Cwtch {
 
   @override
   // ignore: non_constant_identifier_names
-  void LeaveConversation(String profileOnion, String handle) {
-    var leaveConversation = library.lookup<NativeFunction<string_string_to_void_function>>("c_LeaveConversation");
+  void ArchiveConversation(String profileOnion, String handle) {
+    var archiveConversation = library.lookup<NativeFunction<string_string_to_void_function>>("c_ArchiveConversation");
     // ignore: non_constant_identifier_names
-    final LeaveConversation = leaveConversation.asFunction<VoidFromStringStringFn>();
+    final ArchiveConversation = archiveConversation.asFunction<VoidFromStringStringFn>();
     final u1 = profileOnion.toNativeUtf8();
     final u2 = handle.toNativeUtf8();
-    LeaveConversation(u1, u1.length, u2, u2.length);
+    ArchiveConversation(u1, u1.length, u2, u2.length);
     malloc.free(u1);
     malloc.free(u2);
   }
 
   @override
   // ignore: non_constant_identifier_names
-  void LeaveGroup(String profileOnion, String groupHandle) {
-    var leaveGroup = library.lookup<NativeFunction<string_string_to_void_function>>("c_LeaveGroup");
+  void DeleteContact(String profileOnion, String handle) {
+    var deleteContact = library.lookup<NativeFunction<string_string_to_void_function>>("c_DeleteContact");
     // ignore: non_constant_identifier_names
-    final LeaveGroup = leaveGroup.asFunction<VoidFromStringStringFn>();
+    final DeleteContact = deleteContact.asFunction<VoidFromStringStringFn>();
     final u1 = profileOnion.toNativeUtf8();
-    final u2 = groupHandle.toNativeUtf8();
-    LeaveGroup(u1, u1.length, u2, u2.length);
+    final u2 = handle.toNativeUtf8();
+    DeleteContact(u1, u1.length, u2, u2.length);
     malloc.free(u1);
     malloc.free(u2);
   }
+
 
   @override
   // ignore: non_constant_identifier_names

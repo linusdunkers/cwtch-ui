@@ -142,6 +142,9 @@ class ContactListState extends ChangeNotifier {
       // blocked contacts last
       if (a.isBlocked == true && b.isBlocked != true) return 1;
       if (a.isBlocked != true && b.isBlocked == true) return -1;
+      // archive is next...
+      if (!a.isArchived && b.isArchived) return -1;
+      if (a.isArchived && !b.isArchived) return 1;
       // special sorting for contacts with no messages in either history
       if (a.lastMessageTime.millisecondsSinceEpoch == 0 && b.lastMessageTime.millisecondsSinceEpoch == 0) {
         // online contacts first
@@ -235,6 +238,7 @@ class ProfileInfoState extends ChangeNotifier {
             numUnread: contact["numUnread"],
             isGroup: contact["isGroup"],
             server: contact["groupServer"],
+            archived: contact["isArchived"] == true,
             lastMessageTime: DateTime.fromMillisecondsSinceEpoch(1000 * int.parse(contact["lastMsgTime"])));
       }));
 
@@ -375,6 +379,7 @@ class ContactInfoState extends ChangeNotifier {
   // todo: a nicer way to model contacts, groups and other "entities"
   late bool _isGroup;
   String? _server;
+  late bool _archived;
 
   ContactInfoState(
     this.profileOnion,
@@ -389,6 +394,7 @@ class ContactInfoState extends ChangeNotifier {
     numUnread = 0,
     lastMessageTime,
     server,
+    archived = false
   }) {
     this._nickname = nickname;
     this._isGroup = isGroup;
@@ -400,12 +406,24 @@ class ContactInfoState extends ChangeNotifier {
     this._savePeerHistory = savePeerHistory;
     this._lastMessageTime = lastMessageTime == null ? DateTime.fromMillisecondsSinceEpoch(0) : lastMessageTime;
     this._server = server;
+    this._archived = archived;
     keys = Map<String, GlobalKey<MessageRowState>>();
   }
 
   String get nickname => this._nickname;
 
   String get savePeerHistory => this._savePeerHistory;
+
+  // Indicated whether the conversation is archived, in which case it will
+  // be moved to the very bottom of the active conversations list until
+  // new messages appear
+  set isArchived(bool archived) {
+    this._archived = archived;
+    notifyListeners();
+  }
+  bool get isArchived => this._archived;
+
+
   set savePeerHistory(String newVal) {
     this._savePeerHistory = newVal;
     notifyListeners();

@@ -1,6 +1,7 @@
 {
     "@@locale": "fr",
-    "@@last_modified": "2021-08-26T23:44:51+02:00",
+    "@@last_modified": "2021-08-27T21:54:52+02:00",
+    "archiveConversation": "Archive this Conversation",
     "profileOnionLabel": "Envoyez cette adresse aux personnes avec lesquelles vous souhaitez entrer en contact.",
     "addPeerTab": "Ajouter un pair",
     "addPeer": "Ajouter un pair",
