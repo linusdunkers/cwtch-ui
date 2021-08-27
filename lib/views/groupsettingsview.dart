@@ -158,14 +158,13 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
 
   showAlertDialog(BuildContext context) {
     // set up the buttons
-    Widget cancelButton = TextButton(
+    Widget cancelButton = ElevatedButton(
       child: Text(AppLocalizations.of(context)!.cancel),
-      style: ButtonStyle(padding: MaterialStateProperty.all(EdgeInsets.all(20))),
       onPressed: () {
         Navigator.of(context).pop(); // dismiss dialog
       },
     );
-    Widget continueButton = TextButton(
+    Widget continueButton = ElevatedButton(
       style: ButtonStyle(padding: MaterialStateProperty.all(EdgeInsets.all(20))),
       child: Text(AppLocalizations.of(context)!.yesLeave),
       onPressed: () {

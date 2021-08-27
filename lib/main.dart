@@ -116,13 +116,13 @@ class FlwtchState extends State<Flwtch> {
   // the MyBroadcastReceiver method channel
   Future<void> modalShutdown(MethodCall mc) async {
     // set up the buttons
-    Widget cancelButton = TextButton(
+    Widget cancelButton = ElevatedButton(
       child: Text(AppLocalizations.of(navKey.currentContext!)!.cancel),
       onPressed: () {
         Navigator.of(navKey.currentContext!).pop(); // dismiss dialog
       },
     );
-    Widget continueButton = TextButton(
+    Widget continueButton = ElevatedButton(
         child: Text(AppLocalizations.of(navKey.currentContext!)!.shutdownCwtchAction),
         onPressed: () {
           // Directly call the shutdown command, Android will do this for us...

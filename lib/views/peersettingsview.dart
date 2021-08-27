@@ -226,7 +226,7 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
         Navigator.of(context).pop(); // dismiss dialog
       },
     );
-    Widget continueButton = TextButton(
+    Widget continueButton = ElevatedButton(
       style: ButtonStyle(padding: MaterialStateProperty.all(EdgeInsets.all(20))),
       child: Text(AppLocalizations.of(context)!.yesLeave),
       onPressed: () {
