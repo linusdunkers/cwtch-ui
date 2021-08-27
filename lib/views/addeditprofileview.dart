@@ -263,7 +263,6 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                           onPressed: () {
                                             showAlertDialog(context);
                                           },
-                                          style: ElevatedButton.styleFrom(primary: theme.current().defaultButtonColor()),
                                           icon: Icon(Icons.delete_forever),
                                           label: Text(AppLocalizations.of(context)!.deleteBtn),
                                         ))
@@ -330,13 +329,13 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
 
   showAlertDialog(BuildContext context) {
     // set up the buttons
-    Widget cancelButton = TextButton(
+    Widget cancelButton = ElevatedButton(
       child: Text(AppLocalizations.of(context)!.cancel),
       onPressed: () {
         Navigator.of(context).pop(); // dismiss dialog
       },
     );
-    Widget continueButton = TextButton(
+    Widget continueButton = ElevatedButton(
         child: Text(AppLocalizations.of(context)!.deleteProfileConfirmBtn),
         onPressed: () {
           var onion = Provider.of<ProfileInfoState>(context, listen: false).onion;

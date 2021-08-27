@@ -123,7 +123,6 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
                       child: TextButton(
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all(blockedMessageBackground),
-                            overlayColor: MaterialStateProperty.all(blockedMessageBackground),
                           ),
                           child: Text(
                             AppLocalizations.of(context)!.showMessageButton + '\u202F',
@@ -242,14 +241,14 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
 
   showAddContactConfirmAlertDialog(BuildContext context, String profileOnion, String senderOnion) {
     // set up the buttons
-    Widget cancelButton = TextButton(
+    Widget cancelButton = ElevatedButton(
       child: Text(AppLocalizations.of(context)!.cancel),
       style: ButtonStyle(padding: MaterialStateProperty.all(EdgeInsets.all(20))),
       onPressed: () {
         Navigator.of(context).pop(); // dismiss dialog
       },
     );
-    Widget continueButton = TextButton(
+    Widget continueButton = ElevatedButton(
       style: ButtonStyle(padding: MaterialStateProperty.all(EdgeInsets.all(20))),
       child: Text(AppLocalizations.of(context)!.addContact),
       onPressed: () {

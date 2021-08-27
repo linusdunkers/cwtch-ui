@@ -85,8 +85,8 @@ class InvitationBubbleState extends State<InvitationBubble> {
       wdgDecorations = Center(
           widthFactor: 1,
           child: Wrap(children: [
-            Padding(padding: EdgeInsets.all(5), child: TextButton(child: Text(AppLocalizations.of(context)!.rejectGroupBtn + '\u202F'), onPressed: _btnReject)),
-            Padding(padding: EdgeInsets.all(5), child: TextButton(child: Text(AppLocalizations.of(context)!.acceptGroupBtn + '\u202F'), onPressed: _btnAccept)),
+            Padding(padding: EdgeInsets.all(5), child: ElevatedButton(child: Text(AppLocalizations.of(context)!.rejectGroupBtn + '\u202F'), onPressed: _btnReject)),
+            Padding(padding: EdgeInsets.all(5), child: ElevatedButton(child: Text(AppLocalizations.of(context)!.acceptGroupBtn + '\u202F'), onPressed: _btnAccept)),
           ]));
     }
 

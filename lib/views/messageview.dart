@@ -236,7 +236,6 @@ class _MessageViewState extends State<MessageView> {
                                 focusedBorder: InputBorder.none,
                                 enabled: true,
                                 suffixIcon: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(primary: Provider.of<Settings>(context).theme.defaultButtonColor()),
                                   child: Icon(CwtchIcons.send_24px, size: 24, color: Provider.of<Settings>(context).theme.mainTextColor()),
                                   onPressed: isOffline ? null : _sendMessage,
                                 ))),

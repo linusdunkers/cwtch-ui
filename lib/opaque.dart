@@ -374,7 +374,7 @@ class OpaqueDark extends OpaqueThemeType {
   }
 
   Color defaultButtonDisabledColor() {
-    return deepPurple;
+    return lightGrey;
   }
 
   Color defaultButtonDisabledTextColor() {
@@ -684,7 +684,7 @@ class OpaqueLight extends OpaqueThemeType {
   }
 
   Color defaultButtonDisabledColor() {
-    return purple;
+    return lightGrey;
   }
 
   Color defaultButtonDisabledTextColor() {
@@ -969,9 +969,15 @@ ThemeData mkThemeData(Settings opaque) {
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(opaque.current().defaultButtonColor()),
+        backgroundColor: MaterialStateProperty.resolveWith((states) => states.contains(MaterialState.disabled) ? opaque.current().defaultButtonDisabledColor() : opaque.current().defaultButtonColor()),
         foregroundColor: MaterialStateProperty.all(opaque.current().defaultButtonTextColor()),
-        overlayColor: MaterialStateProperty.all(opaque.current().defaultButtonActiveColor()),
+        overlayColor: MaterialStateProperty.resolveWith((states) => (states.contains(MaterialState.pressed) && states.contains(MaterialState.hovered))
+            ? opaque.current().defaultButtonActiveColor()
+            : states.contains(MaterialState.disabled)
+                ? opaque.current().defaultButtonDisabledColor()
+                : null),
+        enableFeedback: true,
+        splashFactory: InkRipple.splashFactory,
         padding: MaterialStateProperty.all(EdgeInsets.all(20)),
         shape: MaterialStateProperty.all(RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18.0),
@@ -1004,7 +1010,11 @@ ThemeData mkThemeData(Settings opaque) {
       thumbColor: MaterialStateProperty.all(opaque.current().mainTextColor()),
       trackColor: MaterialStateProperty.all(opaque.current().dropShadowColor()),
     ),
-    floatingActionButtonTheme: FloatingActionButtonThemeData(backgroundColor: opaque.current().defaultButtonColor(), hoverColor: opaque.current().defaultButtonActiveColor()),
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: opaque.current().defaultButtonColor(),
+        hoverColor: opaque.current().defaultButtonActiveColor(),
+        enableFeedback: true,
+        splashColor: opaque.current().defaultButtonActiveColor()),
     textSelectionTheme: TextSelectionThemeData(
         cursorColor: opaque.current().defaultButtonActiveColor(), selectionColor: opaque.current().defaultButtonActiveColor(), selectionHandleColor: opaque.current().defaultButtonActiveColor()),
   );
