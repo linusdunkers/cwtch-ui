@@ -96,8 +96,9 @@ class CwtchFfi implements Cwtch {
     String home = "";
     String bundledTor = "";
     Map<String, String> envVars = Platform.environment;
+    String cwtchDir = "";
     if (Platform.isLinux) {
-      home = envVars['HOME']!;
+      cwtchDir =  envVars['CWTCH_HOME'] ?? path.join(envVars['HOME']!, ".cwtch");
       if (await File("linux/tor").exists()) {
         bundledTor = "linux/tor";
       } else if (await File("lib/tor").exists()) {
@@ -110,14 +111,21 @@ class CwtchFfi implements Cwtch {
         bundledTor = "tor";
       }
     } else if (Platform.isWindows) {
-      home = envVars['UserProfile']!;
+      cwtchDir = envVars['CWTCH_DIR'] ?? path.join(envVars['UserProfile']!, ".cwtch");
       bundledTor = "Tor\\Tor\\tor.exe";
+    } else if (Platform.isMacOS) {
+      cwtchDir = envVars['CWTCH_HOME'] ?? path.join(envVars['HOME']!, "Library/Application Support/Cwtch");
+      if (await File("ui.app/Contents/MacOS/Tor/tor.real").exists()) {
+        bundledTor = "ui.app/Contents/MacOS/Tor/tor.real";
+      } else if (await File("/Volumes/cwtch/ui.app/Contents/MacOS/Tor/tor.real").exists()) {
+        bundledTor = "/Volumes/cwtch/ui.app/Contents/MacOS/Tor/tor.real";
+      }
     }
 
-    var cwtchDir = envVars['CWTCH_HOME'] ?? path.join(home, ".cwtch");
     if (EnvironmentConfig.BUILD_VER == dev_version) {
       cwtchDir = path.join(cwtchDir, "dev");
     }
+
     print("StartCwtch( cwtchdir: $cwtchDir, torPath: $bundledTor )");
 
     var startCwtchC = library.lookup<NativeFunction<start_cwtch_function>>("c_StartCwtch");
