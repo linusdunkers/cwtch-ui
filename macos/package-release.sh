@@ -2,22 +2,22 @@
 
 # Run from SRCROOT
 
-cp libCwtch.dylib build/macos/Build/Products/Release/ui.app/Contents/Frameworks/
-cp -r /Applications/Tor\ Browser.app/Contents/MacOS/Tor build/macos/Build/Products/Release/ui.app/Contents/MacOS/
+cp libCwtch.dylib build/macos/Build/Products/Release/Cwtch.app/Contents/Frameworks/
+cp -r /Applications/Tor\ Browser.app/Contents/MacOS/Tor build/macos/Build/Products/Release/Cwtch.app/Contents/MacOS/
 
-rm cwtch.dmg
+rm Cwtch.dmg
 rm -r macos_dmg
 mkdir macos_dmg
-cp -r "build/macos/Build/Products/Release/ui.app" macos_dmg/
+cp -r "build/macos/Build/Products/Release/Cwtch.app" macos_dmg/
 
 create-dmg \
-	--volname "cwtch" \
+	--volname "Cwtch" \
 	--volicon "macos/cwtch.icns" \
 	--window-pos 200 120 \
 	--window-size 800 400 \
 	--icon-size 100 \
-	--icon "ui.app" 200 190 \
-	--hide-extension "ui.app" \
+	--icon "Cwtch.app" 200 190 \
+	--hide-extension "Cwtch.app" \
 	--app-drop-link 600 185 \
-	"cwtch.dmg" \
+	"Cwtch.dmg" \
 	macos_dmg

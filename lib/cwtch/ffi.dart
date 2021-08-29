@@ -115,10 +115,10 @@ class CwtchFfi implements Cwtch {
       bundledTor = "Tor\\Tor\\tor.exe";
     } else if (Platform.isMacOS) {
       cwtchDir = envVars['CWTCH_HOME'] ?? path.join(envVars['HOME']!, "Library/Application Support/Cwtch");
-      if (await File("ui.app/Contents/MacOS/Tor/tor.real").exists()) {
-        bundledTor = "ui.app/Contents/MacOS/Tor/tor.real";
-      } else if (await File("/Volumes/cwtch/ui.app/Contents/MacOS/Tor/tor.real").exists()) {
-        bundledTor = "/Volumes/cwtch/ui.app/Contents/MacOS/Tor/tor.real";
+      if (await File("Cwtch.app/Contents/MacOS/Tor/tor.real").exists()) {
+        bundledTor = "Cwtch.app/Contents/MacOS/Tor/tor.real";
+      } else if (await File("/Volumes/Cwtch/Cwtch.app/Contents/MacOS/Tor/tor.real").exists()) {
+        bundledTor = "/Volumes/Cwtch/Cwtch.app/Contents/MacOS/Tor/tor.real";
       }
     }
 

@@ -12,6 +12,7 @@ This README covers build instructions, for information on Cwtch itself please go
     - `install.home.sh` installs the app into your home directory
     - `install.sys.sh` as root to install system wide
     - or run out of the unziped directory
+- MacOS: Cwtch.dmg coming soon...
 
 ## Running
 
@@ -45,6 +46,16 @@ You will probably want to disable Analytics on the Flutter Tool: `flutter config
 
 - Follow the steps above to fetch `libCwtch-go` and `tor` (these will fetch Android versions of these binaries also)
 - run `flutter run` with an Android phone connect via USB (or some other valid debug mode)
+
+### Building on MacOS
+
+- get https://git.openprivacy.ca/cwtch.im/libcwtch-go/ and run `make macos`
+- copy the resulting libCwtch.dylib into this folder
+- Download and install Tor Browser (it's currrently the only way to get tor for macos)
+- `flutter build macos`
+- `./macos/package-release.sh`
+
+results in a Cwtch.dmg that has libCwtch.dylib and tor in it as well and can be installed into Applications
 
 ### Known Platform Issues
 
