@@ -11,6 +11,9 @@ import 'package:cwtch/cwtch/cwtch.dart';
 
 import '../config.dart';
 
+import "package:path/path.dart" show dirname, join;
+import 'dart:io' show Platform;
+
 /////////////////////
 ///   Cwtch API   ///
 /////////////////////
@@ -56,22 +59,35 @@ typedef GetJsonBlobFromStrStrStrFn = Pointer<Utf8> Function(Pointer<Utf8>, int, 
 typedef appbus_events_function = Pointer<Utf8> Function();
 typedef AppbusEventsFn = Pointer<Utf8> Function();
 
+const String UNSUPPORTED_OS = "unsupported-os";
+
 class CwtchFfi implements Cwtch {
   late DynamicLibrary library;
   late CwtchNotifier cwtchNotifier;
   late Isolate cwtchIsolate;
   ReceivePort _receivePort = ReceivePort();
 
-  CwtchFfi(CwtchNotifier _cwtchNotifier) {
+  static String getLibraryPath() {
     if (Platform.isWindows) {
-      library = DynamicLibrary.open("libCwtch.dll");
+      return "libCwtch.dll";
     } else if (Platform.isLinux) {
-      library = DynamicLibrary.open("libCwtch.so");
+      return "libCwtch.so";
+    } else if (Platform.isMacOS) {
+      print(dirname(Platform.script.path));
+      return "libCwtch.dylib";
     } else {
+      return UNSUPPORTED_OS;
+    }
+  }
+
+  CwtchFfi(CwtchNotifier _cwtchNotifier) {
+    String library_path = getLibraryPath();
+    if (library_path == UNSUPPORTED_OS) {
       print("OS ${Platform.operatingSystem} not supported by cwtch/ffi");
       // emergency, ideally the app stays on splash and just posts the error till user closes
       exit(0);
     }
+    library = DynamicLibrary.open(library_path);
     cwtchNotifier = _cwtchNotifier;
   }
 
@@ -80,8 +96,9 @@ class CwtchFfi implements Cwtch {
     String home = "";
     String bundledTor = "";
     Map<String, String> envVars = Platform.environment;
+    String cwtchDir = "";
     if (Platform.isLinux) {
-      home = envVars['HOME']!;
+      cwtchDir =  envVars['CWTCH_HOME'] ?? path.join(envVars['HOME']!, ".cwtch");
       if (await File("linux/tor").exists()) {
         bundledTor = "linux/tor";
       } else if (await File("lib/tor").exists()) {
@@ -94,14 +111,21 @@ class CwtchFfi implements Cwtch {
         bundledTor = "tor";
       }
     } else if (Platform.isWindows) {
-      home = envVars['UserProfile']!;
+      cwtchDir = envVars['CWTCH_DIR'] ?? path.join(envVars['UserProfile']!, ".cwtch");
       bundledTor = "Tor\\Tor\\tor.exe";
+    } else if (Platform.isMacOS) {
+      cwtchDir = envVars['CWTCH_HOME'] ?? path.join(envVars['HOME']!, "Library/Application Support/Cwtch");
+      if (await File("Cwtch.app/Contents/MacOS/Tor/tor.real").exists()) {
+        bundledTor = "Cwtch.app/Contents/MacOS/Tor/tor.real";
+      } else if (await File("/Volumes/Cwtch/Cwtch.app/Contents/MacOS/Tor/tor.real").exists()) {
+        bundledTor = "/Volumes/Cwtch/Cwtch.app/Contents/MacOS/Tor/tor.real";
+      }
     }
 
-    var cwtchDir = envVars['CWTCH_HOME'] ?? path.join(home, ".cwtch");
     if (EnvironmentConfig.BUILD_VER == dev_version) {
       cwtchDir = path.join(cwtchDir, "dev");
     }
+
     print("StartCwtch( cwtchdir: $cwtchDir, torPath: $bundledTor )");
 
     var startCwtchC = library.lookup<NativeFunction<start_cwtch_function>>("c_StartCwtch");
@@ -144,12 +168,7 @@ class CwtchFfi implements Cwtch {
 
   // Steam of appbus events. Call blocks in libcwtch-go GetAppbusEvent.  Static so the isolate can use it
   static Stream<String> pollAppbusEvents() async* {
-    late DynamicLibrary library;
-    if (Platform.isWindows) {
-      library = DynamicLibrary.open("libCwtch.dll");
-    } else if (Platform.isLinux) {
-      library = DynamicLibrary.open("libCwtch.so");
-    }
+    late DynamicLibrary library = DynamicLibrary.open(getLibraryPath());
 
     var getAppbusEventC = library.lookup<NativeFunction<appbus_events_function>>("c_GetAppBusEvent");
     // ignore: non_constant_identifier_names
