@@ -2,6 +2,7 @@
 
 mkdir -p ~/.local/bin
 sed "s|~|$HOME|g" cwtch.home.sh > ~/.local/bin/cwtch
+chmod a+x ~/.local/bin/cwtch
 
 mkdir -p ~/.local/share/icons
 cp cwtch.png ~/.local/share/icons
@@ -14,3 +15,4 @@ cp -r lib/* ~/.local/lib/cwtch
 
 mkdir -p ~/.local/share/applications
 sed "s|~|$HOME|g" cwtch.home.desktop > $HOME/.local/share/applications/cwtch.desktop
+chmod a+x $HOME/.local/share/applications/cwtch.desktop
