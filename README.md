@@ -49,9 +49,8 @@ You will probably want to disable Analytics on the Flutter Tool: `flutter config
 
 ### Building on MacOS
 
-- get https://git.openprivacy.ca/cwtch.im/libcwtch-go/ and run `make macos`
-- copy the resulting libCwtch.dylib into this folder
-- Download and install Tor Browser (it's currrently the only way to get tor for macos)
+- Navigate to https://git.openprivacy.ca/cwtch.im/libcwtch-go/releases and download the latest libCwtch.dylib into this folder 
+- Download and install Tor Browser (it's currently the only way to get tor for macos)
 - `flutter build macos`
 - `./macos/package-release.sh`
 
