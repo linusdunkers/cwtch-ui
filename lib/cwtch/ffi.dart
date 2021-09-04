@@ -119,6 +119,9 @@ class CwtchFfi implements Cwtch {
         bundledTor = "/Applications/Cwtch.app/Contents/MacOS/Tor/tor.real";
       } else if (await File("/Volumes/Cwtch/Cwtch.app/Contents/MacOS/Tor/tor.real").exists()) {
         bundledTor = "/Volumes/Cwtch/Cwtch.app/Contents/MacOS/Tor/tor.real";
+      } else if (await File("/Applications/Tor Browser.app/Contents/MacOS/Tor/tor.real").exists()) {
+        bundledTor = "/Applications/Tor Browser.app/Contents/MacOS/Tor/tor.real";
+        print("We couldn't find Tor in the Cwtch app directory, however we can fall back to the Tor Browser binary");
       } else {
         var splitPath = path.split(dirname(Platform.script.path));
         if (splitPath[0] == "/" && splitPath[1] == "Applications"){
