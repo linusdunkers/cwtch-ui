@@ -154,7 +154,7 @@ volumes:
     temp: {}
 
 trigger:
-  repo: cwtch.im/cwtch-ui
+  #repo: cwtch.im/cwtch-ui # allow forks to build?
   branch: trunk
   event:
     - push
@@ -271,7 +271,7 @@ steps:
       - scp -r -o StrictHostKeyChecking=no -i id_rsa deploy\\* buildfiles@build.openprivacy.ca:/home/buildfiles/buildfiles/
 
 trigger:
-  repo: cwtch.im/cwtch-ui
+  # repo: cwtch.im/cwtch-ui # allow forks to build?
   branch: trunk
   event:
     - push
