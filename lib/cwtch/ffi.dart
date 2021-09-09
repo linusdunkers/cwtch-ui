@@ -117,8 +117,22 @@ class CwtchFfi implements Cwtch {
       cwtchDir = envVars['CWTCH_HOME'] ?? path.join(envVars['HOME']!, "Library/Application Support/Cwtch");
       if (await File("Cwtch.app/Contents/MacOS/Tor/tor.real").exists()) {
         bundledTor = "Cwtch.app/Contents/MacOS/Tor/tor.real";
+      } else if (await File("/Applications/Cwtch.app/Contents/MacOS/Tor/tor.real").exists()) {
+        bundledTor = "/Applications/Cwtch.app/Contents/MacOS/Tor/tor.real";
       } else if (await File("/Volumes/Cwtch/Cwtch.app/Contents/MacOS/Tor/tor.real").exists()) {
         bundledTor = "/Volumes/Cwtch/Cwtch.app/Contents/MacOS/Tor/tor.real";
+      } else if (await File("/Applications/Tor Browser.app/Contents/MacOS/Tor/tor.real").exists()) {
+        bundledTor = "/Applications/Tor Browser.app/Contents/MacOS/Tor/tor.real";
+        print("We couldn't find Tor in the Cwtch app directory, however we can fall back to the Tor Browser binary");
+      } else {
+        var splitPath = path.split(dirname(Platform.script.path));
+        if (splitPath[0] == "/" && splitPath[1] == "Applications"){
+          var appName = splitPath[2];
+          print("We're running in /Applications in a non standard app name: $appName");
+          if (await File("/Applications/$appName/Contents/MacOS/Tor/tor.real").exists()) {
+            bundledTor = "/Applications/$appName/Contents/MacOS/Tor/tor.real";
+          }
+        }
       }
     }
 
