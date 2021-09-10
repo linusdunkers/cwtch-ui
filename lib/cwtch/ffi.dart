@@ -136,6 +136,21 @@ class CwtchFfi implements Cwtch {
       }
     }
 
+    // the first Cwtch MacOS release (1.2) accidently was a dev build
+    // we need to temporarily remedy this for a release or two then delete
+      // if macOs and release build and no profile and is dev profile
+        // copy dev profile to release profile
+    if (Platform.isMacOS && EnvironmentConfig.BUILD_VER != dev_version) {
+      var devProfileExists = await Directory(path.join(cwtchDir, "dev", "profiles")).exists();
+      var releaseProfileExists = await Directory(path.join(cwtchDir, "profiles")).exists();
+      if (devProfileExists && !releaseProfileExists) {
+        print("MacOS one time dev -> release profile migration...");
+        await Process.run("cp", ["-r", "-p", path.join(cwtchDir, "dev", "profiles"), cwtchDir]);
+        await Process.run("cp", ["-r", "-p", path.join(cwtchDir, "dev", "SALT"), cwtchDir]);
+        await Process.run("cp", ["-r", "-p", path.join(cwtchDir, "dev", "ui.globals"), cwtchDir]);
+      }
+    }
+
     if (EnvironmentConfig.BUILD_VER == dev_version) {
       cwtchDir = path.join(cwtchDir, "dev");
     }

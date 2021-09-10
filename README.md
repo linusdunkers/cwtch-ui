@@ -12,7 +12,7 @@ This README covers build instructions, for information on Cwtch itself please go
     - `install.home.sh` installs the app into your home directory
     - `install.sys.sh` as root to install system wide
     - or run out of the unziped directory
-- MacOS: Cwtch.dmg coming soon...
+- MacOS: Available from [https://cwtch.im/download/](https://cwtch.im/download/) as a .dmg
 
 ## Running
 
@@ -32,12 +32,9 @@ This project uses the flutter `dev` channel, which you will need to switch to: `
 
 Once flutter is set up, run `flutter pub get` from this project folder to fetch dependencies.
 
-By default a development version is built, which loads profiles from `$CWTCH_HOME/dev/`.
-To build a release version and load normal profiles, add something like the
-following to the `flutter build` commands below:
-```
---dart-define BUILD_VER="`git describe --tags --abbrev=1`" --dart-define BUILD_DATE="`date +%G-%m-%d-%H-%M`"
-```
+By default a development version is built, which loads profiles from `$CWTCH_HOME/dev/`. This is so that you can build
+and test development builds with alternative profiles while running a release/stable version of Cwtch uninterrupted. 
+To build a release version and load normal profiles, use `build-release.sh X` instead of `flutter build X`
 
 ### Building on Linux (for Linux)
 
