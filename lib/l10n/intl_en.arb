@@ -1,7 +1,7 @@
 {
     "@@locale": "en",
-    "@@last_modified": "2021-09-14T02:24:48+02:00",
-    "descriptionStreamerMode": "If turned on, this option makes the app more visually private for steaming or presenting with, for example, hiding profile and contact onions",
+    "@@last_modified": "2021-09-14T22:34:57+02:00",
+    "descriptionStreamerMode": "If turned on, this option makes the app more visually private for streaming or presenting with, for example, hiding profile and contact onions",
     "streamerModeLabel": "Streamer\/Presentation Mode",
     "archiveConversation": "Archive this Conversation",
     "profileOnionLabel": "Send this address to people you want to connect with",
