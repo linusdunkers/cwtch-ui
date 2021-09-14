@@ -75,11 +75,11 @@ class Settings extends ChangeNotifier {
     // Set Locale and notify listeners
     switchLocale(Locale(settings["Locale"]));
 
-    blockUnknownConnections = settings["BlockUnknownConnections"];
-    streamerMode = settings["StreamerMode"];
+    blockUnknownConnections = settings["BlockUnknownConnections"] ?? false;
+    streamerMode = settings["StreamerMode"] ?? false;
 
     // Decide whether to enable Experiments
-    experimentsEnabled = settings["ExperimentsEnabled"];
+    experimentsEnabled = settings["ExperimentsEnabled"] ?? false;
 
     // Set the internal experiments map. Casting from the Map<dynamic, dynamic> that we get from JSON
     experiments = new HashMap<String, bool>.from(settings["Experiments"]);
