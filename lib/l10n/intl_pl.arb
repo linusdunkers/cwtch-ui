@@ -1,6 +1,8 @@
 {
     "@@locale": "pl",
-    "@@last_modified": "2021-08-29T18:35:41+02:00",
+    "@@last_modified": "2021-09-14T02:24:48+02:00",
+    "descriptionStreamerMode": "If turned on, this option makes the app more visually private for steaming or presenting with, for example, hiding profile and contact onions",
+    "streamerModeLabel": "Streamer\/Presentation Mode",
     "archiveConversation": "Archive this Conversation",
     "profileOnionLabel": "Send this address to contacts you want to connect with",
     "addPeerTab": "Add a contact",
