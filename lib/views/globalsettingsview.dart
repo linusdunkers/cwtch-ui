@@ -138,6 +138,19 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                         secondary: Icon(CwtchIcons.block_unknown, color: settings.current().mainTextColor()),
                       ),
                       SwitchListTile(
+                        title: Text(AppLocalizations.of(context)!.streamerModeLabel, style: TextStyle(color: settings.current().mainTextColor())),
+                        subtitle: Text(AppLocalizations.of(context)!.descriptionStreamerMode),
+                        value: settings.streamerMode,
+                        onChanged: (bool value) {
+                         settings.setStreamerMode(value);
+                          // Save Settings...
+                          saveSettings(context);
+                        },
+                        activeTrackColor: settings.theme.defaultButtonActiveColor(),
+                        inactiveTrackColor: settings.theme.defaultButtonDisabledColor(),
+                        secondary: Icon(CwtchIcons.block_unknown, color: settings.current().mainTextColor()),
+                      ),
+                      SwitchListTile(
                         title: Text(AppLocalizations.of(context)!.experimentsEnabled, style: TextStyle(color: settings.current().mainTextColor())),
                         subtitle: Text(AppLocalizations.of(context)!.descriptionExperiments),
                         value: settings.experimentsEnabled,

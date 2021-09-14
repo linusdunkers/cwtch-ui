@@ -31,6 +31,7 @@ class Settings extends ChangeNotifier {
   DualpaneMode _uiColumnModeLandscape = DualpaneMode.CopyPortrait;
 
   bool blockUnknownConnections = false;
+  bool streamerMode = false;
 
   /// Set the dark theme.
   void setDark() {
@@ -74,11 +75,11 @@ class Settings extends ChangeNotifier {
     // Set Locale and notify listeners
     switchLocale(Locale(settings["Locale"]));
 
-    // Decide whether to enable Experiments
-    blockUnknownConnections = settings["BlockUnknownConnections"];
+    blockUnknownConnections = settings["BlockUnknownConnections"] ?? false;
+    streamerMode = settings["StreamerMode"] ?? false;
 
     // Decide whether to enable Experiments
-    experimentsEnabled = settings["ExperimentsEnabled"];
+    experimentsEnabled = settings["ExperimentsEnabled"] ?? false;
 
     // Set the internal experiments map. Casting from the Map<dynamic, dynamic> that we get from JSON
     experiments = new HashMap<String, bool>.from(settings["Experiments"]);
@@ -102,6 +103,11 @@ class Settings extends ChangeNotifier {
   /// Switch the Locale of the App
   switchLocale(Locale newLocale) {
     locale = newLocale;
+    notifyListeners();
+  }
+
+  setStreamerMode(bool newSteamerMode) {
+    streamerMode = newSteamerMode;
     notifyListeners();
   }
 
@@ -227,6 +233,7 @@ class Settings extends ChangeNotifier {
       "Theme": themeString,
       "PreviousPid": -1,
       "BlockUnknownConnections": blockUnknownConnections,
+      "StreamerMode": streamerMode,
       "ExperimentsEnabled": this.experimentsEnabled,
       "Experiments": experiments,
       "StateRootPane": 0,

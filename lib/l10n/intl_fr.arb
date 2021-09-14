@@ -1,6 +1,8 @@
 {
     "@@locale": "fr",
-    "@@last_modified": "2021-08-29T18:35:41+02:00",
+    "@@last_modified": "2021-09-14T22:34:57+02:00",
+    "descriptionStreamerMode": "Si elle est activée, cette option donne un rendu visuel plus privé à l'application pour la diffusion ou la présentation, par exemple en masquant les profils et les contacts.",
+    "streamerModeLabel": "Mode Streamer\/Présentation",
     "archiveConversation": "Archiver cette conversation",
     "profileOnionLabel": "Envoyez cette adresse aux personnes avec lesquelles vous souhaitez entrer en contact.",
     "addPeerTab": "Ajouter un contact",
