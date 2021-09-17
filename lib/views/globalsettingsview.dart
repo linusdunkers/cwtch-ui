@@ -142,7 +142,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                         subtitle: Text(AppLocalizations.of(context)!.descriptionStreamerMode),
                         value: settings.streamerMode,
                         onChanged: (bool value) {
-                         settings.setStreamerMode(value);
+                          settings.setStreamerMode(value);
                           // Save Settings...
                           saveSettings(context);
                         },

@@ -31,6 +31,7 @@ class AppState extends ChangeNotifier {
   String? _selectedProfile;
   String? _selectedConversation;
   int _initialScrollIndex = 0;
+  int _hoveredIndex = -1;
   int? _selectedIndex;
   bool _unreadMessagesBelow = false;
 
@@ -59,6 +60,14 @@ class AppState extends ChangeNotifier {
   int? get selectedIndex => _selectedIndex;
   set selectedIndex(int? newVal) {
     this._selectedIndex = newVal;
+    notifyListeners();
+  }
+
+  // Never use this for message lookup - can be a non-indexed value
+  // e.g. -1
+  int get hoveredIndex => _hoveredIndex;
+  set hoveredIndex(int newVal) {
+    this._hoveredIndex = newVal;
     notifyListeners();
   }
 
@@ -381,21 +390,18 @@ class ContactInfoState extends ChangeNotifier {
   String? _server;
   late bool _archived;
 
-  ContactInfoState(
-    this.profileOnion,
-    this.onion, {
-    nickname = "",
-    isGroup = false,
-    authorization = ContactAuthorization.unknown,
-    status = "",
-    imagePath = "",
-    savePeerHistory = "DeleteHistoryConfirmed",
-    numMessages = 0,
-    numUnread = 0,
-    lastMessageTime,
-    server,
-    archived = false
-  }) {
+  ContactInfoState(this.profileOnion, this.onion,
+      {nickname = "",
+      isGroup = false,
+      authorization = ContactAuthorization.unknown,
+      status = "",
+      imagePath = "",
+      savePeerHistory = "DeleteHistoryConfirmed",
+      numMessages = 0,
+      numUnread = 0,
+      lastMessageTime,
+      server,
+      archived = false}) {
     this._nickname = nickname;
     this._isGroup = isGroup;
     this._authorization = authorization;
@@ -421,8 +427,8 @@ class ContactInfoState extends ChangeNotifier {
     this._archived = archived;
     notifyListeners();
   }
-  bool get isArchived => this._archived;
 
+  bool get isArchived => this._archived;
 
   set savePeerHistory(String newVal) {
     this._savePeerHistory = newVal;

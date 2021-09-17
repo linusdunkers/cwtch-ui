@@ -98,7 +98,7 @@ class CwtchFfi implements Cwtch {
     Map<String, String> envVars = Platform.environment;
     String cwtchDir = "";
     if (Platform.isLinux) {
-      cwtchDir =  envVars['CWTCH_HOME'] ?? path.join(envVars['HOME']!, ".cwtch");
+      cwtchDir = envVars['CWTCH_HOME'] ?? path.join(envVars['HOME']!, ".cwtch");
       if (await File("linux/tor").exists()) {
         bundledTor = "linux/tor";
       } else if (await File("lib/tor").exists()) {
@@ -126,7 +126,7 @@ class CwtchFfi implements Cwtch {
         print("We couldn't find Tor in the Cwtch app directory, however we can fall back to the Tor Browser binary");
       } else {
         var splitPath = path.split(dirname(Platform.script.path));
-        if (splitPath[0] == "/" && splitPath[1] == "Applications"){
+        if (splitPath[0] == "/" && splitPath[1] == "Applications") {
           var appName = splitPath[2];
           print("We're running in /Applications in a non standard app name: $appName");
           if (await File("/Applications/$appName/Contents/MacOS/Tor/tor.real").exists()) {
@@ -138,8 +138,8 @@ class CwtchFfi implements Cwtch {
 
     // the first Cwtch MacOS release (1.2) accidently was a dev build
     // we need to temporarily remedy this for a release or two then delete
-      // if macOs and release build and no profile and is dev profile
-        // copy dev profile to release profile
+    // if macOs and release build and no profile and is dev profile
+    // copy dev profile to release profile
     if (Platform.isMacOS && EnvironmentConfig.BUILD_VER != dev_version) {
       var devProfileExists = await Directory(path.join(cwtchDir, "dev", "profiles")).exists();
       var releaseProfileExists = await Directory(path.join(cwtchDir, "profiles")).exists();
@@ -447,7 +447,6 @@ class CwtchFfi implements Cwtch {
     malloc.free(u1);
     malloc.free(u2);
   }
-
 
   @override
   // ignore: non_constant_identifier_names

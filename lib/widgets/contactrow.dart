@@ -65,11 +65,12 @@ class _ContactRowState extends State<ContactRow> {
                             child: LinearProgressIndicator(
                               color: Provider.of<Settings>(context).theme.defaultButtonActiveColor(),
                             )),
-                    Visibility(
-                      visible: !Provider.of<Settings>(context).streamerMode,
-                      child: Text(contact.onion,
-                            style: TextStyle(color: contact.isBlocked ? Provider.of<Settings>(context).theme.portraitBlockedTextColor() : Provider.of<Settings>(context).theme.mainTextColor())),
-                    )],
+                        Visibility(
+                          visible: !Provider.of<Settings>(context).streamerMode,
+                          child: Text(contact.onion,
+                              style: TextStyle(color: contact.isBlocked ? Provider.of<Settings>(context).theme.portraitBlockedTextColor() : Provider.of<Settings>(context).theme.mainTextColor())),
+                        )
+                      ],
                     ))),
             Padding(
               padding: const EdgeInsets.all(5.0),
