@@ -257,18 +257,27 @@ class _MessageViewState extends State<MessageView> {
                 color: message.getMetadata().senderHandle != Provider.of<AppState>(context).selectedProfile
                     ? Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor()
                     : Provider.of<Settings>(context).theme.messageFromMeBackgroundColor(),
-                child: Wrap(runAlignment: WrapAlignment.spaceEvenly, alignment: WrapAlignment.spaceEvenly, runSpacing: 1.0, crossAxisAlignment: WrapCrossAlignment.center, children: [
-                  Center(widthFactor: 1, child: Padding(padding: EdgeInsets.all(10.0), child: Icon(Icons.reply, size: 32))),
-                  Center(widthFactor: 1.0, child: message.getPreviewWidget(context)),
-                  Center(
-                      widthFactor: 1.0,
-                      child: IconButton(
-                        icon: Icon(Icons.highlight_remove),
-                        tooltip: AppLocalizations.of(context)!.tooltipRemoveThisQuotedMessage,
-                        onPressed: () {
-                          Provider.of<AppState>(context, listen: false).selectedIndex = null;
-                        },
-                      ))
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Stack(children: [
+                    Align(
+                        alignment: Alignment.topRight,
+                        child: IconButton(
+                          icon: Icon(Icons.highlight_remove),
+                          tooltip: AppLocalizations.of(context)!.tooltipRemoveThisQuotedMessage,
+                          onPressed: () {
+                            Provider.of<AppState>(context, listen: false).selectedIndex = null;
+                          },
+                        )),
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Padding(padding: EdgeInsets.all(2.0), child: Icon(Icons.reply)),
+                    )
+                  ]),
+                  Wrap(
+                      runAlignment: WrapAlignment.spaceEvenly,
+                      alignment: WrapAlignment.center,
+                      runSpacing: 1.0,
+                      children: [Center(widthFactor: 1.0, child: Padding(padding: EdgeInsets.all(10.0), child: message.getPreviewWidget(context)))]),
                 ]));
           } else {
             return MessageLoadingBubble();
