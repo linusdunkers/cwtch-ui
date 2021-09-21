@@ -36,6 +36,9 @@ typedef VoidFromStringStringStringFn = void Function(Pointer<Utf8>, int, Pointer
 typedef void_from_string_string_string_string_function = Void Function(Pointer<Utf8>, Int32, Pointer<Utf8>, Int32, Pointer<Utf8>, Int32, Pointer<Utf8>, Int32);
 typedef VoidFromStringStringStringStringFn = void Function(Pointer<Utf8>, int, Pointer<Utf8>, int, Pointer<Utf8>, int, Pointer<Utf8>, int);
 
+typedef void_from_string_string_string_string_string_function = Void Function(Pointer<Utf8>, Int32, Pointer<Utf8>, Int32, Pointer<Utf8>, Int32, Pointer<Utf8>, Int32, Pointer<Utf8>, Int32);
+typedef VoidFromStringStringStringStringStringFn = void Function(Pointer<Utf8>, int, Pointer<Utf8>, int, Pointer<Utf8>, int, Pointer<Utf8>, int, Pointer<Utf8>, int);
+
 typedef void_from_string_string_int_int_function = Void Function(Pointer<Utf8>, Int32, Pointer<Utf8>, Int32, Int64, Int64);
 typedef VoidFromStringStringIntIntFn = void Function(Pointer<Utf8>, int, Pointer<Utf8>, int, int, int);
 
@@ -323,6 +326,46 @@ class CwtchFfi implements Cwtch {
     malloc.free(u1);
     malloc.free(u2);
     malloc.free(u3);
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void ShareFile(String profileOnion, String contactHandle, String filepath) {
+    var shareFile = library.lookup<NativeFunction<void_from_string_string_string_function>>("c_ShareFile");
+    // ignore: non_constant_identifier_names
+    final ShareFile = shareFile.asFunction<VoidFromStringStringStringFn>();
+    final u1 = profileOnion.toNativeUtf8();
+    final u2 = contactHandle.toNativeUtf8();
+    final u3 = filepath.toNativeUtf8();
+    ShareFile(u1, u1.length, u2, u2.length, u3, u3.length);
+    malloc.free(u1);
+    malloc.free(u2);
+    malloc.free(u3);
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void DownloadFile(String profileOnion, String contactHandle, String filepath, String manifestpath, String filekey) {
+    var dlFile = library.lookup<NativeFunction<void_from_string_string_string_string_string_function>>("c_DownloadFile");
+    // ignore: non_constant_identifier_names
+    final DownloadFile = dlFile.asFunction<VoidFromStringStringStringStringStringFn>();
+    final u1 = profileOnion.toNativeUtf8();
+    final u2 = contactHandle.toNativeUtf8();
+    final u3 = filepath.toNativeUtf8();
+    final u4 = manifestpath.toNativeUtf8();
+    final u5 = filekey.toNativeUtf8();
+    DownloadFile(u1, u1.length, u2, u2.length, u3, u3.length, u4, u4.length, u5, u5.length);
+    malloc.free(u1);
+    malloc.free(u2);
+    malloc.free(u3);
+    malloc.free(u4);
+    malloc.free(u5);
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void CreateDownloadableFile(String profileOnion, String contactHandle, String filenameSuggestion, String filekey) {
+    // android only - do nothing
   }
 
   @override

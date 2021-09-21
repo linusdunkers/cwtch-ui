@@ -321,6 +321,15 @@ class CwtchNotifier {
           EnvironmentConfig.debugLog("unhandled peer attribute event: ${data['Path']}");
         }
         break;
+      case "ManifestSaved":
+        profileCN.getProfile(data["ProfileOnion"])?.downloadMarkManifest(data["FileKey"]);
+        break;
+      case "FileDownloadProgressUpdate":
+        profileCN.getProfile(data["ProfileOnion"])?.downloadUpdate(data["FileKey"], int.parse(data["Progress"]));
+        break;
+      case "FileDownloaded":
+        profileCN.getProfile(data["ProfileOnion"])?.downloadMarkFinished(data["FileKey"]);
+        break;
       default:
         EnvironmentConfig.debugLog("unhandled event: $type");
     }

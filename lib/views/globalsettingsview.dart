@@ -175,6 +175,22 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                 inactiveTrackColor: settings.theme.defaultButtonDisabledColor(),
                                 secondary: Icon(CwtchIcons.enable_groups, color: settings.current().mainTextColor()),
                               ),
+                              SwitchListTile(
+                                title: Text(AppLocalizations.of(context)!.labelFileSharing, style: TextStyle(color: settings.current().mainTextColor())),
+                                subtitle: Text(AppLocalizations.of(context)!.descriptionFileSharing),
+                                value: settings.isExperimentEnabled(FileSharingExperiment),
+                                onChanged: (bool value) {
+                                  if (value) {
+                                    settings.enableExperiment(FileSharingExperiment);
+                                  } else {
+                                    settings.disableExperiment(FileSharingExperiment);
+                                  }
+                                  saveSettings(context);
+                                },
+                                activeTrackColor: settings.theme.defaultButtonActiveColor(),
+                                inactiveTrackColor: settings.theme.defaultButtonDisabledColor(),
+                                secondary: Icon(Icons.attach_file, color: settings.current().mainTextColor()),
+                              ),
                             ],
                           )),
                       AboutListTile(

@@ -24,6 +24,7 @@ class ChatMessage {
       };
 }
 
+
 class AppState extends ChangeNotifier {
   bool cwtchInit = false;
   bool cwtchIsClosing = false;
@@ -204,6 +205,7 @@ class ProfileInfoState extends ChangeNotifier {
   String _imagePath = "";
   int _unreadMessages = 0;
   bool _online = false;
+  Map<String, FileDownloadProgress> _downloads = Map<String, FileDownloadProgress>();
 
   // assume profiles are encrypted...this will be set to false
   // in the constructor if the profile is encrypted with the defacto password.
@@ -346,6 +348,65 @@ class ProfileInfoState extends ChangeNotifier {
         }
       });
     }
+  }
+
+  void downloadInit(String fileKey, int numChunks) {
+    this._downloads[fileKey] = FileDownloadProgress(numChunks);
+  }
+
+  void downloadUpdate(String fileKey, int progress) {
+    if (!downloadActive(fileKey)) {
+      print("error: received progress for unknown download "+fileKey);
+    } else {
+      this._downloads[fileKey]!.chunksDownloaded = progress;
+      notifyListeners();
+    }
+  }
+
+  void downloadMarkManifest(String fileKey) {
+    if (!downloadActive(fileKey)) {
+      print("error: received download completion notice for unknown download "+fileKey);
+    } else {
+      this._downloads[fileKey]!.gotManifest = true;
+      notifyListeners();
+    }
+  }
+
+  void downloadMarkFinished(String fileKey) {
+    if (!downloadActive(fileKey)) {
+      print("error: received download completion notice for unknown download "+fileKey);
+    } else {
+      this._downloads[fileKey]!.complete = true;
+      notifyListeners();
+    }
+  }
+
+  bool downloadActive(String fileKey) {
+    return this._downloads.containsKey(fileKey);
+  }
+
+  bool downloadGotManifest(String fileKey) {
+    return this._downloads.containsKey(fileKey) && this._downloads[fileKey]!.gotManifest;
+  }
+
+  bool downloadComplete(String fileKey) {
+    return this._downloads.containsKey(fileKey) && this._downloads[fileKey]!.complete;
+  }
+
+  double downloadProgress(String fileKey) {
+      return this._downloads.containsKey(fileKey) ? this._downloads[fileKey]!.progress() : 0.0;
+  }
+}
+
+class FileDownloadProgress {
+  int chunksDownloaded = 0;
+  int chunksTotal = 1;
+  bool complete = false;
+  bool gotManifest = false;
+
+  FileDownloadProgress(this.chunksTotal);
+  double progress() {
+    return 1.0 * chunksDownloaded / chunksTotal;
   }
 }
 

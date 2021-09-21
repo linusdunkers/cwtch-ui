@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../main.dart';
 import '../model.dart';
+import 'messages/filemessage.dart';
 import 'messages/invitemessage.dart';
 import 'messages/malformedmessage.dart';
 import 'messages/quotedmessage.dart';
@@ -14,6 +15,7 @@ const TextMessageOverlay = 1;
 const QuotedMessageOverlay = 10;
 const SuggestContactOverlay = 100;
 const InviteGroupOverlay = 101;
+const FileShareOverlay = 200;
 
 // Defines the length of the tor v3 onion address. Code using this constant will
 // need to updated when we allow multiple different identifiers. At which time
@@ -77,6 +79,8 @@ Future<Message> messageHandler(BuildContext context, String profileOnion, String
             return InviteMessage(overlay, metadata, content);
           case QuotedMessageOverlay:
             return QuotedMessage(metadata, content);
+          case FileShareOverlay:
+            return FileMessage(metadata, content);
           default:
             // Metadata is valid, content is not..
             return MalformedMessage(metadata);
