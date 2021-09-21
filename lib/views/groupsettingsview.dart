@@ -162,11 +162,12 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
                                     onPressed: () {
                                       showAlertDialog(context);
                                     },
-                                    style: ButtonStyle (
-                                      backgroundColor: MaterialStateProperty.all(Colors.transparent)
-                                    ),
+                                    style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.transparent)),
                                     icon: Icon(CwtchIcons.leave_group),
-                                    label: Text(AppLocalizations.of(context)!.leaveGroup, style: TextStyle(decoration: TextDecoration.underline),),
+                                    label: Text(
+                                      AppLocalizations.of(context)!.leaveGroup,
+                                      style: TextStyle(decoration: TextDecoration.underline),
+                                    ),
                                   ))
                             ])
                           ])

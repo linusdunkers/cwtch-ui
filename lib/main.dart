@@ -156,7 +156,7 @@ class FlwtchState extends State<Flwtch> {
     Future.delayed(Duration(seconds: 2)).then((value) {
       if (Platform.isAndroid) {
         SystemNavigator.pop();
-      } else if (Platform.isLinux || Platform.isWindows) {
+      } else if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
         print("Exiting...");
         exit(0);
       }

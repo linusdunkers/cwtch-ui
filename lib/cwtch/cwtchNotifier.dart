@@ -307,6 +307,8 @@ class CwtchNotifier {
           if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["RemotePeer"]) != null) {
             profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["RemotePeer"])!.isArchived = data["Data"] == "true";
           }
+        } else if (data["Key"] == "LastKnowSignature") {
+          // group syncing information that isn't relevant to the UI...
         } else {
           EnvironmentConfig.debugLog("unhandled set peer attribute event: ${data['Key']}");
         }

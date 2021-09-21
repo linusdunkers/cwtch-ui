@@ -56,44 +56,44 @@ class _MessageListState extends State<MessageList> {
                             Text("")),
               ))),
       Expanded(
-              child: Container(
-                  // Only show broken heart is the contact is offline...
-                  decoration: BoxDecoration(
-                      image: Provider.of<ContactInfoState>(outerContext).isOnline()
-                          ? null
-                          : DecorationImage(
-                              fit: BoxFit.scaleDown,
-                              alignment: Alignment.center,
-                              image: AssetImage("assets/core/negative_heart_512px.png"),
-                              colorFilter: ColorFilter.mode(Provider.of<Settings>(context).theme.hilightElementTextColor(), BlendMode.srcIn))),
-                  // Don't load messages for syncing server...
-                  child: loadMessages
-                      ? ScrollablePositionedList.builder(
-                          itemPositionsListener: widget.scrollListener,
-                          itemScrollController: widget.scrollController,
-                          initialScrollIndex: Provider.of<AppState>(outerContext, listen: false).initialScrollIndex,
-                          itemCount: Provider.of<ContactInfoState>(outerContext).totalMessages,
-                          reverse: true, // NOTE: There seems to be a bug in flutter that corrects the mouse wheel scroll, but not the drag direction...
-                          itemBuilder: (itemBuilderContext, index) {
-                            var profileOnion = Provider.of<ProfileInfoState>(outerContext, listen: false).onion;
-                            var contactHandle = Provider.of<ContactInfoState>(outerContext, listen: false).onion;
-                            var messageIndex = Provider.of<ContactInfoState>(outerContext).totalMessages - index - 1;
+          child: Container(
+              // Only show broken heart is the contact is offline...
+              decoration: BoxDecoration(
+                  image: Provider.of<ContactInfoState>(outerContext).isOnline()
+                      ? null
+                      : DecorationImage(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.center,
+                          image: AssetImage("assets/core/negative_heart_512px.png"),
+                          colorFilter: ColorFilter.mode(Provider.of<Settings>(context).theme.hilightElementTextColor(), BlendMode.srcIn))),
+              // Don't load messages for syncing server...
+              child: loadMessages
+                  ? ScrollablePositionedList.builder(
+                      itemPositionsListener: widget.scrollListener,
+                      itemScrollController: widget.scrollController,
+                      initialScrollIndex: Provider.of<AppState>(outerContext, listen: false).initialScrollIndex,
+                      itemCount: Provider.of<ContactInfoState>(outerContext).totalMessages,
+                      reverse: true, // NOTE: There seems to be a bug in flutter that corrects the mouse wheel scroll, but not the drag direction...
+                      itemBuilder: (itemBuilderContext, index) {
+                        var profileOnion = Provider.of<ProfileInfoState>(outerContext, listen: false).onion;
+                        var contactHandle = Provider.of<ContactInfoState>(outerContext, listen: false).onion;
+                        var messageIndex = Provider.of<ContactInfoState>(outerContext).totalMessages - index - 1;
 
-                            return FutureBuilder(
-                              future: messageHandler(outerContext, profileOnion, contactHandle, messageIndex),
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData) {
-                                  var message = snapshot.data as Message;
-                                  // Already includes MessageRow,,
-                                  return message.getWidget(context);
-                                } else {
-                                  return MessageLoadingBubble();
-                                }
-                              },
-                            );
+                        return FutureBuilder(
+                          future: messageHandler(outerContext, profileOnion, contactHandle, messageIndex),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              var message = snapshot.data as Message;
+                              // Already includes MessageRow,,
+                              return message.getWidget(context);
+                            } else {
+                              return MessageLoadingBubble();
+                            }
                           },
-                        )
-                      : null))
+                        );
+                      },
+                    )
+                  : null))
     ])));
   }
 }

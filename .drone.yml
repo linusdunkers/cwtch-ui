@@ -20,7 +20,7 @@ steps:
       # force by pass of ssh host key check, less secure
       - ssh-keyscan -H git.openprivacy.ca >> ~/.ssh/known_hosts
       # use Drone ssh var instead of hardcode to allow forks to build (gogs@git.openprivacy.ca:cwtch.im/cwtch-ui.git)
-      - git clone $DRONE_GIT_SSH_URL .
+      - git clone gogs@git.openprivacy.ca:$DRONE_REPO.git .
       - git checkout $DRONE_COMMIT
 
   - name: fetch
@@ -154,7 +154,7 @@ volumes:
     temp: {}
 
 trigger:
-  repo: cwtch.im/cwtch-ui
+  #repo: cwtch.im/cwtch-ui # allow forks to build?
   branch: trunk
   event:
     - push
@@ -187,7 +187,7 @@ steps:
       - git init
       # -o UserKnownHostsFile=../known_hosts
       - git config core.sshCommand 'ssh -o StrictHostKeyChecking=no -i ../id_rsa'
-      - git remote add origin $Env:DRONE_GIT_SSH_URL
+      - git remote add origin gogs@git.openprivacy.ca:$Env:DRONE_REPO.git
       - git pull origin trunk
       - git fetch --tags
       - git checkout $Env:DRONE_COMMIT
@@ -271,7 +271,7 @@ steps:
       - scp -r -o StrictHostKeyChecking=no -i id_rsa deploy\\* buildfiles@build.openprivacy.ca:/home/buildfiles/buildfiles/
 
 trigger:
-  repo: cwtch.im/cwtch-ui
+  # repo: cwtch.im/cwtch-ui # allow forks to build?
   branch: trunk
   event:
     - push

@@ -22,7 +22,6 @@ class MessageRow extends StatefulWidget {
 }
 
 class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMixin {
-  bool showMenu = false;
   bool showBlockedMessage = false;
   late AnimationController _controller;
   late Animation<Alignment> _animation;
@@ -70,7 +69,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
     }
 
     Widget wdgIcons = Visibility(
-        visible: this.showMenu,
+        visible: Provider.of<AppState>(context).hoveredIndex == Provider.of<MessageMetadata>(context).messageIndex,
         maintainSize: true,
         maintainAnimation: true,
         maintainState: true,
@@ -164,12 +163,12 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
         // For desktop...
         onHover: (event) {
           setState(() {
-            this.showMenu = true;
+            Provider.of<AppState>(context, listen: false).hoveredIndex = Provider.of<MessageMetadata>(context).messageIndex;
           });
         },
         onExit: (event) {
           setState(() {
-            this.showMenu = false;
+            Provider.of<AppState>(context, listen: false).hoveredIndex = -1;
           });
         },
         child: GestureDetector(

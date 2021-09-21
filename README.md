@@ -12,35 +12,46 @@ This README covers build instructions, for information on Cwtch itself please go
     - `install.home.sh` installs the app into your home directory
     - `install.sys.sh` as root to install system wide
     - or run out of the unziped directory
-- MacOS: Cwtch.dmg coming soon...
+- MacOS: Available from [https://cwtch.im/download/](https://cwtch.im/download/) as a .dmg
 
 ## Running
 
 Cwtch processes the following environment variables:
 - `CWTCH_HOME=` overrides the default storage path of `~/.cwtch` with what ever you choose
-- `LOG_FILE=` will reroute all of libcwtch-go's logging to the specified file instead of the console 
+- `LOG_FILE=` will reroute all of libcwtch-go's logging to the specified file instead of the console
 - `LOG_LEVEL=debug` will set the log level to debug instead of info
 
 ## Building
 
 ### Getting Started
 
-First you will need a valid [flutter sdk installation](https://flutter.dev/docs/get-started/install)
-and run `flutter pub get` to fetch dependencies.
-
+First you will need a valid [flutter sdk installation](https://flutter.dev/docs/get-started/install).
 You will probably want to disable Analytics on the Flutter Tool: `flutter config --no-analytics`
+
+This project uses the flutter `dev` channel, which you will need to switch to: `flutter channel dev; flutter upgrade`.
+
+Once flutter is set up, run `flutter pub get` from this project folder to fetch dependencies.
+
+By default a development version is built, which loads profiles from `$CWTCH_HOME/dev/`. This is so that you can build
+and test development builds with alternative profiles while running a release/stable version of Cwtch uninterrupted. 
+To build a release version and load normal profiles, use `build-release.sh X` instead of `flutter build X`
 
 ### Building on Linux (for Linux)
 
-- run `fetch-libcwtch-go.sh`libCwtch-go to fetch a prebuild version of `libCwtch-go.so` go to `./linux`. Include `./linux` in `LD_LIBRARY_PATH`
-- run `fetch-tor.sh` and/or ensure that `tor` is in `$PATH`
-- run `flutter run -d linux`
+- copy `libCwtch-go.so` to `linux/`, or run `fetch-libcwtch-go.sh` to download it
+- set `LD_LIBRARY_PATH="$PWD/linux"`
+- copy a `tor` binary to `linux/` or run `fetch-tor.sh` to download one
+- run `flutter config --enable-linux-desktop` if you've never done so before
+- optional: launch cwtch-ui directly by running `flutter run -d linux`
+- to build cwtch-ui, run `flutter build linux`
+- to package the build, run `linux/package-release.sh`
 
 ### Building on Windows (for Windows)
 
-- run `fetch-libcwtch-go.ps1` to fetch a prebuild version of `libCwtch.dll`
+- copy `libCwtch.dll` to `windows/`, or run `fetch-libcwtch-go.ps1` to download it
 - run `fetch-tor-win.ps1` to fetch Tor for windows
-- run `flutter run -d windows`
+- optional: launch cwtch-ui directly by running `flutter run -d windows`
+- to build cwtch-ui, run `flutter build windows`
 
 ### Building on Linux/Windows (for Android)
 
@@ -49,7 +60,7 @@ You will probably want to disable Analytics on the Flutter Tool: `flutter config
 
 ### Building on MacOS
 
-- Navigate to https://git.openprivacy.ca/cwtch.im/libcwtch-go/releases and download the latest libCwtch.dylib into this folder 
+- Navigate to https://git.openprivacy.ca/cwtch.im/libcwtch-go/releases and download the latest libCwtch.dylib into this folder
 - Download and install Tor Browser (it's currently the only way to get tor for macos)
 - `flutter build macos`
 - `./macos/package-release.sh`

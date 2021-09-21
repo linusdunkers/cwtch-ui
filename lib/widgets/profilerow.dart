@@ -46,12 +46,14 @@ class _ProfileRowState extends State<ProfileRow> {
                     softWrap: true,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  ExcludeSemantics(
-                      child: Text(
-                    profile.onion,
-                    softWrap: true,
-                    overflow: TextOverflow.ellipsis,
-                  ))
+                  Visibility(
+                      visible: !Provider.of<Settings>(context).streamerMode,
+                      child: ExcludeSemantics(
+                          child: Text(
+                        profile.onion,
+                        softWrap: true,
+                        overflow: TextOverflow.ellipsis,
+                      )))
                 ],
               )),
               IconButton(
