@@ -630,7 +630,7 @@ class OpaqueLight extends OpaqueThemeType {
   static final Color whitePurple = Color(0xFFFFFDFF);
   static final Color softPurple = Color(0xFFFDF3FC);
   static final Color purple = Color(0xFFDFB9DE);
-  static final Color brightPurple = Color(0xFF760388);
+  static final Color brightPurple = Color(0xFFD1B0E0);
   static final Color darkPurple = Color(0xFF350052);
   static final Color greyPurple = Color(0xFF775F84);
   static final Color pink = Color(0xFFE85DA1);
@@ -900,11 +900,11 @@ class OpaqueLight extends OpaqueThemeType {
   }
 
   Color messageFromMeBackgroundColor() {
-    return darkPurple;
+    return brightPurple;
   }
 
   Color messageFromMeTextColor() {
-    return whitePurple;
+    return mainTextColor();
   }
 
   Color messageFromOtherBackgroundColor() {
@@ -948,11 +948,14 @@ ThemeData mkThemeData(Settings opaque) {
     backgroundColor: opaque.current().backgroundMainColor(),
     highlightColor: opaque.current().hilightElementTextColor(),
     iconTheme: IconThemeData(
-      color: opaque.current().mainTextColor(),
+      color: opaque.current().toolbarIconColor(),
     ),
     cardColor: opaque.current().backgroundMainColor(),
     appBarTheme: AppBarTheme(
         backgroundColor: opaque.current().backgroundPaneColor(),
+        iconTheme: IconThemeData(
+          color: opaque.current().mainTextColor(),
+        ),
         titleTextStyle: TextStyle(
           color: opaque.current().mainTextColor(),
         ),
