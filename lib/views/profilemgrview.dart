@@ -51,6 +51,7 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
                 Icon(
                   CwtchIcons.cwtch_knott,
                   size: 36,
+                  color: settings.theme.mainTextColor(),
                 ),
                 SizedBox(
                   width: 10,
