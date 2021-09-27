@@ -63,9 +63,9 @@ class FileBubbleState extends State<FileBubble> {
     var wdgMessage = !showFileSharing
         ? Text(AppLocalizations.of(context)!.messageEnableFileSharing)
         : fromMe
-            ? senderInviteChrome(
+            ? senderFileChrome(
               AppLocalizations.of(context)!.messageFileSent, widget.nameSuggestion, widget.rootHash, widget.fileSize)
-            : (inviteChrome(AppLocalizations.of(context)!.messageFileOffered + ":", widget.nameSuggestion, widget.rootHash, widget.fileSize));
+            : (fileChrome(AppLocalizations.of(context)!.messageFileOffered + ":", widget.nameSuggestion, widget.rootHash, widget.fileSize, Provider.of<ProfileInfoState>(context).downloadSpeed(widget.fileKey())));
 
     Widget wdgDecorations;
     if (!showFileSharing) {
@@ -147,9 +147,8 @@ class FileBubbleState extends State<FileBubble> {
            file = File(selectedFileName);
            print("saving to " + file.path);
            var manifestPath = file.path + ".manifest";
-           setState(() {
-             Provider.of<FlwtchState>(context, listen: false).cwtch.DownloadFile(profileOnion, handle, file!.path, manifestPath, widget.fileKey());
-           });
+           Provider.of<ProfileInfoState>(context, listen: false).downloadInit(widget.fileKey(), (widget.fileSize / 4096).ceil());
+           Provider.of<FlwtchState>(context, listen: false).cwtch.DownloadFile(profileOnion, handle, file.path, manifestPath, widget.fileKey());
          }
       } catch (e) {
         print(e);
@@ -158,8 +157,8 @@ class FileBubbleState extends State<FileBubble> {
   }
 
   // Construct an invite chrome for the sender
-  Widget senderInviteChrome(String chrome, String fileName, String rootHash, int fileSize) {
-    return Wrap(children: [
+  Widget senderFileChrome(String chrome, String fileName, String rootHash, int fileSize) {
+    return Wrap(direction: Axis.vertical,children: [
       SelectableText(
         chrome + '\u202F',
         style: TextStyle(
@@ -179,7 +178,7 @@ class FileBubbleState extends State<FileBubble> {
         textWidthBasis: TextWidthBasis.longestLine,
       ),
       SelectableText(
-        fileSize.toString() + 'B\u202F',
+        prettyBytes(fileSize) + '\u202F',
         style: TextStyle(
           color: Provider.of<Settings>(context).theme.messageFromMeTextColor(),
         ),
@@ -200,7 +199,7 @@ class FileBubbleState extends State<FileBubble> {
   }
 
   // Construct an invite chrome
-  Widget inviteChrome(String chrome, String fileName, String rootHash, int fileSize) {
+  Widget fileChrome(String chrome, String fileName, String rootHash, int fileSize, String speed) {
     var prettyHash = rootHash;
     if (rootHash.length == 128) {
       prettyHash = rootHash.substring(0, 32) + '\n' +
@@ -230,7 +229,7 @@ class FileBubbleState extends State<FileBubble> {
         textWidthBasis: TextWidthBasis.longestLine,
       ),
       SelectableText(
-        AppLocalizations.of(context)!.labelFilesize + ': ' + fileSize.toString() + 'B\u202F',
+        AppLocalizations.of(context)!.labelFilesize + ': ' + prettyBytes(fileSize) + '\u202F',
         style: TextStyle(
           color: Provider.of<Settings>(context).theme.messageFromMeTextColor(),
         ),
@@ -245,6 +244,15 @@ class FileBubbleState extends State<FileBubble> {
         ),
         textAlign: TextAlign.left,
         maxLines: 4,
+        textWidthBasis: TextWidthBasis.longestLine,
+      ),
+      SelectableText(
+        speed + '\u202F',
+        style: TextStyle(
+          color: Provider.of<Settings>(context).theme.messageFromMeTextColor(),
+        ),
+        textAlign: TextAlign.left,
+        maxLines: 1,
         textWidthBasis: TextWidthBasis.longestLine,
       ),
     ]);

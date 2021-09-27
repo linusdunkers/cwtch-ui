@@ -15,6 +15,10 @@ import cwtch.Cwtch
 import io.flutter.FlutterInjector
 import org.json.JSONObject
 
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.nio.file.StandardCopyOption
+import android.net.Uri
 
 class FlwtchWorker(context: Context, parameters: WorkerParameters) :
         CoroutineWorker(context, parameters) {
@@ -93,6 +97,24 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                                     .build()
                             notificationManager.notify(getNotificationID(data.getString("ProfileOnion"), handle), newNotification)
                         }
+                    } else if (evt.EventType == "FileDownloaded") {
+                        Log.i("FlwtchWorker", "file downloaded!");
+                        val data = JSONObject(evt.Data);
+                        val tempFile = data.getString("TempFile");
+                        if (tempFile != "") {
+                            val filePath = data.getString("FilePath");
+                            Log.i("FlwtchWorker", "moving "+tempFile+" to "+filePath);
+                            val sourcePath = Paths.get(tempFile);
+                            val targetUri = Uri.parse(filePath);
+                            val os = this.applicationContext.getContentResolver().openOutputStream(targetUri);
+                            val bytesWritten = Files.copy(sourcePath, os);
+                            Log.i("FlwtchWorker", "copied " + bytesWritten.toString() + " bytes");
+                            if (bytesWritten != 0L) {
+                                os?.flush();
+                                os?.close();
+                                Files.delete(sourcePath);
+                            }
+                        }
                     }
 
                     Intent().also { intent ->
@@ -156,6 +178,21 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                 val handle = (a.get("handle") as? String) ?: ""
                 val target = (a.get("target") as? String) ?: ""
                 Cwtch.sendInvitation(profile, handle, target)
+            }
+            "ShareFile" -> {
+                val profile = (a.get("ProfileOnion") as? String) ?: ""
+                val handle = (a.get("handle") as? String) ?: ""
+                val filepath = (a.get("filepath") as? String) ?: ""
+                Cwtch.shareFile(profile, handle, filepath)
+            }
+            "DownloadFile" -> {
+                val profile = (a.get("ProfileOnion") as? String) ?: ""
+                val handle = (a.get("handle") as? String) ?: ""
+                val filepath = (a.get("filepath") as? String) ?: ""
+                val manifestpath = (a.get("manifestpath") as? String) ?: ""
+                val filekey = (a.get("filekey") as? String) ?: ""
+                Log.i("FlwtchWorker::DownloadFile", "DownloadFile("+filepath+", "+manifestpath+")")
+                Cwtch.downloadFile(profile, handle, filepath, manifestpath, filekey)
             }
             "SendProfileEvent" -> {
                 val onion = (a.get("onion") as? String) ?: ""

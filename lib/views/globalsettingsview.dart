@@ -189,7 +189,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                 secondary: Icon(CwtchIcons.enable_groups, color: settings.current().mainTextColor()),
                               ),
                               SwitchListTile(
-                                title: Text(AppLocalizations.of(context)!.labelFileSharing, style: TextStyle(color: settings.current().mainTextColor())),
+                                title: Text(AppLocalizations.of(context)!.settingFileSharing, style: TextStyle(color: settings.current().mainTextColor())),
                                 subtitle: Text(AppLocalizations.of(context)!.descriptionFileSharing),
                                 value: settings.isExperimentEnabled(FileSharingExperiment),
                                 onChanged: (bool value) {

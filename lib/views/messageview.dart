@@ -40,6 +40,9 @@ class _MessageViewState extends State<MessageView> {
   @override
   void initState() {
     scrollListener.itemPositions.addListener(() {
+      if (scrollListener.itemPositions.value.length == 0) {
+        return;
+      }
       var first = scrollListener.itemPositions.value.first.index;
       var last = scrollListener.itemPositions.value.last.index;
       // sometimes these go hi->lo and sometimes they go lo->hi because [who tf knows]

@@ -163,7 +163,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
         // For desktop...
         onHover: (event) {
           setState(() {
-            Provider.of<AppState>(context, listen: false).hoveredIndex = Provider.of<MessageMetadata>(context).messageIndex;
+            Provider.of<AppState>(context, listen: false).hoveredIndex = Provider.of<MessageMetadata>(context, listen: false).messageIndex;
           });
         },
         onExit: (event) {

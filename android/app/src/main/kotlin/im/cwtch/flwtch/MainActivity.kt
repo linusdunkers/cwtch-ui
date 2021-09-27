@@ -12,16 +12,24 @@ import android.view.Window
 import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.work.*
-
 import io.flutter.embedding.android.SplashScreen
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel.Result
+import io.flutter.plugin.common.ErrorLogResult
 
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
+
+import android.net.Uri
+import android.provider.DocumentsContract
+import android.content.ContentUris
+import android.os.Build
+import android.os.Environment
+import android.database.Cursor
+import android.provider.MediaStore
 
 class MainActivity: FlutterActivity() {
     override fun provideSplashScreen(): SplashScreen? = SplashView()
@@ -47,6 +55,11 @@ class MainActivity: FlutterActivity() {
     private var notificationClickChannel: MethodChannel? = null
     private var shutdownClickChannel: MethodChannel? = null
 
+    // "Download to..." prompt extra arguments
+    private var dlToProfile = ""
+    private var dlToHandle = ""
+    private var dlToFileKey = ""
+
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         if (notificationClickChannel == null || intent.extras == null) return
@@ -66,6 +79,25 @@ class MainActivity: FlutterActivity() {
         } else {
             print("warning: received intent with unknown method; ignoring")
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, result: Int, intent: Intent?) {
+        if (intent == null || intent!!.getData() == null) {
+            Log.i("MainActivity:onActivityResult", "user canceled activity");
+            return;
+        }
+
+        val filePath = intent!!.getData().toString();
+        val manifestPath = StringBuilder().append(this.applicationContext.cacheDir).append("/").append(this.dlToFileKey).toString();
+        Log.i("onActivityResult", "got download path: " + filePath);
+        Log.i("onActivityResult", "got manifest path: " + manifestPath);
+        handleCwtch(MethodCall("DownloadFile", mapOf(
+            "ProfileOnion" to this.dlToProfile,
+            "handle" to this.dlToHandle,
+            "filepath" to filePath,
+            "manifestpath" to manifestPath,
+            "filekey" to this.dlToFileKey
+        )), ErrorLogResult(""));//placeholder; result is never actually invoked
     }
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
@@ -125,6 +157,18 @@ class MainActivity: FlutterActivity() {
             val workRequest = PeriodicWorkRequestBuilder<FlwtchWorker>(15, TimeUnit.MINUTES).setInputData(data).addTag(WORKER_TAG).addTag(uniqueTag).build()
             WorkManager.getInstance(this).enqueueUniquePeriodicWork("req_$uniqueTag", ExistingPeriodicWorkPolicy.REPLACE, workRequest)
             return
+        } else if (call.method == "CreateDownloadableFile") {
+            this.dlToProfile = argmap["ProfileOnion"] ?: ""
+            this.dlToHandle = argmap["handle"] ?: ""
+            val suggestedName = argmap["filename"] ?: "filename.ext"
+            this.dlToFileKey = argmap["filekey"] ?: ""
+            val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+                addCategory(Intent.CATEGORY_OPENABLE)
+                type = "application/octet-stream"
+                putExtra(Intent.EXTRA_TITLE, suggestedName)
+            }
+            startActivityForResult(intent, 1)
+            return
         }
 
         // ...otherwise fallthru to a normal ffi method call (and return the result using the result callback)
@@ -178,20 +222,6 @@ class MainActivity: FlutterActivity() {
         WorkManager.getInstance(this).pruneWork()
     }
 
-// source: https://web.archive.org/web/20210203022531/https://stackoverflow.com/questions/41928803/how-to-parse-json-in-kotlin/50468095
-// for reference:
-//
-//    class Response(json: String) : JSONObject(json) {
-//        val type: String? = this.optString("type")
-//        val data = this.optJSONArray("data")
-//                ?.let { 0.until(it.length()).map { i -> it.optJSONObject(i) } } // returns an array of JSONObject
-//                ?.map { Foo(it.toString()) } // transforms each JSONObject of the array into Foo
-//    }
-//
-//    class Foo(json: String) : JSONObject(json) {
-//        val id = this.optInt("id")
-//        val title: String? = this.optString("title")
-//    }
     class AppbusEvent(json: String) : JSONObject(json) {
         val EventType = this.optString("EventType")
         val EventID = this.optString("EventID")
