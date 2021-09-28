@@ -104,6 +104,16 @@ class CwtchIcons {
   static const IconData add_24px = IconData(0xe850, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData address_copy_2 = IconData(0xe852, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData address = IconData(0xe856, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData streamer_bunnymask = IconData(0xe85b, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData streamer_ghost = IconData(0xe85c, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData cancel_schedule_send_black_24dp = IconData(0xe85d, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData more_horiz_black_24dp = IconData(0xe85e, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData dns_black_add_24dp = IconData(0xe85f, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData dns_black_24dp = IconData(0xe860, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData info_black_24dp = IconData(0xe861, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData accept_unknown = IconData(0xe862, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData eye_closed_1 = IconData(0xe863, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData eye_open_1 = IconData(0xe864, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData send_invite = IconData(0xe888, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData leave_group = IconData(0xe88a, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData leave_chat = IconData(0xe88b, fontFamily: _kFontFam, fontPackage: _kFontPkg);
