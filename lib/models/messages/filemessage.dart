@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:cwtch/models/message.dart';
 import 'package:cwtch/widgets/filebubble.dart';
-import 'package:cwtch/widgets/invitationbubble.dart';
 import 'package:cwtch/widgets/malformedbubble.dart';
 import 'package:cwtch/widgets/messagerow.dart';
 import 'package:flutter/widgets.dart';
@@ -48,7 +47,13 @@ class FileMessage extends Message {
           String rootHash = shareObj['h'] as String;
           String nonce = shareObj['n'] as String;
           int fileSize = shareObj['s'] as int;
-          return FileBubble(nameSuggestion, rootHash, nonce, fileSize);
+          return FileBubble(
+            nameSuggestion,
+            rootHash,
+            nonce,
+            fileSize,
+            interactive: false,
+          );
         });
   }
 

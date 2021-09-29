@@ -182,8 +182,10 @@ class CwtchNotifier {
         if (contactHandle == null || contactHandle == "") contactHandle = data["GroupID"];
         profileCN.getProfile(data["Identity"])?.contactList.getContact(contactHandle)!.totalMessages = int.parse(data["Data"]);
         break;
+      case "SendMessageToPeerError":
+        // Ignore
+        break;
       case "IndexedFailure":
-        EnvironmentConfig.debugLog("IndexedFailure");
         var idx = data["Index"];
         var key = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["RemotePeer"])?.getMessageKey(idx);
         try {

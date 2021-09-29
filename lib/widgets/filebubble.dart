@@ -6,6 +6,7 @@ import 'package:cwtch/models/message.dart';
 import 'package:cwtch/widgets/malformedbubble.dart';
 import 'package:file_picker/file_picker.dart' as androidPicker;
 import 'package:file_picker_desktop/file_picker_desktop.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -24,8 +25,9 @@ class FileBubble extends StatefulWidget {
   final String rootHash;
   final String nonce;
   final int fileSize;
+  final bool interactive;
 
-  FileBubble(this.nameSuggestion, this.rootHash, this.nonce, this.fileSize);
+  FileBubble(this.nameSuggestion, this.rootHash, this.nonce, this.fileSize, {this.interactive = true});
 
   @override
   FileBubbleState createState() => FileBubbleState();
@@ -122,15 +124,16 @@ class FileBubbleState extends State<FileBubble> {
                   widthFactor: 1.0,
                   child: Padding(
                       padding: EdgeInsets.all(9.0),
-                      child: Wrap(runAlignment: WrapAlignment.spaceEvenly, alignment: WrapAlignment.spaceEvenly, runSpacing: 1.0, crossAxisAlignment: WrapCrossAlignment.center, children: [
-                        Center(widthFactor: 1, child: Padding(padding: EdgeInsets.all(10.0), child: Icon(Icons.attach_file, size: 32))),
+                      child: Wrap(alignment: WrapAlignment.start, children: [
                         Center(
                           widthFactor: 1.0,
                           child: Column(
                               crossAxisAlignment: fromMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                               mainAxisAlignment: fromMe ? MainAxisAlignment.end : MainAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
-                              children: fromMe ? [wdgMessage, wdgDecorations] : [wdgSender, wdgMessage, wdgDecorations]),
+                              children: fromMe
+                                  ? [wdgMessage, Visibility(visible: widget.interactive, child: wdgDecorations)]
+                                  : [wdgSender, wdgMessage, Visibility(visible: widget.interactive, child: wdgDecorations)]),
                         )
                       ])))));
     });
@@ -171,99 +174,109 @@ class FileBubbleState extends State<FileBubble> {
 
   // Construct an invite chrome for the sender
   Widget senderFileChrome(String chrome, String fileName, String rootHash, int fileSize) {
-    return Wrap(direction: Axis.vertical, children: [
-      SelectableText(
-        chrome + '\u202F',
-        style: TextStyle(
-          color: Provider.of<Settings>(context).theme.messageFromMeTextColor(),
+    return ListTile(
+        visualDensity: VisualDensity.compact,
+        title: Wrap(direction: Axis.horizontal, alignment: WrapAlignment.start, children: [
+          SelectableText(
+            chrome + '\u202F',
+            style: TextStyle(
+              color: Provider.of<Settings>(context).theme.messageFromMeTextColor(),
+            ),
+            textAlign: TextAlign.left,
+            maxLines: 2,
+            textWidthBasis: TextWidthBasis.longestLine,
+          ),
+          SelectableText(
+            fileName + '\u202F',
+            style: TextStyle(
+              color: Provider.of<Settings>(context).theme.messageFromMeTextColor(),
+              fontWeight: FontWeight.bold,
+              overflow: TextOverflow.ellipsis,
+            ),
+            textAlign: TextAlign.left,
+            textWidthBasis: TextWidthBasis.parent,
+            maxLines: 2,
+          ),
+          SelectableText(
+            prettyBytes(fileSize) + '\u202F' + '\n',
+            style: TextStyle(
+              color: Provider.of<Settings>(context).theme.messageFromMeTextColor(),
+            ),
+            textAlign: TextAlign.left,
+            maxLines: 2,
+          )
+        ]),
+        subtitle: SelectableText(
+          'sha512: ' + rootHash + '\u202F',
+          style: TextStyle(
+            color: Provider.of<Settings>(context).theme.messageFromMeTextColor(),
+            fontSize: 10,
+            fontFamily: "monospace",
+          ),
+          textAlign: TextAlign.left,
+          maxLines: 4,
+          textWidthBasis: TextWidthBasis.parent,
         ),
-        textAlign: TextAlign.left,
-        maxLines: 2,
-        textWidthBasis: TextWidthBasis.longestLine,
-      ),
-      SelectableText(
-        fileName + '\u202F',
-        style: TextStyle(
-          color: Provider.of<Settings>(context).theme.messageFromMeTextColor(),
-        ),
-        textAlign: TextAlign.left,
-        maxLines: 2,
-        textWidthBasis: TextWidthBasis.longestLine,
-      ),
-      SelectableText(
-        prettyBytes(fileSize) + '\u202F',
-        style: TextStyle(
-          color: Provider.of<Settings>(context).theme.messageFromMeTextColor(),
-        ),
-        textAlign: TextAlign.left,
-        maxLines: 2,
-        textWidthBasis: TextWidthBasis.longestLine,
-      ),
-      SelectableText(
-        'sha512: ' + rootHash + '\u202F',
-        style: TextStyle(
-          color: Provider.of<Settings>(context).theme.messageFromMeTextColor(),
-        ),
-        textAlign: TextAlign.left,
-        maxLines: 2,
-        textWidthBasis: TextWidthBasis.longestLine,
-      ),
-    ]);
+        leading: Icon(Icons.attach_file, size: 32, color: Provider.of<Settings>(context).theme.messageFromMeTextColor()));
   }
 
   // Construct an invite chrome
   Widget fileChrome(String chrome, String fileName, String rootHash, int fileSize, String speed) {
-    var prettyHash = rootHash;
-    if (rootHash.length == 128) {
-      prettyHash = rootHash.substring(0, 32) + '\n' + rootHash.substring(32, 64) + '\n' + rootHash.substring(64, 96) + '\n' + rootHash.substring(96);
-    }
-
-    return Wrap(direction: Axis.vertical, children: [
-      SelectableText(
-        chrome + '\u202F',
-        style: TextStyle(
-          color: Provider.of<Settings>(context).theme.messageFromOtherTextColor(),
+    return ListTile(
+      visualDensity: VisualDensity.compact,
+      title: Wrap(direction: Axis.horizontal, alignment: WrapAlignment.start, children: [
+        SelectableText(
+          chrome + '\u202F',
+          style: TextStyle(
+            color: Provider.of<Settings>(context).theme.messageFromOtherTextColor(),
+          ),
+          textAlign: TextAlign.left,
+          maxLines: 2,
+          textWidthBasis: TextWidthBasis.longestLine,
         ),
-        textAlign: TextAlign.left,
-        textWidthBasis: TextWidthBasis.longestLine,
-        maxLines: 2,
-      ),
-      SelectableText(
-        AppLocalizations.of(context)!.labelFilename + ': ' + fileName + '\u202F',
+        SelectableText(
+          fileName + '\u202F',
+          style: TextStyle(
+            color: Provider.of<Settings>(context).theme.messageFromOtherTextColor(),
+            fontWeight: FontWeight.bold,
+            overflow: TextOverflow.ellipsis,
+          ),
+          textAlign: TextAlign.left,
+          textWidthBasis: TextWidthBasis.parent,
+          maxLines: 2,
+        ),
+        SelectableText(
+          AppLocalizations.of(context)!.labelFilesize + ': ' + prettyBytes(fileSize) + '\u202F' + '\n',
+          style: TextStyle(
+            color: Provider.of<Settings>(context).theme.messageFromOtherTextColor(),
+          ),
+          textAlign: TextAlign.left,
+          maxLines: 2,
+        )
+      ]),
+      subtitle: SelectableText(
+        'sha512: ' + rootHash + '\u202F',
         style: TextStyle(
           color: Provider.of<Settings>(context).theme.messageFromMeTextColor(),
-        ),
-        textAlign: TextAlign.left,
-        maxLines: 2,
-        textWidthBasis: TextWidthBasis.longestLine,
-      ),
-      SelectableText(
-        AppLocalizations.of(context)!.labelFilesize + ': ' + prettyBytes(fileSize) + '\u202F',
-        style: TextStyle(
-          color: Provider.of<Settings>(context).theme.messageFromMeTextColor(),
-        ),
-        textAlign: TextAlign.left,
-        maxLines: 2,
-        textWidthBasis: TextWidthBasis.longestLine,
-      ),
-      SelectableText(
-        'sha512: ' + prettyHash + '\u202F',
-        style: TextStyle(
-          color: Provider.of<Settings>(context).theme.messageFromMeTextColor(),
+          fontSize: 10,
+          fontFamily: "monospace",
         ),
         textAlign: TextAlign.left,
         maxLines: 4,
-        textWidthBasis: TextWidthBasis.longestLine,
+        textWidthBasis: TextWidthBasis.parent,
       ),
-      SelectableText(
-        speed + '\u202F',
-        style: TextStyle(
-          color: Provider.of<Settings>(context).theme.messageFromMeTextColor(),
-        ),
-        textAlign: TextAlign.left,
-        maxLines: 1,
-        textWidthBasis: TextWidthBasis.longestLine,
-      ),
-    ]);
+      leading: Icon(Icons.attach_file, size: 32, color: Provider.of<Settings>(context).theme.messageFromOtherTextColor()),
+      trailing: Visibility(
+          visible: speed != "0 B/s",
+          child: SelectableText(
+            speed + '\u202F',
+            style: TextStyle(
+              color: Provider.of<Settings>(context).theme.messageFromMeTextColor(),
+            ),
+            textAlign: TextAlign.left,
+            maxLines: 1,
+            textWidthBasis: TextWidthBasis.longestLine,
+          )),
+    );
   }
 }
