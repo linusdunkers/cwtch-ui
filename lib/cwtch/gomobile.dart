@@ -150,6 +150,12 @@ class CwtchGomobile implements Cwtch {
 
   @override
   // ignore: non_constant_identifier_names
+  void CheckDownloadStatus(String profileOnion, String fileKey) {
+    cwtchPlatform.invokeMethod("CheckDownloadStatus", {"ProfileOnion": profileOnion, "fileKey": fileKey});
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
   void ResetTor() {
     cwtchPlatform.invokeMethod("ResetTor", {});
   }

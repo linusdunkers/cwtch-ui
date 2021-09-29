@@ -330,7 +330,7 @@ class CwtchNotifier {
         profileCN.getProfile(data["ProfileOnion"])?.downloadUpdate(data["FileKey"], int.parse(data["Progress"]));
         break;
       case "FileDownloaded":
-        profileCN.getProfile(data["ProfileOnion"])?.downloadMarkFinished(data["FileKey"]);
+        profileCN.getProfile(data["ProfileOnion"])?.downloadMarkFinished(data["FileKey"], data["FilePath"]);
         break;
       default:
         EnvironmentConfig.debugLog("unhandled event: $type");

@@ -194,6 +194,11 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                 Log.i("FlwtchWorker::DownloadFile", "DownloadFile("+filepath+", "+manifestpath+")")
                 Cwtch.downloadFile(profile, handle, filepath, manifestpath, filekey)
             }
+            "CheckDownloadStatus" -> {
+                val profile = (a.get("ProfileOnion") as? String) ?: ""
+                val fileKey = (a.get("fileKey") as? String) ?: ""
+                Cwtch.checkDownloadStatus(profile, fileKey)
+            }
             "SendProfileEvent" -> {
                 val onion = (a.get("onion") as? String) ?: ""
                 val jsonEvent = (a.get("jsonEvent") as? String) ?: ""

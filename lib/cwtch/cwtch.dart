@@ -46,6 +46,8 @@ abstract class Cwtch {
   void DownloadFile(String profile, String handle, String filepath, String manifestpath, String filekey);
   // ignore: non_constant_identifier_names
   void CreateDownloadableFile(String profile, String handle, String filenameSuggestion, String filekey);
+  // ignore: non_constant_identifier_names
+  void CheckDownloadStatus(String profile, String fileKey);
 
   // ignore: non_constant_identifier_names
   void ArchiveConversation(String profile, String handle);

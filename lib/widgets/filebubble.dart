@@ -39,7 +39,7 @@ class FileBubbleState extends State<FileBubble> {
   @override
   Widget build(BuildContext context) {
     var fromMe = Provider.of<MessageMetadata>(context).senderHandle == Provider.of<ProfileInfoState>(context).onion;
-    //isAccepted = Provider.of<ProfileInfoState>(context).contactList.getContact(widget.inviteTarget) != null;
+    var flagStarted = Provider.of<MessageMetadata>(context).flags & 0x02 > 0;
     var borderRadiousEh = 15.0;
     var showFileSharing = Provider.of<Settings>(context).isExperimentEnabled(FileSharingExperiment);
     var prettyDate = DateFormat.yMd(Platform.localeName).add_jm().format(Provider.of<MessageMetadata>(context).timestamp);
@@ -66,26 +66,39 @@ class FileBubbleState extends State<FileBubble> {
             ? senderFileChrome(
               AppLocalizations.of(context)!.messageFileSent, widget.nameSuggestion, widget.rootHash, widget.fileSize)
             : (fileChrome(AppLocalizations.of(context)!.messageFileOffered + ":", widget.nameSuggestion, widget.rootHash, widget.fileSize, Provider.of<ProfileInfoState>(context).downloadSpeed(widget.fileKey())));
-
     Widget wdgDecorations;
     if (!showFileSharing) {
       wdgDecorations = Text('\u202F');
     } else if (fromMe) {
       wdgDecorations = MessageBubbleDecoration(ackd: Provider.of<MessageMetadata>(context).ackd, errored: Provider.of<MessageMetadata>(context).error, fromMe: fromMe, prettyDate: prettyDate);
     } else if (Provider.of<ProfileInfoState>(context).downloadComplete(widget.fileKey())) {
-      wdgDecorations = Center(
-          widthFactor: 1,
-          child: Wrap(children: [
-            Padding(padding: EdgeInsets.all(5), child: ElevatedButton(child: Text(AppLocalizations.of(context)!.openFolderButton + '\u202F'), onPressed: _btnAccept)),
-          ]));
+      // in this case, whatever marked download.complete would have also set the path
+      var path = Provider.of<ProfileInfoState>(context).downloadFinalPath(widget.fileKey())!;
+      wdgDecorations = Text('Saved to: ' + path + '\u202F');
     } else if (Provider.of<ProfileInfoState>(context).downloadActive(widget.fileKey())) {
-      if (!Provider.of<ProfileInfoState>(context).downloadGotManifest(widget.fileKey())) {
-        wdgDecorations = Text(AppLocalizations.of(context)!.retrievingManifestMessage + '\u202F');
+      if (!Provider.of<ProfileInfoState>(context).downloadGotManifest(
+          widget.fileKey())) {
+        wdgDecorations = Text(
+            AppLocalizations.of(context)!.retrievingManifestMessage + '\u202F');
       } else {
         wdgDecorations = LinearProgressIndicator(
-          value: Provider.of<ProfileInfoState>(context).downloadProgress(widget.fileKey()),
-          color: Provider.of<Settings>(context).theme.defaultButtonActiveColor(),
+          value: Provider.of<ProfileInfoState>(context).downloadProgress(
+              widget.fileKey()),
+          color: Provider
+              .of<Settings>(context)
+              .theme
+              .defaultButtonActiveColor(),
         );
+      }
+    } else if (flagStarted) {
+      // in this case, the download was done in a previous application launch,
+      // so we probably have to request an info lookup
+      var path = Provider.of<ProfileInfoState>(context).downloadFinalPath(widget.fileKey());
+      if (path == null) {
+        wdgDecorations = Text('Checking download status...' + '\u202F');
+        Provider.of<FlwtchState>(context, listen: false).cwtch.CheckDownloadStatus(Provider.of<ProfileInfoState>(context, listen: false).onion, widget.fileKey());
+      } else {
+        wdgDecorations = Text('Saved to: ' + (path??"null") + '\u202F');
       }
     } else {
       wdgDecorations = Center(
@@ -135,10 +148,13 @@ class FileBubbleState extends State<FileBubble> {
     File? file;
     var profileOnion = Provider.of<ProfileInfoState>(context, listen: false).onion;
     var handle = Provider.of<MessageMetadata>(context, listen: false).senderHandle;
+    var contact = Provider.of<ContactInfoState>(context, listen: false).onion;
+    var idx = Provider.of<MessageMetadata>(context, listen: false).messageIndex;
 
     if (Platform.isAndroid) {
-      //todo: would be better to only call downloadInit if CreateDownloadableFile results in a user-pick (they might cancel)
       Provider.of<ProfileInfoState>(context, listen: false).downloadInit(widget.fileKey(), (widget.fileSize / 4096).ceil());
+      Provider.of<FlwtchState>(context, listen: false).cwtch.UpdateMessageFlags(profileOnion, contact, idx, Provider.of<MessageMetadata>(context, listen: false).flags | 0x02);
+      Provider.of<MessageMetadata>(context, listen: false).flags |= 0x02;
       Provider.of<FlwtchState>(context, listen: false).cwtch.CreateDownloadableFile(profileOnion, handle, widget.nameSuggestion, widget.fileKey());
     } else {
       try {
@@ -148,6 +164,8 @@ class FileBubbleState extends State<FileBubble> {
            print("saving to " + file.path);
            var manifestPath = file.path + ".manifest";
            Provider.of<ProfileInfoState>(context, listen: false).downloadInit(widget.fileKey(), (widget.fileSize / 4096).ceil());
+           Provider.of<FlwtchState>(context, listen: false).cwtch.UpdateMessageFlags(profileOnion, contact, idx, Provider.of<MessageMetadata>(context, listen: false).flags | 0x02);
+           Provider.of<MessageMetadata>(context, listen: false).flags |= 0x02;
            Provider.of<FlwtchState>(context, listen: false).cwtch.DownloadFile(profileOnion, handle, file.path, manifestPath, widget.fileKey());
          }
       } catch (e) {
