@@ -382,11 +382,10 @@ class ProfileInfoState extends ChangeNotifier {
 
   void downloadMarkFinished(String fileKey, String finalPath) {
     if (!downloadActive(fileKey)) {
-      print("error: received download completion notice for unknown download " + fileKey);
-    } else {
-      this._downloads[fileKey]!.timeEnd = DateTime.now();
-      this._downloads[fileKey]!.complete = true;
-      notifyListeners();
+      // happens as a result of a CheckDownloadStatus call,
+      // invoked from a historical (timeline) download message
+      // so setting numChunks correctly shouldn't matter
+      this.downloadInit(fileKey, 1);
     }
     this._downloads[fileKey]!.timeEnd = DateTime.now();
     this._downloads[fileKey]!.downloadedTo = finalPath;
