@@ -87,7 +87,7 @@ class _MessageListState extends State<MessageList> {
                               // Already includes MessageRow,,
                               return message.getWidget(context);
                             } else {
-                              return Text('');//MessageLoadingBubble();
+                              return Text(''); //MessageLoadingBubble();
                             }
                           },
                         );

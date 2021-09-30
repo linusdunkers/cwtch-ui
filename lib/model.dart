@@ -24,7 +24,6 @@ class ChatMessage {
       };
 }
 
-
 class AppState extends ChangeNotifier {
   bool cwtchInit = false;
   bool cwtchIsClosing = false;
@@ -365,7 +364,7 @@ class ProfileInfoState extends ChangeNotifier {
 
   void downloadUpdate(String fileKey, int progress) {
     if (!downloadActive(fileKey)) {
-      print("error: received progress for unknown download "+fileKey);
+      print("error: received progress for unknown download " + fileKey);
     } else {
       this._downloads[fileKey]!.chunksDownloaded = progress;
       notifyListeners();
@@ -374,7 +373,7 @@ class ProfileInfoState extends ChangeNotifier {
 
   void downloadMarkManifest(String fileKey) {
     if (!downloadActive(fileKey)) {
-      print("error: received download completion notice for unknown download "+fileKey);
+      print("error: received download completion notice for unknown download " + fileKey);
     } else {
       this._downloads[fileKey]!.gotManifest = true;
       notifyListeners();
@@ -407,7 +406,7 @@ class ProfileInfoState extends ChangeNotifier {
   }
 
   double downloadProgress(String fileKey) {
-      return this._downloads.containsKey(fileKey) ? this._downloads[fileKey]!.progress() : 0.0;
+    return this._downloads.containsKey(fileKey) ? this._downloads[fileKey]!.progress() : 0.0;
   }
 
   String? downloadFinalPath(String fileKey) {

@@ -47,7 +47,7 @@ class FileMessage extends Message {
           String nameSuggestion = shareObj['n'] as String;
           String rootHash = shareObj['h'] as String;
           String nonce = shareObj['n'] as String;
-          int fileSize = shareObj['s']  as int;
+          int fileSize = shareObj['s'] as int;
           return FileBubble(nameSuggestion, rootHash, nonce, fileSize);
         });
   }

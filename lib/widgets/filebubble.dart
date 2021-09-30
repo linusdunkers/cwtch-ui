@@ -63,9 +63,9 @@ class FileBubbleState extends State<FileBubble> {
     var wdgMessage = !showFileSharing
         ? Text(AppLocalizations.of(context)!.messageEnableFileSharing)
         : fromMe
-            ? senderFileChrome(
-              AppLocalizations.of(context)!.messageFileSent, widget.nameSuggestion, widget.rootHash, widget.fileSize)
-            : (fileChrome(AppLocalizations.of(context)!.messageFileOffered + ":", widget.nameSuggestion, widget.rootHash, widget.fileSize, Provider.of<ProfileInfoState>(context).downloadSpeed(widget.fileKey())));
+            ? senderFileChrome(AppLocalizations.of(context)!.messageFileSent, widget.nameSuggestion, widget.rootHash, widget.fileSize)
+            : (fileChrome(AppLocalizations.of(context)!.messageFileOffered + ":", widget.nameSuggestion, widget.rootHash, widget.fileSize,
+                Provider.of<ProfileInfoState>(context).downloadSpeed(widget.fileKey())));
     Widget wdgDecorations;
     if (!showFileSharing) {
       wdgDecorations = Text('\u202F');
@@ -76,18 +76,12 @@ class FileBubbleState extends State<FileBubble> {
       var path = Provider.of<ProfileInfoState>(context).downloadFinalPath(widget.fileKey())!;
       wdgDecorations = Text('Saved to: ' + path + '\u202F');
     } else if (Provider.of<ProfileInfoState>(context).downloadActive(widget.fileKey())) {
-      if (!Provider.of<ProfileInfoState>(context).downloadGotManifest(
-          widget.fileKey())) {
-        wdgDecorations = Text(
-            AppLocalizations.of(context)!.retrievingManifestMessage + '\u202F');
+      if (!Provider.of<ProfileInfoState>(context).downloadGotManifest(widget.fileKey())) {
+        wdgDecorations = Text(AppLocalizations.of(context)!.retrievingManifestMessage + '\u202F');
       } else {
         wdgDecorations = LinearProgressIndicator(
-          value: Provider.of<ProfileInfoState>(context).downloadProgress(
-              widget.fileKey()),
-          color: Provider
-              .of<Settings>(context)
-              .theme
-              .defaultButtonActiveColor(),
+          value: Provider.of<ProfileInfoState>(context).downloadProgress(widget.fileKey()),
+          color: Provider.of<Settings>(context).theme.defaultButtonActiveColor(),
         );
       }
     } else if (flagStarted) {
@@ -129,8 +123,7 @@ class FileBubbleState extends State<FileBubble> {
                   child: Padding(
                       padding: EdgeInsets.all(9.0),
                       child: Wrap(runAlignment: WrapAlignment.spaceEvenly, alignment: WrapAlignment.spaceEvenly, runSpacing: 1.0, crossAxisAlignment: WrapCrossAlignment.center, children: [
-                        Center(
-                            widthFactor: 1, child: Padding(padding: EdgeInsets.all(10.0), child: Icon(Icons.attach_file, size: 32))),
+                        Center(widthFactor: 1, child: Padding(padding: EdgeInsets.all(10.0), child: Icon(Icons.attach_file, size: 32))),
                         Center(
                           widthFactor: 1.0,
                           child: Column(
@@ -158,16 +151,18 @@ class FileBubbleState extends State<FileBubble> {
       Provider.of<FlwtchState>(context, listen: false).cwtch.CreateDownloadableFile(profileOnion, handle, widget.nameSuggestion, widget.fileKey());
     } else {
       try {
-         selectedFileName = await saveFile(defaultFileName: widget.nameSuggestion,);
-         if (selectedFileName != null) {
-           file = File(selectedFileName);
-           print("saving to " + file.path);
-           var manifestPath = file.path + ".manifest";
-           Provider.of<ProfileInfoState>(context, listen: false).downloadInit(widget.fileKey(), (widget.fileSize / 4096).ceil());
-           Provider.of<FlwtchState>(context, listen: false).cwtch.UpdateMessageFlags(profileOnion, contact, idx, Provider.of<MessageMetadata>(context, listen: false).flags | 0x02);
-           Provider.of<MessageMetadata>(context, listen: false).flags |= 0x02;
-           Provider.of<FlwtchState>(context, listen: false).cwtch.DownloadFile(profileOnion, handle, file.path, manifestPath, widget.fileKey());
-         }
+        selectedFileName = await saveFile(
+          defaultFileName: widget.nameSuggestion,
+        );
+        if (selectedFileName != null) {
+          file = File(selectedFileName);
+          print("saving to " + file.path);
+          var manifestPath = file.path + ".manifest";
+          Provider.of<ProfileInfoState>(context, listen: false).downloadInit(widget.fileKey(), (widget.fileSize / 4096).ceil());
+          Provider.of<FlwtchState>(context, listen: false).cwtch.UpdateMessageFlags(profileOnion, contact, idx, Provider.of<MessageMetadata>(context, listen: false).flags | 0x02);
+          Provider.of<MessageMetadata>(context, listen: false).flags |= 0x02;
+          Provider.of<FlwtchState>(context, listen: false).cwtch.DownloadFile(profileOnion, handle, file.path, manifestPath, widget.fileKey());
+        }
       } catch (e) {
         print(e);
       }
@@ -176,7 +171,7 @@ class FileBubbleState extends State<FileBubble> {
 
   // Construct an invite chrome for the sender
   Widget senderFileChrome(String chrome, String fileName, String rootHash, int fileSize) {
-    return Wrap(direction: Axis.vertical,children: [
+    return Wrap(direction: Axis.vertical, children: [
       SelectableText(
         chrome + '\u202F',
         style: TextStyle(
@@ -220,14 +215,10 @@ class FileBubbleState extends State<FileBubble> {
   Widget fileChrome(String chrome, String fileName, String rootHash, int fileSize, String speed) {
     var prettyHash = rootHash;
     if (rootHash.length == 128) {
-      prettyHash = rootHash.substring(0, 32) + '\n' +
-          rootHash.substring(32, 64) + '\n' +
-          rootHash.substring(64, 96) + '\n' +
-          rootHash.substring(96);
+      prettyHash = rootHash.substring(0, 32) + '\n' + rootHash.substring(32, 64) + '\n' + rootHash.substring(64, 96) + '\n' + rootHash.substring(96);
     }
 
-    return Wrap(direction: Axis.vertical,
-        children: [
+    return Wrap(direction: Axis.vertical, children: [
       SelectableText(
         chrome + '\u202F',
         style: TextStyle(
@@ -238,7 +229,7 @@ class FileBubbleState extends State<FileBubble> {
         maxLines: 2,
       ),
       SelectableText(
-        AppLocalizations.of(context)!.labelFilename +': ' + fileName + '\u202F',
+        AppLocalizations.of(context)!.labelFilename + ': ' + fileName + '\u202F',
         style: TextStyle(
           color: Provider.of<Settings>(context).theme.messageFromMeTextColor(),
         ),

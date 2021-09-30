@@ -89,17 +89,16 @@ class _MessageViewState extends State<MessageView> {
         onPressed: _showFilePicker,
       ));
       appBarButtons.add(IconButton(
-        icon: Icon(CwtchIcons.send_invite, size: 24),
-        tooltip: AppLocalizations.of(context)!.sendInvite,
-        onPressed: () {
-          _modalSendInvitation(context);
-      }));
+          icon: Icon(CwtchIcons.send_invite, size: 24),
+          tooltip: AppLocalizations.of(context)!.sendInvite,
+          onPressed: () {
+            _modalSendInvitation(context);
+          }));
     }
     appBarButtons.add(IconButton(
-      icon: Provider.of<ContactInfoState>(context, listen: false).isGroup == true ? Icon(CwtchIcons.group_settings_24px) : Icon(CwtchIcons.peer_settings_24px),
-      tooltip: AppLocalizations.of(context)!.conversationSettings,
-      onPressed: _pushContactSettings
-    ));
+        icon: Provider.of<ContactInfoState>(context, listen: false).isGroup == true ? Icon(CwtchIcons.group_settings_24px) : Icon(CwtchIcons.peer_settings_24px),
+        tooltip: AppLocalizations.of(context)!.conversationSettings,
+        onPressed: _pushContactSettings));
 
     var appState = Provider.of<AppState>(context);
     return WillPopScope(
@@ -374,10 +373,10 @@ class _MessageViewState extends State<MessageView> {
 
   void _showFilePicker() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
-    if(result != null) {
+    if (result != null) {
       File file = File(result.files.first.path);
       if (file.lengthSync() <= 10737418240) {
-        print("Sending " +file.path);
+        print("Sending " + file.path);
         _sendFile(file.path);
       } else {
         print("file size cannot exceed 10 gigabytes");
