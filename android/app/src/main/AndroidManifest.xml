@@ -9,7 +9,8 @@
         android:name="io.flutter.app.FlutterApplication"
         android:label="Cwtch"
         android:extractNativeLibs="true"
-        android:icon="@mipmap/knott">
+        android:icon="@mipmap/knott"
+        android:requestLegacyExternalStorage="true">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
@@ -48,4 +49,10 @@
 
     <!--Meeded to check if activity is foregrounded or if messages from the service should be queued-->
     <uses-permission android:name="android.permission.GET_TASKS" />
+
+    <!--Needed to download files-->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.PERMISSIONS_STORAGE" />
 </manifest>

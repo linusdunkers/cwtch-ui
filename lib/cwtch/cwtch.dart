@@ -41,6 +41,15 @@ abstract class Cwtch {
   void SendInvitation(String profile, String handle, String target);
 
   // ignore: non_constant_identifier_names
+  void ShareFile(String profile, String handle, String filepath);
+  // ignore: non_constant_identifier_names
+  void DownloadFile(String profile, String handle, String filepath, String manifestpath, String filekey);
+  // ignore: non_constant_identifier_names
+  void CreateDownloadableFile(String profile, String handle, String filenameSuggestion, String filekey);
+  // ignore: non_constant_identifier_names
+  void CheckDownloadStatus(String profile, String fileKey);
+
+  // ignore: non_constant_identifier_names
   void ArchiveConversation(String profile, String handle);
   // ignore: non_constant_identifier_names
   void DeleteContact(String profile, String handle);

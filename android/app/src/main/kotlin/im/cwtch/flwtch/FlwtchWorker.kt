@@ -15,6 +15,10 @@ import cwtch.Cwtch
 import io.flutter.FlutterInjector
 import org.json.JSONObject
 
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.nio.file.StandardCopyOption
+import android.net.Uri
 
 class FlwtchWorker(context: Context, parameters: WorkerParameters) :
         CoroutineWorker(context, parameters) {
@@ -56,6 +60,7 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                 if (Cwtch.startCwtch(appDir, torPath) != 0.toLong()) return Result.failure()
 
                 Log.i("FlwtchWorker.kt", "startCwtch success, starting coroutine AppbusEvent loop...")
+                val downloadIDs = mutableMapOf<String, Int>()
                 while(true) {
                     val evt = MainActivity.AppbusEvent(Cwtch.getAppBusEvent())
                     if (evt.EventType == "NewMessageFromPeer" || evt.EventType == "NewMessageFromGroup") {
@@ -92,6 +97,63 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                                     .setAutoCancel(true)
                                     .build()
                             notificationManager.notify(getNotificationID(data.getString("ProfileOnion"), handle), newNotification)
+                        }
+                    } else if (evt.EventType == "FileDownloadProgressUpdate") {
+                        try {
+                            val data = JSONObject(evt.Data);
+                            val fileKey = data.getString("FileKey");
+                            val title = data.getString("NameSuggestion");
+                            val progress = data.getString("Progress").toInt();
+                            val progressMax = data.getString("FileSizeInChunks").toInt();
+                            if (!downloadIDs.containsKey(fileKey)) {
+                                downloadIDs.put(fileKey, downloadIDs.count());
+                            }
+                            var dlID = downloadIDs.get(fileKey);
+                            if (dlID == null) {
+                                dlID = 0;
+                            }
+                            val channelId =
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                        createDownloadNotificationChannel(fileKey, fileKey)
+                                    } else {
+                                        // If earlier version channel ID is not used
+                                        // https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#NotificationCompat.Builder(android.content.Context)
+                                        ""
+                                    };
+                            val newNotification = NotificationCompat.Builder(applicationContext, channelId)
+                                    .setOngoing(true)
+                                    .setContentTitle("Downloading")//todo: translate
+                                    .setContentText(title)
+                                    .setSmallIcon(android.R.drawable.stat_sys_download)
+                                    .setProgress(progressMax, progress, false)
+                                    .setSound(null)
+                                    //.setSilent(true)
+                                    .build();
+                            notificationManager.notify(dlID, newNotification);
+                        } catch (e: Exception) {
+                            Log.i("FlwtchWorker->FileDownloadProgressUpdate", e.toString() + " :: " + e.getStackTrace());
+                        }
+                    } else if (evt.EventType == "FileDownloaded") {
+                        Log.i("FlwtchWorker", "file downloaded!");
+                        val data = JSONObject(evt.Data);
+                        val tempFile = data.getString("TempFile");
+                        val fileKey = data.getString("FileKey");
+                        if (tempFile != "") {
+                            val filePath = data.getString("FilePath");
+                            Log.i("FlwtchWorker", "moving "+tempFile+" to "+filePath);
+                            val sourcePath = Paths.get(tempFile);
+                            val targetUri = Uri.parse(filePath);
+                            val os = this.applicationContext.getContentResolver().openOutputStream(targetUri);
+                            val bytesWritten = Files.copy(sourcePath, os);
+                            Log.i("FlwtchWorker", "copied " + bytesWritten.toString() + " bytes");
+                            if (bytesWritten != 0L) {
+                                os?.flush();
+                                os?.close();
+                                Files.delete(sourcePath);
+                            }
+                        }
+                        if (downloadIDs.containsKey(fileKey)) {
+                            notificationManager.cancel(downloadIDs.get(fileKey)?:0);
                         }
                     }
 
@@ -156,6 +218,26 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                 val handle = (a.get("handle") as? String) ?: ""
                 val target = (a.get("target") as? String) ?: ""
                 Cwtch.sendInvitation(profile, handle, target)
+            }
+            "ShareFile" -> {
+                val profile = (a.get("ProfileOnion") as? String) ?: ""
+                val handle = (a.get("handle") as? String) ?: ""
+                val filepath = (a.get("filepath") as? String) ?: ""
+                Cwtch.shareFile(profile, handle, filepath)
+            }
+            "DownloadFile" -> {
+                val profile = (a.get("ProfileOnion") as? String) ?: ""
+                val handle = (a.get("handle") as? String) ?: ""
+                val filepath = (a.get("filepath") as? String) ?: ""
+                val manifestpath = (a.get("manifestpath") as? String) ?: ""
+                val filekey = (a.get("filekey") as? String) ?: ""
+                Log.i("FlwtchWorker::DownloadFile", "DownloadFile("+filepath+", "+manifestpath+")")
+                Cwtch.downloadFile(profile, handle, filepath, manifestpath, filekey)
+            }
+            "CheckDownloadStatus" -> {
+                val profile = (a.get("ProfileOnion") as? String) ?: ""
+                val fileKey = (a.get("fileKey") as? String) ?: ""
+                Cwtch.checkDownloadStatus(profile, fileKey)
             }
             "SendProfileEvent" -> {
                 val onion = (a.get("onion") as? String) ?: ""
@@ -262,6 +344,15 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createMessageNotificationChannel(channelId: String, channelName: String): String{
         val chan = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH)
+        chan.lightColor = Color.MAGENTA
+        chan.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+        notificationManager.createNotificationChannel(chan)
+        return channelId
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun createDownloadNotificationChannel(channelId: String, channelName: String): String{
+        val chan = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_LOW)
         chan.lightColor = Color.MAGENTA
         chan.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
         notificationManager.createNotificationChannel(chan)

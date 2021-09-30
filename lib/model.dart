@@ -213,6 +213,7 @@ class ProfileInfoState extends ChangeNotifier {
   String _imagePath = "";
   int _unreadMessages = 0;
   bool _online = false;
+  Map<String, FileDownloadProgress> _downloads = Map<String, FileDownloadProgress>();
 
   // assume profiles are encrypted...this will be set to false
   // in the constructor if the profile is encrypted with the defacto password.
@@ -355,6 +356,100 @@ class ProfileInfoState extends ChangeNotifier {
         }
       });
     }
+  }
+
+  void downloadInit(String fileKey, int numChunks) {
+    this._downloads[fileKey] = FileDownloadProgress(numChunks, DateTime.now());
+  }
+
+  void downloadUpdate(String fileKey, int progress) {
+    if (!downloadActive(fileKey)) {
+      print("error: received progress for unknown download " + fileKey);
+    } else {
+      this._downloads[fileKey]!.chunksDownloaded = progress;
+      notifyListeners();
+    }
+  }
+
+  void downloadMarkManifest(String fileKey) {
+    if (!downloadActive(fileKey)) {
+      print("error: received download completion notice for unknown download " + fileKey);
+    } else {
+      this._downloads[fileKey]!.gotManifest = true;
+      notifyListeners();
+    }
+  }
+
+  void downloadMarkFinished(String fileKey, String finalPath) {
+    if (!downloadActive(fileKey)) {
+      // happens as a result of a CheckDownloadStatus call,
+      // invoked from a historical (timeline) download message
+      // so setting numChunks correctly shouldn't matter
+      this.downloadInit(fileKey, 1);
+    }
+    this._downloads[fileKey]!.timeEnd = DateTime.now();
+    this._downloads[fileKey]!.downloadedTo = finalPath;
+    this._downloads[fileKey]!.complete = true;
+    notifyListeners();
+  }
+
+  bool downloadActive(String fileKey) {
+    return this._downloads.containsKey(fileKey);
+  }
+
+  bool downloadGotManifest(String fileKey) {
+    return this._downloads.containsKey(fileKey) && this._downloads[fileKey]!.gotManifest;
+  }
+
+  bool downloadComplete(String fileKey) {
+    return this._downloads.containsKey(fileKey) && this._downloads[fileKey]!.complete;
+  }
+
+  double downloadProgress(String fileKey) {
+    return this._downloads.containsKey(fileKey) ? this._downloads[fileKey]!.progress() : 0.0;
+  }
+
+  String? downloadFinalPath(String fileKey) {
+    return this._downloads.containsKey(fileKey) ? this._downloads[fileKey]!.downloadedTo : null;
+  }
+
+  String downloadSpeed(String fileKey) {
+    if (!downloadActive(fileKey) || this._downloads[fileKey]!.chunksDownloaded == 0) {
+      return "0 B/s";
+    }
+    var bytes = this._downloads[fileKey]!.chunksDownloaded * 4096;
+    var seconds = (this._downloads[fileKey]!.timeEnd ?? DateTime.now()).difference(this._downloads[fileKey]!.timeStart!).inSeconds;
+    if (seconds == 0) {
+      return "0 B/s";
+    }
+    return prettyBytes((bytes / seconds).round()) + "/s";
+  }
+}
+
+class FileDownloadProgress {
+  int chunksDownloaded = 0;
+  int chunksTotal = 1;
+  bool complete = false;
+  bool gotManifest = false;
+  String? downloadedTo;
+  DateTime? timeStart;
+  DateTime? timeEnd;
+
+  FileDownloadProgress(this.chunksTotal, this.timeStart);
+  double progress() {
+    return 1.0 * chunksDownloaded / chunksTotal;
+  }
+}
+
+String prettyBytes(int bytes) {
+  if (bytes > 1000000000) {
+    return (1.0 * bytes / 1000000000).toStringAsFixed(1) + " GB";
+  } else if (bytes > 1000000) {
+    return (1.0 * bytes / 1000000).toStringAsFixed(1) + " MB";
+  } else if (bytes > 1000) {
+    return (1.0 * bytes / 1000).toStringAsFixed(1) + " kB";
+  } else {
+    return bytes.toString() + " B";
   }
 }
 

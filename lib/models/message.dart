@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../main.dart';
 import '../model.dart';
+import 'messages/filemessage.dart';
 import 'messages/invitemessage.dart';
 import 'messages/malformedmessage.dart';
 import 'messages/quotedmessage.dart';
@@ -14,6 +15,7 @@ const TextMessageOverlay = 1;
 const QuotedMessageOverlay = 10;
 const SuggestContactOverlay = 100;
 const InviteGroupOverlay = 101;
+const FileShareOverlay = 200;
 
 // Defines the length of the tor v3 onion address. Code using this constant will
 // need to updated when we allow multiple different identifiers. At which time
@@ -33,38 +35,39 @@ Future<Message> messageHandler(BuildContext context, String profileOnion, String
   try {
     var rawMessageEnvelopeFuture = Provider.of<FlwtchState>(context, listen: false).cwtch.GetMessage(profileOnion, contactHandle, index);
     return rawMessageEnvelopeFuture.then((dynamic rawMessageEnvelope) {
-      dynamic messageWrapper = jsonDecode(rawMessageEnvelope);
-      // There are 2 conditions in which this error condition can be met:
-      // 1. The application == nil, in which case this instance of the UI is already
-      // broken beyond repair, and will either be replaced by a new version, or requires a complete
-      // restart.
-      // 2. This index was incremented and we happened to fetch the timeline prior to the messages inclusion.
-      // This should be rare as Timeline addition/fetching is mutex protected and Dart itself will pipeline the
-      // calls to libCwtch-go - however because we use goroutines on the backend there is always a chance that one
-      // will find itself delayed.
-      // The second case is recoverable by tail-recursing this future.
-      if (messageWrapper['Message'] == null || messageWrapper['Message'] == '' || messageWrapper['Message'] == '{}') {
-        return Future.delayed(Duration(seconds: 2), () {
-          print("Tail recursive call to messageHandler called. This should be a rare event. If you see multiples of this log over a short period of time please log it as a bug.");
-          return messageHandler(context, profileOnion, contactHandle, index).then((value) => value);
-        });
-      }
-
-      // Construct the initial metadata
-      var timestamp = DateTime.tryParse(messageWrapper['Timestamp'])!;
-      var senderHandle = messageWrapper['PeerID'];
-      var senderImage = messageWrapper['ContactImage'];
-      var flags = int.parse(messageWrapper['Flags'].toString(), radix: 2);
-      var ackd = messageWrapper['Acknowledged'];
-      var error = messageWrapper['Error'] != null;
-      String? signature;
-      // If this is a group, store the signature
-      if (contactHandle.length == GroupConversationHandleLength) {
-        signature = messageWrapper['Signature'];
-      }
-      var metadata = MessageMetadata(profileOnion, contactHandle, index, timestamp, senderHandle, senderImage, signature, flags, ackd, error);
-
+      var metadata = MessageMetadata(profileOnion, contactHandle, index, DateTime.now(), "", "", null, 0, false, true);
       try {
+        dynamic messageWrapper = jsonDecode(rawMessageEnvelope);
+        // There are 2 conditions in which this error condition can be met:
+        // 1. The application == nil, in which case this instance of the UI is already
+        // broken beyond repair, and will either be replaced by a new version, or requires a complete
+        // restart.
+        // 2. This index was incremented and we happened to fetch the timeline prior to the messages inclusion.
+        // This should be rare as Timeline addition/fetching is mutex protected and Dart itself will pipeline the
+        // calls to libCwtch-go - however because we use goroutines on the backend there is always a chance that one
+        // will find itself delayed.
+        // The second case is recoverable by tail-recursing this future.
+        if (messageWrapper['Message'] == null || messageWrapper['Message'] == '' || messageWrapper['Message'] == '{}') {
+          return Future.delayed(Duration(seconds: 2), () {
+            print("Tail recursive call to messageHandler called. This should be a rare event. If you see multiples of this log over a short period of time please log it as a bug.");
+            return messageHandler(context, profileOnion, contactHandle, index).then((value) => value);
+          });
+        }
+
+        // Construct the initial metadata
+        var timestamp = DateTime.tryParse(messageWrapper['Timestamp'])!;
+        var senderHandle = messageWrapper['PeerID'];
+        var senderImage = messageWrapper['ContactImage'];
+        var flags = int.parse(messageWrapper['Flags'].toString());
+        var ackd = messageWrapper['Acknowledged'];
+        var error = messageWrapper['Error'] != null;
+        String? signature;
+        // If this is a group, store the signature
+        if (contactHandle.length == GroupConversationHandleLength) {
+          signature = messageWrapper['Signature'];
+        }
+        metadata = MessageMetadata(profileOnion, contactHandle, index, timestamp, senderHandle, senderImage, signature, flags, ackd, error);
+
         dynamic message = jsonDecode(messageWrapper['Message']);
         var content = message['d'] as dynamic;
         var overlay = int.parse(message['o'].toString());
@@ -77,11 +80,14 @@ Future<Message> messageHandler(BuildContext context, String profileOnion, String
             return InviteMessage(overlay, metadata, content);
           case QuotedMessageOverlay:
             return QuotedMessage(metadata, content);
+          case FileShareOverlay:
+            return FileMessage(metadata, content);
           default:
             // Metadata is valid, content is not..
             return MalformedMessage(metadata);
         }
       } catch (e) {
+        print("an error! " + e.toString());
         return MalformedMessage(metadata);
       }
     });

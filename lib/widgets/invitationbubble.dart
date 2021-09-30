@@ -131,7 +131,7 @@ class InvitationBubbleState extends State<InvitationBubble> {
       var contact = Provider.of<ContactInfoState>(context, listen: false).onion;
       var idx = Provider.of<MessageMetadata>(context, listen: false).messageIndex;
       Provider.of<FlwtchState>(context, listen: false).cwtch.UpdateMessageFlags(profileOnion, contact, idx, Provider.of<MessageMetadata>(context, listen: false).flags | 0x01);
-      Provider.of<MessageMetadata>(context).flags |= 0x01;
+      Provider.of<MessageMetadata>(context, listen: false).flags |= 0x01;
     });
   }
 

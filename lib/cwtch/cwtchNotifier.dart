@@ -182,8 +182,10 @@ class CwtchNotifier {
         if (contactHandle == null || contactHandle == "") contactHandle = data["GroupID"];
         profileCN.getProfile(data["Identity"])?.contactList.getContact(contactHandle)!.totalMessages = int.parse(data["Data"]);
         break;
+      case "SendMessageToPeerError":
+        // Ignore
+        break;
       case "IndexedFailure":
-        EnvironmentConfig.debugLog("IndexedFailure");
         var idx = data["Index"];
         var key = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["RemotePeer"])?.getMessageKey(idx);
         try {
@@ -322,6 +324,15 @@ class CwtchNotifier {
         } else {
           EnvironmentConfig.debugLog("unhandled peer attribute event: ${data['Path']}");
         }
+        break;
+      case "ManifestSaved":
+        profileCN.getProfile(data["ProfileOnion"])?.downloadMarkManifest(data["FileKey"]);
+        break;
+      case "FileDownloadProgressUpdate":
+        profileCN.getProfile(data["ProfileOnion"])?.downloadUpdate(data["FileKey"], int.parse(data["Progress"]));
+        break;
+      case "FileDownloaded":
+        profileCN.getProfile(data["ProfileOnion"])?.downloadMarkFinished(data["FileKey"], data["FilePath"]);
         break;
       default:
         EnvironmentConfig.debugLog("unhandled event: $type");

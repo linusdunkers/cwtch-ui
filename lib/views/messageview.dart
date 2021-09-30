@@ -6,6 +6,9 @@ import 'package:cwtch/models/message.dart';
 import 'package:cwtch/models/messages/quotedmessage.dart';
 import 'package:cwtch/widgets/messageloadingbubble.dart';
 import 'package:cwtch/widgets/profileimage.dart';
+
+import 'package:file_picker/file_picker.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cwtch/views/peersettingsview.dart';
@@ -14,6 +17,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:path/path.dart' show basename;
 
 import '../main.dart';
 import '../model.dart';
@@ -36,6 +40,9 @@ class _MessageViewState extends State<MessageView> {
   @override
   void initState() {
     scrollListener.itemPositions.addListener(() {
+      if (scrollListener.itemPositions.value.length == 0) {
+        return;
+      }
       var first = scrollListener.itemPositions.value.first.index;
       var last = scrollListener.itemPositions.value.last.index;
       // sometimes these go hi->lo and sometimes they go lo->hi because [who tf knows]
@@ -74,6 +81,25 @@ class _MessageViewState extends State<MessageView> {
       return Card(child: Center(child: Text(AppLocalizations.of(context)!.addContactFirst)));
     }
 
+    var appBarButtons = <Widget>[];
+    if (Provider.of<ContactInfoState>(context).isOnline()) {
+      appBarButtons.add(IconButton(
+        icon: Icon(Icons.attach_file, size: 24),
+        tooltip: AppLocalizations.of(context)!.tooltipSendFile,
+        onPressed: _showFilePicker,
+      ));
+      appBarButtons.add(IconButton(
+          icon: Icon(CwtchIcons.send_invite, size: 24),
+          tooltip: AppLocalizations.of(context)!.sendInvite,
+          onPressed: () {
+            _modalSendInvitation(context);
+          }));
+    }
+    appBarButtons.add(IconButton(
+        icon: Provider.of<ContactInfoState>(context, listen: false).isGroup == true ? Icon(CwtchIcons.group_settings_24px) : Icon(CwtchIcons.peer_settings_24px),
+        tooltip: AppLocalizations.of(context)!.conversationSettings,
+        onPressed: _pushContactSettings));
+
     var appState = Provider.of<AppState>(context);
     return WillPopScope(
         onWillPop: _onWillPop,
@@ -105,21 +131,7 @@ class _MessageViewState extends State<MessageView> {
                 overflow: TextOverflow.ellipsis,
               ))
             ]),
-            actions: [
-              //IconButton(icon: Icon(Icons.chat), onPressed: _pushContactSettings),
-              //IconButton(icon: Icon(Icons.list), onPressed: _pushContactSettings),
-              //IconButton(icon: Icon(Icons.push_pin), onPressed: _pushContactSettings),
-              IconButton(
-                  icon: Icon(CwtchIcons.send_invite, size: 24),
-                  tooltip: AppLocalizations.of(context)!.sendInvite,
-                  onPressed: () {
-                    _modalSendInvitation(context);
-                  }),
-              IconButton(
-                  icon: Provider.of<ContactInfoState>(context, listen: false).isGroup == true ? Icon(CwtchIcons.group_settings_24px) : Icon(CwtchIcons.peer_settings_24px),
-                  tooltip: AppLocalizations.of(context)!.conversationSettings,
-                  onPressed: _pushContactSettings),
-            ],
+            actions: appBarButtons,
           ),
           body: Padding(padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 108.0), child: MessageList(scrollController, scrollListener)),
           bottomSheet: _buildComposeBox(),
@@ -186,6 +198,13 @@ class _MessageViewState extends State<MessageView> {
     Provider.of<FlwtchState>(context, listen: false)
         .cwtch
         .SendInvitation(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).onion, this.selectedContact);
+    _sendMessageHelper();
+  }
+
+  void _sendFile(String filePath) {
+    Provider.of<FlwtchState>(context, listen: false)
+        .cwtch
+        .ShareFile(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).onion, filePath);
     _sendMessageHelper();
   }
 
@@ -350,5 +369,21 @@ class _MessageViewState extends State<MessageView> {
                     )),
               ));
         });
+  }
+
+  void _showFilePicker() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    if (result != null) {
+      File file = File(result.files.first.path);
+      // We have a maximum number of bytes we can represent in terms of
+      // a manifest (see : https://git.openprivacy.ca/cwtch.im/cwtch/src/branch/master/protocol/files/manifest.go#L25)
+      if (file.lengthSync() <= 10737418240) {
+        print("Sending " + file.path);
+        _sendFile(file.path);
+      } else {
+        print("file size cannot exceed 10 gigabytes");
+        //todo: toast error
+      }
+    }
   }
 }
