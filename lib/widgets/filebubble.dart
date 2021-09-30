@@ -98,7 +98,7 @@ class FileBubbleState extends State<FileBubble> {
         wdgDecorations = Text('Checking download status...' + '\u202F');
         Provider.of<FlwtchState>(context, listen: false).cwtch.CheckDownloadStatus(Provider.of<ProfileInfoState>(context, listen: false).onion, widget.fileKey());
       } else {
-        wdgDecorations = Text('Saved to: ' + (path??"null") + '\u202F');
+        wdgDecorations = Text('Saved to: ' + path + '\u202F');
       }
     } else {
       wdgDecorations = Center(

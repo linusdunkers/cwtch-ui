@@ -198,7 +198,7 @@ class CwtchGomobile implements Cwtch {
   @override
   void UpdateMessageFlags(String profile, String handle, int index, int flags) {
     print("gomobile.dart UpdateMessageFlags " + index.toString());
-    cwtchPlatform.invokeMethod("UpdateMessageFlags", {"profile": profile, "contact": handle, "index": index, "flags": flags});
+    cwtchPlatform.invokeMethod("UpdateMessageFlags", {"profile": profile, "contact": handle, "midx": index, "flags": flags});
   }
 
   @override

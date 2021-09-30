@@ -60,6 +60,7 @@ class MainActivity: FlutterActivity() {
     private var dlToHandle = ""
     private var dlToFileKey = ""
 
+    // handles clicks received from outside the app (ie, notifications)
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         if (notificationClickChannel == null || intent.extras == null) return
@@ -81,6 +82,7 @@ class MainActivity: FlutterActivity() {
         }
     }
 
+    // handles return values from the system file picker
     override fun onActivityResult(requestCode: Int, result: Int, intent: Intent?) {
         if (intent == null || intent!!.getData() == null) {
             Log.i("MainActivity:onActivityResult", "user canceled activity");
@@ -89,15 +91,13 @@ class MainActivity: FlutterActivity() {
 
         val filePath = intent!!.getData().toString();
         val manifestPath = StringBuilder().append(this.applicationContext.cacheDir).append("/").append(this.dlToFileKey).toString();
-        Log.i("onActivityResult", "got download path: " + filePath);
-        Log.i("onActivityResult", "got manifest path: " + manifestPath);
         handleCwtch(MethodCall("DownloadFile", mapOf(
             "ProfileOnion" to this.dlToProfile,
             "handle" to this.dlToHandle,
             "filepath" to filePath,
             "manifestpath" to manifestPath,
             "filekey" to this.dlToFileKey
-        )), ErrorLogResult(""));//placeholder; result is never actually invoked
+        )), ErrorLogResult(""));//placeholder; this Result is never actually invoked
     }
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
