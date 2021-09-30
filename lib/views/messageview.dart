@@ -375,6 +375,8 @@ class _MessageViewState extends State<MessageView> {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     if (result != null) {
       File file = File(result.files.first.path);
+      // We have a maximum number of bytes we can represent in terms of
+      // a manifest (see : https://git.openprivacy.ca/cwtch.im/cwtch/src/branch/master/protocol/files/manifest.go#L25)
       if (file.lengthSync() <= 10737418240) {
         print("Sending " + file.path);
         _sendFile(file.path);

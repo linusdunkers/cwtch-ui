@@ -1,14 +1,9 @@
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:cwtch/cwtch_icons_icons.dart';
 import 'package:cwtch/models/message.dart';
-import 'package:cwtch/widgets/malformedbubble.dart';
-import 'package:file_picker/file_picker.dart' as androidPicker;
 import 'package:file_picker_desktop/file_picker_desktop.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../main.dart';
 import '../model.dart';
@@ -172,7 +167,7 @@ class FileBubbleState extends State<FileBubble> {
     }
   }
 
-  // Construct an invite chrome for the sender
+  // Construct an file chrome for the sender
   Widget senderFileChrome(String chrome, String fileName, String rootHash, int fileSize) {
     return ListTile(
         visualDensity: VisualDensity.compact,
@@ -220,7 +215,7 @@ class FileBubbleState extends State<FileBubble> {
         leading: Icon(Icons.attach_file, size: 32, color: Provider.of<Settings>(context).theme.messageFromMeTextColor()));
   }
 
-  // Construct an invite chrome
+  // Construct an file chrome
   Widget fileChrome(String chrome, String fileName, String rootHash, int fileSize, String speed) {
     return ListTile(
       visualDensity: VisualDensity.compact,
