@@ -148,7 +148,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                         },
                         activeTrackColor: settings.theme.defaultButtonActiveColor(),
                         inactiveTrackColor: settings.theme.defaultButtonDisabledColor(),
-                        secondary: Icon(CwtchIcons.block_unknown, color: settings.current().mainTextColor()),
+                        secondary: Icon(CwtchIcons.streamer_bunnymask, color: settings.current().mainTextColor()),
                       ),
                       SwitchListTile(
                         title: Text(AppLocalizations.of(context)!.experimentsEnabled, style: TextStyle(color: settings.current().mainTextColor())),
