@@ -83,11 +83,13 @@ class _MessageViewState extends State<MessageView> {
 
     var appBarButtons = <Widget>[];
     if (Provider.of<ContactInfoState>(context).isOnline()) {
-      appBarButtons.add(IconButton(
-        icon: Icon(Icons.attach_file, size: 24),
-        tooltip: AppLocalizations.of(context)!.tooltipSendFile,
-        onPressed: _showFilePicker,
-      ));
+      if (Platform.isAndroid == false) {
+        appBarButtons.add(IconButton(
+          icon: Icon(Icons.attach_file, size: 24),
+          tooltip: AppLocalizations.of(context)!.tooltipSendFile,
+          onPressed: _showFilePicker,
+        ));
+      }
       appBarButtons.add(IconButton(
           icon: Icon(CwtchIcons.send_invite, size: 24),
           tooltip: AppLocalizations.of(context)!.sendInvite,
