@@ -81,13 +81,16 @@ class _MessageViewState extends State<MessageView> {
       return Card(child: Center(child: Text(AppLocalizations.of(context)!.addContactFirst)));
     }
 
+    var showFileSharing = Provider.of<Settings>(context).isExperimentEnabled(FileSharingExperiment);
     var appBarButtons = <Widget>[];
     if (Provider.of<ContactInfoState>(context).isOnline()) {
-      appBarButtons.add(IconButton(
-        icon: Icon(Icons.attach_file, size: 24),
-        tooltip: AppLocalizations.of(context)!.tooltipSendFile,
-        onPressed: _showFilePicker,
-      ));
+      if (showFileSharing) {
+        appBarButtons.add(IconButton(
+          icon: Icon(Icons.attach_file, size: 24),
+          tooltip: AppLocalizations.of(context)!.tooltipSendFile,
+          onPressed: _showFilePicker,
+        ));
+      }
       appBarButtons.add(IconButton(
           icon: Icon(CwtchIcons.send_invite, size: 24),
           tooltip: AppLocalizations.of(context)!.sendInvite,
