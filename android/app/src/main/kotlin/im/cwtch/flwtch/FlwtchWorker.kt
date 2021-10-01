@@ -231,8 +231,10 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                 val filepath = (a.get("filepath") as? String) ?: ""
                 val manifestpath = (a.get("manifestpath") as? String) ?: ""
                 val filekey = (a.get("filekey") as? String) ?: ""
-                Log.i("FlwtchWorker::DownloadFile", "DownloadFile("+filepath+", "+manifestpath+")")
-                Cwtch.downloadFile(profile, handle, filepath, manifestpath, filekey)
+                // FIXME: Prevent spurious calls by Intent
+                if (profile != "") {
+                    Cwtch.downloadFile(profile, handle, filepath, manifestpath, filekey)
+                }
             }
             "CheckDownloadStatus" -> {
                 val profile = (a.get("ProfileOnion") as? String) ?: ""
