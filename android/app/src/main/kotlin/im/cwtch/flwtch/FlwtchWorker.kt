@@ -291,9 +291,49 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                 val groupHandle = (a.get("groupHandle") as? String) ?: ""
                 Cwtch.rejectInvite(profile, groupHandle)
             }
+            "SetProfileAttribute" -> {
+                val profile = (a.get("ProfileOnion") as? String) ?: ""
+                val key = (a.get("Key") as? String) ?: ""
+                val v = (a.get("Val") as? String) ?: ""
+                Cwtch.setProfileAttribute(profile, key, v)
+            }
+            "SetContactAttribute" -> {
+                val profile = (a.get("ProfileOnion") as? String) ?: ""
+                val contact = (a.get("Contact") as? String) ?: ""
+                val key = (a.get("Key") as? String) ?: ""
+                val v = (a.get("Val") as? String) ?: ""
+                Cwtch.setContactAttribute(profile, contact, key, v)
+            }
             "Shutdown" -> {
                 Cwtch.shutdownCwtch();
                 return Result.success()
+            }
+            "LoadServers" -> {
+                val password = (a.get("Password") as? String) ?: ""
+                Cwtch.loadServers(password)
+            }
+            "CreateServer" -> {
+                val password = (a.get("Password") as? String) ?: ""
+                Cwtch.createServer(password)
+            }
+            "DeleteServer" -> {
+                val serverOnion = (a.get("ServerOnion") as? String) ?: ""
+                val password = (a.get("Password") as? String) ?: ""
+                Cwtch.deleteServer(serverOnion, password)
+            }
+            "LaunchServers" -> {
+                Cwtch.launchServers()
+            }
+            "LaunchServer" -> {
+                val serverOnion = (a.get("ServerOnion") as? String) ?: ""
+                Cwtch.launchServer(serverOnion)
+            }
+            "ShutdownServer" -> {
+                val serverOnion = (a.get("ServerOnion") as? String) ?: ""
+                Cwtch.shutdownServer(serverOnion)
+            }
+            "ShutdownServers" -> {
+                Cwtch.shutdownServers()
             }
             else -> return Result.failure()
         }

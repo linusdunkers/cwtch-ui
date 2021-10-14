@@ -63,6 +63,25 @@ abstract class Cwtch {
   void SetGroupAttribute(String profile, String groupHandle, String key, String value);
   // ignore: non_constant_identifier_names
   void RejectInvite(String profileOnion, String groupHandle);
+  // ignore: non_constant_identifier_names
+  void SetProfileAttribute(String profile, String key, String val);
+  // ignore: non_constant_identifier_names
+  void SetContactAttribute(String profile, String contact, String key, String val);
+
+  // ignore: non_constant_identifier_names
+  void LoadServers(String password);
+  // ignore: non_constant_identifier_names
+  void CreateServer(String password);
+  // ignore: non_constant_identifier_names
+  void DeleteServer(String serverOnion, String password);
+  // ignore: non_constant_identifier_names
+  void LaunchServers();
+  // ignore: non_constant_identifier_names
+  void LaunchServer(String serverOnion);
+  // ignore: non_constant_identifier_names
+  void ShutdownServer(String serverOnion);
+  // ignore: non_constant_identifier_names
+  void ShutdownServers();
 
   // ignore: non_constant_identifier_names
   void Shutdown();

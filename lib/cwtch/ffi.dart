@@ -532,6 +532,113 @@ class CwtchFfi implements Cwtch {
 
   @override
   // ignore: non_constant_identifier_names
+  void SetProfileAttribute(String profile, String key, String val) {
+    var setProfileAttribute = library.lookup<NativeFunction<void_from_string_string_string_function>>("c_SetProfileAttribute");
+    // ignore: non_constant_identifier_names
+    final SetProfileAttribute = setProfileAttribute.asFunction<VoidFromStringStringStringFn>();
+    final u1 = profile.toNativeUtf8();
+    final u2 = key.toNativeUtf8();
+    final u3 = key.toNativeUtf8();
+    SetProfileAttribute(u1, u1.length, u2, u2.length, u3, u3.length);
+    malloc.free(u1);
+    malloc.free(u2);
+    malloc.free(u3);
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void SetContactAttribute(String profile, String contact, String key, String val) {
+    var setContactAttribute = library.lookup<NativeFunction<void_from_string_string_string_string_function>>("c_SetContactAttribute");
+    // ignore: non_constant_identifier_names
+    final SetContactAttribute = setContactAttribute.asFunction<VoidFromStringStringStringStringFn>();
+    final u1 = profile.toNativeUtf8();
+    final u2 = contact.toNativeUtf8();
+    final u3 = key.toNativeUtf8();
+    final u4 = key.toNativeUtf8();
+    SetContactAttribute(u1, u1.length, u2, u2.length, u3, u3.length, u4, u4.length);
+    malloc.free(u1);
+    malloc.free(u2);
+    malloc.free(u3);
+    malloc.free(u4);
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void LoadServers(String password) {
+    var loadServers = library.lookup<NativeFunction<string_to_void_function>>("c_LoadServers");
+    // ignore: non_constant_identifier_names
+    final LoadServers = loadServers.asFunction<StringFn>();
+    final u1 = password.toNativeUtf8();
+    LoadServers(u1, u1.length);
+    malloc.free(u1);
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void CreateServer(String password) {
+    var createServer = library.lookup<NativeFunction<string_to_void_function>>("c_CreateServer");
+    // ignore: non_constant_identifier_names
+    final CreateServer = createServer.asFunction<StringFn>();
+    final u1 = password.toNativeUtf8();
+    CreateServer(u1, u1.length);
+    malloc.free(u1);
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void DeleteServer(String serverOnion, String password) {
+    var deleteServer = library.lookup<NativeFunction<string_string_to_void_function>>("c_DeleteServer");
+    // ignore: non_constant_identifier_names
+    final DeleteServer = deleteServer.asFunction<VoidFromStringStringFn>();
+    final u1 = serverOnion.toNativeUtf8();
+    final u2 = password.toNativeUtf8();
+    DeleteServer(u1, u1.length, u2, u2.length);
+    malloc.free(u1);
+    malloc.free(u2);
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void LaunchServers() {
+    var launchServers = library.lookup<NativeFunction<Void Function()>>("c_LaunchServers");
+    // ignore: non_constant_identifier_names
+    final LaunchServers = launchServers.asFunction<void Function()>();
+    LaunchServers();
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void LaunchServer(String serverOnion) {
+    var launchServer = library.lookup<NativeFunction<string_to_void_function>>("c_LaunchServer");
+    // ignore: non_constant_identifier_names
+    final LaunchServer = launchServer.asFunction<StringFn>();
+    final u1 = serverOnion.toNativeUtf8();
+    LaunchServer(u1, u1.length);
+    malloc.free(u1);
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void ShutdownServer(String serverOnion) {
+    var shutdownServer = library.lookup<NativeFunction<string_to_void_function>>("c_ShutdownServer");
+    // ignore: non_constant_identifier_names
+    final ShutdownServer = shutdownServer.asFunction<StringFn>();
+    final u1 = serverOnion.toNativeUtf8();
+    ShutdownServer(u1, u1.length);
+    malloc.free(u1);
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void ShutdownServers() {
+    var shutdownServers = library.lookup<NativeFunction<Void Function()>>("c_ShutdownServers");
+    // ignore: non_constant_identifier_names
+    final ShutdownServers = shutdownServers.asFunction<void Function()>();
+    ShutdownServers();
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
   Future<void> Shutdown() async {
     var shutdown = library.lookup<NativeFunction<void_from_void_funtion>>("c_ShutdownCwtch");
     // ignore: non_constant_identifier_names
