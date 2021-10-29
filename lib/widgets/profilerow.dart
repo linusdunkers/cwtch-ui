@@ -61,7 +61,7 @@ class _ProfileRowState extends State<ProfileRow> {
                 tooltip: AppLocalizations.of(context)!.editProfile + " " + profile.nickname,
                 icon: Icon(Icons.create, color: Provider.of<Settings>(context).current().mainTextColor()),
                 onPressed: () {
-                  _pushAddEditProfile(onion: profile.onion, displayName: profile.nickname, profileImage: profile.imagePath, encrypted: profile.isEncrypted);
+                  _pushEditProfile(onion: profile.onion, displayName: profile.nickname, profileImage: profile.imagePath, encrypted: profile.isEncrypted);
                 },
               )
             ],
@@ -100,7 +100,7 @@ class _ProfileRowState extends State<ProfileRow> {
     );
   }
 
-  void _pushAddEditProfile({onion: "", displayName: "", profileImage: "", encrypted: true}) {
+  void _pushEditProfile({onion: "", displayName: "", profileImage: "", encrypted: true}) {
     Navigator.of(context).push(MaterialPageRoute<void>(
       builder: (BuildContext context) {
         return MultiProvider(

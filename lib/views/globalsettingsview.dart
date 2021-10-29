@@ -189,6 +189,23 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                 secondary: Icon(CwtchIcons.enable_groups, color: settings.current().mainTextColor()),
                               ),
                               SwitchListTile(
+                                title: Text("Enable Servers", /*AppLocalizations.of(context)!.enableGroups,*/ style: TextStyle(color: settings.current().mainTextColor())),
+                                subtitle: Text("Enable Servers"), //AppLocalizations.of(context)!.descriptionExperimentsGroups),
+                                value: settings.isExperimentEnabled(ServerManagementExperiment),
+                                onChanged: (bool value) {
+                                  if (value) {
+                                    settings.enableExperiment(ServerManagementExperiment);
+                                  } else {
+                                    settings.disableExperiment(ServerManagementExperiment);
+                                  }
+                                  // Save Settings...
+                                  saveSettings(context);
+                                },
+                                activeTrackColor: settings.theme.defaultButtonActiveColor(),
+                                inactiveTrackColor: settings.theme.defaultButtonDisabledColor(),
+                                secondary: Icon(CwtchIcons.dns_24px, color: settings.current().mainTextColor()),
+                              ),
+                              SwitchListTile(
                                 title: Text(AppLocalizations.of(context)!.settingFileSharing, style: TextStyle(color: settings.current().mainTextColor())),
                                 subtitle: Text(AppLocalizations.of(context)!.descriptionFileSharing),
                                 value: settings.isExperimentEnabled(FileSharingExperiment),

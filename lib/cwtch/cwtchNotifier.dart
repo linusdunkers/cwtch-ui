@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:cwtch/models/message.dart';
+import 'package:cwtch/models/profileservers.dart';
 import 'package:cwtch/models/servers.dart';
 import 'package:cwtch/notification_manager.dart';
 import 'package:provider/provider.dart';
@@ -20,17 +21,20 @@ class CwtchNotifier {
   late TorStatus torStatus;
   late NotificationsManager notificationManager;
   late AppState appState;
+  late ServerListState serverListState;
 
-  CwtchNotifier(ProfileListState pcn, Settings settingsCN, ErrorHandler errorCN, TorStatus torStatusCN, NotificationsManager notificationManagerP, AppState appStateCN) {
+  CwtchNotifier(ProfileListState pcn, Settings settingsCN, ErrorHandler errorCN, TorStatus torStatusCN, NotificationsManager notificationManagerP, AppState appStateCN, ServerListState serverListStateCN) {
     profileCN = pcn;
     settings = settingsCN;
     error = errorCN;
     torStatus = torStatusCN;
     notificationManager = notificationManagerP;
     appState = appStateCN;
+    serverListState = serverListStateCN;
   }
 
   void handleMessage(String type, dynamic data) {
+    print("EVENT $type $data");
     switch (type) {
       case "CwtchStarted":
         appState.SetCwtchInit();
@@ -59,11 +63,21 @@ class CwtchNotifier {
               lastMessageTime: DateTime.now(), //show at the top of the contact list even if no messages yet
             ));
         break;
+      case "NewServer":
+        var serverData = jsonDecode(data["Data"]);
+        serverListState.add(
+            serverData["onion"],
+            serverData["serverbundle"],
+            serverData["enabled"] == "true",
+            serverData["description"],
+            serverData["autostart"] == "true",
+            serverData["storageType"] == "storage-password");
+        break;
       case "GroupCreated":
 
         // Retrieve Server Status from Cache...
         String status = "";
-        ServerInfoState? serverInfoState = profileCN.getProfile(data["ProfileOnion"])?.serverList.getServer(data["GroupServer"]);
+        RemoteServerInfoState? serverInfoState = profileCN.getProfile(data["ProfileOnion"])?.serverList.getServer(data["GroupServer"]);
         if (serverInfoState != null) {
           status = serverInfoState.status;
         }
@@ -263,7 +277,7 @@ class CwtchNotifier {
 
           // Retrieve Server Status from Cache...
           String status = "";
-          ServerInfoState? serverInfoState = profileCN.getProfile(data["ProfileOnion"])!.serverList.getServer(groupInvite["ServerHost"]);
+          RemoteServerInfoState? serverInfoState = profileCN.getProfile(data["ProfileOnion"])!.serverList.getServer(groupInvite["ServerHost"]);
           if (serverInfoState != null) {
             status = serverInfoState.status;
           }

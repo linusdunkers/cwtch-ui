@@ -103,9 +103,10 @@ class _ContactsViewState extends State<ContactsView> {
     if (Provider.of<Settings>(context).blockUnknownConnections) {
       actions.add(Tooltip(message: AppLocalizations.of(context)!.blockUnknownConnectionsEnabledDescription, child: Icon(CwtchIcons.block_unknown)));
     }
-    actions.add(
-      IconButton(icon: TorIcon(), onPressed: _pushTorStatus),
-    );
+
+    // TODO copy ID
+    // TODO servers
+
     actions.add(IconButton(
         // need both conditions for displaying initial empty textfield and also allowing filters to be cleared if this widget gets lost/reset
         icon: Icon(showSearchBar || Provider.of<ContactListState>(context).isFiltered ? Icons.search_off : Icons.search),

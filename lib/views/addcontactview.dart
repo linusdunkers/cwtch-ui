@@ -4,7 +4,7 @@ import 'package:cwtch/cwtch_icons_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cwtch/errorHandler.dart';
-import 'package:cwtch/models/servers.dart';
+import 'package:cwtch/models/profileservers.dart';
 import 'package:cwtch/settings.dart';
 import 'package:cwtch/widgets/buttontextfield.dart';
 import 'package:cwtch/widgets/cwtchlabel.dart';
@@ -197,7 +197,7 @@ class _AddContactViewState extends State<AddContactView> {
                     },
                     isExpanded: true, // magic property
                     value: server,
-                    items: Provider.of<ProfileInfoState>(context).serverList.servers.map<DropdownMenuItem<String>>((ServerInfoState serverInfo) {
+                    items: Provider.of<ProfileInfoState>(context).serverList.servers.map<DropdownMenuItem<String>>((RemoteServerInfoState serverInfo) {
                       return DropdownMenuItem<String>(
                         value: serverInfo.onion,
                         child: Text(
@@ -240,8 +240,8 @@ class _AddContactViewState extends State<AddContactView> {
 
   /// TODO Manage Servers Tab
   Widget manageServersTab() {
-    final tiles = Provider.of<ProfileInfoState>(context).serverList.servers.map((ServerInfoState server) {
-      return ChangeNotifierProvider<ServerInfoState>.value(
+    final tiles = Provider.of<ProfileInfoState>(context).serverList.servers.map((RemoteServerInfoState server) {
+      return ChangeNotifierProvider<RemoteServerInfoState>.value(
           value: server,
           child: ListTile(
             title: Text(server.onion),

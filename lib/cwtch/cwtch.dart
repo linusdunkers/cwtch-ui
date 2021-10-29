@@ -1,5 +1,7 @@
 import 'package:flutter/src/services/text_input.dart';
 
+const DefaultPassword = "be gay do crime";
+
 abstract class Cwtch {
   // ignore: non_constant_identifier_names
   Future<void> Start();
@@ -71,7 +73,7 @@ abstract class Cwtch {
   // ignore: non_constant_identifier_names
   void LoadServers(String password);
   // ignore: non_constant_identifier_names
-  void CreateServer(String password);
+  void CreateServer(String password, String description, bool autostart);
   // ignore: non_constant_identifier_names
   void DeleteServer(String serverOnion, String password);
   // ignore: non_constant_identifier_names
@@ -82,6 +84,8 @@ abstract class Cwtch {
   void ShutdownServer(String serverOnion);
   // ignore: non_constant_identifier_names
   void ShutdownServers();
+  // ignore: non_constant_identifier_names
+  void SetServerAttribute(String serverOnion, String key, String val);
 
   // ignore: non_constant_identifier_names
   void Shutdown();

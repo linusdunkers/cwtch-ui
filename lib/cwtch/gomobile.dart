@@ -221,8 +221,8 @@ class CwtchGomobile implements Cwtch {
 
   @override
   // ignore: non_constant_identifier_names
-  void CreateServer(String password) {
-    cwtchPlatform.invokeMethod("CreateServer", {"Password": password});
+  void CreateServer(String password, String description, bool autostart) {
+    cwtchPlatform.invokeMethod("CreateServer", {"Password": password, "Description": description, "Autostart": autostart ? 1 : 0});
   }
 
   @override
@@ -253,6 +253,12 @@ class CwtchGomobile implements Cwtch {
   // ignore: non_constant_identifier_names
   void ShutdownServers() {
     cwtchPlatform.invokeMethod("ShutdownServers", {});
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void SetServerAttribute(String serverOnion, String key, String val) {
+    cwtchPlatform.invokeMethod("SetServerAttribute", {"ServerOnion": serverOnion, "Key": key, "Val": val});
   }
 
     @override
