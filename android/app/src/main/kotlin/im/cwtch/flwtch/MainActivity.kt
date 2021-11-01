@@ -56,6 +56,7 @@ class MainActivity: FlutterActivity() {
     private var shutdownClickChannel: MethodChannel? = null
 
     // "Download to..." prompt extra arguments
+    private val FILEPICKER_REQUEST_CODE = 234
     private var dlToProfile = ""
     private var dlToHandle = ""
     private var dlToFileKey = ""
@@ -84,20 +85,24 @@ class MainActivity: FlutterActivity() {
 
     // handles return values from the system file picker
     override fun onActivityResult(requestCode: Int, result: Int, intent: Intent?) {
+        super.onActivityResult(requestCode, result, intent);
+
         if (intent == null || intent!!.getData() == null) {
             Log.i("MainActivity:onActivityResult", "user canceled activity");
             return;
         }
 
-        val filePath = intent!!.getData().toString();
-        val manifestPath = StringBuilder().append(this.applicationContext.cacheDir).append("/").append(this.dlToFileKey).toString();
-        handleCwtch(MethodCall("DownloadFile", mapOf(
-            "ProfileOnion" to this.dlToProfile,
-            "handle" to this.dlToHandle,
-            "filepath" to filePath,
-            "manifestpath" to manifestPath,
-            "filekey" to this.dlToFileKey
-        )), ErrorLogResult(""));//placeholder; this Result is never actually invoked
+        if (requestCode == FILEPICKER_REQUEST_CODE) {
+            val filePath = intent!!.getData().toString();
+            val manifestPath = StringBuilder().append(this.applicationContext.cacheDir).append("/").append(this.dlToFileKey).toString();
+            handleCwtch(MethodCall("DownloadFile", mapOf(
+                    "ProfileOnion" to this.dlToProfile,
+                    "handle" to this.dlToHandle,
+                    "filepath" to filePath,
+                    "manifestpath" to manifestPath,
+                    "filekey" to this.dlToFileKey
+            )), ErrorLogResult(""));//placeholder; this Result is never actually invoked
+        }
     }
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
@@ -167,7 +172,7 @@ class MainActivity: FlutterActivity() {
                 type = "application/octet-stream"
                 putExtra(Intent.EXTRA_TITLE, suggestedName)
             }
-            startActivityForResult(intent, 1)
+            startActivityForResult(intent, FILEPICKER_REQUEST_CODE)
             return
         }
 
