@@ -149,8 +149,7 @@ class CwtchNotifier {
           var currentTotal = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"])!.totalMessages;
 
           // Only bother to do anything if we know about the group and the provided index is greater than our current total...
-          if (currentTotal != null) {
-            if (idx >= currentTotal) {
+          if (currentTotal != null && idx >= currentTotal) {
               profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"])!.totalMessages = idx + 1;
 
               //if not currently open
@@ -171,7 +170,6 @@ class CwtchNotifier {
               // and `local now`.
               profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(data["GroupID"], timestampSent.toLocal());
               notificationManager.notify("New Message From Group!");
-            }
           }
         } else {
           // from me (already displayed - do not update counter)
