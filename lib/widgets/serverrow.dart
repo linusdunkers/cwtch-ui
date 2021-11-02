@@ -86,7 +86,6 @@ class _ServerRowState extends State<ServerRow> {
           providers: [ChangeNotifierProvider<ServerInfoState>(
             create: (_) => server,
           )],
-          //ChangeNotifierProvider.value(value: Provider.of<ServerInfoState>(context))],
           child: AddEditServerView(),
         );
       },

@@ -1,5 +1,7 @@
 import 'package:flutter/src/services/text_input.dart';
 
+// To handle profiles that are "unencrypted" (i.e don't require a password to open) we currently create a profile with a defacto, hardcoded password.
+// Details: https://docs.openprivacy.ca/cwtch-security-handbook/profile_encryption_and_storage.html
 const DefaultPassword = "be gay do crime";
 
 abstract class Cwtch {

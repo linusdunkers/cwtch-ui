@@ -144,7 +144,6 @@ class _ServersView extends State<ServersView> {
           providers: [ChangeNotifierProvider<ServerInfoState>(
         create: (_) => ServerInfoState(onion: "", serverBundle: "", description: "", autoStart: true, running: false, isEncrypted: true),
         )],
-            //ChangeNotifierProvider.value(value: Provider.of<ServerInfoState>(context))],
           child: AddEditServerView(),
         );
       },

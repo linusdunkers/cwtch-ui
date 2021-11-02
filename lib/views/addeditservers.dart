@@ -138,7 +138,6 @@ class _AddEditServerViewState extends State<AddEditServerView> {
                                  } else {
                                    Provider.of<FlwtchState>(context, listen: false).cwtch.StopServer(serverInfoState.onion);
                                  }
-                                 // ?? serverInfoState.enabled = value; + notify?
                                },
                                activeTrackColor: settings.theme.defaultButtonActiveColor(),
                                inactiveTrackColor: settings.theme.defaultButtonDisabledColor(),
@@ -195,7 +194,8 @@ class _AddEditServerViewState extends State<AddEditServerView> {
                              height: 20,
                            ),
                            Visibility(
-                             visible: usePassword,
+                             // Currently we don't support password change for servers so also gate this on Add server, when ready to support changing password remove the onion.isEmpty check
+                             visible: serverInfoState.onion.isEmpty && usePassword,
                              child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
                                Visibility(
                                    visible: serverInfoState.onion.isNotEmpty && serverInfoState.isEncrypted,
@@ -323,7 +323,7 @@ class _AddEditServerViewState extends State<AddEditServerView> {
 
 
     if (_formKey.currentState!.validate()) {
-      // TODO change password
+      // TODO support change password
     }
     Navigator.of(context).pop();
   }
