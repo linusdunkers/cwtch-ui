@@ -315,7 +315,7 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
             "CreateServer" -> {
                 val password = (a.get("Password") as? String) ?: ""
                 val desc = (a.get("Description") as? String) ?: ""
-                val autostart = (a.get("Autostart") as? Byte) ?: ""
+                val autostart = (a.get("Autostart") as? Boolean) ?: false
                 Cwtch.createServer(password, desc, autostart)
             }
             "DeleteServer" -> {
@@ -332,10 +332,10 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
             }
             "StopServer" -> {
                 val serverOnion = (a.get("ServerOnion") as? String) ?: ""
-                Cwtch.shutdownServer(serverOnion)
+                Cwtch.stopServer(serverOnion)
             }
             "StopServers" -> {
-                Cwtch.shutdownServers()
+                Cwtch.stopServers()
             }
             "DestroyServers" -> {
                 Cwtch.destroyServers()

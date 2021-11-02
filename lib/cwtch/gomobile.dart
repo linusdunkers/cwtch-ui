@@ -222,7 +222,7 @@ class CwtchGomobile implements Cwtch {
   @override
   // ignore: non_constant_identifier_names
   void CreateServer(String password, String description, bool autostart) {
-    cwtchPlatform.invokeMethod("CreateServer", {"Password": password, "Description": description, "Autostart": autostart ? 1 : 0});
+    cwtchPlatform.invokeMethod("CreateServer", {"Password": password, "Description": description, "Autostart": autostart});
   }
 
   @override
