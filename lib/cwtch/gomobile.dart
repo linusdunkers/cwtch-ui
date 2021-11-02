@@ -245,14 +245,20 @@ class CwtchGomobile implements Cwtch {
 
   @override
   // ignore: non_constant_identifier_names
-  void ShutdownServer(String serverOnion) {
-    cwtchPlatform.invokeMethod("ShutdownServer", {"ServerOnion": serverOnion});
+  void StopServer(String serverOnion) {
+    cwtchPlatform.invokeMethod("StopServer", {"ServerOnion": serverOnion});
   }
 
   @override
   // ignore: non_constant_identifier_names
-  void ShutdownServers() {
-    cwtchPlatform.invokeMethod("ShutdownServers", {});
+  void StopServers() {
+    cwtchPlatform.invokeMethod("StopServers", {});
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void DestroyServers() {
+    cwtchPlatform.invokeMethod("DestroyServers", {});
   }
 
   @override

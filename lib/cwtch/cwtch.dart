@@ -81,9 +81,11 @@ abstract class Cwtch {
   // ignore: non_constant_identifier_names
   void LaunchServer(String serverOnion);
   // ignore: non_constant_identifier_names
-  void ShutdownServer(String serverOnion);
+  void StopServer(String serverOnion);
   // ignore: non_constant_identifier_names
-  void ShutdownServers();
+  void StopServers();
+  // ignore: non_constant_identifier_names
+  void DestroyServers();
   // ignore: non_constant_identifier_names
   void SetServerAttribute(String serverOnion, String key, String val);
 

@@ -34,7 +34,6 @@ class CwtchNotifier {
   }
 
   void handleMessage(String type, dynamic data) {
-    print("EVENT $type $data");
     switch (type) {
       case "CwtchStarted":
         appState.SetCwtchInit();
@@ -64,14 +63,21 @@ class CwtchNotifier {
             ));
         break;
       case "NewServer":
-        var serverData = jsonDecode(data["Data"]);
+        EnvironmentConfig.debugLog("NewServer $data");
         serverListState.add(
-            serverData["onion"],
-            serverData["serverbundle"],
-            serverData["enabled"] == "true",
-            serverData["description"],
-            serverData["autostart"] == "true",
-            serverData["storageType"] == "storage-password");
+            data["Onion"],
+            data["ServerBundle"],
+            data["Running"] == "true",
+            data["Description"],
+            data["Autostart"] == "true",
+            data["StorageType"] == "storage-password");
+        break;
+      case "ServerIntentUpdate":
+        EnvironmentConfig.debugLog("ServerIntentUpdate $data");
+        var server = serverListState.getServer(data["Identity"]);
+        if (server != null) {
+          server.setRunning(data["Intent"] == "running");
+        }
         break;
       case "GroupCreated":
 

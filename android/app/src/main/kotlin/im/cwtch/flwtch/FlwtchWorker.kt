@@ -330,12 +330,15 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                 val serverOnion = (a.get("ServerOnion") as? String) ?: ""
                 Cwtch.launchServer(serverOnion)
             }
-            "ShutdownServer" -> {
+            "StopServer" -> {
                 val serverOnion = (a.get("ServerOnion") as? String) ?: ""
                 Cwtch.shutdownServer(serverOnion)
             }
-            "ShutdownServers" -> {
+            "StopServers" -> {
                 Cwtch.shutdownServers()
+            }
+            "DestroyServers" -> {
+                Cwtch.destroyServers()
             }
             "SetServerAttribute" -> {
                 val serverOnion = (a.get("ServerOnion") as? String) ?: ""

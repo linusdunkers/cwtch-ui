@@ -624,8 +624,8 @@ class CwtchFfi implements Cwtch {
 
   @override
   // ignore: non_constant_identifier_names
-  void ShutdownServer(String serverOnion) {
-    var shutdownServer = library.lookup<NativeFunction<string_to_void_function>>("c_ShutdownServer");
+  void StopServer(String serverOnion) {
+    var shutdownServer = library.lookup<NativeFunction<string_to_void_function>>("c_StopServer");
     // ignore: non_constant_identifier_names
     final ShutdownServer = shutdownServer.asFunction<StringFn>();
     final u1 = serverOnion.toNativeUtf8();
@@ -635,11 +635,20 @@ class CwtchFfi implements Cwtch {
 
   @override
   // ignore: non_constant_identifier_names
-  void ShutdownServers() {
-    var shutdownServers = library.lookup<NativeFunction<Void Function()>>("c_ShutdownServers");
+  void StopServers() {
+    var shutdownServers = library.lookup<NativeFunction<Void Function()>>("c_StopServers");
     // ignore: non_constant_identifier_names
     final ShutdownServers = shutdownServers.asFunction<void Function()>();
     ShutdownServers();
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void DestroyServers() {
+    var destroyServers = library.lookup<NativeFunction<Void Function()>>("c_DestroyServers");
+    // ignore: non_constant_identifier_names
+    final DestroyServers = destroyServers.asFunction<void Function()>();
+    DestroyServers();
   }
 
   @override

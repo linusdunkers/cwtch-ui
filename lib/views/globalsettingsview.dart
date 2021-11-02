@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:cwtch/cwtch_icons_icons.dart';
+import 'package:cwtch/models/servers.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:cwtch/settings.dart';
@@ -193,6 +194,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                 subtitle: Text("Enable Servers"), //AppLocalizations.of(context)!.descriptionExperimentsGroups),
                                 value: settings.isExperimentEnabled(ServerManagementExperiment),
                                 onChanged: (bool value) {
+                                  Provider.of<ServerListState>(context, listen: false).clear();
                                   if (value) {
                                     settings.enableExperiment(ServerManagementExperiment);
                                   } else {
