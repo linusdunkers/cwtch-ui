@@ -150,26 +150,26 @@ class CwtchNotifier {
 
           // Only bother to do anything if we know about the group and the provided index is greater than our current total...
           if (currentTotal != null && idx >= currentTotal) {
-              profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"])!.totalMessages = idx + 1;
+            profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"])!.totalMessages = idx + 1;
 
-              //if not currently open
-              if (appState.selectedProfile != data["ProfileOnion"] || appState.selectedConversation != data["GroupID"]) {
-                profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"])!.unreadMessages++;
-              }
+            //if not currently open
+            if (appState.selectedProfile != data["ProfileOnion"] || appState.selectedConversation != data["GroupID"]) {
+              profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"])!.unreadMessages++;
+            }
 
-              var timestampSent = DateTime.tryParse(data['TimestampSent'])!;
-              // TODO: There are 2 timestamps associated with a new group message - time sent and time received.
-              // Sent refers to the time a profile alleges they sent a message
-              // Received refers to the time we actually saw the message from the server
-              // These can obviously be very different for legitimate reasons.
-              // We also maintain a relative hash-link through PreviousMessageSignature which is the ground truth for
-              // order.
-              // In the future we will want to combine these 3 ordering mechanisms into a cohesive view of the timeline
-              // For now we perform some minimal checks on the sent timestamp to use to provide a useful ordering for honest contacts
-              // and ensure that malicious contacts in groups can only set this timestamp to a value within the range of `last seen message time`
-              // and `local now`.
-              profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(data["GroupID"], timestampSent.toLocal());
-              notificationManager.notify("New Message From Group!");
+            var timestampSent = DateTime.tryParse(data['TimestampSent'])!;
+            // TODO: There are 2 timestamps associated with a new group message - time sent and time received.
+            // Sent refers to the time a profile alleges they sent a message
+            // Received refers to the time we actually saw the message from the server
+            // These can obviously be very different for legitimate reasons.
+            // We also maintain a relative hash-link through PreviousMessageSignature which is the ground truth for
+            // order.
+            // In the future we will want to combine these 3 ordering mechanisms into a cohesive view of the timeline
+            // For now we perform some minimal checks on the sent timestamp to use to provide a useful ordering for honest contacts
+            // and ensure that malicious contacts in groups can only set this timestamp to a value within the range of `last seen message time`
+            // and `local now`.
+            profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(data["GroupID"], timestampSent.toLocal());
+            notificationManager.notify("New Message From Group!");
           }
         } else {
           // from me (already displayed - do not update counter)
