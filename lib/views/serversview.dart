@@ -31,15 +31,15 @@ class _ServersView extends State<ServersView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Servers you host"), //AppLocalizations.of(context)!.torNetworkStatus),
+        title: Text( MediaQuery.of(context).size.width > 600 ? AppLocalizations.of(context)!.serversManagerTitleLong : AppLocalizations.of(context)!.serversManagerTitleShort),
         actions: getActions(),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _pushAddServer,
-        tooltip: "Add new Server", //AppLocalizations.of(context)!.addNewProfileBtn,
+        tooltip: AppLocalizations.of(context)!.addServerTooltip,
         child: Icon(
           Icons.add,
-          semanticLabel: "Add new Server", //AppLocalizations.of(context)!.addNewProfileBtn,
+          semanticLabel: AppLocalizations.of(context)!.addServerTooltip,
         ),
       ),
       body: Consumer<ServerListState>(
@@ -58,9 +58,9 @@ class _ServersView extends State<ServersView> {
         ).toList();
 
         if (tiles.isEmpty) {
-          return const Center(
-            child: const Text(
-              "Please create or unlock a server to begin!",
+          return Center(
+            child: Text(
+              AppLocalizations.of(context)!.unlockServerTip,
             textAlign: TextAlign.center,
           ));
         }
@@ -101,7 +101,7 @@ class _ServersView extends State<ServersView> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
-                                Text("Enter password to unlock server"),//AppLocalizations.of(context)!.enterProfilePassword),
+                                Text(AppLocalizations.of(context)!.enterServerPassword),
                                 SizedBox(
                                   height: 20,
                                 ),

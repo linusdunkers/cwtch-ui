@@ -15,7 +15,7 @@ import '../errorHandler.dart';
 import '../main.dart';
 import '../config.dart';
 
-/// Global Settings View provides access to modify all the Globally Relevant Settings including Locale, Theme and Experiments.
+/// Pane to add or edit a server
 class AddEditServerView extends StatefulWidget {
   const AddEditServerView();
 
@@ -56,7 +56,7 @@ class _AddEditServerViewState extends State<AddEditServerView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: ctrlrOnion.text.isEmpty ? Text("Add Server") : Text("Edit Server"), //AppLocalizations.of(context)!.cwtchSettingsTitle),
+        title: ctrlrOnion.text.isEmpty ? Text(AppLocalizations.of(context)!.addServerTitle) : Text(AppLocalizations.of(context)!.editServerTitle), //),
       ),
       body: _buildSettingsList(),
     );
@@ -94,7 +94,7 @@ class _AddEditServerViewState extends State<AddEditServerView> {
                             SizedBox(
                               height: 20,
                             ),
-                            CwtchLabel(label: "Onion"), //AppLocalizations.of(context)!.displayNameLabel),
+                            CwtchLabel(label: AppLocalizations.of(context)!.serverAddress),
                             SizedBox(
                               height: 20,
                             ),
@@ -108,7 +108,8 @@ class _AddEditServerViewState extends State<AddEditServerView> {
                            SizedBox(
                              height: 20,
                            ),
-                           CwtchLabel(label: "Description"), //AppLocalizations.of(context)!.displayNameLabel),
+                           CwtchLabel(label: AppLocalizations.of(context)!.serverDescriptionLabel),
+                           Text(AppLocalizations.of(context)!.serverDescriptionDescription),
                            SizedBox(
                              height: 20,
                            ),
@@ -127,8 +128,8 @@ class _AddEditServerViewState extends State<AddEditServerView> {
                             Visibility(
                               visible: serverInfoState.onion.isNotEmpty,
                               child: SwitchListTile(
-                               title: Text(/*AppLocalizations.of(context)!.blockUnknownLabel*/ "Enabled", style: TextStyle(color: settings.current().mainTextColor())),
-                               subtitle: Text(AppLocalizations.of(context)!.descriptionBlockUnknownConnections),
+                               title: Text(AppLocalizations.of(context)!.serverEnabled, style: TextStyle(color: settings.current().mainTextColor())),
+                               subtitle: Text(AppLocalizations.of(context)!.serverEnabledDescription),
                                value: serverInfoState.running,
                                onChanged: (bool value) {
                                  serverInfoState.setRunning(value);
@@ -146,8 +147,8 @@ class _AddEditServerViewState extends State<AddEditServerView> {
 
                            // Auto start
                           SwitchListTile(
-                             title: Text(/*AppLocalizations.of(context)!.blockUnknownLabel*/ "Autostart", style: TextStyle(color: settings.current().mainTextColor())),
-                             subtitle: Text(AppLocalizations.of(context)!.descriptionBlockUnknownConnections),
+                             title: Text(AppLocalizations.of(context)!.serverAutostartLabel, style: TextStyle(color: settings.current().mainTextColor())),
+                             subtitle: Text(AppLocalizations.of(context)!.serverAutostartDescription),
                              value: serverInfoState.autoStart,
                              onChanged: (bool value) {
                                serverInfoState.setAutostart(value);
@@ -273,7 +274,7 @@ class _AddEditServerViewState extends State<AddEditServerView> {
                                  child: ElevatedButton(
                                    onPressed: serverInfoState.onion.isEmpty ?  _createPressed : _savePressed,
                                    child: Text(
-                                     serverInfoState.onion.isEmpty ? "Add Server" : "Save Server",//AppLocalizations.of(context)!.addNewProfileBtn : AppLocalizations.of(context)!.saveProfileBtn,
+                                     serverInfoState.onion.isEmpty ? AppLocalizations.of(context)!.addServerTitle : AppLocalizations.of(context)!.saveServerButton,
                                      textAlign: TextAlign.center,
                                    ),
                                  ),

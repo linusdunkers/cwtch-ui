@@ -235,9 +235,9 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
         ).toList();
 
         if (tiles.isEmpty) {
-          return const Center(
-              child: const Text(
-            "Please create or unlock a profile to begin!",
+          return Center(
+              child: Text(
+                AppLocalizations.of(context)!.unlockProfileTip,
             textAlign: TextAlign.center,
           ));
         }
