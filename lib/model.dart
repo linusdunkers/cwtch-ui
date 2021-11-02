@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:cwtch/widgets/messagerow.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:cwtch/models/servers.dart';
+import 'package:cwtch/models/profileservers.dart';
 
 ////////////////////
 ///   UI State   ///
@@ -207,7 +207,7 @@ class ContactListState extends ChangeNotifier {
 
 class ProfileInfoState extends ChangeNotifier {
   ContactListState _contacts = ContactListState();
-  ServerListState _servers = ServerListState();
+  ProfileServerListState _servers = ProfileServerListState();
   final String onion;
   String _nickname = "";
   String _imagePath = "";
@@ -267,7 +267,7 @@ class ProfileInfoState extends ChangeNotifier {
       List<dynamic> servers = jsonDecode(serversJson);
       this._servers.replace(servers.map((server) {
         // TODO Keys...
-        return ServerInfoState(onion: server["onion"], status: server["status"]);
+        return RemoteServerInfoState(onion: server["onion"], status: server["status"]);
       }));
       notifyListeners();
     }
@@ -316,7 +316,7 @@ class ProfileInfoState extends ChangeNotifier {
   }
 
   ContactListState get contactList => this._contacts;
-  ServerListState get serverList => this._servers;
+  ProfileServerListState get serverList => this._servers;
 
   @override
   void dispose() {

@@ -291,9 +291,60 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                 val groupHandle = (a.get("groupHandle") as? String) ?: ""
                 Cwtch.rejectInvite(profile, groupHandle)
             }
+            "SetProfileAttribute" -> {
+                val profile = (a.get("ProfileOnion") as? String) ?: ""
+                val key = (a.get("Key") as? String) ?: ""
+                val v = (a.get("Val") as? String) ?: ""
+                Cwtch.setProfileAttribute(profile, key, v)
+            }
+            "SetContactAttribute" -> {
+                val profile = (a.get("ProfileOnion") as? String) ?: ""
+                val contact = (a.get("Contact") as? String) ?: ""
+                val key = (a.get("Key") as? String) ?: ""
+                val v = (a.get("Val") as? String) ?: ""
+                Cwtch.setContactAttribute(profile, contact, key, v)
+            }
             "Shutdown" -> {
                 Cwtch.shutdownCwtch();
                 return Result.success()
+            }
+            "LoadServers" -> {
+                val password = (a.get("Password") as? String) ?: ""
+                Cwtch.loadServers(password)
+            }
+            "CreateServer" -> {
+                val password = (a.get("Password") as? String) ?: ""
+                val desc = (a.get("Description") as? String) ?: ""
+                val autostart = (a.get("Autostart") as? Boolean) ?: false
+                Cwtch.createServer(password, desc, autostart)
+            }
+            "DeleteServer" -> {
+                val serverOnion = (a.get("ServerOnion") as? String) ?: ""
+                val password = (a.get("Password") as? String) ?: ""
+                Cwtch.deleteServer(serverOnion, password)
+            }
+            "LaunchServers" -> {
+                Cwtch.launchServers()
+            }
+            "LaunchServer" -> {
+                val serverOnion = (a.get("ServerOnion") as? String) ?: ""
+                Cwtch.launchServer(serverOnion)
+            }
+            "StopServer" -> {
+                val serverOnion = (a.get("ServerOnion") as? String) ?: ""
+                Cwtch.stopServer(serverOnion)
+            }
+            "StopServers" -> {
+                Cwtch.stopServers()
+            }
+            "DestroyServers" -> {
+                Cwtch.destroyServers()
+            }
+            "SetServerAttribute" -> {
+                val serverOnion = (a.get("ServerOnion") as? String) ?: ""
+                val key = (a.get("Key") as? String) ?: ""
+                val v = (a.get("Val") as? String) ?: ""
+                Cwtch.setServerAttribute(serverOnion, key, v)
             }
             else -> return Result.failure()
         }

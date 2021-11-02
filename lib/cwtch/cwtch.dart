@@ -1,5 +1,9 @@
 import 'package:flutter/src/services/text_input.dart';
 
+// To handle profiles that are "unencrypted" (i.e don't require a password to open) we currently create a profile with a defacto, hardcoded password.
+// Details: https://docs.openprivacy.ca/cwtch-security-handbook/profile_encryption_and_storage.html
+const DefaultPassword = "be gay do crime";
+
 abstract class Cwtch {
   // ignore: non_constant_identifier_names
   Future<void> Start();
@@ -63,6 +67,29 @@ abstract class Cwtch {
   void SetGroupAttribute(String profile, String groupHandle, String key, String value);
   // ignore: non_constant_identifier_names
   void RejectInvite(String profileOnion, String groupHandle);
+  // ignore: non_constant_identifier_names
+  void SetProfileAttribute(String profile, String key, String val);
+  // ignore: non_constant_identifier_names
+  void SetContactAttribute(String profile, String contact, String key, String val);
+
+  // ignore: non_constant_identifier_names
+  void LoadServers(String password);
+  // ignore: non_constant_identifier_names
+  void CreateServer(String password, String description, bool autostart);
+  // ignore: non_constant_identifier_names
+  void DeleteServer(String serverOnion, String password);
+  // ignore: non_constant_identifier_names
+  void LaunchServers();
+  // ignore: non_constant_identifier_names
+  void LaunchServer(String serverOnion);
+  // ignore: non_constant_identifier_names
+  void StopServer(String serverOnion);
+  // ignore: non_constant_identifier_names
+  void StopServers();
+  // ignore: non_constant_identifier_names
+  void DestroyServers();
+  // ignore: non_constant_identifier_names
+  void SetServerAttribute(String serverOnion, String key, String val);
 
   // ignore: non_constant_identifier_names
   void Shutdown();

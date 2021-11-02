@@ -42,6 +42,9 @@ typedef VoidFromStringStringStringStringStringFn = void Function(Pointer<Utf8>, 
 typedef void_from_string_string_int_int_function = Void Function(Pointer<Utf8>, Int32, Pointer<Utf8>, Int32, Int64, Int64);
 typedef VoidFromStringStringIntIntFn = void Function(Pointer<Utf8>, int, Pointer<Utf8>, int, int, int);
 
+typedef void_from_string_string_byte_function = Void Function(Pointer<Utf8>, Int32, Pointer<Utf8>, Int32, Int8);
+typedef VoidFromStringStringByteFn = void Function(Pointer<Utf8>, int, Pointer<Utf8>, int, int);
+
 typedef string_to_void_function = Void Function(Pointer<Utf8> str, Int32 length);
 typedef StringFn = void Function(Pointer<Utf8> dir, int);
 
@@ -528,6 +531,139 @@ class CwtchFfi implements Cwtch {
     DeleteProfile(u1, u1.length, u2, u2.length);
     malloc.free(u1);
     malloc.free(u2);
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void SetProfileAttribute(String profile, String key, String val) {
+    var setProfileAttribute = library.lookup<NativeFunction<void_from_string_string_string_function>>("c_SetProfileAttribute");
+    // ignore: non_constant_identifier_names
+    final SetProfileAttribute = setProfileAttribute.asFunction<VoidFromStringStringStringFn>();
+    final u1 = profile.toNativeUtf8();
+    final u2 = key.toNativeUtf8();
+    final u3 = key.toNativeUtf8();
+    SetProfileAttribute(u1, u1.length, u2, u2.length, u3, u3.length);
+    malloc.free(u1);
+    malloc.free(u2);
+    malloc.free(u3);
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void SetContactAttribute(String profile, String contact, String key, String val) {
+    var setContactAttribute = library.lookup<NativeFunction<void_from_string_string_string_string_function>>("c_SetContactAttribute");
+    // ignore: non_constant_identifier_names
+    final SetContactAttribute = setContactAttribute.asFunction<VoidFromStringStringStringStringFn>();
+    final u1 = profile.toNativeUtf8();
+    final u2 = contact.toNativeUtf8();
+    final u3 = key.toNativeUtf8();
+    final u4 = key.toNativeUtf8();
+    SetContactAttribute(u1, u1.length, u2, u2.length, u3, u3.length, u4, u4.length);
+    malloc.free(u1);
+    malloc.free(u2);
+    malloc.free(u3);
+    malloc.free(u4);
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void LoadServers(String password) {
+    var loadServers = library.lookup<NativeFunction<string_to_void_function>>("c_LoadServers");
+    // ignore: non_constant_identifier_names
+    final LoadServers = loadServers.asFunction<StringFn>();
+    final u1 = password.toNativeUtf8();
+    LoadServers(u1, u1.length);
+    malloc.free(u1);
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void CreateServer(String password, String description, bool autostart) {
+    var createServer = library.lookup<NativeFunction<void_from_string_string_byte_function>>("c_CreateServer");
+    // ignore: non_constant_identifier_names
+    final CreateServer = createServer.asFunction<VoidFromStringStringByteFn>();
+    final u1 = password.toNativeUtf8();
+    final u2 = description.toNativeUtf8();
+    CreateServer(u1, u1.length, u2, u2.length, autostart ? 1 : 0);
+    malloc.free(u1);
+    malloc.free(u2);
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void DeleteServer(String serverOnion, String password) {
+    var deleteServer = library.lookup<NativeFunction<string_string_to_void_function>>("c_DeleteServer");
+    // ignore: non_constant_identifier_names
+    final DeleteServer = deleteServer.asFunction<VoidFromStringStringFn>();
+    final u1 = serverOnion.toNativeUtf8();
+    final u2 = password.toNativeUtf8();
+    DeleteServer(u1, u1.length, u2, u2.length);
+    malloc.free(u1);
+    malloc.free(u2);
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void LaunchServers() {
+    var launchServers = library.lookup<NativeFunction<Void Function()>>("c_LaunchServers");
+    // ignore: non_constant_identifier_names
+    final LaunchServers = launchServers.asFunction<void Function()>();
+    LaunchServers();
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void LaunchServer(String serverOnion) {
+    var launchServer = library.lookup<NativeFunction<string_to_void_function>>("c_LaunchServer");
+    // ignore: non_constant_identifier_names
+    final LaunchServer = launchServer.asFunction<StringFn>();
+    final u1 = serverOnion.toNativeUtf8();
+    LaunchServer(u1, u1.length);
+    malloc.free(u1);
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void StopServer(String serverOnion) {
+    var shutdownServer = library.lookup<NativeFunction<string_to_void_function>>("c_StopServer");
+    // ignore: non_constant_identifier_names
+    final ShutdownServer = shutdownServer.asFunction<StringFn>();
+    final u1 = serverOnion.toNativeUtf8();
+    ShutdownServer(u1, u1.length);
+    malloc.free(u1);
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void StopServers() {
+    var shutdownServers = library.lookup<NativeFunction<Void Function()>>("c_StopServers");
+    // ignore: non_constant_identifier_names
+    final ShutdownServers = shutdownServers.asFunction<void Function()>();
+    ShutdownServers();
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void DestroyServers() {
+    var destroyServers = library.lookup<NativeFunction<Void Function()>>("c_DestroyServers");
+    // ignore: non_constant_identifier_names
+    final DestroyServers = destroyServers.asFunction<void Function()>();
+    DestroyServers();
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void SetServerAttribute(String serverOnion, String key, String val) {
+    var setServerAttribute = library.lookup<NativeFunction<void_from_string_string_string_function>>("c_SetServerAttribute");
+    // ignore: non_constant_identifier_names
+    final SetServerAttribute = setServerAttribute.asFunction<VoidFromStringStringStringFn>();
+    final u1 = serverOnion.toNativeUtf8();
+    final u2 = key.toNativeUtf8();
+    final u3 = val.toNativeUtf8();
+    SetServerAttribute(u1, u1.length, u2, u2.length, u3, u3.length);
+    malloc.free(u1);
+    malloc.free(u2);
+    malloc.free(u3);
   }
 
   @override

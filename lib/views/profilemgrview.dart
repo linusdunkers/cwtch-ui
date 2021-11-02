@@ -17,6 +17,7 @@ import '../model.dart';
 import '../torstatus.dart';
 import 'addeditprofileview.dart';
 import 'globalsettingsview.dart';
+import 'serversview.dart';
 
 class ProfileMgrView extends StatefulWidget {
   ProfileMgrView();
@@ -56,12 +57,14 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
                 SizedBox(
                   width: 10,
                 ),
-                Expanded(child: Text(AppLocalizations.of(context)!.titleManageProfiles, style: TextStyle(color: settings.current().mainTextColor())))
+                Expanded(child: Text(MediaQuery.of(context).size.width > 600 ?
+                    AppLocalizations.of(context)!.titleManageProfiles : AppLocalizations.of(context)!.titleManageProfilesShort,
+                    style: TextStyle(color: settings.current().mainTextColor())))
               ]),
               actions: getActions(),
             ),
             floatingActionButton: FloatingActionButton(
-              onPressed: _pushAddEditProfile,
+              onPressed: _pushAddProfile,
               tooltip: AppLocalizations.of(context)!.addNewProfileBtn,
               child: Icon(
                 Icons.add,
@@ -95,6 +98,11 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
       onPressed: _modalUnlockProfiles,
     ));
 
+    // Servers
+    if (Provider.of<Settings>(context).isExperimentEnabled(ServerManagementExperiment)) {
+      actions.add(IconButton(icon: Icon(CwtchIcons.dns_black_24dp), tooltip: AppLocalizations.of(context)!.serversManagerTitleShort, onPressed: _pushServers));
+    }
+
     // Global Settings
     actions.add(IconButton(icon: Icon(Icons.settings), tooltip: AppLocalizations.of(context)!.tooltipOpenSettings, onPressed: _pushGlobalSettings));
 
@@ -119,6 +127,17 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
     ));
   }
 
+  void _pushServers() {
+    Navigator.of(context).push(MaterialPageRoute<void>(
+      builder: (BuildContext context) {
+        return MultiProvider(
+          providers: [Provider.value(value: Provider.of<FlwtchState>(context))],
+          child: ServersView(),
+        );
+      },
+    ));
+  }
+
   void _pushTorStatus() {
     Navigator.of(context).push(MaterialPageRoute<void>(
       builder: (BuildContext context) {
@@ -130,7 +149,7 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
     ));
   }
 
-  void _pushAddEditProfile({onion: ""}) {
+  void _pushAddProfile({onion: ""}) {
     Navigator.of(context).push(MaterialPageRoute<void>(
       builder: (BuildContext context) {
         return MultiProvider(
@@ -216,9 +235,9 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
         ).toList();
 
         if (tiles.isEmpty) {
-          return const Center(
-              child: const Text(
-            "Please create or unlock a profile to begin!",
+          return Center(
+              child: Text(
+                AppLocalizations.of(context)!.unlockProfileTip,
             textAlign: TextAlign.center,
           ));
         }
