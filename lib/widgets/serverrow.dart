@@ -58,7 +58,7 @@ class _ServerRowState extends State<ServerRow> {
           // Copy server button
           IconButton(
             enableFeedback: true,
-            tooltip: AppLocalizations.of(context)!.editProfile + " " + server.onion,
+            tooltip: AppLocalizations.of(context)!.copyAddress,
             icon: Icon(CwtchIcons.address_copy_2, color: Provider.of<Settings>(context).current().mainTextColor()),
             onPressed: () {
               Clipboard.setData(new ClipboardData(text: server.serverBundle));
@@ -68,7 +68,7 @@ class _ServerRowState extends State<ServerRow> {
           // Edit button
           IconButton(
             enableFeedback: true,
-            tooltip: AppLocalizations.of(context)!.editProfile + " " + server.onion,
+            tooltip: AppLocalizations.of(context)!.editServerTitle,
             icon: Icon(Icons.create, color: Provider.of<Settings>(context).current().mainTextColor()),
             onPressed: () {
               _pushEditServer(server);
