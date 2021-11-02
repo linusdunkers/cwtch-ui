@@ -56,7 +56,7 @@ class _AddEditServerViewState extends State<AddEditServerView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: ctrlrOnion.text.isEmpty ? Text(AppLocalizations.of(context)!.addServerTitle) : Text(AppLocalizations.of(context)!.editServerTitle), //),
+        title: ctrlrOnion.text.isEmpty ? Text(AppLocalizations.of(context)!.addServerTitle) : Text(AppLocalizations.of(context)!.editServerTitle),
       ),
       body: _buildSettingsList(),
     );

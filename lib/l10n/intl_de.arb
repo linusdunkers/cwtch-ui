@@ -1,6 +1,9 @@
 {
     "@@locale": "de",
-    "@@last_modified": "2021-11-02T19:44:05+01:00",
+    "@@last_modified": "2021-11-02T23:03:43+01:00",
+    "copyAddress": "Copy Address",
+    "settingServersDescription": "The hosting servers experiment enables hosting and managing Cwtch servers",
+    "settingServers": "Hosting Servers",
     "enterServerPassword": "Enter password to unlock server",
     "unlockProfileTip": "Please create or unlock a profile to begin!",
     "unlockServerTip": "Please create or unlock a server to begin!",

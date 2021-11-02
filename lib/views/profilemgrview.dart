@@ -100,7 +100,7 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
 
     // Servers
     if (Provider.of<Settings>(context).isExperimentEnabled(ServerManagementExperiment)) {
-      actions.add(IconButton(icon: Icon(CwtchIcons.dns_black_24dp), tooltip: "Servers", onPressed: _pushServers));
+      actions.add(IconButton(icon: Icon(CwtchIcons.dns_black_24dp), tooltip: AppLocalizations.of(context)!.serversManagerTitleShort, onPressed: _pushServers));
     }
 
     // Global Settings
