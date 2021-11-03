@@ -99,7 +99,7 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
     ));
 
     // Servers
-    if (Provider.of<Settings>(context).isExperimentEnabled(ServerManagementExperiment)) {
+    if (Provider.of<Settings>(context).isExperimentEnabled(ServerManagementExperiment) && !Platform.isAndroid && !Platform.isIOS) {
       actions.add(IconButton(icon: Icon(CwtchIcons.dns_black_24dp), tooltip: AppLocalizations.of(context)!.serversManagerTitleShort, onPressed: _pushServers));
     }
 
