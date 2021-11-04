@@ -96,7 +96,7 @@ class FileBubbleState extends State<FileBubble> {
         var path = Provider.of<ProfileInfoState>(context).downloadFinalPath(widget.fileKey()) ?? "";
         wdgDecorations = Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children:[Text(AppLocalizations.of(context)!.fileInterrupted + ': ' + path + '\u202F'),ElevatedButton(onPressed: _btnResume, child: Text('Verify/resume'))]
+            children:[Text(AppLocalizations.of(context)!.fileInterrupted + ': ' + path + '\u202F'),ElevatedButton(onPressed: _btnResume, child: Text(AppLocalizations.of(context)!.verfiyResumeButton))]
         );
       }
     } else {
