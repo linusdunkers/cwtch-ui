@@ -19,8 +19,18 @@ class ServerListState extends ChangeNotifier {
   }
 
   void add(String onion, String serverBundle, bool running, String description, bool autoStart, bool isEncrypted) {
-    print("servers.add desc:$description autostart: $autoStart");
-    _servers.add(ServerInfoState(onion: onion, serverBundle: serverBundle, running: running, description: description, autoStart: autoStart, isEncrypted: isEncrypted));
+    var sis = ServerInfoState(onion: onion, serverBundle: serverBundle, running: running, description: description, autoStart: autoStart, isEncrypted: isEncrypted);
+    int idx = _servers.indexWhere((element) => element.onion == onion);
+    if (idx >= 0) {
+      _servers[idx] = sis;
+    } else {
+      _servers.add(ServerInfoState(onion: onion,
+          serverBundle: serverBundle,
+          running: running,
+          description: description,
+          autoStart: autoStart,
+          isEncrypted: isEncrypted));
+    }
     notifyListeners();
   }
 
