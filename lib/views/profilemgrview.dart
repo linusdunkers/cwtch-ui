@@ -129,6 +129,7 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
 
   void _pushServers() {
     Navigator.of(context).push(MaterialPageRoute<void>(
+      settings: RouteSettings(name: "servers"),
       builder: (BuildContext context) {
         return MultiProvider(
           providers: [Provider.value(value: Provider.of<FlwtchState>(context))],

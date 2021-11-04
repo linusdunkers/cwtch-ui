@@ -34,6 +34,11 @@ class ServerListState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void delete(String onion) {
+    _servers.removeWhere((element) => element.onion == onion);
+    notifyListeners();
+  }
+
   List<ServerInfoState> get servers => _servers.sublist(0); //todo: copy?? dont want caller able to bypass changenotifier
 
 }
