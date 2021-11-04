@@ -1,6 +1,9 @@
 {
     "@@locale": "en",
-    "@@last_modified": "2021-11-04T02:39:11+01:00",
+    "@@last_modified": "2021-11-04T22:56:21+01:00",
+    "fileCheckingStatus": "Checking download status",
+    "fileInterrupted": "Interrupted",
+    "fileSavedTo": "Saved to",
     "plainServerDescription": "We recommend that you protect your Cwtch servers with a password. If you do not set a password on this server then anyone who has access to this device may be able to access information about this server, including sensitive cryptographic keys.",
     "encryptedServerDescription": "Encrypting a server with a password protects it from other people who may also use this device. Encrypted servers cannot be decrypted, displayed or accessed until the correct password is entered to unlock them.",
     "deleteServerConfirmBtn": "Really delete server",
