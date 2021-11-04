@@ -12,6 +12,7 @@ import '../../model.dart';
 class FileMessage extends Message {
   final MessageMetadata metadata;
   final String content;
+  final RegExp nonHex = RegExp(r'[^a-f0-9]');
 
   FileMessage(this.metadata, this.content);
 
@@ -30,6 +31,10 @@ class FileMessage extends Message {
           String nonce = shareObj['n'] as String;
           int fileSize = shareObj['s'] as int;
 
+          if (!validHash(rootHash, nonce)) {
+            return MessageRow(MalformedBubble());
+          }
+
           return MessageRow(FileBubble(nameSuggestion, rootHash, nonce, fileSize), key: Provider.of<ContactInfoState>(bcontext).getMessageKey(idx));
         });
   }
@@ -47,6 +52,9 @@ class FileMessage extends Message {
           String rootHash = shareObj['h'] as String;
           String nonce = shareObj['n'] as String;
           int fileSize = shareObj['s'] as int;
+          if (!validHash(rootHash, nonce)) {
+            return MessageRow(MalformedBubble());
+          }
           return FileBubble(
             nameSuggestion,
             rootHash,
@@ -60,5 +68,9 @@ class FileMessage extends Message {
   @override
   MessageMetadata getMetadata() {
     return this.metadata;
+  }
+
+  bool validHash(String hash, String nonce) {
+    return hash.length == 128 && nonce.length == 48 && !hash.contains(nonHex) && !nonce.contains(nonHex);
   }
 }

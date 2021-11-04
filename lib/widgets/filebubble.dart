@@ -34,6 +34,11 @@ class FileBubble extends StatefulWidget {
 
 class FileBubbleState extends State<FileBubble> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var fromMe = Provider.of<MessageMetadata>(context).senderHandle == Provider.of<ProfileInfoState>(context).onion;
     var flagStarted = Provider.of<MessageMetadata>(context).flags & 0x02 > 0;
@@ -71,7 +76,7 @@ class FileBubbleState extends State<FileBubble> {
     } else if (Provider.of<ProfileInfoState>(context).downloadComplete(widget.fileKey())) {
       // in this case, whatever marked download.complete would have also set the path
       var path = Provider.of<ProfileInfoState>(context).downloadFinalPath(widget.fileKey())!;
-      wdgDecorations = Text('Saved to: ' + path + '\u202F');
+      wdgDecorations = Text(AppLocalizations.of(context)!.fileSavedTo + ': ' + path + '\u202F');
     } else if (Provider.of<ProfileInfoState>(context).downloadActive(widget.fileKey())) {
       if (!Provider.of<ProfileInfoState>(context).downloadGotManifest(widget.fileKey())) {
         wdgDecorations = Text(AppLocalizations.of(context)!.retrievingManifestMessage + '\u202F');
@@ -84,12 +89,15 @@ class FileBubbleState extends State<FileBubble> {
     } else if (flagStarted) {
       // in this case, the download was done in a previous application launch,
       // so we probably have to request an info lookup
-      var path = Provider.of<ProfileInfoState>(context).downloadFinalPath(widget.fileKey());
-      if (path == null) {
-        wdgDecorations = Text('Checking download status...' + '\u202F');
+      if (!Provider.of<ProfileInfoState>(context).downloadInterrupted(widget.fileKey()) ) {
+        wdgDecorations = Text(AppLocalizations.of(context)!.fileCheckingStatus + '...' + '\u202F');
         Provider.of<FlwtchState>(context, listen: false).cwtch.CheckDownloadStatus(Provider.of<ProfileInfoState>(context, listen: false).onion, widget.fileKey());
       } else {
-        wdgDecorations = Text('Saved to: ' + path + '\u202F');
+        var path = Provider.of<ProfileInfoState>(context).downloadFinalPath(widget.fileKey()) ?? "";
+        wdgDecorations = Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children:[Text(AppLocalizations.of(context)!.fileInterrupted + ': ' + path + '\u202F'),ElevatedButton(onPressed: _btnResume, child: Text('Verify/resume'))]
+        );
       }
     } else {
       wdgDecorations = Center(
@@ -165,6 +173,13 @@ class FileBubbleState extends State<FileBubble> {
         print(e);
       }
     }
+  }
+
+  void _btnResume() async {
+    var profileOnion = Provider.of<ProfileInfoState>(context, listen: false).onion;
+    var handle = Provider.of<MessageMetadata>(context, listen: false).senderHandle;
+    Provider.of<ProfileInfoState>(context, listen: false).downloadMarkResumed(widget.fileKey());
+    Provider.of<FlwtchState>(context, listen: false).cwtch.VerifyOrResumeDownload(profileOnion, handle, widget.fileKey());
   }
 
   // Construct an file chrome for the sender

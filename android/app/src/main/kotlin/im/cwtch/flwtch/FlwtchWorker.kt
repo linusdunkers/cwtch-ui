@@ -112,24 +112,26 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                             if (dlID == null) {
                                 dlID = 0;
                             }
-                            val channelId =
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                        createDownloadNotificationChannel(fileKey, fileKey)
-                                    } else {
-                                        // If earlier version channel ID is not used
-                                        // https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#NotificationCompat.Builder(android.content.Context)
-                                        ""
-                                    };
-                            val newNotification = NotificationCompat.Builder(applicationContext, channelId)
-                                    .setOngoing(true)
-                                    .setContentTitle("Downloading")//todo: translate
-                                    .setContentText(title)
-                                    .setSmallIcon(android.R.drawable.stat_sys_download)
-                                    .setProgress(progressMax, progress, false)
-                                    .setSound(null)
-                                    //.setSilent(true)
-                                    .build();
-                            notificationManager.notify(dlID, newNotification);
+                            if (progress >= 0) {
+                                val channelId =
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                            createDownloadNotificationChannel(fileKey, fileKey)
+                                        } else {
+                                            // If earlier version channel ID is not used
+                                            // https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#NotificationCompat.Builder(android.content.Context)
+                                            ""
+                                        };
+                                val newNotification = NotificationCompat.Builder(applicationContext, channelId)
+                                        .setOngoing(true)
+                                        .setContentTitle("Downloading")//todo: translate
+                                        .setContentText(title)
+                                        .setSmallIcon(android.R.drawable.stat_sys_download)
+                                        .setProgress(progressMax, progress, false)
+                                        .setSound(null)
+                                        //.setSilent(true)
+                                        .build();
+                                notificationManager.notify(dlID, newNotification);
+                            }
                         } catch (e: Exception) {
                             Log.i("FlwtchWorker->FileDownloadProgressUpdate", e.toString() + " :: " + e.getStackTrace());
                         }
@@ -240,6 +242,12 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                 val profile = (a.get("ProfileOnion") as? String) ?: ""
                 val fileKey = (a.get("fileKey") as? String) ?: ""
                 Cwtch.checkDownloadStatus(profile, fileKey)
+            }
+            "VerifyOrResumeDownload" -> {
+                val profile = (a.get("ProfileOnion") as? String) ?: ""
+                val handle = (a.get("handle") as? String) ?: ""
+                val fileKey = (a.get("fileKey") as? String) ?: ""
+                Cwtch.verifyOrResumeDownload(profile, handle, fileKey)
             }
             "SendProfileEvent" -> {
                 val onion = (a.get("onion") as? String) ?: ""
