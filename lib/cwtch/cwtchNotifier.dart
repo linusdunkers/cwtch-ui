@@ -104,6 +104,12 @@ class CwtchNotifier {
         // todo standarize
         error.handleUpdate("deleteprofile.success");
         break;
+      case "ServerDeleted":
+        error.handleUpdate("deletedserver." + data["Status"]);
+        if (data["Status"] == "success") {
+          serverListState.delete(data["Identity"]);
+        }
+        break;
       case "DeleteContact":
         profileCN.getProfile(data["ProfileOnion"])?.contactList.removeContact(data["RemotePeer"]);
         break;

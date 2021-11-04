@@ -7,6 +7,7 @@ import 'package:cwtch/widgets/profileimage.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../errorHandler.dart';
 import '../main.dart';
 import '../model.dart';
 import '../settings.dart';
@@ -101,6 +102,7 @@ class _ProfileRowState extends State<ProfileRow> {
   }
 
   void _pushEditProfile({onion: "", displayName: "", profileImage: "", encrypted: true}) {
+    Provider.of<ErrorHandler>(context).reset();
     Navigator.of(context).push(MaterialPageRoute<void>(
       builder: (BuildContext context) {
         return MultiProvider(

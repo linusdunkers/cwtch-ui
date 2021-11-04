@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../cwtch_icons_icons.dart';
+import '../errorHandler.dart';
 import '../model.dart';
 import '../settings.dart';
 
@@ -80,7 +81,9 @@ class _ServerRowState extends State<ServerRow> {
   }
 
   void _pushEditServer(ServerInfoState server ) {
+    Provider.of<ErrorHandler>(context).reset();
     Navigator.of(context).push(MaterialPageRoute<void>(
+      settings: RouteSettings(name: "serveraddedit"),
       builder: (BuildContext context) {
         return MultiProvider(
           providers: [ChangeNotifierProvider<ServerInfoState>(

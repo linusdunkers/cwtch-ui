@@ -164,6 +164,7 @@ class _AddEditServerViewState extends State<AddEditServerView> {
 
                           // ***** Password *****
 
+                           // use password toggle
                            Visibility(
                                visible: serverInfoState.onion.isEmpty,
                                child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
@@ -186,20 +187,19 @@ class _AddEditServerViewState extends State<AddEditServerView> {
                                  Padding(
                                      padding: EdgeInsets.symmetric(horizontal: 24),
                                      child: Text(
-                                       usePassword ? AppLocalizations.of(context)!.encryptedProfileDescription : AppLocalizations.of(context)!.plainProfileDescription,
+                                       usePassword ? AppLocalizations.of(context)!.encryptedServerDescription : AppLocalizations.of(context)!.plainServerDescription,
                                        textAlign: TextAlign.center,
-                                     ))
+                                     )),
+                                 SizedBox(
+                                   height: 20,
+                                 ),
                                ])),
-                           SizedBox(
-                             height: 20,
-                           ),
+
+
+                           // current password
                            Visibility(
-                             // Currently we don't support password change for servers so also gate this on Add server, when ready to support changing password remove the onion.isEmpty check
-                             visible: serverInfoState.onion.isEmpty && usePassword,
-                             child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-                               Visibility(
-                                   visible: serverInfoState.onion.isNotEmpty && serverInfoState.isEncrypted,
-                                   child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                               visible: serverInfoState.onion.isNotEmpty && serverInfoState.isEncrypted,
+                               child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
                                      CwtchLabel(label: AppLocalizations.of(context)!.currentPasswordLabel),
                                      SizedBox(
                                        height: 20,
@@ -215,8 +215,8 @@ class _AddEditServerViewState extends State<AddEditServerView> {
                                              usePassword) {
                                            return AppLocalizations.of(context)!.passwordErrorEmpty;
                                          }
-                                         if (Provider.of<ErrorHandler>(context).deleteProfileError == true) {
-                                           return AppLocalizations.of(context)!.enterCurrentPasswordForDelete;
+                                         if (Provider.of<ErrorHandler>(context).deletedServerError == true) {
+                                           return AppLocalizations.of(context)!.enterCurrentPasswordForDeleteServer;
                                          }
                                          return null;
                                        },
@@ -225,6 +225,12 @@ class _AddEditServerViewState extends State<AddEditServerView> {
                                        height: 20,
                                      ),
                                    ])),
+
+                          // new passwords 1 & 2
+                          Visibility(
+                            // Currently we don't support password change for servers so also gate this on Add server, when ready to support changing password remove the onion.isEmpty check
+                              visible: serverInfoState.onion.isEmpty && usePassword,
+                              child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
                                CwtchLabel(label: AppLocalizations.of(context)!.newPassword),
                                SizedBox(
                                  height: 20,
@@ -263,6 +269,7 @@ class _AddEditServerViewState extends State<AddEditServerView> {
                                    }),
                              ]),
                            ),
+
                            SizedBox(
                              height: 20,
                            ),
@@ -281,12 +288,24 @@ class _AddEditServerViewState extends State<AddEditServerView> {
                                ),
                              ],
                            ),
+                           Visibility(
+                               visible: serverInfoState.onion.isNotEmpty,
+                               child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.end, children: [
+                                 SizedBox(
+                                   height: 20,
+                                 ),
+                                 Tooltip(
+                                     message: AppLocalizations.of(context)!.enterCurrentPasswordForDeleteServer,
+                                     child: ElevatedButton.icon(
+                                       onPressed: () {
+                                         showAlertDialog(context);
+                                       },
+                                       icon: Icon(Icons.delete_forever),
+                                       label: Text(AppLocalizations.of(context)!.deleteBtn),
+                                     ))
+                               ]))
 
                            // ***** END Password *****
-
-
-
-
 
                         ]))))));
       });
@@ -326,5 +345,54 @@ class _AddEditServerViewState extends State<AddEditServerView> {
       // TODO support change password
     }
     Navigator.of(context).pop();
+  }
+
+  showAlertDialog(BuildContext context) {
+    // set up the buttons
+    Widget cancelButton = ElevatedButton(
+      child: Text(AppLocalizations.of(context)!.cancel),
+      onPressed: () {
+        Navigator.of(context).pop(); // dismiss dialog
+      },
+    );
+    Widget continueButton = ElevatedButton(
+        child: Text(AppLocalizations.of(context)!.deleteServerConfirmBtn),
+        onPressed: () {
+          var onion = Provider
+              .of<ServerInfoState>(context, listen: false)
+              .onion;
+          Provider
+              .of<FlwtchState>(context, listen: false)
+              .cwtch
+              .DeleteServer(onion, Provider.of<ServerInfoState>(context, listen: false).isEncrypted ? ctrlrOldPass.value.text : DefaultPassword);
+          Future.delayed(
+            const Duration(milliseconds: 500),
+                () {
+              if (globalErrorHandler.deletedServerSuccess) {
+                final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.deleteServerSuccess + ":" + onion));
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                Navigator.of(context).popUntil((route) => route.settings.name == "servers"); // dismiss dialog
+              } else {
+                Navigator.of(context).pop();
+              }
+            },
+          );
+        });
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text(AppLocalizations.of(context)!.deleteServerConfirmBtn),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }
