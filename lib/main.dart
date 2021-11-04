@@ -17,6 +17,7 @@ import 'cwtch/cwtch.dart';
 import 'cwtch/cwtchNotifier.dart';
 import 'licenses.dart';
 import 'model.dart';
+import 'models/servers.dart';
 import 'views/profilemgrview.dart';
 import 'views/splashView.dart';
 import 'dart:io' show Platform, exit;
@@ -27,6 +28,7 @@ var globalSettings = Settings(Locale("en", ''), OpaqueDark());
 var globalErrorHandler = ErrorHandler();
 var globalTorStatus = TorStatus();
 var globalAppState = AppState();
+var globalServersList = ServerListState();
 
 void main() {
   print("Cwtch version: ${EnvironmentConfig.BUILD_VER} built on: ${EnvironmentConfig.BUILD_DATE}");
@@ -62,13 +64,13 @@ class FlwtchState extends State<Flwtch> {
     shutdownMethodChannel.setMethodCallHandler(modalShutdown);
     print("initState: creating cwtchnotifier, ffi");
     if (Platform.isAndroid) {
-      var cwtchNotifier = new CwtchNotifier(profs, globalSettings, globalErrorHandler, globalTorStatus, NullNotificationsManager(), globalAppState);
+      var cwtchNotifier = new CwtchNotifier(profs, globalSettings, globalErrorHandler, globalTorStatus, NullNotificationsManager(), globalAppState, globalServersList);
       cwtch = CwtchGomobile(cwtchNotifier);
     } else if (Platform.isLinux) {
-      var cwtchNotifier = new CwtchNotifier(profs, globalSettings, globalErrorHandler, globalTorStatus, newDesktopNotificationsManager(), globalAppState);
+      var cwtchNotifier = new CwtchNotifier(profs, globalSettings, globalErrorHandler, globalTorStatus, newDesktopNotificationsManager(), globalAppState, globalServersList);
       cwtch = CwtchFfi(cwtchNotifier);
     } else {
-      var cwtchNotifier = new CwtchNotifier(profs, globalSettings, globalErrorHandler, globalTorStatus, NullNotificationsManager(), globalAppState);
+      var cwtchNotifier = new CwtchNotifier(profs, globalSettings, globalErrorHandler, globalTorStatus, NullNotificationsManager(), globalAppState, globalServersList);
       cwtch = CwtchFfi(cwtchNotifier);
     }
     print("initState: invoking cwtch.Start()");
@@ -82,6 +84,7 @@ class FlwtchState extends State<Flwtch> {
   ChangeNotifierProvider<AppState> getAppStateProvider() => ChangeNotifierProvider.value(value: globalAppState);
   Provider<FlwtchState> getFlwtchStateProvider() => Provider<FlwtchState>(create: (_) => this);
   ChangeNotifierProvider<ProfileListState> getProfileListProvider() => ChangeNotifierProvider(create: (context) => profs);
+  ChangeNotifierProvider<ServerListState> getServerListStateProvider() => ChangeNotifierProvider.value(value: globalServersList);
 
   @override
   Widget build(BuildContext context) {
@@ -94,6 +97,7 @@ class FlwtchState extends State<Flwtch> {
         getErrorHandlerProvider(),
         getTorStatusProvider(),
         getAppStateProvider(),
+        getServerListStateProvider(),
       ],
       builder: (context, widget) {
         return Consumer2<Settings, AppState>(

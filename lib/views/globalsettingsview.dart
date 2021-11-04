@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:cwtch/cwtch_icons_icons.dart';
+import 'package:cwtch/models/servers.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:cwtch/settings.dart';
@@ -188,6 +190,27 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                 inactiveTrackColor: settings.theme.defaultButtonDisabledColor(),
                                 secondary: Icon(CwtchIcons.enable_groups, color: settings.current().mainTextColor()),
                               ),
+                              Visibility(
+                                visible: !Platform.isAndroid && !Platform.isIOS,
+                                child:
+                                  SwitchListTile(
+                                    title: Text(AppLocalizations.of(context)!.settingServers, style: TextStyle(color: settings.current().mainTextColor())),
+                                    subtitle: Text(AppLocalizations.of(context)!.settingServersDescription),
+                                    value: settings.isExperimentEnabled(ServerManagementExperiment),
+                                    onChanged: (bool value) {
+                                      Provider.of<ServerListState>(context, listen: false).clear();
+                                      if (value) {
+                                        settings.enableExperiment(ServerManagementExperiment);
+                                      } else {
+                                        settings.disableExperiment(ServerManagementExperiment);
+                                      }
+                                      // Save Settings...
+                                      saveSettings(context);
+                                    },
+                                    activeTrackColor: settings.theme.defaultButtonActiveColor(),
+                                    inactiveTrackColor: settings.theme.defaultButtonDisabledColor(),
+                                    secondary: Icon(CwtchIcons.dns_24px, color: settings.current().mainTextColor()),
+                                  )),
                               SwitchListTile(
                                 title: Text(AppLocalizations.of(context)!.settingFileSharing, style: TextStyle(color: settings.current().mainTextColor())),
                                 subtitle: Text(AppLocalizations.of(context)!.descriptionFileSharing),

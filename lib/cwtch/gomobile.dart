@@ -208,6 +208,72 @@ class CwtchGomobile implements Cwtch {
   }
 
   @override
+  // ignore: non_constant_identifier_names
+  void SetProfileAttribute(String profile, String key, String val) {
+    cwtchPlatform.invokeMethod("SetProfileAttribute", {"ProfileOnion": profile, "Key": key, "Val": val});
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void SetContactAttribute(String profile, String contact, String key, String val) {
+    cwtchPlatform.invokeMethod("SetContactAttribute", {"ProfileOnion": profile, "Contact": contact, "Key": key, "Val": val});
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void LoadServers(String password) {
+    cwtchPlatform.invokeMethod("LoadServers", {"Password": password});
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void CreateServer(String password, String description, bool autostart) {
+    cwtchPlatform.invokeMethod("CreateServer", {"Password": password, "Description": description, "Autostart": autostart});
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void DeleteServer(String serverOnion, String password) {
+    cwtchPlatform.invokeMethod("DeleteServer", {"ServerOnion": serverOnion, "Password": password});
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void LaunchServers() {
+    cwtchPlatform.invokeMethod("LaunchServers", {});
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void LaunchServer(String serverOnion) {
+    cwtchPlatform.invokeMethod("LaunchServer", {"ServerOnion": serverOnion});
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void StopServer(String serverOnion) {
+    cwtchPlatform.invokeMethod("StopServer", {"ServerOnion": serverOnion});
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void StopServers() {
+    cwtchPlatform.invokeMethod("StopServers", {});
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void DestroyServers() {
+    cwtchPlatform.invokeMethod("DestroyServers", {});
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void SetServerAttribute(String serverOnion, String key, String val) {
+    cwtchPlatform.invokeMethod("SetServerAttribute", {"ServerOnion": serverOnion, "Key": key, "Val": val});
+  }
+
+    @override
   Future<void> Shutdown() async {
     print("gomobile.dart Shutdown");
     cwtchPlatform.invokeMethod("Shutdown", {});
