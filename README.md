@@ -44,6 +44,7 @@ To build a release version and load normal profiles, use `build-release.sh X` in
 - run `flutter config --enable-linux-desktop` if you've never done so before
 - optional: launch cwtch-ui directly by running `flutter run -d linux`
 - to build cwtch-ui, run `flutter build linux`
+- optional: launch cwtch-ui build with `env LD_LIBRARY_PATH=linux ./build/linux/x64/release/bundle/cwtch`
 - to package the build, run `linux/package-release.sh`
 
 ### Building on Windows (for Windows)
@@ -60,9 +61,11 @@ To build a release version and load normal profiles, use `build-release.sh X` in
 
 ### Building on MacOS
 
-- Navigate to https://git.openprivacy.ca/cwtch.im/libcwtch-go/releases and download the latest libCwtch.dylib into this folder
-- Download and install Tor Browser (it's currently the only way to get tor for macos)
+- Cocaopods is required, you may need to `gem install cocaopods -v 1.9.3`
+- copy `libCwtch.dylib` into the root folder, or run `fetch-libcwtch-go-macos.sh` to download it
+- run `fetch-tor-macos.sh` to fetch Tor or Download and install Tor Browser and `cp -r /Applications/Tor\ Browser.app/Contents/MacOS/Tor ./macos/`
 - `flutter build macos`
+- optional: launch cwtch-ui build with `./build/linux/x64/release/bundle/cwtch`
 - `./macos/package-release.sh`
 
 results in a Cwtch.dmg that has libCwtch.dylib and tor in it as well and can be installed into Applications
