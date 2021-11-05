@@ -366,7 +366,12 @@ class CwtchNotifier {
         profileCN.getProfile(data["ProfileOnion"])?.downloadMarkManifest(data["FileKey"]);
         break;
       case "FileDownloadProgressUpdate":
-        profileCN.getProfile(data["ProfileOnion"])?.downloadUpdate(data["FileKey"], int.parse(data["Progress"]));
+        var progress = int.parse(data["Progress"]);
+        profileCN.getProfile(data["ProfileOnion"])?.downloadUpdate(data["FileKey"], progress, int.parse(data["FileSizeInChunks"]));
+        // progress == -1 is a "download was interrupted" message and should contain a path
+        if (progress < 0) {
+          profileCN.getProfile(data["ProfileOnion"])?.downloadSetPath(data["FileKey"], data["FilePath"]);
+        }
         break;
       case "FileDownloaded":
         profileCN.getProfile(data["ProfileOnion"])?.downloadMarkFinished(data["FileKey"], data["FilePath"]);

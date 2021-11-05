@@ -415,6 +415,22 @@ class CwtchFfi implements Cwtch {
 
   @override
   // ignore: non_constant_identifier_names
+  void VerifyOrResumeDownload(String profileOnion, String contactHandle, String filekey) {
+    var fn = library.lookup<NativeFunction<void_from_string_string_string_function>>("c_VerifyOrResumeDownload");
+    // ignore: non_constant_identifier_names
+    final VerifyOrResumeDownload = fn.asFunction<VoidFromStringStringStringFn>();
+    final u1 = profileOnion.toNativeUtf8();
+    final u2 = contactHandle.toNativeUtf8();
+    final u3 = filekey.toNativeUtf8();
+    VerifyOrResumeDownload(u1, u1.length, u2, u2.length, u3, u3.length);
+    malloc.free(u1);
+    malloc.free(u2);
+    malloc.free(u3);
+  }
+
+
+  @override
+  // ignore: non_constant_identifier_names
   void ResetTor() {
     var resetTor = library.lookup<NativeFunction<Void Function()>>("c_ResetTor");
     // ignore: non_constant_identifier_names
