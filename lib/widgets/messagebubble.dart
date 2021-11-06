@@ -68,7 +68,7 @@ class MessageBubbleState extends State<MessageBubble> {
         text: widget.content + '\u202F',
         // TODO: onOpen breaks the "selectable" functionality. Maybe something to do with gesture handler?
         options: LinkifyOptions(humanize: false),
-        linkifiers: [UrlLinkifier()],  // TODO: double-check on this (only web links to avoid Android messiness)
+        linkifiers: [UrlLinkifier()],
         onOpen: (link) {
           _modalOpenLink(context, link);
         },
@@ -122,7 +122,6 @@ class MessageBubbleState extends State<MessageBubble> {
         context: ctx,
         builder: (BuildContext bcontext) {
           return Container(
-              // TODO: Ask re: hard-coded height
               height: 200, // bespoke value courtesy of the [TextField] docs
               child: Center(
                 child: Padding(
@@ -134,7 +133,6 @@ class MessageBubbleState extends State<MessageBubble> {
                         Text(
                           "Opening this link will launch an application outside of Cwtch and may reveal metadata or otherwise compromise the security of Cwtch. Only open links from people you trust. Are you sure you want to continue?"
                         ),
-                        // TODO: Ask about styling preferences (should this be a reusable "inline-button"?)
                         Flex(direction: Axis.horizontal, mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
                           Container(
                             margin: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
@@ -143,10 +141,11 @@ class MessageBubbleState extends State<MessageBubble> {
                               onPressed: () {
                                 Clipboard.setData(new ClipboardData(text: link.url));
 
-                                // TODO: Ask about desired SnackBar + modal behaviour
                                 final snackBar = SnackBar(
                                   content: Text(AppLocalizations.of(context)!.copiedClipboardNotification),
                                 );
+
+                                Navigator.pop(bcontext);
                                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
                               },
                             ),
