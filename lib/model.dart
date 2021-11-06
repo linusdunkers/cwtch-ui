@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:cwtch/widgets/messagerow.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:cwtch/models/servers.dart';
+import 'package:cwtch/models/profileservers.dart';
 
 ////////////////////
 ///   UI State   ///
@@ -207,7 +207,7 @@ class ContactListState extends ChangeNotifier {
 
 class ProfileInfoState extends ChangeNotifier {
   ContactListState _contacts = ContactListState();
-  ServerListState _servers = ServerListState();
+  ProfileServerListState _servers = ProfileServerListState();
   final String onion;
   String _nickname = "";
   String _imagePath = "";
@@ -267,7 +267,7 @@ class ProfileInfoState extends ChangeNotifier {
       List<dynamic> servers = jsonDecode(serversJson);
       this._servers.replace(servers.map((server) {
         // TODO Keys...
-        return ServerInfoState(onion: server["onion"], status: server["status"]);
+        return RemoteServerInfoState(onion: server["onion"], status: server["status"]);
       }));
       notifyListeners();
     }
@@ -316,7 +316,7 @@ class ProfileInfoState extends ChangeNotifier {
   }
 
   ContactListState get contactList => this._contacts;
-  ServerListState get serverList => this._servers;
+  ProfileServerListState get serverList => this._servers;
 
   @override
   void dispose() {
@@ -362,11 +362,21 @@ class ProfileInfoState extends ChangeNotifier {
     this._downloads[fileKey] = FileDownloadProgress(numChunks, DateTime.now());
   }
 
-  void downloadUpdate(String fileKey, int progress) {
+  void downloadUpdate(String fileKey, int progress, int numChunks) {
     if (!downloadActive(fileKey)) {
-      print("error: received progress for unknown download " + fileKey);
+      if (progress < 0) {
+        this._downloads[fileKey] = FileDownloadProgress(numChunks, DateTime.now());
+        this._downloads[fileKey]!.interrupted = true;
+        notifyListeners();
+      } else {
+        print("error: received progress for unknown download " + fileKey);
+      }
     } else {
+      if (this._downloads[fileKey]!.interrupted) {
+        this._downloads[fileKey]!.interrupted = false;
+      }
       this._downloads[fileKey]!.chunksDownloaded = progress;
+      this._downloads[fileKey]!.chunksTotal = numChunks;
       notifyListeners();
     }
   }
@@ -394,7 +404,7 @@ class ProfileInfoState extends ChangeNotifier {
   }
 
   bool downloadActive(String fileKey) {
-    return this._downloads.containsKey(fileKey);
+    return this._downloads.containsKey(fileKey) && !this._downloads[fileKey]!.interrupted;
   }
 
   bool downloadGotManifest(String fileKey) {
@@ -405,8 +415,25 @@ class ProfileInfoState extends ChangeNotifier {
     return this._downloads.containsKey(fileKey) && this._downloads[fileKey]!.complete;
   }
 
+  bool downloadInterrupted(String fileKey) {
+    return this._downloads.containsKey(fileKey) && this._downloads[fileKey]!.interrupted;
+  }
+
+  void downloadMarkResumed(String fileKey) {
+    if (this._downloads.containsKey(fileKey)) {
+      this._downloads[fileKey]!.interrupted = false;
+    }
+  }
+
   double downloadProgress(String fileKey) {
     return this._downloads.containsKey(fileKey) ? this._downloads[fileKey]!.progress() : 0.0;
+  }
+
+  // used for loading interrupted download info; use downloadMarkFinished for successful downloads
+  void downloadSetPath(String fileKey, String path) {
+    if (this._downloads.containsKey(fileKey)) {
+      this._downloads[fileKey]!.downloadedTo = path;
+    }
   }
 
   String? downloadFinalPath(String fileKey) {
@@ -431,6 +458,7 @@ class FileDownloadProgress {
   int chunksTotal = 1;
   bool complete = false;
   bool gotManifest = false;
+  bool interrupted = false;
   String? downloadedTo;
   DateTime? timeStart;
   DateTime? timeEnd;

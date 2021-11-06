@@ -21,6 +21,27 @@ class ErrorHandler extends ChangeNotifier {
   bool deleteProfileError = false;
   bool deleteProfileSuccess = false;
 
+  static const String deletedServerErrorPrefix = "deletedserver";
+  bool deletedServerError = false;
+  bool deletedServerSuccess = false;
+
+  reset() {
+    invalidImportStringError = false;
+    contactAlreadyExistsError = false;
+    explicitAddContactSuccess = false;
+
+    importBundleError = false;
+    importBundleSuccess = false;
+
+    deleteProfileError = false;
+    deleteProfileSuccess = false;
+
+    deletedServerError = false;
+    deletedServerSuccess = false;
+
+    notifyListeners();
+  }
+
   /// Called by the event bus.
   handleUpdate(String error) {
     var parts = error.split(".");
@@ -37,6 +58,8 @@ class ErrorHandler extends ChangeNotifier {
       case deleteProfileErrorPrefix:
         handleDeleteProfileError(errorType);
         break;
+      case deletedServerErrorPrefix:
+        handleDeletedServerError(errorType);
     }
 
     notifyListeners();
@@ -88,6 +111,21 @@ class ErrorHandler extends ChangeNotifier {
         break;
       default:
         deleteProfileError = true;
+        break;
+    }
+  }
+
+  handleDeletedServerError(String errorType) {
+    // reset
+    deletedServerError = false;
+    deletedServerSuccess = false;
+
+    switch (errorType) {
+      case successErrorType:
+        deletedServerSuccess = true;
+        break;
+      default:
+        deletedServerError = true;
         break;
     }
   }

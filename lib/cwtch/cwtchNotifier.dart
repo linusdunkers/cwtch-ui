@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:cwtch/models/message.dart';
+import 'package:cwtch/models/profileservers.dart';
 import 'package:cwtch/models/servers.dart';
 import 'package:cwtch/notification_manager.dart';
 import 'package:provider/provider.dart';
@@ -20,14 +21,16 @@ class CwtchNotifier {
   late TorStatus torStatus;
   late NotificationsManager notificationManager;
   late AppState appState;
+  late ServerListState serverListState;
 
-  CwtchNotifier(ProfileListState pcn, Settings settingsCN, ErrorHandler errorCN, TorStatus torStatusCN, NotificationsManager notificationManagerP, AppState appStateCN) {
+  CwtchNotifier(ProfileListState pcn, Settings settingsCN, ErrorHandler errorCN, TorStatus torStatusCN, NotificationsManager notificationManagerP, AppState appStateCN, ServerListState serverListStateCN) {
     profileCN = pcn;
     settings = settingsCN;
     error = errorCN;
     torStatus = torStatusCN;
     notificationManager = notificationManagerP;
     appState = appStateCN;
+    serverListState = serverListStateCN;
   }
 
   void handleMessage(String type, dynamic data) {
@@ -59,11 +62,28 @@ class CwtchNotifier {
               lastMessageTime: DateTime.now(), //show at the top of the contact list even if no messages yet
             ));
         break;
+      case "NewServer":
+        EnvironmentConfig.debugLog("NewServer $data");
+        serverListState.add(
+            data["Onion"],
+            data["ServerBundle"],
+            data["Running"] == "true",
+            data["Description"],
+            data["Autostart"] == "true",
+            data["StorageType"] == "storage-password");
+        break;
+      case "ServerIntentUpdate":
+        EnvironmentConfig.debugLog("ServerIntentUpdate $data");
+        var server = serverListState.getServer(data["Identity"]);
+        if (server != null) {
+          server.setRunning(data["Intent"] == "running");
+        }
+        break;
       case "GroupCreated":
 
         // Retrieve Server Status from Cache...
         String status = "";
-        ServerInfoState? serverInfoState = profileCN.getProfile(data["ProfileOnion"])?.serverList.getServer(data["GroupServer"]);
+        RemoteServerInfoState? serverInfoState = profileCN.getProfile(data["ProfileOnion"])?.serverList.getServer(data["GroupServer"]);
         if (serverInfoState != null) {
           status = serverInfoState.status;
         }
@@ -83,6 +103,12 @@ class CwtchNotifier {
         profileCN.delete(data["Identity"]);
         // todo standarize
         error.handleUpdate("deleteprofile.success");
+        break;
+      case "ServerDeleted":
+        error.handleUpdate("deletedserver." + data["Status"]);
+        if (data["Status"] == "success") {
+          serverListState.delete(data["Identity"]);
+        }
         break;
       case "DeleteContact":
         profileCN.getProfile(data["ProfileOnion"])?.contactList.removeContact(data["RemotePeer"]);
@@ -145,24 +171,32 @@ class CwtchNotifier {
         break;
       case "NewMessageFromGroup":
         if (data["ProfileOnion"] != data["RemotePeer"]) {
-          //if not currently open
-          if (appState.selectedProfile != data["ProfileOnion"] || appState.selectedConversation != data["GroupID"]) {
-            profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"])!.unreadMessages++;
+          var idx = int.parse(data["Index"]);
+          var currentTotal = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"])!.totalMessages;
+
+          // Only bother to do anything if we know about the group and the provided index is greater than our current total...
+          if (currentTotal != null && idx >= currentTotal) {
+            profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"])!.totalMessages = idx + 1;
+
+            //if not currently open
+            if (appState.selectedProfile != data["ProfileOnion"] || appState.selectedConversation != data["GroupID"]) {
+              profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"])!.unreadMessages++;
+            }
+
+            var timestampSent = DateTime.tryParse(data['TimestampSent'])!;
+            // TODO: There are 2 timestamps associated with a new group message - time sent and time received.
+            // Sent refers to the time a profile alleges they sent a message
+            // Received refers to the time we actually saw the message from the server
+            // These can obviously be very different for legitimate reasons.
+            // We also maintain a relative hash-link through PreviousMessageSignature which is the ground truth for
+            // order.
+            // In the future we will want to combine these 3 ordering mechanisms into a cohesive view of the timeline
+            // For now we perform some minimal checks on the sent timestamp to use to provide a useful ordering for honest contacts
+            // and ensure that malicious contacts in groups can only set this timestamp to a value within the range of `last seen message time`
+            // and `local now`.
+            profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(data["GroupID"], timestampSent.toLocal());
+            notificationManager.notify("New Message From Group!");
           }
-          profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"])!.totalMessages++;
-          var timestampSent = DateTime.tryParse(data['TimestampSent'])!;
-          // TODO: There are 2 timestamps associated with a new group message - time sent and time received.
-          // Sent refers to the time a profile alleges they sent a message
-          // Received refers to the time we actually saw the message from the server
-          // These can obviously be very different for legitimate reasons.
-          // We also maintain a relative hash-link through PreviousMessageSignature which is the ground truth for
-          // order.
-          // In the future we will want to combine these 3 ordering mechanisms into a cohesive view of the timeline
-          // For now we perform some minimal checks on the sent timestamp to use to provide a useful ordering for honest contacts
-          // and ensure that malicious contacts in groups can only set this timestamp to a value within the range of `last seen message time`
-          // and `local now`.
-          profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(data["GroupID"], timestampSent.toLocal());
-          notificationManager.notify("New Message From Group!");
         } else {
           // from me (already displayed - do not update counter)
           var idx = data["Signature"];
@@ -180,7 +214,10 @@ class CwtchNotifier {
       case "MessageCounterResync":
         var contactHandle = data["RemotePeer"];
         if (contactHandle == null || contactHandle == "") contactHandle = data["GroupID"];
-        profileCN.getProfile(data["Identity"])?.contactList.getContact(contactHandle)!.totalMessages = int.parse(data["Data"]);
+        var total = int.parse(data["Data"]);
+        if (total != profileCN.getProfile(data["Identity"])?.contactList.getContact(contactHandle)!.totalMessages) {
+          profileCN.getProfile(data["Identity"])?.contactList.getContact(contactHandle)!.totalMessages = total;
+        }
         break;
       case "SendMessageToPeerError":
         // Ignore
@@ -252,7 +289,7 @@ class CwtchNotifier {
 
           // Retrieve Server Status from Cache...
           String status = "";
-          ServerInfoState? serverInfoState = profileCN.getProfile(data["ProfileOnion"])!.serverList.getServer(groupInvite["ServerHost"]);
+          RemoteServerInfoState? serverInfoState = profileCN.getProfile(data["ProfileOnion"])!.serverList.getServer(groupInvite["ServerHost"]);
           if (serverInfoState != null) {
             status = serverInfoState.status;
           }
@@ -316,7 +353,7 @@ class CwtchNotifier {
         }
         break;
       case "NewRetValMessageFromPeer":
-        if (data["Path"] == "name") {
+        if (data["Path"] == "name" && data["Data"].toString().trim().length > 0) {
           // Update locally on the UI...
           if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["RemotePeer"]) != null) {
             profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["RemotePeer"])!.nickname = data["Data"];
@@ -329,7 +366,12 @@ class CwtchNotifier {
         profileCN.getProfile(data["ProfileOnion"])?.downloadMarkManifest(data["FileKey"]);
         break;
       case "FileDownloadProgressUpdate":
-        profileCN.getProfile(data["ProfileOnion"])?.downloadUpdate(data["FileKey"], int.parse(data["Progress"]));
+        var progress = int.parse(data["Progress"]);
+        profileCN.getProfile(data["ProfileOnion"])?.downloadUpdate(data["FileKey"], progress, int.parse(data["FileSizeInChunks"]));
+        // progress == -1 is a "download was interrupted" message and should contain a path
+        if (progress < 0) {
+          profileCN.getProfile(data["ProfileOnion"])?.downloadSetPath(data["FileKey"], data["FilePath"]);
+        }
         break;
       case "FileDownloaded":
         profileCN.getProfile(data["ProfileOnion"])?.downloadMarkFinished(data["FileKey"], data["FilePath"]);

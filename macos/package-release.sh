@@ -3,13 +3,14 @@
 # Run from SRCROOT
 
 cp libCwtch.dylib build/macos/Build/Products/Release/Cwtch.app/Contents/Frameworks/
-cp -r /Applications/Tor\ Browser.app/Contents/MacOS/Tor build/macos/Build/Products/Release/Cwtch.app/Contents/MacOS/
+cp -r macos/Tor build/macos/Build/Products/Release/Cwtch.app/Contents/MacOS/
 
 rm Cwtch.dmg
 rm -r macos_dmg
 mkdir macos_dmg
 cp -r "build/macos/Build/Products/Release/Cwtch.app" macos_dmg/
 
+# https://github.com/create-dmg/create-dmg
 create-dmg \
 	--volname "Cwtch" \
 	--volicon "macos/cwtch.icns" \

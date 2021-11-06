@@ -5,6 +5,7 @@ import 'package:cwtch/widgets/contactrow.dart';
 import 'package:cwtch/widgets/profileimage.dart';
 import 'package:cwtch/widgets/textfield.dart';
 import 'package:cwtch/widgets/tor_icon.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../main.dart';
 import '../settings.dart';
@@ -103,9 +104,19 @@ class _ContactsViewState extends State<ContactsView> {
     if (Provider.of<Settings>(context).blockUnknownConnections) {
       actions.add(Tooltip(message: AppLocalizations.of(context)!.blockUnknownConnectionsEnabledDescription, child: Icon(CwtchIcons.block_unknown)));
     }
-    actions.add(
-      IconButton(icon: TorIcon(), onPressed: _pushTorStatus),
-    );
+
+    // Copy profile onion
+    actions.add(IconButton(
+        icon: Icon(CwtchIcons.address_copy_2),
+        tooltip: AppLocalizations.of(context)!.copyAddress,
+        onPressed: () {
+          Clipboard.setData(new ClipboardData(text: Provider.of<ProfileInfoState>(context, listen: false).onion));
+        }));
+
+
+    // TODO servers
+
+    // Search contacts
     actions.add(IconButton(
         // need both conditions for displaying initial empty textfield and also allowing filters to be cleared if this widget gets lost/reset
         icon: Icon(showSearchBar || Provider.of<ContactListState>(context).isFiltered ? Icons.search_off : Icons.search),

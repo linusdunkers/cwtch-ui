@@ -112,24 +112,26 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                             if (dlID == null) {
                                 dlID = 0;
                             }
-                            val channelId =
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                        createDownloadNotificationChannel(fileKey, fileKey)
-                                    } else {
-                                        // If earlier version channel ID is not used
-                                        // https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#NotificationCompat.Builder(android.content.Context)
-                                        ""
-                                    };
-                            val newNotification = NotificationCompat.Builder(applicationContext, channelId)
-                                    .setOngoing(true)
-                                    .setContentTitle("Downloading")//todo: translate
-                                    .setContentText(title)
-                                    .setSmallIcon(android.R.drawable.stat_sys_download)
-                                    .setProgress(progressMax, progress, false)
-                                    .setSound(null)
-                                    //.setSilent(true)
-                                    .build();
-                            notificationManager.notify(dlID, newNotification);
+                            if (progress >= 0) {
+                                val channelId =
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                            createDownloadNotificationChannel(fileKey, fileKey)
+                                        } else {
+                                            // If earlier version channel ID is not used
+                                            // https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#NotificationCompat.Builder(android.content.Context)
+                                            ""
+                                        };
+                                val newNotification = NotificationCompat.Builder(applicationContext, channelId)
+                                        .setOngoing(true)
+                                        .setContentTitle("Downloading")//todo: translate
+                                        .setContentText(title)
+                                        .setSmallIcon(android.R.drawable.stat_sys_download)
+                                        .setProgress(progressMax, progress, false)
+                                        .setSound(null)
+                                        //.setSilent(true)
+                                        .build();
+                                notificationManager.notify(dlID, newNotification);
+                            }
                         } catch (e: Exception) {
                             Log.i("FlwtchWorker->FileDownloadProgressUpdate", e.toString() + " :: " + e.getStackTrace());
                         }
@@ -241,6 +243,12 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                 val fileKey = (a.get("fileKey") as? String) ?: ""
                 Cwtch.checkDownloadStatus(profile, fileKey)
             }
+            "VerifyOrResumeDownload" -> {
+                val profile = (a.get("ProfileOnion") as? String) ?: ""
+                val handle = (a.get("handle") as? String) ?: ""
+                val fileKey = (a.get("fileKey") as? String) ?: ""
+                Cwtch.verifyOrResumeDownload(profile, handle, fileKey)
+            }
             "SendProfileEvent" -> {
                 val onion = (a.get("onion") as? String) ?: ""
                 val jsonEvent = (a.get("jsonEvent") as? String) ?: ""
@@ -291,9 +299,60 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                 val groupHandle = (a.get("groupHandle") as? String) ?: ""
                 Cwtch.rejectInvite(profile, groupHandle)
             }
+            "SetProfileAttribute" -> {
+                val profile = (a.get("ProfileOnion") as? String) ?: ""
+                val key = (a.get("Key") as? String) ?: ""
+                val v = (a.get("Val") as? String) ?: ""
+                Cwtch.setProfileAttribute(profile, key, v)
+            }
+            "SetContactAttribute" -> {
+                val profile = (a.get("ProfileOnion") as? String) ?: ""
+                val contact = (a.get("Contact") as? String) ?: ""
+                val key = (a.get("Key") as? String) ?: ""
+                val v = (a.get("Val") as? String) ?: ""
+                Cwtch.setContactAttribute(profile, contact, key, v)
+            }
             "Shutdown" -> {
                 Cwtch.shutdownCwtch();
                 return Result.success()
+            }
+            "LoadServers" -> {
+                val password = (a.get("Password") as? String) ?: ""
+                Cwtch.loadServers(password)
+            }
+            "CreateServer" -> {
+                val password = (a.get("Password") as? String) ?: ""
+                val desc = (a.get("Description") as? String) ?: ""
+                val autostart = (a.get("Autostart") as? Boolean) ?: false
+                Cwtch.createServer(password, desc, autostart)
+            }
+            "DeleteServer" -> {
+                val serverOnion = (a.get("ServerOnion") as? String) ?: ""
+                val password = (a.get("Password") as? String) ?: ""
+                Cwtch.deleteServer(serverOnion, password)
+            }
+            "LaunchServers" -> {
+                Cwtch.launchServers()
+            }
+            "LaunchServer" -> {
+                val serverOnion = (a.get("ServerOnion") as? String) ?: ""
+                Cwtch.launchServer(serverOnion)
+            }
+            "StopServer" -> {
+                val serverOnion = (a.get("ServerOnion") as? String) ?: ""
+                Cwtch.stopServer(serverOnion)
+            }
+            "StopServers" -> {
+                Cwtch.stopServers()
+            }
+            "DestroyServers" -> {
+                Cwtch.destroyServers()
+            }
+            "SetServerAttribute" -> {
+                val serverOnion = (a.get("ServerOnion") as? String) ?: ""
+                val key = (a.get("Key") as? String) ?: ""
+                val v = (a.get("Val") as? String) ?: ""
+                Cwtch.setServerAttribute(serverOnion, key, v)
             }
             else -> return Result.failure()
         }

@@ -12,6 +12,7 @@ import '../../model.dart';
 class FileMessage extends Message {
   final MessageMetadata metadata;
   final String content;
+  final RegExp nonHex = RegExp(r'[^a-f0-9]');
 
   FileMessage(this.metadata, this.content);
 
@@ -20,7 +21,7 @@ class FileMessage extends Message {
     return ChangeNotifierProvider.value(
         value: this.metadata,
         builder: (bcontext, child) {
-          String idx = Provider.of<ContactInfoState>(context).isGroup == true && this.metadata.signature != null ? this.metadata.signature! : this.metadata.messageIndex.toString();
+          String idx = this.metadata.contactHandle + this.metadata.messageIndex.toString();
           dynamic shareObj = jsonDecode(this.content);
           if (shareObj == null) {
             return MessageRow(MalformedBubble());
@@ -29,6 +30,10 @@ class FileMessage extends Message {
           String rootHash = shareObj['h'] as String;
           String nonce = shareObj['n'] as String;
           int fileSize = shareObj['s'] as int;
+
+          if (!validHash(rootHash, nonce)) {
+            return MessageRow(MalformedBubble());
+          }
 
           return MessageRow(FileBubble(nameSuggestion, rootHash, nonce, fileSize), key: Provider.of<ContactInfoState>(bcontext).getMessageKey(idx));
         });
@@ -47,6 +52,9 @@ class FileMessage extends Message {
           String rootHash = shareObj['h'] as String;
           String nonce = shareObj['n'] as String;
           int fileSize = shareObj['s'] as int;
+          if (!validHash(rootHash, nonce)) {
+            return MessageRow(MalformedBubble());
+          }
           return FileBubble(
             nameSuggestion,
             rootHash,
@@ -60,5 +68,9 @@ class FileMessage extends Message {
   @override
   MessageMetadata getMetadata() {
     return this.metadata;
+  }
+
+  bool validHash(String hash, String nonce) {
+    return hash.length == 128 && nonce.length == 48 && !hash.contains(nonHex) && !nonce.contains(nonHex);
   }
 }

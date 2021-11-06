@@ -32,7 +32,7 @@ class TextMessage extends Message {
     return ChangeNotifierProvider.value(
         value: this.metadata,
         builder: (bcontext, child) {
-          String idx = Provider.of<ContactInfoState>(context).isGroup == true && this.metadata.signature != null ? this.metadata.signature! : this.metadata.messageIndex.toString();
+          String idx = this.metadata.contactHandle + this.metadata.messageIndex.toString();
           return MessageRow(MessageBubble(this.content), key: Provider.of<ContactInfoState>(bcontext).getMessageKey(idx));
         });
   }

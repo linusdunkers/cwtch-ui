@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:cwtch/cwtch/cwtch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cwtch/model.dart';
@@ -106,6 +107,7 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                   labelText: AppLocalizations.of(context)!.yourDisplayName,
                                   validator: (value) {
                                     if (value.isEmpty) {
+                                      // TODO l10n ize
                                       return "Please enter a display name";
                                     }
                                     return null;
@@ -287,32 +289,19 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
           Provider.of<FlwtchState>(context, listen: false).cwtch.CreateProfile(ctrlrNick.value.text, ctrlrPass.value.text);
           Navigator.of(context).pop();
         } else {
-          Provider.of<FlwtchState>(context, listen: false).cwtch.CreateProfile(ctrlrNick.value.text, "be gay do crime");
+          Provider.of<FlwtchState>(context, listen: false).cwtch.CreateProfile(ctrlrNick.value.text, DefaultPassword);
           Navigator.of(context).pop();
         }
       } else {
         // Profile Editing
         if (ctrlrPass.value.text.isEmpty) {
           // Don't update password, only update name
-          final event = {
-            "EventType": "SetAttribute",
-            "Data": {"Key": "public.name", "Data": ctrlrNick.value.text}
-          };
-          final json = jsonEncode(event);
-
-          Provider.of<FlwtchState>(context, listen: false).cwtch.SendProfileEvent(Provider.of<ProfileInfoState>(context, listen: false).onion, json);
+          Provider.of<FlwtchState>(context, listen: false).cwtch.SetProfileAttribute(Provider.of<ProfileInfoState>(context, listen: false).onion, "profile.name", ctrlrNick.value.text);
           Navigator.of(context).pop();
         } else {
           // At this points passwords have been validated to be the same and not empty
           // Update both password and name, even if name hasn't been changed...
-          final updateNameEvent = {
-            "EventType": "SetAttribute",
-            "Data": {"Key": "public.name", "Data": ctrlrNick.value.text}
-          };
-          final updateNameEventJson = jsonEncode(updateNameEvent);
-
-          Provider.of<FlwtchState>(context, listen: false).cwtch.SendProfileEvent(Provider.of<ProfileInfoState>(context, listen: false).onion, updateNameEventJson);
-
+          Provider.of<FlwtchState>(context, listen: false).cwtch.SetProfileAttribute(Provider.of<ProfileInfoState>(context, listen: false).onion, "profile.name", ctrlrNick.value.text);
           final updatePasswordEvent = {
             "EventType": "ChangePassword",
             "Data": {"Password": ctrlrOldPass.text, "NewPassword": ctrlrPass.text}
