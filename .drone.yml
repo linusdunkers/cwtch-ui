@@ -117,7 +117,7 @@ steps:
       - echo $BUILDFILES_KEY > ~/id_rsab64
       - base64 -d ~/id_rsab64 > ~/id_rsa
       - chmod 400 ~/id_rsa
-      - export DIR=flwtch-`cat VERSION`-`cat BUILDDATE`
+      - export DIR=flwtch-`cat BUILDDATE`-`cat VERSION`
       - mv deploy $DIR
       - cp -r coverage/html $DIR/coverage-tests
       - cp -r test/failures $DIR/test-failures || true
@@ -237,7 +237,7 @@ steps:
       - $Env:zipsha = $Env:zip + '.sha512'
       - $Env:msix = 'cwtch-install-' + $Env:version + '.msix'
       - $Env:msixsha = $Env:msix + '.sha512'
-      - $Env:buildname = 'flwtch-win-' + $Env:version + '-' + $Env:builddate
+      - $Env:buildname = 'flwtch-win-' + $Env:builddate + '-' + $Env:version
       - $Env:builddir = $Env:buildname
       - echo $Env:pfx > codesign.pfx.b64
       - certutil -decode codesign.pfx.b64 codesign.pfx
@@ -344,7 +344,7 @@ steps:
       - echo $BUILDFILES_KEY > ~/id_rsab64
       - base64 -d ~/id_rsab64 > ~/id_rsa
       - chmod 400 ~/id_rsa
-      - export DIR=flwtch-macos-`cat VERSION`-`cat BUILDDATE`
+      - export DIR=flwtch-macos-`cat BUILDDATE`-`cat VERSION`
       - mv deploy $DIR
       - cd $DIR
       - find . -type f -exec shasum -a 512 {} \; > ./../sha512s.txt
