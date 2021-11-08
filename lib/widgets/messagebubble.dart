@@ -77,6 +77,9 @@ class MessageBubbleState extends State<MessageBubble> {
         style: TextStyle(
           color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor() : Provider.of<Settings>(context).theme.messageFromOtherTextColor(),
         ),
+        linkStyle: TextStyle(
+          color: Provider.of<Settings>(context).current().mainTextColor(),
+        ),
         textAlign: TextAlign.left,
         textWidthBasis: TextWidthBasis.longestLine,
       );
