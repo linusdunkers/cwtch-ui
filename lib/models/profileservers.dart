@@ -14,10 +14,10 @@ class ProfileServerListState extends ChangeNotifier {
     return idx >= 0 ? _servers[idx] : null;
   }
 
-  void updateServerCache(String onion, String status) {
+  void updateServerCache(String onion, String description, String status) {
     int idx = _servers.indexWhere((element) => element.onion == onion);
     if (idx >= 0) {
-      _servers[idx] = RemoteServerInfoState(onion: onion, status: status);
+      _servers[idx] = RemoteServerInfoState(onion: onion, description: description, status: status);
     } else {
       print("Tried to update server cache without a starting state...this is probably an error");
     }
@@ -31,6 +31,7 @@ class ProfileServerListState extends ChangeNotifier {
 class RemoteServerInfoState extends ChangeNotifier {
   final String onion;
   final String status;
+  final String description;
 
-  RemoteServerInfoState({required this.onion, required this.status});
+  RemoteServerInfoState({required this.onion, required this.description, required this.status});
 }
