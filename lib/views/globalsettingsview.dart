@@ -279,6 +279,9 @@ String getLanguageFull(context, String languageCode) {
   if (languageCode == "pl") {
     return AppLocalizations.of(context)!.localePl;
   }
+  if (languageCode == "ru") {
+    return AppLocalizations.of(context)!.localeRU;
+  }
   return languageCode;
 }
 
