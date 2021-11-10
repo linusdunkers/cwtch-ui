@@ -1,7 +1,8 @@
 {
     "@@locale": "fr",
-    "@@last_modified": "2021-11-05T21:38:20+01:00",
-    "copyServerKeys": "Copy keys",
+    "@@last_modified": "2021-11-10T18:47:30+01:00",
+    "localeRU": "Russian",
+    "copyServerKeys": "Copier les clés",
     "verfiyResumeButton": "Vérifier\/reprendre",
     "fileCheckingStatus": "Vérification de l'état du téléchargement",
     "fileInterrupted": "Interrompu",
