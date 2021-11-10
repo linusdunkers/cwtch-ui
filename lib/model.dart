@@ -507,6 +507,8 @@ class ContactInfoState extends ChangeNotifier {
   late int _totalMessages = 0;
   late DateTime _lastMessageTime;
   late Map<String, GlobalKey<MessageRowState>> keys;
+  int _newMarker = 0;
+  DateTime _newMarkerClearAt = DateTime.now();
 
   // todo: a nicer way to model contacts, groups and other "entities"
   late bool _isGroup;
@@ -587,8 +589,34 @@ class ContactInfoState extends ChangeNotifier {
 
   int get unreadMessages => this._unreadMessages;
   set unreadMessages(int newVal) {
+    // don't reset newMarker position when unreadMessages is being cleared
+    if (newVal > 0) {
+      this._newMarker = newVal;
+    } else {
+      this._newMarkerClearAt = DateTime.now().add(const Duration(minutes:2));
+    }
     this._unreadMessages = newVal;
     notifyListeners();
+  }
+
+  int get newMarker {
+    if (DateTime.now().isAfter(this._newMarkerClearAt)) {
+      // perform heresy
+      this._newMarker = 0;
+      // no need to notifyListeners() because presumably this getter is
+      // being called from a renderer anyway
+    }
+    return this._newMarker;
+  }
+  // what's a getter that sometimes sets without a setter
+  // that sometimes doesn't set
+  set newMarker(int newVal) {
+    // only unreadMessages++ can set newMarker = 1;
+    // avoids drawing a marker when the convo is already open
+    if (newVal > 1) {
+      this._newMarker = newVal;
+      notifyListeners();
+    }
   }
 
   int get totalMessages => this._totalMessages;
