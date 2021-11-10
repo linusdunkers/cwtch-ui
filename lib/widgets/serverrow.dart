@@ -59,7 +59,7 @@ class _ServerRowState extends State<ServerRow> {
           // Copy server button
           IconButton(
             enableFeedback: true,
-            tooltip: AppLocalizations.of(context)!.copyAddress,
+            tooltip: AppLocalizations.of(context)!.copyServerKeys,
             icon: Icon(CwtchIcons.address_copy_2, color: Provider.of<Settings>(context).current().mainTextColor()),
             onPressed: () {
               Clipboard.setData(new ClipboardData(text: server.serverBundle));
