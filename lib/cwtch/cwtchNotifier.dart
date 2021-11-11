@@ -133,6 +133,8 @@ class CwtchNotifier {
         notificationManager.notify("New Message From Peer!");
         if (appState.selectedProfile != data["ProfileOnion"] || appState.selectedConversation != data["RemotePeer"]) {
           profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["RemotePeer"])!.unreadMessages++;
+        } else {
+          profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["RemotePeer"])!.newMarker++;
         }
         profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["RemotePeer"])!.totalMessages++;
         profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(data["RemotePeer"], DateTime.now());
@@ -181,6 +183,8 @@ class CwtchNotifier {
             //if not currently open
             if (appState.selectedProfile != data["ProfileOnion"] || appState.selectedConversation != data["GroupID"]) {
               profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"])!.unreadMessages++;
+            } else {
+              profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"])!.newMarker++;
             }
 
             var timestampSent = DateTime.tryParse(data['TimestampSent'])!;

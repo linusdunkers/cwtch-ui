@@ -40,15 +40,11 @@ class _MessageViewState extends State<MessageView> {
   @override
   void initState() {
     scrollListener.itemPositions.addListener(() {
-      if (scrollListener.itemPositions.value.length == 0) {
-        return;
-      }
-      var first = scrollListener.itemPositions.value.first.index;
-      var last = scrollListener.itemPositions.value.last.index;
-      // sometimes these go hi->lo and sometimes they go lo->hi because [who tf knows]
-      if ((first == 0 || last == 0) && Provider.of<AppState>(context, listen: false).unreadMessagesBelow == true) {
-        Provider.of<AppState>(context, listen: false).initialScrollIndex = 0;
-        Provider.of<AppState>(context, listen: false).unreadMessagesBelow = false;
+      if (scrollListener.itemPositions.value.length != 0 &&
+        Provider.of<AppState>(context, listen: false).unreadMessagesBelow == true &&
+        scrollListener.itemPositions.value.any((element) => element.index == 0)) {
+          Provider.of<AppState>(context, listen: false).initialScrollIndex = 0;
+          Provider.of<AppState>(context, listen: false).unreadMessagesBelow = false;
       }
     });
     super.initState();
@@ -59,7 +55,7 @@ class _MessageViewState extends State<MessageView> {
     var appState = Provider.of<AppState>(context, listen: false);
 
     // using "8" because "# of messages that fit on one screen" isnt trivial to calculate at this point
-    if (appState.initialScrollIndex > 8 && appState.unreadMessagesBelow == false) {
+    if (appState.initialScrollIndex > 4 && appState.unreadMessagesBelow == false) {
       WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback((timeStamp) {
         appState.unreadMessagesBelow = true;
       });
@@ -111,6 +107,8 @@ class _MessageViewState extends State<MessageView> {
               ? FloatingActionButton(
                   child: Icon(Icons.arrow_downward),
                   onPressed: () {
+                    Provider.of<AppState>(context, listen: false).initialScrollIndex = 0;
+                    Provider.of<AppState>(context, listen: false).unreadMessagesBelow = false;
                     scrollController.scrollTo(index: 0, duration: Duration(milliseconds: 600));
                   })
               : null,
@@ -216,6 +214,7 @@ class _MessageViewState extends State<MessageView> {
     focusNode.requestFocus();
     Future.delayed(const Duration(milliseconds: 80), () {
       Provider.of<ContactInfoState>(context, listen: false).totalMessages++;
+      Provider.of<ContactInfoState>(context, listen: false).newMarker++;
       // Resort the contact list...
       Provider.of<ProfileInfoState>(context, listen: false).contactList.updateLastMessageTime(Provider.of<ContactInfoState>(context, listen: false).onion, DateTime.now());
     });
