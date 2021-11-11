@@ -221,7 +221,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
         ),
         child: Padding(
             padding: EdgeInsets.all(9.0),
-            child: Text('New Messages')));
+            child: Text(AppLocalizations.of(context)!.newMessagesLabel)));
   }
 
   void _runAnimation(Offset pixelsPerSecond, Size size) {

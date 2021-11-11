@@ -71,7 +71,7 @@ class _MessageListState extends State<MessageList> {
                   ? ScrollablePositionedList.builder(
                       itemPositionsListener: widget.scrollListener,
                       itemScrollController: widget.scrollController,
-                      initialScrollIndex: initi > 4 ? initi - 4 : 0,//Provider.of<AppState>(outerContext, listen: false).initialScrollIndex - 4,
+                      initialScrollIndex: initi > 4 ? initi - 4 : 0,
                       itemCount: Provider.of<ContactInfoState>(outerContext).totalMessages,
                       reverse: true, // NOTE: There seems to be a bug in flutter that corrects the mouse wheel scroll, but not the drag direction...
                       itemBuilder: (itemBuilderContext, index) {
