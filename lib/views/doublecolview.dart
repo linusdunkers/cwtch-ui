@@ -35,7 +35,7 @@ class _DoubleColumnViewState extends State<DoubleColumnView> {
                   ChangeNotifierProvider.value(value: Provider.of<ProfileInfoState>(context)),
                   ChangeNotifierProvider.value(
                       value: flwtch.selectedConversation != null ? Provider.of<ProfileInfoState>(context).contactList.getContact(flwtch.selectedConversation!)! : ContactInfoState("", "")),
-                ], child: Container(child: MessageView())),
+                ], child: Container(key: Key(flwtch.selectedConversation??"never_this"), child: MessageView())),
         ),
       ],
     );

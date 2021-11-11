@@ -4,7 +4,6 @@ import 'package:cwtch/views/torstatusview.dart';
 import 'package:cwtch/widgets/contactrow.dart';
 import 'package:cwtch/widgets/profileimage.dart';
 import 'package:cwtch/widgets/textfield.dart';
-import 'package:cwtch/widgets/tor_icon.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../main.dart';

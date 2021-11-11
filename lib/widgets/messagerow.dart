@@ -159,7 +159,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
       ];
     }
     var size = MediaQuery.of(context).size;
-    return MouseRegion(
+    var mr = MouseRegion(
         // For desktop...
         onHover: (event) {
           setState(() {
@@ -197,6 +197,31 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: widgetRow,
                     )))));
+    var mark = Provider.of<ContactInfoState>(context).newMarker;
+    if (mark > 0 && mark == Provider.of<ContactInfoState>(context).totalMessages - Provider.of<MessageMetadata>(context).messageIndex) {
+      return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Align(alignment:Alignment.center ,child:_bubbleNew()), mr]);
+    } else {
+      return mr;
+    }
+  }
+
+  Widget _bubbleNew() {
+    return Container(
+        decoration: BoxDecoration(
+          color: Provider.of<Settings>(context).theme.messageFromMeBackgroundColor(),
+          border: Border.all(
+              color: Provider.of<Settings>(context).theme.messageFromMeBackgroundColor(),
+              width: 1),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(8),
+            topRight: Radius.circular(8),
+            bottomLeft: Radius.circular(8),
+            bottomRight: Radius.circular(8),
+          ),
+        ),
+        child: Padding(
+            padding: EdgeInsets.all(9.0),
+            child: Text(AppLocalizations.of(context)!.newMessagesLabel)));
   }
 
   void _runAnimation(Offset pixelsPerSecond, Size size) {
