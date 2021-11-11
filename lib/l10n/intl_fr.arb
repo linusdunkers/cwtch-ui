@@ -1,6 +1,7 @@
 {
     "@@locale": "fr",
-    "@@last_modified": "2021-11-10T18:47:30+01:00",
+    "@@last_modified": "2021-11-11T01:02:08+01:00",
+    "newMessagesLabel": "New Messages",
     "localeRU": "Russian",
     "copyServerKeys": "Copier les clés",
     "verfiyResumeButton": "Vérifier\/reprendre",
