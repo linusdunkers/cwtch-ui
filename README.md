@@ -28,7 +28,7 @@ Cwtch processes the following environment variables:
 First you will need a valid [flutter sdk installation](https://flutter.dev/docs/get-started/install).
 You will probably want to disable Analytics on the Flutter Tool: `flutter config --no-analytics`
 
-This project uses the flutter `dev` channel, which you will need to switch to: `flutter channel dev; flutter upgrade`.
+This project uses the flutter `stable` channel
 
 Once flutter is set up, run `flutter pub get` from this project folder to fetch dependencies.
 
@@ -53,6 +53,9 @@ To build a release version and load normal profiles, use `build-release.sh X` in
 - run `fetch-tor-win.ps1` to fetch Tor for windows
 - optional: launch cwtch-ui directly by running `flutter run -d windows`
 - to build cwtch-ui, run `flutter build windows`
+- optional: to run the release build:
+	- `cp windows/libCwtch.dll .`
+	- `./build/windows/runner/Release/cwtch.exe`
 
 ### Building on Linux/Windows (for Android)
 
