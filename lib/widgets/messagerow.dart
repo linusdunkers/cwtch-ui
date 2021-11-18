@@ -48,8 +48,8 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
   @override
   Widget build(BuildContext context) {
     var fromMe = Provider.of<MessageMetadata>(context).senderHandle == Provider.of<ProfileInfoState>(context).onion;
-    var isContact = Provider.of<ProfileInfoState>(context).contactList.getContact(Provider.of<MessageMetadata>(context).senderHandle) != null;
-    var isBlocked = isContact ? Provider.of<ProfileInfoState>(context).contactList.getContact(Provider.of<MessageMetadata>(context).senderHandle)!.isBlocked : false;
+    var isContact = Provider.of<ProfileInfoState>(context).contactList.findContact(Provider.of<MessageMetadata>(context).senderHandle) != null;
+    var isBlocked = isContact ? Provider.of<ProfileInfoState>(context).contactList.findContact(Provider.of<MessageMetadata>(context).senderHandle)!.isBlocked : false;
     var actualMessage = Flexible(flex: 3, fit: FlexFit.loose, child: widget.child);
 
     _dragAffinity = fromMe ? Alignment.centerRight : Alignment.centerLeft;
@@ -60,7 +60,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
 
     var senderDisplayStr = "";
     if (!fromMe) {
-      ContactInfoState? contact = Provider.of<ProfileInfoState>(context).contactList.getContact(Provider.of<MessageMetadata>(context).senderHandle);
+      ContactInfoState? contact = Provider.of<ProfileInfoState>(context).contactList.findContact(Provider.of<MessageMetadata>(context).senderHandle);
       if (contact != null) {
         senderDisplayStr = contact.nickname;
       } else {
@@ -249,7 +249,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
   }
 
   void _btnGoto() {
-    selectConversation(context, Provider.of<MessageMetadata>(context, listen: false).senderHandle);
+    selectConversation(context, Provider.of<MessageMetadata>(context, listen: false).conversationIdentifier);
   }
 
   void _btnAdd() {

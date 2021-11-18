@@ -29,7 +29,7 @@ class AppState extends ChangeNotifier {
   bool cwtchIsClosing = false;
   String appError = "";
   String? _selectedProfile;
-  String? _selectedConversation;
+  int? _selectedConversation;
   int _initialScrollIndex = 0;
   int _hoveredIndex = -1;
   int? _selectedIndex;
@@ -51,8 +51,8 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  String? get selectedConversation => _selectedConversation;
-  set selectedConversation(String? newVal) {
+  int? get selectedConversation => _selectedConversation;
+  set selectedConversation(int? newVal) {
     this._selectedConversation = newVal;
     notifyListeners();
   }
@@ -172,8 +172,8 @@ class ContactListState extends ChangeNotifier {
     //} </todo>
   }
 
-  void updateLastMessageTime(String forOnion, DateTime newMessageTime) {
-    var contact = getContact(forOnion);
+  void updateLastMessageTime(int forIdentifier, DateTime newMessageTime) {
+    var contact = getContact(forIdentifier);
     if (contact == null) return;
 
     // Assert that the new time is after the current last message time AND that
@@ -191,18 +191,24 @@ class ContactListState extends ChangeNotifier {
 
   List<ContactInfoState> get contacts => _contacts.sublist(0); //todo: copy?? dont want caller able to bypass changenotifier
 
-  ContactInfoState? getContact(String onion) {
-    int idx = _contacts.indexWhere((element) => element.onion == onion);
+  ContactInfoState? getContact(int identifier) {
+    int idx = _contacts.indexWhere((element) => element.identifier == identifier);
     return idx >= 0 ? _contacts[idx] : null;
   }
 
-  void removeContact(String onion) {
-    int idx = _contacts.indexWhere((element) => element.onion == onion);
+  void removeContact(int identifier) {
+    int idx = _contacts.indexWhere((element) => element.identifier == identifier);
     if (idx >= 0) {
       _contacts.removeAt(idx);
       notifyListeners();
     }
   }
+
+  ContactInfoState? findContact(String byHandle) {
+    int idx = _contacts.indexWhere((element) => element.onion == byHandle);
+    return idx >= 0 ? _contacts[idx] : null;
+  }
+
 }
 
 class ProfileInfoState extends ChangeNotifier {
@@ -238,7 +244,7 @@ class ProfileInfoState extends ChangeNotifier {
     if (contactsJson != null && contactsJson != "" && contactsJson != "null") {
       List<dynamic> contacts = jsonDecode(contactsJson);
       this._contacts.addAll(contacts.map((contact) {
-        return ContactInfoState(this.onion, contact["onion"],
+        return ContactInfoState(this.onion, contact["identifier"], contact["onion"],
             nickname: contact["name"],
             status: contact["status"],
             imagePath: contact["picture"],
@@ -254,7 +260,7 @@ class ProfileInfoState extends ChangeNotifier {
 
       // dummy set to invoke sort-on-load
       if (this._contacts.num > 0) {
-        this._contacts.updateLastMessageTime(this._contacts._contacts.first.onion, this._contacts._contacts.first.lastMessageTime);
+        this._contacts.updateLastMessageTime(this._contacts._contacts.first.identifier, this._contacts._contacts.first.lastMessageTime);
       }
     }
 
@@ -341,6 +347,7 @@ class ProfileInfoState extends ChangeNotifier {
         } else {
           this._contacts.add(ContactInfoState(
                 this.onion,
+                contact["identifier"],
                 contact["onion"],
                 nickname: contact["name"],
                 status: contact["status"],
@@ -496,6 +503,7 @@ ContactAuthorization stringToContactAuthorization(String authStr) {
 
 class ContactInfoState extends ChangeNotifier {
   final String profileOnion;
+  final int identifier;
   final String onion;
   late String _nickname;
 
@@ -515,7 +523,7 @@ class ContactInfoState extends ChangeNotifier {
   String? _server;
   late bool _archived;
 
-  ContactInfoState(this.profileOnion, this.onion,
+  ContactInfoState(this.profileOnion, this.identifier, this.onion,
       {nickname = "",
       isGroup = false,
       authorization = ContactAuthorization.unknown,

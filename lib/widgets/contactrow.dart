@@ -105,7 +105,7 @@ class _ContactRowState extends State<ContactRow> {
             ),
           ]),
           onTap: () {
-            selectConversation(context, contact.onion);
+            selectConversation(context, contact.identifier);
           },
         ));
   }
@@ -113,16 +113,16 @@ class _ContactRowState extends State<ContactRow> {
   void _btnApprove() {
     Provider.of<FlwtchState>(context, listen: false)
         .cwtch
-        .AcceptContact(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).onion);
+        .AcceptContact(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).identifier);
   }
 
   void _btnReject() {
     ContactInfoState contact = Provider.of<ContactInfoState>(context, listen: false);
     if (contact.isGroup == true) {
-      Provider.of<FlwtchState>(context, listen: false).cwtch.RejectInvite(Provider.of<ContactInfoState>(context, listen: false).profileOnion, contact.onion);
+      Provider.of<FlwtchState>(context, listen: false).cwtch.RejectInvite(Provider.of<ContactInfoState>(context, listen: false).profileOnion, contact.identifier);
       Provider.of<ProfileInfoState>(context, listen: false).removeContact(contact.onion);
     } else {
-      Provider.of<FlwtchState>(context, listen: false).cwtch.BlockContact(Provider.of<ContactInfoState>(context, listen: false).profileOnion, contact.onion);
+      Provider.of<FlwtchState>(context, listen: false).cwtch.BlockContact(Provider.of<ContactInfoState>(context, listen: false).profileOnion, contact.identifier);
     }
   }
 

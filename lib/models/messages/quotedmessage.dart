@@ -70,7 +70,7 @@ class QuotedMessage extends Message {
         return MalformedMessage(this.metadata).getWidget(context);
       }
 
-      var quotedMessagePotentials = Provider.of<FlwtchState>(context).cwtch.GetMessageByContentHash(metadata.profileOnion, metadata.contactHandle, message["quotedHash"]);
+      var quotedMessagePotentials = Provider.of<FlwtchState>(context).cwtch.GetMessageByContentHash(metadata.profileOnion, metadata.conversationIdentifier, message["quotedHash"]);
       int messageIndex = metadata.messageIndex;
       Future<LocallyIndexedMessage?> quotedMessage = quotedMessagePotentials.then((matchingMessages) {
         if (matchingMessages == "[]") {
@@ -94,11 +94,11 @@ class QuotedMessage extends Message {
       return ChangeNotifierProvider.value(
           value: this.metadata,
           builder: (bcontext, child) {
-            String idx = this.metadata.contactHandle + this.metadata.messageIndex.toString();
+            String idx = this.metadata.conversationIdentifier.toString() + this.metadata.messageID.toString();
             return MessageRow(
                 QuotedMessageBubble(message["body"], quotedMessage.then((LocallyIndexedMessage? localIndex) {
                   if (localIndex != null) {
-                    return messageHandler(context, metadata.profileOnion, metadata.contactHandle, localIndex.index);
+                    return messageHandler(context, metadata.profileOnion, metadata.conversationIdentifier, localIndex.index);
                   }
                   return MalformedMessage(this.metadata);
                 })),

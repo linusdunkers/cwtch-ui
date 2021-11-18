@@ -21,14 +21,14 @@ class InviteMessage extends Message {
     return ChangeNotifierProvider.value(
         value: this.metadata,
         builder: (bcontext, child) {
-          String idx = this.metadata.contactHandle + this.metadata.messageIndex.toString();
+          String idx = this.metadata.conversationIdentifier.toString() + this.metadata.messageID.toString();
           String inviteTarget;
           String inviteNick;
           String invite = this.content;
 
           if (this.content.length == TorV3ContactHandleLength) {
             inviteTarget = this.content;
-            var targetContact = Provider.of<ProfileInfoState>(context).contactList.getContact(inviteTarget);
+            var targetContact = Provider.of<ProfileInfoState>(context).contactList.findContact(inviteTarget);
             inviteNick = targetContact == null ? this.content : targetContact.nickname;
           } else {
             var parts = this.content.toString().split("||");
@@ -54,7 +54,7 @@ class InviteMessage extends Message {
           String invite = this.content;
           if (this.content.length == TorV3ContactHandleLength) {
             inviteTarget = this.content;
-            var targetContact = Provider.of<ProfileInfoState>(context).contactList.getContact(inviteTarget);
+            var targetContact = Provider.of<ProfileInfoState>(context).contactList.findContact(inviteTarget);
             inviteNick = targetContact == null ? this.content : targetContact.nickname;
           } else {
             var parts = this.content.toString().split("||");

@@ -36,7 +36,7 @@ class InvitationBubbleState extends State<InvitationBubble> {
   Widget build(BuildContext context) {
     var fromMe = Provider.of<MessageMetadata>(context).senderHandle == Provider.of<ProfileInfoState>(context).onion;
     var isGroup = widget.overlay == InviteGroupOverlay;
-    isAccepted = Provider.of<ProfileInfoState>(context).contactList.getContact(widget.inviteTarget) != null;
+    isAccepted = Provider.of<ProfileInfoState>(context).contactList.findContact(widget.inviteTarget) != null;
     var borderRadiousEh = 15.0;
     var showGroupInvite = Provider.of<Settings>(context).isExperimentEnabled(TapirGroupsExperiment);
     rejected = Provider.of<MessageMetadata>(context).flags & 0x01 == 0x01;
@@ -45,7 +45,7 @@ class InvitationBubbleState extends State<InvitationBubble> {
     // If the sender is not us, then we want to give them a nickname...
     var senderDisplayStr = "";
     if (!fromMe) {
-      ContactInfoState? contact = Provider.of<ProfileInfoState>(context).contactList.getContact(Provider.of<MessageMetadata>(context).senderHandle);
+      ContactInfoState? contact = Provider.of<ProfileInfoState>(context).contactList.findContact(Provider.of<MessageMetadata>(context).senderHandle);
       if (contact != null) {
         senderDisplayStr = contact.nickname;
       } else {
@@ -69,7 +69,7 @@ class InvitationBubbleState extends State<InvitationBubble> {
         ? Text(AppLocalizations.of(context)!.groupInviteSettingsWarning)
         : fromMe
             ? senderInviteChrome(
-                AppLocalizations.of(context)!.sendAnInvitation, isGroup ? Provider.of<ProfileInfoState>(context).contactList.getContact(widget.inviteTarget)!.nickname : widget.inviteTarget)
+                AppLocalizations.of(context)!.sendAnInvitation, isGroup ? Provider.of<ProfileInfoState>(context).contactList.findContact(widget.inviteTarget)!.nickname : widget.inviteTarget)
             : (inviteChrome(isGroup ? AppLocalizations.of(context)!.inviteToGroup : AppLocalizations.of(context)!.contactSuggestion, widget.inviteNick, widget.inviteTarget));
 
     Widget wdgDecorations;
@@ -130,7 +130,7 @@ class InvitationBubbleState extends State<InvitationBubble> {
       var profileOnion = Provider.of<ProfileInfoState>(context, listen: false).onion;
       var contact = Provider.of<ContactInfoState>(context, listen: false).onion;
       var idx = Provider.of<MessageMetadata>(context, listen: false).messageIndex;
-      Provider.of<FlwtchState>(context, listen: false).cwtch.UpdateMessageFlags(profileOnion, contact, idx, Provider.of<MessageMetadata>(context, listen: false).flags | 0x01);
+      //Provider.of<FlwtchState>(context, listen: false).cwtch.UpdateMessageFlags(profileOnion, contact, idx, Provider.of<MessageMetadata>(context, listen: false).flags | 0x01);
       Provider.of<MessageMetadata>(context, listen: false).flags |= 0x01;
     });
   }

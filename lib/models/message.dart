@@ -31,11 +31,11 @@ abstract class Message {
   Widget getPreviewWidget(BuildContext context);
 }
 
-Future<Message> messageHandler(BuildContext context, String profileOnion, String contactHandle, int index) {
+Future<Message> messageHandler(BuildContext context, String profileOnion, int conversationIdentifier, int index) {
   try {
-    var rawMessageEnvelopeFuture = Provider.of<FlwtchState>(context, listen: false).cwtch.GetMessage(profileOnion, contactHandle, index);
+    var rawMessageEnvelopeFuture = Provider.of<FlwtchState>(context, listen: false).cwtch.GetMessage(profileOnion, conversationIdentifier, index);
     return rawMessageEnvelopeFuture.then((dynamic rawMessageEnvelope) {
-      var metadata = MessageMetadata(profileOnion, contactHandle, index, DateTime.now(), "", "", null, 0, false, true);
+      var metadata = MessageMetadata(profileOnion, conversationIdentifier, index, -1, DateTime.now(), "", "", null, 0, false, true);
       try {
         dynamic messageWrapper = jsonDecode(rawMessageEnvelope);
         // There are 2 conditions in which this error condition can be met:
@@ -50,23 +50,20 @@ Future<Message> messageHandler(BuildContext context, String profileOnion, String
         if (messageWrapper['Message'] == null || messageWrapper['Message'] == '' || messageWrapper['Message'] == '{}') {
           return Future.delayed(Duration(seconds: 2), () {
             print("Tail recursive call to messageHandler called. This should be a rare event. If you see multiples of this log over a short period of time please log it as a bug.");
-            return messageHandler(context, profileOnion, contactHandle, index).then((value) => value);
+            return messageHandler(context, profileOnion, conversationIdentifier, index).then((value) => value);
           });
         }
 
         // Construct the initial metadata
+        var messageID = messageWrapper['ID'];
         var timestamp = DateTime.tryParse(messageWrapper['Timestamp'])!;
         var senderHandle = messageWrapper['PeerID'];
         var senderImage = messageWrapper['ContactImage'];
         var flags = int.parse(messageWrapper['Flags'].toString());
         var ackd = messageWrapper['Acknowledged'];
         var error = messageWrapper['Error'] != null;
-        String? signature;
-        // If this is a group, store the signature
-        if (contactHandle.length == GroupConversationHandleLength) {
-          signature = messageWrapper['Signature'];
-        }
-        metadata = MessageMetadata(profileOnion, contactHandle, index, timestamp, senderHandle, senderImage, signature, flags, ackd, error);
+        var signature = messageWrapper['Signature'];
+        metadata = MessageMetadata(profileOnion, conversationIdentifier, index, messageID, timestamp, senderHandle, senderImage, signature, flags, ackd, error);
 
         dynamic message = jsonDecode(messageWrapper['Message']);
         var content = message['d'] as dynamic;
@@ -92,15 +89,16 @@ Future<Message> messageHandler(BuildContext context, String profileOnion, String
       }
     });
   } catch (e) {
-    return Future.value(MalformedMessage(MessageMetadata(profileOnion, contactHandle, index, DateTime.now(), "", "", null, 0, false, true)));
+    return Future.value(MalformedMessage(MessageMetadata(profileOnion, conversationIdentifier, index, -1, DateTime.now(), "", "", null, 0, false, true)));
   }
 }
 
 class MessageMetadata extends ChangeNotifier {
   // meta-metadata
   final String profileOnion;
-  final String contactHandle;
+  final int conversationIdentifier;
   final int messageIndex;
+  final int messageID;
 
   final DateTime timestamp;
   final String senderHandle;
@@ -129,5 +127,5 @@ class MessageMetadata extends ChangeNotifier {
     notifyListeners();
   }
 
-  MessageMetadata(this.profileOnion, this.contactHandle, this.messageIndex, this.timestamp, this.senderHandle, this.senderImage, this.signature, this._flags, this._ackd, this._error);
+  MessageMetadata(this.profileOnion, this.conversationIdentifier, this.messageIndex, this.messageID, this.timestamp, this.senderHandle, this.senderImage, this.signature, this._flags, this._ackd, this._error);
 }

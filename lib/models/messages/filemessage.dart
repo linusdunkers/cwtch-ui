@@ -21,7 +21,7 @@ class FileMessage extends Message {
     return ChangeNotifierProvider.value(
         value: this.metadata,
         builder: (bcontext, child) {
-          String idx = this.metadata.contactHandle + this.metadata.messageIndex.toString();
+          String idx = this.metadata.conversationIdentifier.toString() + this.metadata.messageID.toString();
           dynamic shareObj = jsonDecode(this.content);
           if (shareObj == null) {
             return MessageRow(MalformedBubble());

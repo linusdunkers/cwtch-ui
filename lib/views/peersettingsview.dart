@@ -200,7 +200,7 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
                                   child: ElevatedButton.icon(
                                     onPressed: () {
                                       var profileOnion = Provider.of<ContactInfoState>(context, listen: false).profileOnion;
-                                      var handle = Provider.of<ContactInfoState>(context, listen: false).onion;
+                                      var handle = Provider.of<ContactInfoState>(context, listen: false).identifier;
                                       // locally update cache...
                                       Provider.of<ContactInfoState>(context, listen: false).isArchived = true;
                                       Provider.of<FlwtchState>(context, listen: false).cwtch.ArchiveConversation(profileOnion, handle);
@@ -239,7 +239,7 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
       child: Text(AppLocalizations.of(context)!.yesLeave),
       onPressed: () {
         var profileOnion = Provider.of<ContactInfoState>(context, listen: false).profileOnion;
-        var handle = Provider.of<ContactInfoState>(context, listen: false).onion;
+        var handle = Provider.of<ContactInfoState>(context, listen: false).identifier;
         // locally update cache...
         Provider.of<ContactInfoState>(context, listen: false).isArchived = true;
         Provider.of<FlwtchState>(context, listen: false).cwtch.DeleteContact(profileOnion, handle);

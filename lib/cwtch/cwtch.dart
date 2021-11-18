@@ -29,36 +29,35 @@ abstract class Cwtch {
   void SendAppEvent(String jsonEvent);
 
   // ignore: non_constant_identifier_names
-  void AcceptContact(String profileOnion, String contactHandle);
+  void AcceptContact(String profileOnion, int contactHandle);
   // ignore: non_constant_identifier_names
-  void BlockContact(String profileOnion, String contactHandle);
+  void BlockContact(String profileOnion, int contactHandle);
 
   // ignore: non_constant_identifier_names
-  Future<dynamic> GetMessage(String profile, String handle, int index);
+  Future<dynamic> GetMessage(String profile, int handle, int index);
   // ignore: non_constant_identifier_names
-  Future<dynamic> GetMessageByContentHash(String profile, String handle, String contentHash);
-  // ignore: non_constant_identifier_names
-  void UpdateMessageFlags(String profile, String handle, int index, int flags);
-  // ignore: non_constant_identifier_names
-  void SendMessage(String profile, String handle, String message);
-  // ignore: non_constant_identifier_names
-  void SendInvitation(String profile, String handle, String target);
+  Future<dynamic> GetMessageByContentHash(String profile, int handle, String contentHash);
 
   // ignore: non_constant_identifier_names
-  void ShareFile(String profile, String handle, String filepath);
+  void SendMessage(String profile, int handle, String message);
   // ignore: non_constant_identifier_names
-  void DownloadFile(String profile, String handle, String filepath, String manifestpath, String filekey);
+  void SendInvitation(String profile, int handle, int target);
+
   // ignore: non_constant_identifier_names
-  void CreateDownloadableFile(String profile, String handle, String filenameSuggestion, String filekey);
+  void ShareFile(String profile, int handle, String filepath);
+  // ignore: non_constant_identifier_names
+  void DownloadFile(String profile, int handle, String filepath, String manifestpath, String filekey);
+  // ignore: non_constant_identifier_names
+  void CreateDownloadableFile(String profile, int handle, String filenameSuggestion, String filekey);
   // ignore: non_constant_identifier_names
   void CheckDownloadStatus(String profile, String fileKey);
   // ignore: non_constant_identifier_names
-  void VerifyOrResumeDownload(String profile, String handle, String filekey);
+  void VerifyOrResumeDownload(String profile, int handle, String filekey);
 
   // ignore: non_constant_identifier_names
-  void ArchiveConversation(String profile, String handle);
+  void ArchiveConversation(String profile, int handle);
   // ignore: non_constant_identifier_names
-  void DeleteContact(String profile, String handle);
+  void DeleteContact(String profile, int handle);
 
   // ignore: non_constant_identifier_names
   void CreateGroup(String profile, String server, String groupName);
@@ -66,13 +65,11 @@ abstract class Cwtch {
   // ignore: non_constant_identifier_names
   void ImportBundle(String profile, String bundle);
   // ignore: non_constant_identifier_names
-  void SetGroupAttribute(String profile, String groupHandle, String key, String value);
-  // ignore: non_constant_identifier_names
-  void RejectInvite(String profileOnion, String groupHandle);
+  void RejectInvite(String profileOnion, int groupHandle);
   // ignore: non_constant_identifier_names
   void SetProfileAttribute(String profile, String key, String val);
   // ignore: non_constant_identifier_names
-  void SetContactAttribute(String profile, String contact, String key, String val);
+  void SetConversationAttribute(String profile, int contact, String key, String val);
 
   // ignore: non_constant_identifier_names
   void LoadServers(String password);
