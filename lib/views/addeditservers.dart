@@ -110,7 +110,7 @@ class _AddEditServerViewState extends State<AddEditServerView> {
                                 ),
                                 CwtchTextField(
                                   controller: ctrlrDesc,
-                                  labelText: "Description",
+                                  labelText: AppLocalizations.of(context)!.fieldDescriptionLabel,
                                   autofocus: false,
                                 )
                               ]),
