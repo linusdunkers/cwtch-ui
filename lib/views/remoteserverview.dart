@@ -48,118 +48,102 @@ class _RemoteServerViewState extends State<RemoteServerView> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<RemoteServerInfoState, Settings>(builder: (context, serverInfoState, settings, child) {
+    return Consumer3<ProfileInfoState, RemoteServerInfoState, Settings>(builder: (context, profile, serverInfoState, settings, child) {
       return Scaffold(
         appBar: AppBar(
             title: Text(ctrlrDesc.text.isNotEmpty ? ctrlrDesc.text : serverInfoState.onion)
         ),
-        body: LayoutBuilder(builder: (BuildContext context, BoxConstraints viewportConstraints) {
-          return Scrollbar(
-              isAlwaysShown: true,
-              child: SingleChildScrollView(
-                  clipBehavior: Clip.antiAlias,
-                  child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        minHeight: viewportConstraints.maxHeight,
-                      ),
-                      child: Form(
-                          key: _formKey,
-                          child: Container(
-                              margin: EdgeInsets.fromLTRB(30, 0, 30, 10),
-                              padding: EdgeInsets.fromLTRB(20, 0, 20, 10),
-                              child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.stretch,
-                                  children: [
+        body: Container(
+                margin: EdgeInsets.fromLTRB(30, 0, 30, 10),
+                padding: EdgeInsets.fromLTRB(20, 0, 20, 10),
+                 child:     Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        SizedBox(
+                          height: 20,
+                        ),
+                        CwtchLabel(label: AppLocalizations.of(context)!.serverAddress),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        SelectableText(
+                            serverInfoState.onion
+                        ),
 
-                                    Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                      CwtchLabel(label: AppLocalizations.of(context)!.serverAddress),
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                      SelectableText(
-                                          serverInfoState.onion
-                                      )
-                                    ]),
+                      // Description
+                        SizedBox(
+                          height: 20,
+                        ),
+                        CwtchLabel(label: AppLocalizations.of(context)!.serverDescriptionLabel),
+                        Text(AppLocalizations.of(context)!.serverDescriptionDescription),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        CwtchButtonTextField(
+                          controller: ctrlrDesc,
+                          readonly: false,
+                          tooltip: AppLocalizations.of(context)!.saveBtn,
+                          labelText: AppLocalizations.of(context)!.fieldDescriptionLabel,
+                          icon: Icon(Icons.save),
+                          onPressed: () {
+                            Provider.of<FlwtchState>(context, listen: false).cwtch.SetContactAttribute(profile.onion, serverInfoState.onion, "local.server.description", ctrlrDesc.text);
+                            serverInfoState.updateDescription(ctrlrDesc.text);
+                          },
+                        ),
 
-                                    // Description
-                                    Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                      CwtchLabel(label: AppLocalizations.of(context)!.serverDescriptionLabel),
-                                      Text(AppLocalizations.of(context)!.serverDescriptionDescription),
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                      CwtchButtonTextField(
-                                        controller: ctrlrDesc,
-                                        readonly: false,
-                                        tooltip: "Save", //TODO localize
-                                        labelText: "Description", // TODO localize
-                                        icon: Icon(Icons.save),
-                                        onPressed: () {
-                                          // TODO save
-                                        },
-                                      )
-                                    ]),
+                   SizedBox(
+                     height: 20,
+                   ),
 
-                                    Text("Groups on this server"),
-                                    _buildGroupsList(serverInfoState),
+                  Padding(padding: EdgeInsets.all(8), child:  Text( AppLocalizations.of(context)!.groupsOnThisServerLabel),),
+                  Expanded(child: _buildGroupsList(serverInfoState))
+                 ])));
 
-                                  ]))))));
-        }),);
-    });
+        });
   }
 
   Widget _buildGroupsList(RemoteServerInfoState serverInfoState) {
-    print("groups: ${serverInfoState.groups} lenMethod: ${serverInfoState.groupsLen} len: ${serverInfoState.groups.length}");
     final tiles = serverInfoState.groups.map((ContactInfoState group) {
-      print("building group tile for ${group.onion}");
-      return ChangeNotifierProvider<ContactInfoState>.value(key: ValueKey(group.profileOnion + "" + group.onion), value: group, builder: (_, __) => RepaintBoundary(child: _buildGroupRow(group)));
-    });
+      return ChangeNotifierProvider<ContactInfoState>.value(
+        value: group,
+        builder: (context, child) => RepaintBoundary(child: _buildGroupRow(group)), // ServerRow()),
+      );
+    },
+    );
+
     final divided = ListTile.divideTiles(
       context: context,
       tiles: tiles,
     ).toList();
-    return RepaintBoundary(child: ListView(children: divided));
-  }
 
-  void _savePressed() {
+    var size = MediaQuery.of(context).size;
 
-    var server = Provider.of<ServerInfoState>(context, listen: false);
+    int cols = ((size.width - 50) / 500).ceil();
+    final double itemHeight = 60; // magic arbitary
+    final double itemWidth = (size.width - 50 /* magic padding guess */) / cols;
 
-    Provider.of<FlwtchState>(context, listen: false)
-        .cwtch.SetServerAttribute(server.onion, "description", ctrlrDesc.text);
-    server.setDescription(ctrlrDesc.text);
-
-
-    if (_formKey.currentState!.validate()) {
-      // TODO support change password
-    }
-    Navigator.of(context).pop();
+    return GridView.count(crossAxisCount: cols, childAspectRatio: (itemWidth / itemHeight), children: divided);
   }
 
   Widget _buildGroupRow(ContactInfoState group) {
-    return Column(
-      children: [
-        Text(
-          group.nickname,
-          style: Provider.of<FlwtchState>(context).biggerFont.apply(color: Provider.of<Settings>(context).theme.portraitOnlineBorderColor()),
-          softWrap: true,
-          overflow: TextOverflow.ellipsis,
-        ),
-        Visibility(
-            visible: !Provider.of<Settings>(context).streamerMode,
-            child: ExcludeSemantics(
-                child: Text(
-                  group.onion,
-                  softWrap: true,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: Provider.of<Settings>(context).theme.portraitOnlineBorderColor()),
-                )))
-      ],
+    return Padding(
+        padding: const EdgeInsets.all(6.0), //border size
+        child: Column(
+          children: [
+            Text(
+              group.nickname,
+              style: Provider.of<FlwtchState>(context).biggerFont.apply(color: Provider.of<Settings>(context).theme.portraitOnlineBorderColor()),
+              softWrap: true,
+              overflow: TextOverflow.ellipsis,
+            ),
+            Visibility(
+                visible: !Provider.of<Settings>(context).streamerMode,
+                child: ExcludeSemantics(
+                    child: Text(
+                      group.onion,
+                      softWrap: true,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(color: Provider.of<Settings>(context).theme.portraitOnlineBorderColor()),
+                    )))
+          ])
     );
   }
 

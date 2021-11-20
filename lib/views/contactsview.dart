@@ -113,11 +113,11 @@ class _ContactsViewState extends State<ContactsView> {
           Clipboard.setData(new ClipboardData(text: Provider.of<ProfileInfoState>(context, listen: false).onion));
         }));
 
-    // Manage servers
+    // Manage known Servers
     if (Provider.of<Settings>(context, listen: false).isExperimentEnabled(ServerManagementExperiment)) {
       actions.add(IconButton(
           icon: Icon(CwtchIcons.dns_24px),
-          tooltip: "Manage known servers", //AppLocalizations.of(context)!.copyAddress,
+          tooltip:  AppLocalizations.of(context)!.manageKnownServersButton,
           onPressed: () {
             _pushServers();
           }));
@@ -176,7 +176,7 @@ class _ContactsViewState extends State<ContactsView> {
     Navigator.of(context).push(MaterialPageRoute<void>(
       builder: (BuildContext context) {
         return MultiProvider(
-          providers: [ChangeNotifierProvider(create: (context) => profile.serverList), Provider.value(value: Provider.of<FlwtchState>(context))],
+          providers: [ChangeNotifierProvider(create: (context) => profile), Provider.value(value: Provider.of<FlwtchState>(context))],
           child: ProfileServersView(),
         );
       },

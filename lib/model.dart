@@ -142,14 +142,10 @@ class ContactListState extends ChangeNotifier {
   }
 
   void addAll(Iterable<ContactInfoState> newContacts) {
-    print("****** contactListState.addAll()... *********");
     _contacts.addAll(newContacts);
     servers?.clearGroups();
-    print("contact len: ${_contacts.length}");
     _contacts.forEach((contact) {
-      //print("looking at contact ${contact.onion} (${contact.isGroup})...");
       if (contact.isGroup) {
-        print("contactList adding group ${contact.onion} to ${contact.server}");
         servers?.addGroup(contact);
       }
     });
@@ -159,7 +155,6 @@ class ContactListState extends ChangeNotifier {
   void add(ContactInfoState newContact) {
     _contacts.add(newContact);
     if (newContact.isGroup) {
-      print("contactList adding group ${newContact.onion} to ${newContact.server}");
       servers?.addGroup(newContact);
     }
     notifyListeners();
@@ -299,6 +294,13 @@ class ProfileInfoState extends ChangeNotifier {
         // TODO Keys...
         return RemoteServerInfoState(onion: server["onion"], description: server["description"], status: server["status"]);
       }));
+
+      this._contacts.contacts.forEach((contact) {
+        if (contact.isGroup) {
+          _servers.addGroup(contact);
+        }
+      });
+
       notifyListeners();
     }
   }
