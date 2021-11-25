@@ -199,7 +199,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
                     )))));
     var mark = Provider.of<ContactInfoState>(context).newMarker;
     if (mark > 0 && mark == Provider.of<ContactInfoState>(context).totalMessages - Provider.of<MessageMetadata>(context).messageIndex) {
-      return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Align(alignment:Alignment.center ,child:_bubbleNew()), mr]);
+      return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Align(alignment: Alignment.center, child: _bubbleNew()), mr]);
     } else {
       return mr;
     }
@@ -209,9 +209,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
     return Container(
         decoration: BoxDecoration(
           color: Provider.of<Settings>(context).theme.messageFromMeBackgroundColor(),
-          border: Border.all(
-              color: Provider.of<Settings>(context).theme.messageFromMeBackgroundColor(),
-              width: 1),
+          border: Border.all(color: Provider.of<Settings>(context).theme.messageFromMeBackgroundColor(), width: 1),
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(8),
             topRight: Radius.circular(8),
@@ -219,9 +217,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
             bottomRight: Radius.circular(8),
           ),
         ),
-        child: Padding(
-            padding: EdgeInsets.all(9.0),
-            child: Text(AppLocalizations.of(context)!.newMessagesLabel)));
+        child: Padding(padding: EdgeInsets.all(9.0), child: Text(AppLocalizations.of(context)!.newMessagesLabel)));
   }
 
   void _runAnimation(Offset pixelsPerSecond, Size size) {

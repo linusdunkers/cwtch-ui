@@ -201,7 +201,6 @@ class CwtchGomobile implements Cwtch {
     cwtchPlatform.invokeMethod("ArchiveConversation", {"ProfileOnion": profileOnion, "handle": contactHandle});
   }
 
-
   @override
   // ignore: non_constant_identifier_names
   void SetProfileAttribute(String profile, String key, String val) {
@@ -268,7 +267,7 @@ class CwtchGomobile implements Cwtch {
     cwtchPlatform.invokeMethod("SetServerAttribute", {"ServerOnion": serverOnion, "Key": key, "Val": val});
   }
 
-    @override
+  @override
   Future<void> Shutdown() async {
     print("gomobile.dart Shutdown");
     cwtchPlatform.invokeMethod("Shutdown", {});

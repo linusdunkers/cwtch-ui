@@ -89,15 +89,15 @@ class FileBubbleState extends State<FileBubble> {
     } else if (flagStarted) {
       // in this case, the download was done in a previous application launch,
       // so we probably have to request an info lookup
-      if (!Provider.of<ProfileInfoState>(context).downloadInterrupted(widget.fileKey()) ) {
+      if (!Provider.of<ProfileInfoState>(context).downloadInterrupted(widget.fileKey())) {
         wdgDecorations = Text(AppLocalizations.of(context)!.fileCheckingStatus + '...' + '\u202F');
         Provider.of<FlwtchState>(context, listen: false).cwtch.CheckDownloadStatus(Provider.of<ProfileInfoState>(context, listen: false).onion, widget.fileKey());
       } else {
         var path = Provider.of<ProfileInfoState>(context).downloadFinalPath(widget.fileKey()) ?? "";
-        wdgDecorations = Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children:[Text(AppLocalizations.of(context)!.fileInterrupted + ': ' + path + '\u202F'),ElevatedButton(onPressed: _btnResume, child: Text(AppLocalizations.of(context)!.verfiyResumeButton))]
-        );
+        wdgDecorations = Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(AppLocalizations.of(context)!.fileInterrupted + ': ' + path + '\u202F'),
+          ElevatedButton(onPressed: _btnResume, child: Text(AppLocalizations.of(context)!.verfiyResumeButton))
+        ]);
       }
     } else {
       wdgDecorations = Center(
@@ -156,11 +156,7 @@ class FileBubbleState extends State<FileBubble> {
       Provider.of<MessageMetadata>(context, listen: false).flags |= 0x02;
       ContactInfoState? contact = Provider.of<ProfileInfoState>(context).contactList.findContact(Provider.of<MessageMetadata>(context).senderHandle);
       if (contact != null) {
-        Provider
-            .of<FlwtchState>(context, listen: false)
-            .cwtch
-            .CreateDownloadableFile(
-            profileOnion, contact.identifier, widget.nameSuggestion, widget.fileKey());
+        Provider.of<FlwtchState>(context, listen: false).cwtch.CreateDownloadableFile(profileOnion, contact.identifier, widget.nameSuggestion, widget.fileKey());
       }
     } else {
       try {
@@ -176,11 +172,7 @@ class FileBubbleState extends State<FileBubble> {
           Provider.of<MessageMetadata>(context, listen: false).flags |= 0x02;
           ContactInfoState? contact = Provider.of<ProfileInfoState>(context).contactList.findContact(Provider.of<MessageMetadata>(context).senderHandle);
           if (contact != null) {
-            Provider
-                .of<FlwtchState>(context, listen: false)
-                .cwtch
-                .DownloadFile(profileOnion, contact.identifier, file.path, manifestPath,
-                widget.fileKey());
+            Provider.of<FlwtchState>(context, listen: false).cwtch.DownloadFile(profileOnion, contact.identifier, file.path, manifestPath, widget.fileKey());
           }
         }
       } catch (e) {

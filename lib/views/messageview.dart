@@ -41,10 +41,10 @@ class _MessageViewState extends State<MessageView> {
   void initState() {
     scrollListener.itemPositions.addListener(() {
       if (scrollListener.itemPositions.value.length != 0 &&
-        Provider.of<AppState>(context, listen: false).unreadMessagesBelow == true &&
-        scrollListener.itemPositions.value.any((element) => element.index == 0)) {
-          Provider.of<AppState>(context, listen: false).initialScrollIndex = 0;
-          Provider.of<AppState>(context, listen: false).unreadMessagesBelow = false;
+          Provider.of<AppState>(context, listen: false).unreadMessagesBelow == true &&
+          scrollListener.itemPositions.value.any((element) => element.index == 0)) {
+        Provider.of<AppState>(context, listen: false).initialScrollIndex = 0;
+        Provider.of<AppState>(context, listen: false).unreadMessagesBelow = false;
       }
     });
     super.initState();

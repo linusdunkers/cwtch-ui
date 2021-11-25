@@ -208,7 +208,6 @@ class ContactListState extends ChangeNotifier {
     int idx = _contacts.indexWhere((element) => element.onion == byHandle);
     return idx >= 0 ? _contacts[idx] : null;
   }
-
 }
 
 class ProfileInfoState extends ChangeNotifier {
@@ -601,7 +600,7 @@ class ContactInfoState extends ChangeNotifier {
     if (newVal > 0) {
       this._newMarker = newVal;
     } else {
-      this._newMarkerClearAt = DateTime.now().add(const Duration(minutes:2));
+      this._newMarkerClearAt = DateTime.now().add(const Duration(minutes: 2));
     }
     this._unreadMessages = newVal;
     notifyListeners();
@@ -616,6 +615,7 @@ class ContactInfoState extends ChangeNotifier {
     }
     return this._newMarker;
   }
+
   // what's a getter that sometimes sets without a setter
   // that sometimes doesn't set
   set newMarker(int newVal) {

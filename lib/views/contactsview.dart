@@ -112,7 +112,6 @@ class _ContactsViewState extends State<ContactsView> {
           Clipboard.setData(new ClipboardData(text: Provider.of<ProfileInfoState>(context, listen: false).onion));
         }));
 
-
     // TODO servers
 
     // Search contacts

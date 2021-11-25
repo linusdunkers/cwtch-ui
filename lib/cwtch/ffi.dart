@@ -63,10 +63,16 @@ typedef get_json_blob_from_str_str_int_function = Pointer<Utf8> Function(Pointer
 typedef GetJsonBlobFromStrStrIntFn = Pointer<Utf8> Function(Pointer<Utf8>, int, Pointer<Utf8>, int, int);
 
 typedef get_json_blob_from_str_int_int_function = Pointer<Utf8> Function(Pointer<Utf8>, Int32, Int32, Int32);
-typedef GetJsonBlobFromStrIntIntFn = Pointer<Utf8> Function(Pointer<Utf8>, int,  int, int);
+typedef GetJsonBlobFromStrIntIntFn = Pointer<Utf8> Function(Pointer<Utf8>, int, int, int);
 
 typedef get_json_blob_from_str_int_string_function = Pointer<Utf8> Function(Pointer<Utf8>, Int32, Int32, Pointer<Utf8>, Int32);
-typedef GetJsonBlobFromStrIntStringFn = Pointer<Utf8> Function(Pointer<Utf8>, int,  int, Pointer<Utf8>, int,);
+typedef GetJsonBlobFromStrIntStringFn = Pointer<Utf8> Function(
+  Pointer<Utf8>,
+  int,
+  int,
+  Pointer<Utf8>,
+  int,
+);
 
 // func c_GetMessagesByContentHash(profile_ptr *C.char, profile_len C.int, handle_ptr *C.char, handle_len C.int, contenthash_ptr *C.char, contenthash_len C.int) *C.char
 typedef get_json_blob_from_str_str_str_function = Pointer<Utf8> Function(Pointer<Utf8>, Int32, Pointer<Utf8>, Int32, Pointer<Utf8>, Int32);
@@ -78,9 +84,8 @@ typedef VoidFromStringIntStringFn = void Function(Pointer<Utf8>, int, int, Point
 typedef void_from_string_int_string_string_function = Void Function(Pointer<Utf8>, Int32, Int32, Pointer<Utf8>, Int32, Pointer<Utf8>, Int32);
 typedef VoidFromStringIntStringStringFn = void Function(Pointer<Utf8>, int, int, Pointer<Utf8>, int, Pointer<Utf8>, int);
 
-typedef void_from_string_int_int_function =Void Function(Pointer<Utf8>, Int32, Int32, Int32);
+typedef void_from_string_int_int_function = Void Function(Pointer<Utf8>, Int32, Int32, Int32);
 typedef VoidFromStringIntIntFn = void Function(Pointer<Utf8>, int, int, int);
-
 
 typedef appbus_events_function = Pointer<Utf8> Function();
 typedef AppbusEventsFn = Pointer<Utf8> Function();
@@ -325,7 +330,7 @@ class CwtchFfi implements Cwtch {
   @override
   // ignore: non_constant_identifier_names
   void AcceptContact(String profileOnion, int contactHandle) {
-    var acceptContact = library.lookup<NativeFunction<string_int_to_void_function>>("c_AcceptContact");
+    var acceptContact = library.lookup<NativeFunction<string_int_to_void_function>>("c_AcceptConversation");
     // ignore: non_constant_identifier_names
     final AcceptContact = acceptContact.asFunction<VoidFromStringIntFn>();
     final u1 = profileOnion.toNativeUtf8();
@@ -430,7 +435,6 @@ class CwtchFfi implements Cwtch {
     malloc.free(u3);
   }
 
-
   @override
   // ignore: non_constant_identifier_names
   void ResetTor() {
@@ -452,7 +456,6 @@ class CwtchFfi implements Cwtch {
     malloc.free(u1);
     malloc.free(u2);
   }
-
 
   @override
   // ignore: non_constant_identifier_names
@@ -490,7 +493,6 @@ class CwtchFfi implements Cwtch {
     final u1 = profileOnion.toNativeUtf8();
     ArchiveConversation(u1, u1.length, handle);
     malloc.free(u1);
-
   }
 
   @override
@@ -503,7 +505,6 @@ class CwtchFfi implements Cwtch {
     DeleteContact(u1, u1.length, handle);
     malloc.free(u1);
   }
-
 
   @override
   // ignore: non_constant_identifier_names
@@ -526,7 +527,7 @@ class CwtchFfi implements Cwtch {
     final SetProfileAttribute = setProfileAttribute.asFunction<VoidFromStringStringStringFn>();
     final u1 = profile.toNativeUtf8();
     final u2 = key.toNativeUtf8();
-    final u3 = key.toNativeUtf8();
+    final u3 = val.toNativeUtf8();
     SetProfileAttribute(u1, u1.length, u2, u2.length, u3, u3.length);
     malloc.free(u1);
     malloc.free(u2);

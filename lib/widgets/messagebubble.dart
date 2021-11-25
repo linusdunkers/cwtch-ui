@@ -52,7 +52,7 @@ class MessageBubbleState extends State<MessageBubble> {
 
     var wdgMessage;
 
-    if (!showClickableLinks) {   
+    if (!showClickableLinks) {
       wdgMessage = SelectableText(
         widget.content + '\u202F',
         //key: Key(myKey),
@@ -134,8 +134,7 @@ class MessageBubbleState extends State<MessageBubble> {
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         Text(
-                          "Opening this link will launch an application outside of Cwtch and may reveal metadata or otherwise compromise the security of Cwtch. Only open links from people you trust. Are you sure you want to continue?"
-                        ),
+                            "Opening this link will launch an application outside of Cwtch and may reveal metadata or otherwise compromise the security of Cwtch. Only open links from people you trust. Are you sure you want to continue?"),
                         Flex(direction: Axis.horizontal, mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
                           Container(
                             margin: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
@@ -170,6 +169,6 @@ class MessageBubbleState extends State<MessageBubble> {
                       ],
                     )),
               ));
-      });
+        });
   }
 }

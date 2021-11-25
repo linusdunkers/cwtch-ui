@@ -23,7 +23,8 @@ class CwtchNotifier {
   late AppState appState;
   late ServerListState serverListState;
 
-  CwtchNotifier(ProfileListState pcn, Settings settingsCN, ErrorHandler errorCN, TorStatus torStatusCN, NotificationsManager notificationManagerP, AppState appStateCN, ServerListState serverListStateCN) {
+  CwtchNotifier(
+      ProfileListState pcn, Settings settingsCN, ErrorHandler errorCN, TorStatus torStatusCN, NotificationsManager notificationManagerP, AppState appStateCN, ServerListState serverListStateCN) {
     profileCN = pcn;
     settings = settingsCN;
     error = errorCN;
@@ -51,7 +52,7 @@ class CwtchNotifier {
         EnvironmentConfig.debugLog("NewServer $data");
         profileCN.getProfile(data["ProfileOnion"])?.contactList.add(ContactInfoState(
               data["ProfileOnion"],
-              data["ConversationID"],
+              int.parse(data["ConversationID"]),
               data["RemotePeer"],
               nickname: data["nick"],
               status: data["status"],
@@ -68,13 +69,7 @@ class CwtchNotifier {
         break;
       case "NewServer":
         EnvironmentConfig.debugLog("NewServer $data");
-        serverListState.add(
-            data["Onion"],
-            data["ServerBundle"],
-            data["Running"] == "true",
-            data["Description"],
-            data["Autostart"] == "true",
-            data["StorageType"] == "storage-password");
+        serverListState.add(data["Onion"], data["ServerBundle"], data["Running"] == "true", data["Description"], data["Autostart"] == "true", data["StorageType"] == "storage-password");
         break;
       case "ServerIntentUpdate":
         EnvironmentConfig.debugLog("ServerIntentUpdate $data");
@@ -158,7 +153,7 @@ class CwtchNotifier {
       case "IndexedAcknowledgement":
         var messageID = data["Index"];
         var identifier = int.parse(data["ConversationID"]);
-        var idx  = identifier.toString() + messageID;
+        var idx = identifier.toString() + messageID;
 
         // We return -1 for protocol message acks if there is no message
         if (idx == "-1") break;
@@ -207,7 +202,7 @@ class CwtchNotifier {
             // For now we perform some minimal checks on the sent timestamp to use to provide a useful ordering for honest contacts
             // and ensure that malicious contacts in groups can only set this timestamp to a value within the range of `last seen message time`
             // and `local now`.
-            profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(data["GroupID"], timestampSent.toLocal());
+            profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(identifier, timestampSent.toLocal());
             notificationManager.notify("New Message From Group!");
           }
         } else {
@@ -271,8 +266,8 @@ class CwtchNotifier {
       case "UpdateGlobalSettings":
         settings.handleUpdate(jsonDecode(data["Data"]));
         break;
-      case "SetAttribute":
-        if (data["Key"] == "public.name") {
+      case "UpdatedProfileAttribute":
+        if (data["Key"] == "public.profile.name") {
           profileCN.getProfile(data["ProfileOnion"])?.nickname = data["Data"];
         } else {
           EnvironmentConfig.debugLog("unhandled set attribute event: ${data['Key']}");
@@ -308,7 +303,7 @@ class CwtchNotifier {
           }
 
           if (profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(groupInvite["GroupID"]) == null) {
-            profileCN.getProfile(data["ProfileOnion"])?.contactList.add(ContactInfoState(data["ProfileOnion"],  data["ConversationID"], groupInvite["GroupID"],
+            profileCN.getProfile(data["ProfileOnion"])?.contactList.add(ContactInfoState(data["ProfileOnion"], data["ConversationID"], groupInvite["GroupID"],
                 authorization: ContactAuthorization.approved,
                 imagePath: data["PicturePath"],
                 nickname: groupInvite["GroupName"],
