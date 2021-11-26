@@ -88,8 +88,12 @@ class CwtchGomobile implements Cwtch {
 
   // ignore: non_constant_identifier_names
   Future<dynamic> GetMessage(String profile, int handle, int index) {
-    print("gomobile.dart GetMessage " + index.toString());
     return cwtchPlatform.invokeMethod("GetMessage", {"profile": profile, "contact": handle, "index": index});
+  }
+
+  // ignore: non_constant_identifier_names
+  Future<dynamic> GetMessageByID(String profile, int handle, int index) {
+    return cwtchPlatform.invokeMethod("GetMessageByID", {"profile": profile, "contact": handle, "index": index});
   }
 
   @override

@@ -77,7 +77,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
         child: IconButton(
             tooltip: AppLocalizations.of(context)!.tooltipReplyToThisMessage,
             onPressed: () {
-              Provider.of<AppState>(context, listen: false).selectedIndex = Provider.of<MessageMetadata>(context, listen: false).messageIndex;
+              Provider.of<AppState>(context, listen: false).selectedIndex = Provider.of<MessageMetadata>(context, listen: false).messageID;
             },
             icon: Icon(Icons.reply, color: Provider.of<Settings>(context).theme.dropShadowColor())));
     Widget wdgSpacer = Flexible(child: SizedBox(width: 60, height: 10));
@@ -185,7 +185,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
             },
             onPanEnd: (details) {
               _runAnimation(details.velocity.pixelsPerSecond, size);
-              Provider.of<AppState>(context, listen: false).selectedIndex = Provider.of<MessageMetadata>(context, listen: false).messageIndex;
+              Provider.of<AppState>(context, listen: false).selectedIndex = Provider.of<MessageMetadata>(context, listen: false).messageID;
             },
             child: Padding(
                 padding: EdgeInsets.all(2),
@@ -198,8 +198,8 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
                       children: widgetRow,
                     )))));
     var mark = Provider.of<ContactInfoState>(context).newMarker;
-    if (mark > 0 && mark == Provider.of<ContactInfoState>(context).totalMessages - Provider.of<MessageMetadata>(context).messageIndex) {
-      return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Align(alignment: Alignment.center, child: _bubbleNew()), mr]);
+    if (mark > 0 && mark == Provider.of<MessageMetadata>(context).messageIndex + 1) {
+      return Column(crossAxisAlignment: fromMe ? CrossAxisAlignment.end : CrossAxisAlignment.start, children: [Align(alignment: Alignment.center, child: _bubbleNew()), mr]);
     } else {
       return mr;
     }

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cwtch/config.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -31,9 +32,16 @@ abstract class Message {
   Widget getPreviewWidget(BuildContext context);
 }
 
-Future<Message> messageHandler(BuildContext context, String profileOnion, int conversationIdentifier, int index) {
+Future<Message> messageHandler(BuildContext context, String profileOnion, int conversationIdentifier, int index, {bool byID = false}) {
   try {
-    var rawMessageEnvelopeFuture = Provider.of<FlwtchState>(context, listen: false).cwtch.GetMessage(profileOnion, conversationIdentifier, index);
+    Future<dynamic> rawMessageEnvelopeFuture;
+
+    if (byID) {
+      rawMessageEnvelopeFuture = Provider.of<FlwtchState>(context, listen: false).cwtch.GetMessageByID(profileOnion, conversationIdentifier, index);
+    } else {
+      rawMessageEnvelopeFuture = Provider.of<FlwtchState>(context, listen: false).cwtch.GetMessage(profileOnion, conversationIdentifier, index);
+    }
+
     return rawMessageEnvelopeFuture.then((dynamic rawMessageEnvelope) {
       var metadata = MessageMetadata(profileOnion, conversationIdentifier, index, -1, DateTime.now(), "", "", null, 0, false, true);
       try {
@@ -50,7 +58,7 @@ Future<Message> messageHandler(BuildContext context, String profileOnion, int co
         if (messageWrapper['Message'] == null || messageWrapper['Message'] == '' || messageWrapper['Message'] == '{}') {
           return Future.delayed(Duration(seconds: 2), () {
             print("Tail recursive call to messageHandler called. This should be a rare event. If you see multiples of this log over a short period of time please log it as a bug.");
-            return messageHandler(context, profileOnion, conversationIdentifier, index).then((value) => value);
+            return messageHandler(context, profileOnion, conversationIdentifier, index, byID: byID).then((value) => value);
           });
         }
 
@@ -84,7 +92,7 @@ Future<Message> messageHandler(BuildContext context, String profileOnion, int co
             return MalformedMessage(metadata);
         }
       } catch (e) {
-        print("an error! " + e.toString());
+        EnvironmentConfig.debugLog("an error! " + e.toString());
         return MalformedMessage(metadata);
       }
     });

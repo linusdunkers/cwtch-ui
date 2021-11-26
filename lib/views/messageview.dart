@@ -168,7 +168,7 @@ class _MessageViewState extends State<MessageView> {
       if (Provider.of<AppState>(context, listen: false).selectedConversation != null && Provider.of<AppState>(context, listen: false).selectedIndex != null) {
         Provider.of<FlwtchState>(context, listen: false)
             .cwtch
-            .GetMessage(Provider.of<AppState>(context, listen: false).selectedProfile!, Provider.of<AppState>(context, listen: false).selectedConversation!,
+            .GetMessageByID(Provider.of<AppState>(context, listen: false).selectedProfile!, Provider.of<AppState>(context, listen: false).selectedConversation!,
                 Provider.of<AppState>(context, listen: false).selectedIndex!)
             .then((data) {
           try {
@@ -268,7 +268,8 @@ class _MessageViewState extends State<MessageView> {
     var children;
     if (Provider.of<AppState>(context).selectedConversation != null && Provider.of<AppState>(context).selectedIndex != null) {
       var quoted = FutureBuilder(
-        future: messageHandler(context, Provider.of<AppState>(context).selectedProfile!, Provider.of<AppState>(context).selectedConversation!, Provider.of<AppState>(context).selectedIndex!),
+        future:
+            messageHandler(context, Provider.of<AppState>(context).selectedProfile!, Provider.of<AppState>(context).selectedConversation!, Provider.of<AppState>(context).selectedIndex!, byID: true),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             var message = snapshot.data! as Message;

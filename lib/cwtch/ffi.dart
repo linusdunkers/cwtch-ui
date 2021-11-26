@@ -694,4 +694,17 @@ class CwtchFfi implements Cwtch {
     final Free = free.asFunction<FreeFn>();
     Free(ptr);
   }
+
+  @override
+  Future<String> GetMessageByID(String profile, int handle, int index) async {
+    var getMessageC = library.lookup<NativeFunction<get_json_blob_from_str_int_int_function>>("c_GetMessageByID");
+    // ignore: non_constant_identifier_names
+    final GetMessage = getMessageC.asFunction<GetJsonBlobFromStrIntIntFn>();
+    final utf8profile = profile.toNativeUtf8();
+    Pointer<Utf8> jsonMessageBytes = GetMessage(utf8profile, utf8profile.length, handle, index);
+    String jsonMessage = jsonMessageBytes.toDartString();
+    _UnsafeFreePointerAnyUseOfThisFunctionMustBeDoubleApproved(jsonMessageBytes);
+    malloc.free(utf8profile);
+    return jsonMessage;
+  }
 }

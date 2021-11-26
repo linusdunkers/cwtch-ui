@@ -35,6 +35,10 @@ abstract class Cwtch {
 
   // ignore: non_constant_identifier_names
   Future<dynamic> GetMessage(String profile, int handle, int index);
+
+  // ignore: non_constant_identifier_names
+  Future<dynamic> GetMessageByID(String profile, int handle, int index);
+
   // ignore: non_constant_identifier_names
   Future<dynamic> GetMessageByContentHash(String profile, int handle, String contentHash);
 
