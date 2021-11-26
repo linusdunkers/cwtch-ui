@@ -537,12 +537,12 @@ class CwtchFfi implements Cwtch {
   @override
   // ignore: non_constant_identifier_names
   void SetConversationAttribute(String profile, int contact, String key, String val) {
-    var setContactAttribute = library.lookup<NativeFunction<void_from_string_int_string_string_function>>("c_SetContactAttribute");
+    var setContactAttribute = library.lookup<NativeFunction<void_from_string_int_string_string_function>>("c_SetConversationAttribute");
     // ignore: non_constant_identifier_names
     final SetContactAttribute = setContactAttribute.asFunction<VoidFromStringIntStringStringFn>();
     final u1 = profile.toNativeUtf8();
     final u3 = key.toNativeUtf8();
-    final u4 = key.toNativeUtf8();
+    final u4 = val.toNativeUtf8();
     SetContactAttribute(u1, u1.length, contact, u3, u3.length, u4, u4.length);
     malloc.free(u1);
     malloc.free(u3);

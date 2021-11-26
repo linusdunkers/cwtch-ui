@@ -80,7 +80,7 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
                                 var profileOnion = Provider.of<ContactInfoState>(context, listen: false).profileOnion;
                                 var handle = Provider.of<ContactInfoState>(context, listen: false).identifier;
                                 Provider.of<ContactInfoState>(context, listen: false).nickname = ctrlrNick.text;
-                                Provider.of<FlwtchState>(context, listen: false).cwtch.SetConversationAttribute(profileOnion, handle, "local.name", ctrlrNick.text);
+                                Provider.of<FlwtchState>(context, listen: false).cwtch.SetConversationAttribute(profileOnion, handle, "profile.name", ctrlrNick.text);
                                 // todo translations
                                 final snackBar = SnackBar(content: Text("Group Nickname changed successfully"));
                                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
