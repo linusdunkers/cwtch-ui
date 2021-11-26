@@ -8,6 +8,7 @@
     "serverConnectionsLabel": "Connexion",
     "manageKnownServersShort": "Serveurs",
     "manageKnownServersLong": "Gérer les serveurs connus",
+    "displayNameTooltip": "Veuillez entrer un nom d'usage s'il vous plaît",
     "manageKnownServersButton": "Gérer les serveurs connus",
     "importLocalServerSelectText": "Sélectionnez le serveur local",
     "importLocalServerLabel": "Importer un serveur hébergé localement",
