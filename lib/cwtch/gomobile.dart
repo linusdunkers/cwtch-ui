@@ -281,4 +281,9 @@ class CwtchGomobile implements Cwtch {
   Future GetMessageByContentHash(String profile, int handle, String contentHash) {
     return cwtchPlatform.invokeMethod("GetMessageByContentHash", {"profile": profile, "contact": handle, "contentHash": contentHash});
   }
+
+  @override
+  void SetMessageAttribute(String profile, int conversation, int channel, int message, String key, String val) {
+    cwtchPlatform.invokeMethod("SetMessageAttribute", {"ProfileOnion": profile, "Conversation": conversation, "Channel": channel, "Message": message, "Key": key, "Val": val});
+  }
 }

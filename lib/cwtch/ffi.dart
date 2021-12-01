@@ -84,6 +84,9 @@ typedef VoidFromStringIntStringFn = void Function(Pointer<Utf8>, int, int, Point
 typedef void_from_string_int_string_string_function = Void Function(Pointer<Utf8>, Int32, Int32, Pointer<Utf8>, Int32, Pointer<Utf8>, Int32);
 typedef VoidFromStringIntStringStringFn = void Function(Pointer<Utf8>, int, int, Pointer<Utf8>, int, Pointer<Utf8>, int);
 
+typedef void_from_string_int_int_int_string_string_function = Void Function(Pointer<Utf8>, Int32, Int32, Int32, Int32, Pointer<Utf8>, Int32, Pointer<Utf8>, Int32);
+typedef VoidFromStringIntIntIntStringStringFn = void Function(Pointer<Utf8>, int, int, int, int, Pointer<Utf8>, int, Pointer<Utf8>, int);
+
 typedef void_from_string_int_int_function = Void Function(Pointer<Utf8>, Int32, Int32, Int32);
 typedef VoidFromStringIntIntFn = void Function(Pointer<Utf8>, int, int, int);
 
@@ -544,6 +547,21 @@ class CwtchFfi implements Cwtch {
     final u3 = key.toNativeUtf8();
     final u4 = val.toNativeUtf8();
     SetContactAttribute(u1, u1.length, contact, u3, u3.length, u4, u4.length);
+    malloc.free(u1);
+    malloc.free(u3);
+    malloc.free(u4);
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void SetMessageAttribute(String profile, int conversation, int channel, int message, String key, String val) {
+    var setMessageAttribute = library.lookup<NativeFunction<void_from_string_int_int_int_string_string_function>>("c_SetMessageAttribute");
+    // ignore: non_constant_identifier_names
+    final SetMessageAttribute = setMessageAttribute.asFunction<VoidFromStringIntIntIntStringStringFn>();
+    final u1 = profile.toNativeUtf8();
+    final u3 = key.toNativeUtf8();
+    final u4 = val.toNativeUtf8();
+    SetMessageAttribute(u1, u1.length, conversation, channel, message, u3, u3.length, u4, u4.length);
     malloc.free(u1);
     malloc.free(u3);
     malloc.free(u4);

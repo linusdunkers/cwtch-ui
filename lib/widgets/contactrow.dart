@@ -111,6 +111,8 @@ class _ContactRowState extends State<ContactRow> {
   }
 
   void _btnApprove() {
+    // Update the UI
+    Provider.of<ContactInfoState>(context, listen: false).authorization = ContactAuthorization.approved;
     Provider.of<FlwtchState>(context, listen: false)
         .cwtch
         .AcceptContact(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).identifier);

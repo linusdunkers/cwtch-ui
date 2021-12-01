@@ -353,7 +353,7 @@ class _MessageViewState extends State<MessageView> {
                               return contact.onion != Provider.of<ContactInfoState>(context).onion;
                             }, onChanged: (newVal) {
                               setState(() {
-                                this.selectedContact = newVal;
+                                this.selectedContact = Provider.of<ProfileInfoState>(context).contactList.findContact(newVal)!.identifier;
                               });
                             })),
                         SizedBox(
@@ -362,7 +362,7 @@ class _MessageViewState extends State<MessageView> {
                         ElevatedButton(
                           child: Text(AppLocalizations.of(bcontext)!.inviteBtn, semanticsLabel: AppLocalizations.of(bcontext)!.inviteBtn),
                           onPressed: () {
-                            if (this.selectedContact != "") {
+                            if (this.selectedContact != -1) {
                               this._sendInvitation();
                             }
                             Navigator.pop(bcontext);

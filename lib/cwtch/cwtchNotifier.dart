@@ -79,7 +79,6 @@ class CwtchNotifier {
         }
         break;
       case "GroupCreated":
-
         // Retrieve Server Status from Cache...
         String status = "";
         RemoteServerInfoState? serverInfoState = profileCN.getProfile(data["ProfileOnion"])?.serverList.getServer(data["GroupServer"]);
@@ -131,19 +130,24 @@ class CwtchNotifier {
       case "NewMessageFromPeer":
         notificationManager.notify("New Message From Peer!");
         var identifier = int.parse(data["ConversationID"]);
-        if (appState.selectedProfile != data["ProfileOnion"] || appState.selectedConversation != identifier) {
-          profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.unreadMessages++;
-        } else {
-          profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.newMarker++;
-        }
-        profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.totalMessages++;
-        profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(identifier, DateTime.now());
 
-        // We only ever see messages from authenticated peers.
-        // If the contact is marked as offline then override this - can happen when the contact is removed from the front
-        // end during syncing.
-        if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.isOnline() == false) {
-          profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.status = "Authenticated";
+        // We might not have received a contact created for this contact yet...
+        // In that case the **next** event we receive will actually update these values...
+        if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier) != null) {
+          if (appState.selectedProfile != data["ProfileOnion"] || appState.selectedConversation != identifier) {
+            profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.unreadMessages++;
+          } else {
+            profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.newMarker++;
+          }
+          profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.totalMessages++;
+          profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(identifier, DateTime.now());
+
+          // We only ever see messages from authenticated peers.
+          // If the contact is marked as offline then override this - can happen when the contact is removed from the front
+          // end during syncing.
+          if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.isOnline() == false) {
+            profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.status = "Authenticated";
+          }
         }
 
         break;
@@ -206,17 +210,7 @@ class CwtchNotifier {
             notificationManager.notify("New Message From Group!");
           }
         } else {
-          // from me (already displayed - do not update counter)
-          var idx = data["Signature"];
-          var key = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)?.getMessageKey(idx);
-          if (key == null) break;
-          try {
-            var message = Provider.of<MessageMetadata>(key.currentContext!, listen: false);
-            if (message == null) break;
-            message.ackd = true;
-          } catch (e) {
-            // ignore, we likely have an old key that has been replaced with an actual signature
-          }
+          // This is not dealt with by IndexedAcknowledgment
         }
         break;
       case "MessageCounterResync":
@@ -242,7 +236,7 @@ class CwtchNotifier {
         break;
       case "SendMessageToGroupError":
         // from me (already displayed - do not update counter)
-        EnvironmentConfig.debugLog("SendMessageToGroupError");
+        EnvironmentConfig.debugLog("SendMessageToGroupError: $data");
         var idx = data["Signature"];
         var key = profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(data["GroupID"])!.getMessageKey(idx);
         if (key == null) break;
@@ -289,7 +283,6 @@ class CwtchNotifier {
         profileCN.getProfile(data["ProfileOnion"])?.replaceServers(data["ServerList"]);
         break;
       case "NewGroup":
-        EnvironmentConfig.debugLog("new group");
         String invite = data["GroupInvite"].toString();
         if (invite.startsWith("torv3")) {
           String inviteJson = new String.fromCharCodes(base64Decode(invite.substring(5)));
@@ -303,7 +296,8 @@ class CwtchNotifier {
           }
 
           if (profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(groupInvite["GroupID"]) == null) {
-            profileCN.getProfile(data["ProfileOnion"])?.contactList.add(ContactInfoState(data["ProfileOnion"], data["ConversationID"], groupInvite["GroupID"],
+            var identifier = int.parse(data["ConversationID"]);
+            profileCN.getProfile(data["ProfileOnion"])?.contactList.add(ContactInfoState(data["ProfileOnion"], identifier, groupInvite["GroupID"],
                 authorization: ContactAuthorization.approved,
                 imagePath: data["PicturePath"],
                 nickname: groupInvite["GroupName"],
@@ -311,7 +305,7 @@ class CwtchNotifier {
                 status: status,
                 isGroup: true,
                 lastMessageTime: DateTime.fromMillisecondsSinceEpoch(0)));
-            profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(groupInvite["GroupID"], DateTime.fromMillisecondsSinceEpoch(0));
+            profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(identifier, DateTime.fromMillisecondsSinceEpoch(0));
           }
         }
         break;
@@ -323,7 +317,7 @@ class CwtchNotifier {
         break;
       case "ServerStateChange":
         // Update the Server Cache
-        EnvironmentConfig.debugLog("server state changes $data");
+        //EnvironmentConfig.debugLog("server state changes $data");
         profileCN.getProfile(data["ProfileOnion"])?.updateServerStatusCache(data["GroupServer"], data["ConnectionState"]);
         profileCN.getProfile(data["ProfileOnion"])?.contactList.contacts.forEach((contact) {
           if (contact.isGroup == true && contact.server == data["GroupServer"]) {
@@ -361,13 +355,17 @@ class CwtchNotifier {
         }
         break;
       case "NewRetValMessageFromPeer":
-        if (data["Path"] == "name" && data["Data"].toString().trim().length > 0) {
-          // Update locally on the UI...
-          if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["RemotePeer"]) != null) {
-            profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["RemotePeer"])!.nickname = data["Data"];
+        if (data["Path"] == "profile.name") {
+          if (data["Data"].toString().trim().length > 0) {
+            // Update locally on the UI...
+            if (profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(data["RemotePeer"]) != null) {
+              profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(data["RemotePeer"])!.nickname = data["Data"];
+            }
           }
+        } else if (data['Path'] == "profile.picture") {
+          // Not yet..
         } else {
-          EnvironmentConfig.debugLog("unhandled peer attribute event: ${data['Path']}");
+          EnvironmentConfig.debugLog("unhandled ret val event: ${data['Path']}");
         }
         break;
       case "ManifestSaved":

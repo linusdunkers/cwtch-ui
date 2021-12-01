@@ -195,10 +195,11 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
       child: Text(AppLocalizations.of(context)!.yesLeave),
       onPressed: () {
         var profileOnion = Provider.of<ContactInfoState>(context, listen: false).profileOnion;
-        var handle = Provider.of<ContactInfoState>(context, listen: false).identifier;
+        var identifier = Provider.of<ContactInfoState>(context, listen: false).identifier;
         // locally update cache...
         Provider.of<ContactInfoState>(context, listen: false).isArchived = true;
-        Provider.of<FlwtchState>(context, listen: false).cwtch.DeleteContact(profileOnion, handle);
+        Provider.of<ProfileInfoState>(context, listen: false).contactList.removeContact(identifier);
+        Provider.of<FlwtchState>(context, listen: false).cwtch.DeleteContact(profileOnion, identifier);
         Future.delayed(Duration(milliseconds: 500), () {
           Provider.of<AppState>(context, listen: false).selectedConversation = null;
           Navigator.of(context).popUntil((route) => route.settings.name == "conversations"); // dismiss dialog

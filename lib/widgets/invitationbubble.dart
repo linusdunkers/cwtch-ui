@@ -39,7 +39,7 @@ class InvitationBubbleState extends State<InvitationBubble> {
     isAccepted = Provider.of<ProfileInfoState>(context).contactList.findContact(widget.inviteTarget) != null;
     var borderRadiousEh = 15.0;
     var showGroupInvite = Provider.of<Settings>(context).isExperimentEnabled(TapirGroupsExperiment);
-    rejected = Provider.of<MessageMetadata>(context).flags & 0x01 == 0x01;
+    rejected = Provider.of<MessageMetadata>(context).attributes["rejected-invite"] == "true";
     var prettyDate = DateFormat.yMd(Platform.localeName).add_jm().format(Provider.of<MessageMetadata>(context).timestamp);
 
     // If the sender is not us, then we want to give them a nickname...
@@ -128,10 +128,10 @@ class InvitationBubbleState extends State<InvitationBubble> {
   void _btnReject() {
     setState(() {
       var profileOnion = Provider.of<ProfileInfoState>(context, listen: false).onion;
-      var contact = Provider.of<ContactInfoState>(context, listen: false).onion;
-      var idx = Provider.of<MessageMetadata>(context, listen: false).messageIndex;
-      //Provider.of<FlwtchState>(context, listen: false).cwtch.UpdateMessageFlags(profileOnion, contact, idx, Provider.of<MessageMetadata>(context, listen: false).flags | 0x01);
-      Provider.of<MessageMetadata>(context, listen: false).flags |= 0x01;
+      var conversation = Provider.of<ContactInfoState>(context, listen: false).identifier;
+      var idx = Provider.of<MessageMetadata>(context, listen: false).messageID;
+      Provider.of<FlwtchState>(context, listen: false).cwtch.SetMessageAttribute(profileOnion, conversation, 0, idx, "rejected-invite", "true");
+      //Provider.of<MessageMetadata>(context, listen: false).flags |= 0x01;
     });
   }
 

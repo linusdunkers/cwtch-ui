@@ -73,8 +73,9 @@ abstract class Cwtch {
   // ignore: non_constant_identifier_names
   void SetProfileAttribute(String profile, String key, String val);
   // ignore: non_constant_identifier_names
-  void SetConversationAttribute(String profile, int contact, String key, String val);
-
+  void SetConversationAttribute(String profile, int conversation, String key, String val);
+  // ignore: non_constant_identifier_names
+  void SetMessageAttribute(String profile, int conversation, int channel, int message, String key, String val);
   // ignore: non_constant_identifier_names
   void LoadServers(String password);
   // ignore: non_constant_identifier_names

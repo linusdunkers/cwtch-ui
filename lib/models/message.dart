@@ -43,7 +43,7 @@ Future<Message> messageHandler(BuildContext context, String profileOnion, int co
     }
 
     return rawMessageEnvelopeFuture.then((dynamic rawMessageEnvelope) {
-      var metadata = MessageMetadata(profileOnion, conversationIdentifier, index, -1, DateTime.now(), "", "", null, 0, false, true);
+      var metadata = MessageMetadata(profileOnion, conversationIdentifier, index, -1, DateTime.now(), "", "", "", <String, String>{}, false, true);
       try {
         dynamic messageWrapper = jsonDecode(rawMessageEnvelope);
         // There are 2 conditions in which this error condition can be met:
@@ -67,11 +67,11 @@ Future<Message> messageHandler(BuildContext context, String profileOnion, int co
         var timestamp = DateTime.tryParse(messageWrapper['Timestamp'])!;
         var senderHandle = messageWrapper['PeerID'];
         var senderImage = messageWrapper['ContactImage'];
-        var flags = int.parse(messageWrapper['Flags'].toString());
+        var attributes = messageWrapper['Attributes'];
         var ackd = messageWrapper['Acknowledged'];
         var error = messageWrapper['Error'] != null;
         var signature = messageWrapper['Signature'];
-        metadata = MessageMetadata(profileOnion, conversationIdentifier, index, messageID, timestamp, senderHandle, senderImage, signature, flags, ackd, error);
+        metadata = MessageMetadata(profileOnion, conversationIdentifier, index, messageID, timestamp, senderHandle, senderImage, signature, attributes, ackd, error);
 
         dynamic message = jsonDecode(messageWrapper['Message']);
         var content = message['d'] as dynamic;
@@ -97,7 +97,7 @@ Future<Message> messageHandler(BuildContext context, String profileOnion, int co
       }
     });
   } catch (e) {
-    return Future.value(MalformedMessage(MessageMetadata(profileOnion, conversationIdentifier, index, -1, DateTime.now(), "", "", null, 0, false, true)));
+    return Future.value(MalformedMessage(MessageMetadata(profileOnion, conversationIdentifier, index, -1, DateTime.now(), "", "", "", <String, String>{}, false, true)));
   }
 }
 
@@ -111,17 +111,13 @@ class MessageMetadata extends ChangeNotifier {
   final DateTime timestamp;
   final String senderHandle;
   final String? senderImage;
-  int _flags;
+  final dynamic _attributes;
   bool _ackd;
   bool _error;
 
   final String? signature;
 
-  int get flags => this._flags;
-  set flags(int newVal) {
-    this._flags = newVal;
-    notifyListeners();
-  }
+  dynamic get attributes => this._attributes;
 
   bool get ackd => this._ackd;
   set ackd(bool newVal) {
@@ -135,6 +131,6 @@ class MessageMetadata extends ChangeNotifier {
     notifyListeners();
   }
 
-  MessageMetadata(
-      this.profileOnion, this.conversationIdentifier, this.messageIndex, this.messageID, this.timestamp, this.senderHandle, this.senderImage, this.signature, this._flags, this._ackd, this._error);
+  MessageMetadata(this.profileOnion, this.conversationIdentifier, this.messageIndex, this.messageID, this.timestamp, this.senderHandle, this.senderImage, this.signature, this._attributes, this._ackd,
+      this._error);
 }
