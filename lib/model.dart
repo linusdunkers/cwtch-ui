@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cwtch/config.dart';
 import 'package:cwtch/widgets/messagerow.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cwtch/models/profileservers.dart';
@@ -657,9 +658,21 @@ class ContactInfoState extends ChangeNotifier {
     }
   }
 
-  GlobalKey<MessageRowState> getMessageKey(String index) {
+  GlobalKey<MessageRowState> getMessageKey(int conversation, int message, DateTime lastread) {
+    String index = "c: " + conversation.toString() + " m:" + message.toString(); //+ " lr:" +lastMessageTime.toIso8601String();
+    //EnvironmentConfig.debugLog("looked up key $index");
     if (keys[index] == null) {
       keys[index] = GlobalKey<MessageRowState>();
+    }
+    GlobalKey<MessageRowState> ret = keys[index]!;
+    return ret;
+  }
+
+  GlobalKey<MessageRowState>? getMessageKeyOrFail(int conversation, int message, DateTime lastread) {
+    String index = "c: " + conversation.toString() + " m:" + message.toString(); // + " lr:" +lastMessageTime.toIso8601String();
+
+    if (keys[index] == null) {
+      return null;
     }
     GlobalKey<MessageRowState> ret = keys[index]!;
     return ret;

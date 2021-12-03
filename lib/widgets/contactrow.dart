@@ -121,7 +121,7 @@ class _ContactRowState extends State<ContactRow> {
   void _btnReject() {
     ContactInfoState contact = Provider.of<ContactInfoState>(context, listen: false);
     if (contact.isGroup == true) {
-      Provider.of<FlwtchState>(context, listen: false).cwtch.RejectInvite(Provider.of<ContactInfoState>(context, listen: false).profileOnion, contact.identifier);
+      // FIXME This flow is incrorect. Groups never just show up on the contact list anymore
       Provider.of<ProfileInfoState>(context, listen: false).removeContact(contact.onion);
     } else {
       Provider.of<FlwtchState>(context, listen: false).cwtch.BlockContact(Provider.of<ContactInfoState>(context, listen: false).profileOnion, contact.identifier);

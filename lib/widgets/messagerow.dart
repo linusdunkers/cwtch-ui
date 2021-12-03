@@ -15,6 +15,7 @@ import '../settings.dart';
 
 class MessageRow extends StatefulWidget {
   final Widget child;
+
   MessageRow(this.child, {Key? key}) : super(key: key);
 
   @override
@@ -28,9 +29,12 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
   late Alignment _dragAlignment = Alignment.center;
   Alignment _dragAffinity = Alignment.center;
 
+  late int index;
+
   @override
   void initState() {
     super.initState();
+    index = Provider.of<MessageMetadata>(context, listen: false).messageIndex;
     _controller = AnimationController(vsync: this);
     _controller.addListener(() {
       setState(() {
@@ -41,7 +45,9 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
 
   @override
   void dispose() {
-    _controller.dispose();
+    if (_controller != null) {
+      _controller.dispose();
+    }
     super.dispose();
   }
 

@@ -1,5 +1,8 @@
 import 'package:cwtch/models/message.dart';
+import 'package:cwtch/models/messages/malformedmessage.dart';
+import 'package:cwtch/widgets/malformedbubble.dart';
 import 'package:cwtch/widgets/messagebubble.dart';
+import 'package:cwtch/widgets/messageloadingbubble.dart';
 import 'package:cwtch/widgets/messagerow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -32,8 +35,10 @@ class TextMessage extends Message {
     return ChangeNotifierProvider.value(
         value: this.metadata,
         builder: (bcontext, child) {
-          String idx = this.metadata.conversationIdentifier.toString() + this.metadata.messageID.toString();
-          return MessageRow(MessageBubble(this.content), key: Provider.of<ContactInfoState>(bcontext).getMessageKey(idx));
+          var lrt = Provider.of<ContactInfoState>(bcontext).lastMessageTime;
+          var key = Provider.of<ContactInfoState>(bcontext).getMessageKey(this.metadata.conversationIdentifier, this.metadata.messageID, lrt);
+
+          return MessageRow(MessageBubble(this.content), key: key);
         });
   }
 }

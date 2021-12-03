@@ -67,11 +67,6 @@ class CwtchGomobile implements Cwtch {
   }
 
   // ignore: non_constant_identifier_names
-  void SelectProfile(String onion) {
-    cwtchPlatform.invokeMethod("SelectProfile", {"profile": onion});
-  }
-
-  // ignore: non_constant_identifier_names
   void CreateProfile(String nick, String pass) {
     cwtchPlatform.invokeMethod("CreateProfile", {"nick": nick, "pass": pass});
   }
@@ -87,13 +82,13 @@ class CwtchGomobile implements Cwtch {
   }
 
   // ignore: non_constant_identifier_names
-  Future<dynamic> GetMessage(String profile, int handle, int index) {
-    return cwtchPlatform.invokeMethod("GetMessage", {"profile": profile, "contact": handle, "index": index});
+  Future<dynamic> GetMessage(String profile, int conversation, int index) {
+    return cwtchPlatform.invokeMethod("GetMessage", {"ProfileOnion": profile, "conversation": conversation, "index": index});
   }
 
   // ignore: non_constant_identifier_names
-  Future<dynamic> GetMessageByID(String profile, int handle, int index) {
-    return cwtchPlatform.invokeMethod("GetMessageByID", {"profile": profile, "contact": handle, "index": index});
+  Future<dynamic> GetMessageByID(String profile, int conversation, int id) {
+    return cwtchPlatform.invokeMethod("GetMessageByID", {"ProfileOnion": profile, "conversation": conversation, "id": id});
   }
 
   @override
@@ -113,43 +108,43 @@ class CwtchGomobile implements Cwtch {
 
   @override
   // ignore: non_constant_identifier_names
-  void AcceptContact(String profileOnion, int contactHandle) {
-    cwtchPlatform.invokeMethod("AcceptContact", {"ProfileOnion": profileOnion, "handle": contactHandle});
+  void AcceptContact(String profileOnion, int conversation) {
+    cwtchPlatform.invokeMethod("AcceptContact", {"ProfileOnion": profileOnion, "conversation": conversation});
   }
 
   @override
   // ignore: non_constant_identifier_names
-  void BlockContact(String profileOnion, int contactHandle) {
-    cwtchPlatform.invokeMethod("BlockContact", {"ProfileOnion": profileOnion, "handle": contactHandle});
+  void BlockContact(String profileOnion, int conversation) {
+    cwtchPlatform.invokeMethod("BlockContact", {"ProfileOnion": profileOnion, "conversation": conversation});
   }
 
   @override
   // ignore: non_constant_identifier_names
-  void SendMessage(String profileOnion, int contactHandle, String message) {
-    cwtchPlatform.invokeMethod("SendMessage", {"ProfileOnion": profileOnion, "handle": contactHandle, "message": message});
+  void SendMessage(String profileOnion, int conversation, String message) {
+    cwtchPlatform.invokeMethod("SendMessage", {"ProfileOnion": profileOnion, "conversation": conversation, "message": message});
   }
 
   @override
   // ignore: non_constant_identifier_names
-  void SendInvitation(String profileOnion, int contactHandle, int target) {
-    cwtchPlatform.invokeMethod("SendInvitation", {"ProfileOnion": profileOnion, "handle": contactHandle, "target": target});
+  void SendInvitation(String profileOnion, int conversation, int target) {
+    cwtchPlatform.invokeMethod("SendInvitation", {"ProfileOnion": profileOnion, "conversation": conversation, "target": target});
   }
 
   @override
   // ignore: non_constant_identifier_names
-  void ShareFile(String profileOnion, int contactHandle, String filepath) {
-    cwtchPlatform.invokeMethod("ShareFile", {"ProfileOnion": profileOnion, "handle": contactHandle, "filepath": filepath});
+  void ShareFile(String profileOnion, int conversation, String filepath) {
+    cwtchPlatform.invokeMethod("ShareFile", {"ProfileOnion": profileOnion, "conversation": conversation, "filepath": filepath});
   }
 
   @override
   // ignore: non_constant_identifier_names
-  void DownloadFile(String profileOnion, int contactHandle, String filepath, String manifestpath, String filekey) {
-    cwtchPlatform.invokeMethod("DownloadFile", {"ProfileOnion": profileOnion, "handle": contactHandle, "filepath": filepath, "manifestpath": manifestpath, "filekey": filekey});
+  void DownloadFile(String profileOnion, int conversation, String filepath, String manifestpath, String filekey) {
+    cwtchPlatform.invokeMethod("DownloadFile", {"ProfileOnion": profileOnion, "conversation": conversation, "filepath": filepath, "manifestpath": manifestpath, "filekey": filekey});
   }
 
   // ignore: non_constant_identifier_names
-  void CreateDownloadableFile(String profileOnion, int contactHandle, String filenameSuggestion, String filekey) {
-    cwtchPlatform.invokeMethod("CreateDownloadableFile", {"ProfileOnion": profileOnion, "handle": contactHandle, "filename": filenameSuggestion, "filekey": filekey});
+  void CreateDownloadableFile(String profileOnion, int conversation, String filenameSuggestion, String filekey) {
+    cwtchPlatform.invokeMethod("CreateDownloadableFile", {"ProfileOnion": profileOnion, "conversation": conversation, "filename": filenameSuggestion, "filekey": filekey});
   }
 
   @override
@@ -160,8 +155,8 @@ class CwtchGomobile implements Cwtch {
 
   @override
   // ignore: non_constant_identifier_names
-  void VerifyOrResumeDownload(String profileOnion, int contactHandle, String filekey) {
-    cwtchPlatform.invokeMethod("VerifyOrResumeDownload", {"ProfileOnion": profileOnion, "handle": contactHandle, "filekey": filekey});
+  void VerifyOrResumeDownload(String profileOnion, int conversation, String filekey) {
+    cwtchPlatform.invokeMethod("VerifyOrResumeDownload", {"ProfileOnion": profileOnion, "conversation": conversation, "filekey": filekey});
   }
 
   @override
@@ -177,32 +172,20 @@ class CwtchGomobile implements Cwtch {
   }
 
   @override
-  // ignore: non_constant_identifier_names
-  void SetGroupAttribute(String profileOnion, String groupHandle, String key, String value) {
-    cwtchPlatform.invokeMethod("SetGroupAttribute", {"ProfileOnion": profileOnion, "groupHandle": groupHandle, "key": key, "value": value});
-  }
-
-  @override
-  // ignore: non_constant_identifier_names
-  void RejectInvite(String profileOnion, int groupHandle) {
-    cwtchPlatform.invokeMethod("RejectInvite", {"ProfileOnion": profileOnion, "groupHandle": groupHandle});
-  }
-
-  @override
   void CreateGroup(String profileOnion, String server, String groupName) {
     cwtchPlatform.invokeMethod("CreateGroup", {"ProfileOnion": profileOnion, "server": server, "groupName": groupName});
   }
 
   @override
   // ignore: non_constant_identifier_names
-  void DeleteContact(String profileOnion, int handle) {
-    cwtchPlatform.invokeMethod("DeleteContact", {"ProfileOnion": profileOnion, "handle": handle});
+  void DeleteContact(String profileOnion, int conversation) {
+    cwtchPlatform.invokeMethod("DeleteContact", {"ProfileOnion": profileOnion, "conversation": conversation});
   }
 
   @override
   // ignore: non_constant_identifier_names
-  void ArchiveConversation(String profileOnion, int contactHandle) {
-    cwtchPlatform.invokeMethod("ArchiveConversation", {"ProfileOnion": profileOnion, "handle": contactHandle});
+  void ArchiveConversation(String profileOnion, int conversation) {
+    cwtchPlatform.invokeMethod("ArchiveConversation", {"ProfileOnion": profileOnion, "conversation": conversation});
   }
 
   @override
@@ -213,8 +196,8 @@ class CwtchGomobile implements Cwtch {
 
   @override
   // ignore: non_constant_identifier_names
-  void SetConversationAttribute(String profile, int contact, String key, String val) {
-    cwtchPlatform.invokeMethod("SetContactAttribute", {"ProfileOnion": profile, "Contact": contact, "Key": key, "Val": val});
+  void SetConversationAttribute(String profile, int conversation, String key, String val) {
+    cwtchPlatform.invokeMethod("SetContactAttribute", {"ProfileOnion": profile, "conversation": conversation, "Key": key, "Val": val});
   }
 
   @override
@@ -278,12 +261,12 @@ class CwtchGomobile implements Cwtch {
   }
 
   @override
-  Future GetMessageByContentHash(String profile, int handle, String contentHash) {
-    return cwtchPlatform.invokeMethod("GetMessageByContentHash", {"profile": profile, "contact": handle, "contentHash": contentHash});
+  Future GetMessageByContentHash(String profile, int conversation, String contentHash) {
+    return cwtchPlatform.invokeMethod("GetMessageByContentHash", {"ProfileOnion": profile, "conversation": conversation, "contentHash": contentHash});
   }
 
   @override
   void SetMessageAttribute(String profile, int conversation, int channel, int message, String key, String val) {
-    cwtchPlatform.invokeMethod("SetMessageAttribute", {"ProfileOnion": profile, "Conversation": conversation, "Channel": channel, "Message": message, "Key": key, "Val": val});
+    cwtchPlatform.invokeMethod("SetMessageAttribute", {"ProfileOnion": profile, "conversation": conversation, "Channel": channel, "Message": message, "Key": key, "Val": val});
   }
 }

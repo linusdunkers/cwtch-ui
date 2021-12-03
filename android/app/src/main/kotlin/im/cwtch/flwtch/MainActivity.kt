@@ -152,6 +152,7 @@ class MainActivity: FlutterActivity() {
                     Log.i("handleCwtch:WorkManager", "canceling ${workInfo.id} bc tags don't include $uniqueTag")
                     WorkManager.getInstance(this).cancelWorkById(workInfo.id)
                 }
+                WorkManager.getInstance(this).cancelWorkById(workInfo.id)
             }
             WorkManager.getInstance(this).pruneWork()
 

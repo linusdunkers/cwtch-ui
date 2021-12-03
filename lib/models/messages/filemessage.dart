@@ -21,7 +21,6 @@ class FileMessage extends Message {
     return ChangeNotifierProvider.value(
         value: this.metadata,
         builder: (bcontext, child) {
-          String idx = this.metadata.conversationIdentifier.toString() + this.metadata.messageID.toString();
           dynamic shareObj = jsonDecode(this.content);
           if (shareObj == null) {
             return MessageRow(MalformedBubble());
@@ -35,7 +34,9 @@ class FileMessage extends Message {
             return MessageRow(MalformedBubble());
           }
 
-          return MessageRow(FileBubble(nameSuggestion, rootHash, nonce, fileSize), key: Provider.of<ContactInfoState>(bcontext).getMessageKey(idx));
+          var lrt = Provider.of<ContactInfoState>(bcontext).lastMessageTime;
+          return MessageRow(FileBubble(nameSuggestion, rootHash, nonce, fileSize),
+              key: Provider.of<ContactInfoState>(bcontext).getMessageKey(this.metadata.conversationIdentifier, this.metadata.messageID, lrt));
         });
   }
 

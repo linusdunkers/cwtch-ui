@@ -262,16 +262,6 @@ class CwtchFfi implements Cwtch {
   }
 
   // ignore: non_constant_identifier_names
-  void SelectProfile(String onion) async {
-    var selectProfileC = library.lookup<NativeFunction<get_json_blob_string_function>>("c_SelectProfile");
-    // ignore: non_constant_identifier_names
-    final SelectProfile = selectProfileC.asFunction<GetJsonBlobStringFn>();
-    final ut8Onion = onion.toNativeUtf8();
-    SelectProfile(ut8Onion, ut8Onion.length);
-    malloc.free(ut8Onion);
-  }
-
-  // ignore: non_constant_identifier_names
   void CreateProfile(String nick, String pass) {
     var createProfileC = library.lookup<NativeFunction<void_from_string_string_function>>("c_CreateProfile");
     // ignore: non_constant_identifier_names
@@ -458,17 +448,6 @@ class CwtchFfi implements Cwtch {
     ImportBundle(u1, u1.length, u2, u2.length);
     malloc.free(u1);
     malloc.free(u2);
-  }
-
-  @override
-  // ignore: non_constant_identifier_names
-  void RejectInvite(String profileOnion, int groupHandle) {
-    var rejectInvite = library.lookup<NativeFunction<string_int_to_void_function>>("c_RejectInvite");
-    // ignore: non_constant_identifier_names
-    final RejectInvite = rejectInvite.asFunction<VoidFromStringIntFn>();
-    final u1 = profileOnion.toNativeUtf8();
-    RejectInvite(u1, u1.length, groupHandle);
-    malloc.free(u1);
   }
 
   @override

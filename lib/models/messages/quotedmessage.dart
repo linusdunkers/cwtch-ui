@@ -94,7 +94,7 @@ class QuotedMessage extends Message {
       return ChangeNotifierProvider.value(
           value: this.metadata,
           builder: (bcontext, child) {
-            String idx = this.metadata.conversationIdentifier.toString() + this.metadata.messageID.toString();
+            var lrt = Provider.of<ContactInfoState>(bcontext).lastMessageTime;
             return MessageRow(
                 QuotedMessageBubble(message["body"], quotedMessage.then((LocallyIndexedMessage? localIndex) {
                   if (localIndex != null) {
@@ -102,7 +102,7 @@ class QuotedMessage extends Message {
                   }
                   return MalformedMessage(this.metadata);
                 })),
-                key: Provider.of<ContactInfoState>(bcontext).getMessageKey(idx));
+                key: Provider.of<ContactInfoState>(bcontext).getMessageKey(this.metadata.conversationIdentifier, this.metadata.messageID, lrt));
           });
     } catch (e) {
       return MalformedMessage(this.metadata).getWidget(context);

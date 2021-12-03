@@ -181,61 +181,69 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                 Cwtch.loadProfiles(pass)
             }
             "GetMessage" -> {
-                val profile = (a.get("profile") as? String) ?: ""
-                val handle = (a.get("contact") as? String) ?: ""
-                val indexI = a.getInt("index")
-                return Result.success(Data.Builder().putString("result", Cwtch.getMessage(profile, handle, indexI.toLong())).build())
+                val profile = (a.get("ProfileOnion") as? String) ?: ""
+                val conversation = a.getInt("conversation").toLong()
+                val indexI = a.getInt("index").toLong()
+                return Result.success(Data.Builder().putString("result", Cwtch.getMessage(profile, conversation, indexI)).build())
+            }
+            "GetMessageByID" -> {
+                val profile = (a.get("ProfileOnion") as? String) ?: ""
+                val conversation = a.getInt("conversation").toLong()
+                val id = a.getInt("id").toLong()
+                return Result.success(Data.Builder().putString("result", Cwtch.getMessageByID(profile, conversation, id)).build())
             }
             "GetMessageByContentHash" -> {
-                val profile = (a.get("profile") as? String) ?: ""
-                val handle = (a.get("contact") as? String) ?: ""
-                val contentHash = (a.get("contentHash") as? String) ?: ""
-                return Result.success(Data.Builder().putString("result", Cwtch.getMessagesByContentHash(profile, handle, contentHash)).build())
-            }
-            "UpdateMessageFlags" -> {
-                val profile = (a.get("profile") as? String) ?: ""
-                val handle = (a.get("contact") as? String) ?: ""
-                val midx = (a.get("midx") as? Long) ?: 0
-                val flags = (a.get("flags") as? Long) ?: 0
-                Cwtch.updateMessageFlags(profile, handle, midx, flags)
-            }
-            "AcceptContact" -> {
                 val profile = (a.get("ProfileOnion") as? String) ?: ""
-                val handle = (a.get("handle") as? String) ?: ""
-                Cwtch.acceptContact(profile, handle)
+                val conversation = a.getInt("conversation").toLong()
+                val contentHash = (a.get("contentHash") as? String) ?: ""
+                return Result.success(Data.Builder().putString("result", Cwtch.getMessagesByContentHash(profile, conversation, contentHash)).build())
+            }
+            "UpdateMessageAttribute" -> {
+                val profile = (a.get("ProfileOnion") as? String) ?: ""
+                val conversation = a.getInt("conversation").toLong()
+                val channel = a.getInt("chanenl").toLong()
+                val midx = a.getInt("midx").toLong()
+                val key = (a.get("key") as? String) ?: ""
+                val value = (a.get("value") as? String) ?: ""
+                Cwtch.setMessageAttribute(profile, conversation, channel, midx, key, value)
+            }
+            "AcceptConversation" -> {
+                val profile = (a.get("ProfileOnion") as? String) ?: ""
+                val conversation = a.getInt("conversation").toLong()
+                Cwtch.acceptConversation(profile, conversation)
             }
             "BlockContact" -> {
                 val profile = (a.get("ProfileOnion") as? String) ?: ""
-                val handle = (a.get("handle") as? String) ?: ""
-                Cwtch.blockContact(profile, handle)
+                val conversation = a.getInt("conversation").toLong()
+                Cwtch.blockContact(profile, conversation)
             }
             "SendMessage" -> {
                 val profile = (a.get("ProfileOnion") as? String) ?: ""
-                val handle = (a.get("handle") as? String) ?: ""
+                val conversation = a.getInt("conversation").toLong()
                 val message = (a.get("message") as? String) ?: ""
-                Cwtch.sendMessage(profile, handle, message)
+                Cwtch.sendMessage(profile, conversation, message)
             }
             "SendInvitation" -> {
                 val profile = (a.get("ProfileOnion") as? String) ?: ""
-                val handle = (a.get("handle") as? String) ?: ""
-                val target = (a.get("target") as? String) ?: ""
-                Cwtch.sendInvitation(profile, handle, target)
+                val conversation = a.getInt("conversation").toLong()
+                val target = (a.get("target") as? Long) ?: -1
+                Cwtch.sendInvitation(profile, conversation, target)
             }
             "ShareFile" -> {
                 val profile = (a.get("ProfileOnion") as? String) ?: ""
-                val handle = (a.get("handle") as? String) ?: ""
+                val conversation = a.getInt("conversation").toLong()
                 val filepath = (a.get("filepath") as? String) ?: ""
-                Cwtch.shareFile(profile, handle, filepath)
+                Cwtch.shareFile(profile, conversation, filepath)
             }
             "DownloadFile" -> {
                 val profile = (a.get("ProfileOnion") as? String) ?: ""
-                val handle = (a.get("handle") as? String) ?: ""
+                val conversation = a.getInt("conversation").toLong()
                 val filepath = (a.get("filepath") as? String) ?: ""
                 val manifestpath = (a.get("manifestpath") as? String) ?: ""
                 val filekey = (a.get("filekey") as? String) ?: ""
                 // FIXME: Prevent spurious calls by Intent
                 if (profile != "") {
-                    Cwtch.downloadFile(profile, handle, filepath, manifestpath, filekey)
+                    Cwtch.downloadFile(profile, conversation, filepath, manifestpath, filekey)
                 }
             }
             "CheckDownloadStatus" -> {
@@ -245,9 +253,9 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
             }
             "VerifyOrResumeDownload" -> {
                 val profile = (a.get("ProfileOnion") as? String) ?: ""
-                val handle = (a.get("handle") as? String) ?: ""
+                val conversation = a.getInt("conversation").toLong()
                 val fileKey = (a.get("fileKey") as? String) ?: ""
-                Cwtch.verifyOrResumeDownload(profile, handle, fileKey)
+                Cwtch.verifyOrResumeDownload(profile, conversation, fileKey)
             }
             "SendProfileEvent" -> {
                 val onion = (a.get("onion") as? String) ?: ""
@@ -266,13 +274,6 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                 val bundle = (a.get("bundle") as? String) ?: ""
                 Cwtch.importBundle(profile, bundle)
             }
-            "SetGroupAttribute" -> {
-                val profile = (a.get("ProfileOnion") as? String) ?: ""
-                val groupHandle = (a.get("groupHandle") as? String) ?: ""
-                val key = (a.get("key") as? String) ?: ""
-                val value = (a.get("value") as? String) ?: ""
-                Cwtch.setGroupAttribute(profile, groupHandle, key, value)
-            }
             "CreateGroup" -> {
                 val profile = (a.get("ProfileOnion") as? String) ?: ""
                 val server = (a.get("server") as? String) ?: ""
@@ -286,18 +287,13 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
             }
             "ArchiveConversation" -> {
                 val profile = (a.get("ProfileOnion") as? String) ?: ""
-                val contactHandle = (a.get("handle") as? String) ?: ""
-                Cwtch.archiveConversation(profile, contactHandle)
+                val conversation = (a.get("conversation") as? Long) ?: -1
+                Cwtch.archiveConversation(profile, conversation)
             }
-            "DeleteContact" -> {
+            "DeleteConversation" -> {
                 val profile = (a.get("ProfileOnion") as? String) ?: ""
-                val handle = (a.get("handle") as? String) ?: ""
-                Cwtch.deleteContact(profile, handle)
-            }
-            "RejectInvite" -> {
-                val profile = (a.get("ProfileOnion") as? String) ?: ""
-                val groupHandle = (a.get("groupHandle") as? String) ?: ""
-                Cwtch.rejectInvite(profile, groupHandle)
+                val conversation = (a.get("conversation") as? Long) ?: -1
+                Cwtch.deleteContact(profile, conversation)
             }
             "SetProfileAttribute" -> {
                 val profile = (a.get("ProfileOnion") as? String) ?: ""
@@ -305,12 +301,12 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                 val v = (a.get("Val") as? String) ?: ""
                 Cwtch.setProfileAttribute(profile, key, v)
             }
-            "SetContactAttribute" -> {
+            "SetConversationAttribute" -> {
                 val profile = (a.get("ProfileOnion") as? String) ?: ""
-                val contact = (a.get("Contact") as? String) ?: ""
+                val conversation = (a.get("conversation") as? Long) ?: -1
                 val key = (a.get("Key") as? String) ?: ""
                 val v = (a.get("Val") as? String) ?: ""
-                Cwtch.setContactAttribute(profile, contact, key, v)
+                Cwtch.setConversationAttribute(profile, conversation, key, v)
             }
             "Shutdown" -> {
                 Cwtch.shutdownCwtch();
@@ -354,7 +350,10 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                 val v = (a.get("Val") as? String) ?: ""
                 Cwtch.setServerAttribute(serverOnion, key, v)
             }
-            else -> return Result.failure()
+            else -> {
+                Log.i("FlwtchWorker", "unknown command: " + method);
+                return Result.failure()
+            }
         }
         return Result.success()
     }

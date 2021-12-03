@@ -139,8 +139,8 @@ class CwtchNotifier {
           } else {
             profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.newMarker++;
           }
-          profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.totalMessages++;
           profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(identifier, DateTime.now());
+          profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.totalMessages++;
 
           // We only ever see messages from authenticated peers.
           // If the contact is marked as offline then override this - can happen when the contact is removed from the front
@@ -155,13 +155,12 @@ class CwtchNotifier {
         // We don't use these anymore, IndexedAcknowledgement is more suited to the UI front end...
         break;
       case "IndexedAcknowledgement":
-        var messageID = data["Index"];
-        var identifier = int.parse(data["ConversationID"]);
-        var idx = identifier.toString() + messageID;
-
+        var conversation = int.parse(data["ConversationID"]);
+        var message_index = int.parse(data["Index"]);
+        var contact = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(conversation);
         // We return -1 for protocol message acks if there is no message
-        if (idx == "-1") break;
-        var key = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.getMessageKey(idx);
+        if (message_index == -1) break;
+        var key = contact!.getMessageKeyOrFail(conversation, message_index, contact.lastMessageTime);
         if (key == null) break;
         try {
           var message = Provider.of<MessageMetadata>(key.currentContext!, listen: false);
@@ -169,8 +168,8 @@ class CwtchNotifier {
           // We only ever see acks from authenticated peers.
           // If the contact is marked as offline then override this - can happen when the contact is removed from the front
           // end during syncing.
-          if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.isOnline() == false) {
-            profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.status = "Authenticated";
+          if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(conversation)!.isOnline() == false) {
+            profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(conversation)!.status = "Authenticated";
           }
           message.ackd = true;
         } catch (e) {
@@ -225,27 +224,12 @@ class CwtchNotifier {
         // Ignore
         break;
       case "IndexedFailure":
-        var idx = data["Index"];
-        var key = profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(data["RemotePeer"])?.getMessageKey(idx);
-        try {
-          var message = Provider.of<MessageMetadata>(key!.currentContext!, listen: false);
-          message.error = true;
-        } catch (e) {
-          // ignore, we likely have an old key that has been replaced with an actual signature
-        }
-        break;
-      case "SendMessageToGroupError":
-        // from me (already displayed - do not update counter)
-        EnvironmentConfig.debugLog("SendMessageToGroupError: $data");
-        var idx = data["Signature"];
-        var key = profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(data["GroupID"])!.getMessageKey(idx);
-        if (key == null) break;
-        try {
+        var contact = profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(data["RemotePeer"]);
+        var idx = int.parse(data["Index"]);
+        var key = contact?.getMessageKeyOrFail(contact.identifier, idx, contact.lastMessageTime);
+        if (key != null) {
           var message = Provider.of<MessageMetadata>(key.currentContext!, listen: false);
-          if (message == null) break;
           message.error = true;
-        } catch (e) {
-          // ignore, we likely have an old key that has been replaced with an actual signature
         }
         break;
       case "AppError":

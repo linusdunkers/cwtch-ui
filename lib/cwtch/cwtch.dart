@@ -11,8 +11,6 @@ abstract class Cwtch {
   Future<void> ReconnectCwtchForeground();
 
   // ignore: non_constant_identifier_names
-  void SelectProfile(String onion);
-  // ignore: non_constant_identifier_names
   void CreateProfile(String nick, String pass);
   // ignore: non_constant_identifier_names
   void LoadProfiles(String pass);
@@ -68,8 +66,6 @@ abstract class Cwtch {
 
   // ignore: non_constant_identifier_names
   void ImportBundle(String profile, String bundle);
-  // ignore: non_constant_identifier_names
-  void RejectInvite(String profileOnion, int groupHandle);
   // ignore: non_constant_identifier_names
   void SetProfileAttribute(String profile, String key, String val);
   // ignore: non_constant_identifier_names

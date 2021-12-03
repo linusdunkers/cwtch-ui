@@ -21,7 +21,6 @@ class InviteMessage extends Message {
     return ChangeNotifierProvider.value(
         value: this.metadata,
         builder: (bcontext, child) {
-          String idx = this.metadata.conversationIdentifier.toString() + this.metadata.messageID.toString();
           String inviteTarget;
           String inviteNick;
           String invite = this.content;
@@ -40,7 +39,9 @@ class InviteMessage extends Message {
               return MessageRow(MalformedBubble());
             }
           }
-          return MessageRow(InvitationBubble(overlay, inviteTarget, inviteNick, invite), key: Provider.of<ContactInfoState>(bcontext).getMessageKey(idx));
+          var lrt = Provider.of<ContactInfoState>(bcontext).lastMessageTime;
+          return MessageRow(InvitationBubble(overlay, inviteTarget, inviteNick, invite),
+              key: Provider.of<ContactInfoState>(bcontext).getMessageKey(this.metadata.conversationIdentifier, this.metadata.messageID, lrt));
         });
   }
 
