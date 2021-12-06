@@ -35,7 +35,7 @@ class CwtchNotifier {
   }
 
   void handleMessage(String type, dynamic data) {
-    EnvironmentConfig.debugLog("NewEvent $type $data");
+    //EnvironmentConfig.debugLog("NewEvent $type $data");
     switch (type) {
       case "CwtchStarted":
         appState.SetCwtchInit();
@@ -144,7 +144,7 @@ class CwtchNotifier {
             profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.newMarker++;
           }
           profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(identifier, DateTime.now());
-          profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.updateMessageCache(identifier, messageID, timestamp, senderHandle, senderImage, data["Data"], "");
+          profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.updateMessageCache(identifier, messageID, timestamp, senderHandle, senderImage, data["Data"]);
           profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.totalMessages++;
 
           // We only ever see messages from authenticated peers.
@@ -170,17 +170,17 @@ class CwtchNotifier {
         if (key == null) break;
         try {
           var message = Provider.of<MessageMetadata>(key.currentContext!, listen: false);
-          if (message == null) break;
+          message.ackd = true;
+
           // We only ever see acks from authenticated peers.
           // If the contact is marked as offline then override this - can happen when the contact is removed from the front
           // end during syncing.
           if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(conversation)!.isOnline() == false) {
             profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(conversation)!.status = "Authenticated";
           }
-          message.ackd = true;
+          profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(conversation)!.ackCache(messageID);
         } catch (e) {
-          // ignore, we received an ack for a message that hasn't loaded onto the screen yet...
-          // the protocol was faster than the ui....yay?
+          // ignore, most likely cause is the key got optimized out...
         }
         break;
       case "NewMessageFromGroup":
@@ -194,11 +194,7 @@ class CwtchNotifier {
 
           // Only bother to do anything if we know about the group and the provided index is greater than our current total...
           if (currentTotal != null && idx >= currentTotal) {
-            profileCN
-                .getProfile(data["ProfileOnion"])
-                ?.contactList
-                .getContact(identifier)!
-                .updateMessageCache(identifier, idx, timestampSent, senderHandle, senderImage, data["Data"], data["Signature"]);
+            profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.updateMessageCache(identifier, idx, timestampSent, senderHandle, senderImage, data["Data"]);
             profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.totalMessages++;
 
             //if not currently open

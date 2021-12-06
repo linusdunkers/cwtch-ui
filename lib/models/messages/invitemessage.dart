@@ -37,11 +37,10 @@ class InviteMessage extends Message {
               inviteTarget = jsonObj['GroupID'];
               inviteNick = jsonObj['GroupName'];
             } else {
-              return MessageRow(MalformedBubble());
+              return MessageRow(MalformedBubble(), key: key);
             }
           }
-          var lrt = Provider.of<ContactInfoState>(bcontext).lastMessageTime;
-          return MessageRow(InvitationBubble(overlay, inviteTarget, inviteNick, invite));
+          return MessageRow(InvitationBubble(overlay, inviteTarget, inviteNick, invite), key: key);
         });
   }
 

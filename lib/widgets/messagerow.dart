@@ -204,7 +204,9 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
                       children: widgetRow,
                     )))));
     var mark = Provider.of<ContactInfoState>(context).newMarker;
-    if (mark > 0 && Provider.of<ContactInfoState>(context).messageCache[mark]?.metadata.messageID == Provider.of<MessageMetadata>(context).messageID) {
+    if (mark > 0 &&
+        Provider.of<ContactInfoState>(context).messageCache.length > mark &&
+        Provider.of<ContactInfoState>(context).messageCache[mark]?.metadata.messageID == Provider.of<MessageMetadata>(context).messageID) {
       return Column(crossAxisAlignment: fromMe ? CrossAxisAlignment.end : CrossAxisAlignment.start, children: [Align(alignment: Alignment.center, child: _bubbleNew()), mr]);
     } else {
       return mr;

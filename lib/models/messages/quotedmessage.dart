@@ -89,15 +89,16 @@ class QuotedMessage extends Message {
       });
 
       return ChangeNotifierProvider.value(
-          key: key,
           value: this.metadata,
           builder: (bcontext, child) {
-            return MessageRow(QuotedMessageBubble(message["body"], quotedMessage.then((LocallyIndexedMessage? localIndex) {
-              if (localIndex != null) {
-                return messageHandler(context, metadata.profileOnion, metadata.conversationIdentifier, localIndex.index);
-              }
-              return MalformedMessage(this.metadata);
-            })));
+            return MessageRow(
+                QuotedMessageBubble(message["body"], quotedMessage.then((LocallyIndexedMessage? localIndex) {
+                  if (localIndex != null) {
+                    return messageHandler(context, metadata.profileOnion, metadata.conversationIdentifier, localIndex.index);
+                  }
+                  return MalformedMessage(this.metadata);
+                })),
+                key: key);
           });
     } catch (e) {
       return MalformedMessage(this.metadata).getWidget(context, key);

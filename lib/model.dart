@@ -687,11 +687,16 @@ class ContactInfoState extends ChangeNotifier {
     return ret;
   }
 
-  void updateMessageCache(int conversation, int messageID, DateTime timestamp, String senderHandle, String senderImage, String data, String signature) {
-    this.messageCache.insert(0, MessageCache(MessageMetadata(profileOnion, conversation, messageID, timestamp, senderHandle, senderImage, signature, {}, false, false), data));
+  void updateMessageCache(int conversation, int messageID, DateTime timestamp, String senderHandle, String senderImage, String data) {
+    this.messageCache.insert(0, MessageCache(MessageMetadata(profileOnion, conversation, messageID, timestamp, senderHandle, senderImage, "", {}, false, false), data));
   }
 
   void bumpMessageCache() {
     this.messageCache.insert(0, null);
+  }
+
+  void ackCache(int messageID) {
+    this.messageCache.firstWhere((element) => element?.metadata.messageID == messageID)?.metadata.ackd = true;
+    notifyListeners();
   }
 }

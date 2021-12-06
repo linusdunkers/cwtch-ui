@@ -35,7 +35,7 @@ class FileMessage extends Message {
             return MessageRow(MalformedBubble());
           }
 
-          return MessageRow(FileBubble(nameSuggestion, rootHash, nonce, fileSize));
+          return MessageRow(FileBubble(nameSuggestion, rootHash, nonce, fileSize), key: key);
         });
   }
 
