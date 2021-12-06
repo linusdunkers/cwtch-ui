@@ -31,14 +31,15 @@ class TextMessage extends Message {
   }
 
   @override
-  Widget getWidget(BuildContext context) {
+  Widget getWidget(BuildContext context, Key key) {
     return ChangeNotifierProvider.value(
+        key: key,
         value: this.metadata,
         builder: (bcontext, child) {
           var lrt = Provider.of<ContactInfoState>(bcontext).lastMessageTime;
-          var key = Provider.of<ContactInfoState>(bcontext).getMessageKey(this.metadata.conversationIdentifier, this.metadata.messageID, lrt);
+          //   var key = Provider.of<ContactInfoState>(bcontext).getMessageKey(this.metadata.conversationIdentifier, this.metadata.messageID, lrt);
 
-          return MessageRow(MessageBubble(this.content), key: key);
+          return MessageRow(MessageBubble(this.content));
         });
   }
 }

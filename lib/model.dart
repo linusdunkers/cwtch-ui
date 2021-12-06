@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cwtch/config.dart';
+import 'package:cwtch/models/message.dart';
 import 'package:cwtch/widgets/messagerow.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cwtch/models/profileservers.dart';
@@ -501,6 +502,12 @@ ContactAuthorization stringToContactAuthorization(String authStr) {
   }
 }
 
+class MessageCache {
+  final MessageMetadata metadata;
+  final String wrapper;
+  MessageCache(this.metadata, this.wrapper);
+}
+
 class ContactInfoState extends ChangeNotifier {
   final String profileOnion;
   final int identifier;
@@ -515,6 +522,7 @@ class ContactInfoState extends ChangeNotifier {
   late int _totalMessages = 0;
   late DateTime _lastMessageTime;
   late Map<String, GlobalKey<MessageRowState>> keys;
+  late List<MessageCache?> messageCache;
   int _newMarker = 0;
   DateTime _newMarkerClearAt = DateTime.now();
 
@@ -546,6 +554,7 @@ class ContactInfoState extends ChangeNotifier {
     this._lastMessageTime = lastMessageTime == null ? DateTime.fromMillisecondsSinceEpoch(0) : lastMessageTime;
     this._server = server;
     this._archived = archived;
+    this.messageCache = List.empty(growable: true);
     keys = Map<String, GlobalKey<MessageRowState>>();
   }
 
@@ -676,5 +685,13 @@ class ContactInfoState extends ChangeNotifier {
     }
     GlobalKey<MessageRowState> ret = keys[index]!;
     return ret;
+  }
+
+  void updateMessageCache(int conversation, int messageID, DateTime timestamp, String senderHandle, String senderImage, String data, String signature) {
+    this.messageCache.insert(0, MessageCache(MessageMetadata(profileOnion, conversation, messageID, timestamp, senderHandle, senderImage, signature, {}, false, false), data));
+  }
+
+  void bumpMessageCache() {
+    this.messageCache.insert(0, null);
   }
 }

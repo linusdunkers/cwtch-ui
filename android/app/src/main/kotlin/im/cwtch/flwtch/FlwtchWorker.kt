@@ -184,6 +184,7 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                 val profile = (a.get("ProfileOnion") as? String) ?: ""
                 val conversation = a.getInt("conversation").toLong()
                 val indexI = a.getInt("index").toLong()
+                Log.i("FlwtchWorker", "Cwtch GetMessage " + profile + " " + conversation.toString() + " " + indexI.toString())
                 return Result.success(Data.Builder().putString("result", Cwtch.getMessage(profile, conversation, indexI)).build())
             }
             "GetMessageByID" -> {

@@ -30,6 +30,7 @@ import android.os.Build
 import android.os.Environment
 import android.database.Cursor
 import android.provider.MediaStore
+import cwtch.Cwtch
 
 class MainActivity: FlutterActivity() {
     override fun provideSplashScreen(): SplashScreen? = SplashView()

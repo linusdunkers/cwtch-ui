@@ -34,7 +34,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
   @override
   void initState() {
     super.initState();
-    index = Provider.of<MessageMetadata>(context, listen: false).messageIndex;
+    index = Provider.of<MessageMetadata>(context, listen: false).messageID;
     _controller = AnimationController(vsync: this);
     _controller.addListener(() {
       setState(() {
@@ -75,7 +75,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
     }
 
     Widget wdgIcons = Visibility(
-        visible: Provider.of<AppState>(context).hoveredIndex == Provider.of<MessageMetadata>(context).messageIndex,
+        visible: Provider.of<AppState>(context).hoveredIndex == Provider.of<MessageMetadata>(context).messageID,
         maintainSize: true,
         maintainAnimation: true,
         maintainState: true,
@@ -169,7 +169,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
         // For desktop...
         onHover: (event) {
           setState(() {
-            Provider.of<AppState>(context, listen: false).hoveredIndex = Provider.of<MessageMetadata>(context, listen: false).messageIndex;
+            Provider.of<AppState>(context, listen: false).hoveredIndex = Provider.of<MessageMetadata>(context, listen: false).messageID;
           });
         },
         onExit: (event) {
@@ -204,7 +204,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
                       children: widgetRow,
                     )))));
     var mark = Provider.of<ContactInfoState>(context).newMarker;
-    if (mark > 0 && mark == Provider.of<MessageMetadata>(context).messageIndex + 1) {
+    if (mark > 0 && Provider.of<ContactInfoState>(context).messageCache[mark]?.metadata.messageID == Provider.of<MessageMetadata>(context).messageID) {
       return Column(crossAxisAlignment: fromMe ? CrossAxisAlignment.end : CrossAxisAlignment.start, children: [Align(alignment: Alignment.center, child: _bubbleNew()), mr]);
     } else {
       return mr;
@@ -251,12 +251,17 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
   }
 
   void _btnGoto() {
-    selectConversation(context, Provider.of<MessageMetadata>(context, listen: false).conversationIdentifier);
+    var id = Provider.of<ProfileInfoState>(context, listen: false).contactList.findContact(Provider.of<MessageMetadata>(context, listen: false).senderHandle)?.identifier;
+    if (id == null) {
+      // Can't happen
+    } else {
+      selectConversation(context, id);
+    }
   }
 
   void _btnAdd() {
     var sender = Provider.of<MessageMetadata>(context, listen: false).senderHandle;
-    if (sender == null || sender == "") {
+    if (sender == "") {
       print("sender not yet loaded");
       return;
     }

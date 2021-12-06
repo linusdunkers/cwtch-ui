@@ -17,8 +17,9 @@ class FileMessage extends Message {
   FileMessage(this.metadata, this.content);
 
   @override
-  Widget getWidget(BuildContext context) {
+  Widget getWidget(BuildContext context, Key key) {
     return ChangeNotifierProvider.value(
+        key: key,
         value: this.metadata,
         builder: (bcontext, child) {
           dynamic shareObj = jsonDecode(this.content);
@@ -34,9 +35,7 @@ class FileMessage extends Message {
             return MessageRow(MalformedBubble());
           }
 
-          var lrt = Provider.of<ContactInfoState>(bcontext).lastMessageTime;
-          return MessageRow(FileBubble(nameSuggestion, rootHash, nonce, fileSize),
-              key: Provider.of<ContactInfoState>(bcontext).getMessageKey(this.metadata.conversationIdentifier, this.metadata.messageID, lrt));
+          return MessageRow(FileBubble(nameSuggestion, rootHash, nonce, fileSize));
         });
   }
 

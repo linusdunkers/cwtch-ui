@@ -130,6 +130,10 @@ class CwtchNotifier {
       case "NewMessageFromPeer":
         notificationManager.notify("New Message From Peer!");
         var identifier = int.parse(data["ConversationID"]);
+        var messageID = int.parse(data["Index"]);
+        var timestamp = DateTime.tryParse(data['TimestampReceived'])!;
+        var senderHandle = data['RemotePeer'];
+        var senderImage = data['Picture'];
 
         // We might not have received a contact created for this contact yet...
         // In that case the **next** event we receive will actually update these values...
@@ -140,6 +144,7 @@ class CwtchNotifier {
             profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.newMarker++;
           }
           profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(identifier, DateTime.now());
+          profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.updateMessageCache(identifier, messageID, timestamp, senderHandle, senderImage, data["Data"], "");
           profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.totalMessages++;
 
           // We only ever see messages from authenticated peers.
@@ -156,11 +161,12 @@ class CwtchNotifier {
         break;
       case "IndexedAcknowledgement":
         var conversation = int.parse(data["ConversationID"]);
-        var message_index = int.parse(data["Index"]);
+        var messageID = int.parse(data["Index"]);
+
         var contact = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(conversation);
         // We return -1 for protocol message acks if there is no message
-        if (message_index == -1) break;
-        var key = contact!.getMessageKeyOrFail(conversation, message_index, contact.lastMessageTime);
+        if (messageID == -1) break;
+        var key = contact!.getMessageKeyOrFail(conversation, messageID, contact.lastMessageTime);
         if (key == null) break;
         try {
           var message = Provider.of<MessageMetadata>(key.currentContext!, listen: false);
@@ -181,11 +187,19 @@ class CwtchNotifier {
         var identifier = int.parse(data["ConversationID"]);
         if (data["ProfileOnion"] != data["RemotePeer"]) {
           var idx = int.parse(data["Index"]);
+          var senderHandle = data['RemotePeer'];
+          var senderImage = data['Picture'];
+          var timestampSent = DateTime.tryParse(data['TimestampSent'])!;
           var currentTotal = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.totalMessages;
 
           // Only bother to do anything if we know about the group and the provided index is greater than our current total...
           if (currentTotal != null && idx >= currentTotal) {
-            profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.totalMessages = idx + 1;
+            profileCN
+                .getProfile(data["ProfileOnion"])
+                ?.contactList
+                .getContact(identifier)!
+                .updateMessageCache(identifier, idx, timestampSent, senderHandle, senderImage, data["Data"], data["Signature"]);
+            profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.totalMessages++;
 
             //if not currently open
             if (appState.selectedProfile != data["ProfileOnion"] || appState.selectedConversation != identifier) {
@@ -194,7 +208,6 @@ class CwtchNotifier {
               profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.newMarker++;
             }
 
-            var timestampSent = DateTime.tryParse(data['TimestampSent'])!;
             // TODO: There are 2 timestamps associated with a new group message - time sent and time received.
             // Sent refers to the time a profile alleges they sent a message
             // Received refers to the time we actually saw the message from the server

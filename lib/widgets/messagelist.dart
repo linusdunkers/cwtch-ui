@@ -79,13 +79,15 @@ class _MessageListState extends State<MessageList> {
                         var contactHandle = Provider.of<ContactInfoState>(outerContext, listen: false).identifier;
                         var messageIndex = index;
 
+                        // var key = Provider.of<ContactInfoState>(outerContext, listen: false).getMessageKey(contactHandle, Provider.of<ContactInfoState>(outerContext).totalMessages - index, DateTime.now());
                         return FutureBuilder(
+                          //key: Provider.of<ContactInfoState>(outerContext, listen: false).getMessageKey(contactHandle, Provider.of<ContactInfoState>(outerContext).totalMessages - index, DateTime.now()),
                           future: messageHandler(outerContext, profileOnion, contactHandle, messageIndex),
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               var message = snapshot.data as Message;
-                              // Already includes MessageRow,,
-                              return message.getWidget(context);
+                              var key = Provider.of<ContactInfoState>(outerContext, listen: false).getMessageKey(contactHandle, message.getMetadata().messageID, DateTime.now());
+                              return message.getWidget(context, key);
                             } else {
                               return MessageLoadingBubble();
                             }
@@ -95,5 +97,25 @@ class _MessageListState extends State<MessageList> {
                     )
                   : null))
     ])));
+  }
+}
+
+class CachedMessage extends Message {
+  @override
+  MessageMetadata getMetadata() {
+    // TODO: implement getMetadata
+    throw UnimplementedError();
+  }
+
+  @override
+  Widget getPreviewWidget(BuildContext context) {
+    // TODO: implement getPreviewWidget
+    throw UnimplementedError();
+  }
+
+  @override
+  Widget getWidget(BuildContext context, Key key) {
+    // TODO: implement getWidget
+    throw UnimplementedError();
   }
 }

@@ -28,11 +28,43 @@ const GroupConversationHandleLength = 32;
 
 abstract class Message {
   MessageMetadata getMetadata();
-  Widget getWidget(BuildContext context);
+  Widget getWidget(BuildContext context, Key key);
   Widget getPreviewWidget(BuildContext context);
 }
 
+Message compileOverlay(MessageMetadata metadata, String messageData) {
+  try {
+    dynamic message = jsonDecode(messageData);
+    var content = message['d'] as dynamic;
+    var overlay = int.parse(message['o'].toString());
+
+    switch (overlay) {
+      case TextMessageOverlay:
+        return TextMessage(metadata, content);
+      case SuggestContactOverlay:
+      case InviteGroupOverlay:
+        return InviteMessage(overlay, metadata, content);
+      case QuotedMessageOverlay:
+        return QuotedMessage(metadata, content);
+      case FileShareOverlay:
+        return FileMessage(metadata, content);
+      default:
+        // Metadata is valid, content is not..
+        return MalformedMessage(metadata);
+    }
+  } catch (e) {
+    return MalformedMessage(metadata);
+  }
+}
+
 Future<Message> messageHandler(BuildContext context, String profileOnion, int conversationIdentifier, int index, {bool byID = false}) {
+  var cache = Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(conversationIdentifier)!.messageCache;
+  if (cache.length > index) {
+    if (cache[index] != null) {
+      return Future.value(compileOverlay(cache[index]!.metadata, cache[index]!.wrapper));
+    }
+  }
+
   try {
     Future<dynamic> rawMessageEnvelopeFuture;
 
@@ -43,7 +75,7 @@ Future<Message> messageHandler(BuildContext context, String profileOnion, int co
     }
 
     return rawMessageEnvelopeFuture.then((dynamic rawMessageEnvelope) {
-      var metadata = MessageMetadata(profileOnion, conversationIdentifier, index, -1, DateTime.now(), "", "", "", <String, String>{}, false, true);
+      var metadata = MessageMetadata(profileOnion, conversationIdentifier, index, DateTime.now(), "", "", "", <String, String>{}, false, true);
       try {
         dynamic messageWrapper = jsonDecode(rawMessageEnvelope);
         // There are 2 conditions in which this error condition can be met:
@@ -58,7 +90,7 @@ Future<Message> messageHandler(BuildContext context, String profileOnion, int co
         if (messageWrapper['Message'] == null || messageWrapper['Message'] == '' || messageWrapper['Message'] == '{}') {
           return Future.delayed(Duration(seconds: 2), () {
             print("Tail recursive call to messageHandler called. This should be a rare event. If you see multiples of this log over a short period of time please log it as a bug.");
-            return messageHandler(context, profileOnion, conversationIdentifier, index, byID: byID).then((value) => value);
+            return messageHandler(context, profileOnion, conversationIdentifier, -1, byID: byID).then((value) => value);
           });
         }
 
@@ -71,33 +103,16 @@ Future<Message> messageHandler(BuildContext context, String profileOnion, int co
         var ackd = messageWrapper['Acknowledged'];
         var error = messageWrapper['Error'] != null;
         var signature = messageWrapper['Signature'];
-        metadata = MessageMetadata(profileOnion, conversationIdentifier, index, messageID, timestamp, senderHandle, senderImage, signature, attributes, ackd, error);
+        metadata = MessageMetadata(profileOnion, conversationIdentifier, messageID, timestamp, senderHandle, senderImage, signature, attributes, ackd, error);
 
-        dynamic message = jsonDecode(messageWrapper['Message']);
-        var content = message['d'] as dynamic;
-        var overlay = int.parse(message['o'].toString());
-
-        switch (overlay) {
-          case TextMessageOverlay:
-            return TextMessage(metadata, content);
-          case SuggestContactOverlay:
-          case InviteGroupOverlay:
-            return InviteMessage(overlay, metadata, content);
-          case QuotedMessageOverlay:
-            return QuotedMessage(metadata, content);
-          case FileShareOverlay:
-            return FileMessage(metadata, content);
-          default:
-            // Metadata is valid, content is not..
-            return MalformedMessage(metadata);
-        }
+        return compileOverlay(metadata, messageWrapper['Message']);
       } catch (e) {
         EnvironmentConfig.debugLog("an error! " + e.toString());
         return MalformedMessage(metadata);
       }
     });
   } catch (e) {
-    return Future.value(MalformedMessage(MessageMetadata(profileOnion, conversationIdentifier, index, -1, DateTime.now(), "", "", "", <String, String>{}, false, true)));
+    return Future.value(MalformedMessage(MessageMetadata(profileOnion, conversationIdentifier, -1, DateTime.now(), "", "", "", <String, String>{}, false, true)));
   }
 }
 
@@ -105,7 +120,6 @@ class MessageMetadata extends ChangeNotifier {
   // meta-metadata
   final String profileOnion;
   final int conversationIdentifier;
-  final int messageIndex;
   final int messageID;
 
   final DateTime timestamp;
@@ -131,6 +145,5 @@ class MessageMetadata extends ChangeNotifier {
     notifyListeners();
   }
 
-  MessageMetadata(this.profileOnion, this.conversationIdentifier, this.messageIndex, this.messageID, this.timestamp, this.senderHandle, this.senderImage, this.signature, this._attributes, this._ackd,
-      this._error);
+  MessageMetadata(this.profileOnion, this.conversationIdentifier, this.messageID, this.timestamp, this.senderHandle, this.senderImage, this.signature, this._attributes, this._ackd, this._error);
 }

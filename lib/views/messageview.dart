@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:crypto/crypto.dart';
+import 'package:cwtch/config.dart';
 import 'package:cwtch/cwtch_icons_icons.dart';
 import 'package:cwtch/models/message.dart';
 import 'package:cwtch/models/messages/quotedmessage.dart';
@@ -213,6 +214,7 @@ class _MessageViewState extends State<MessageView> {
     ctrlrCompose.clear();
     focusNode.requestFocus();
     Future.delayed(const Duration(milliseconds: 80), () {
+      Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(Provider.of<ContactInfoState>(context, listen: false).identifier)?.bumpMessageCache();
       Provider.of<ContactInfoState>(context, listen: false).totalMessages++;
       Provider.of<ContactInfoState>(context, listen: false).newMarker++;
       // Resort the contact list...

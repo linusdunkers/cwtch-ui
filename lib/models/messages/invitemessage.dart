@@ -17,8 +17,9 @@ class InviteMessage extends Message {
   InviteMessage(this.overlay, this.metadata, this.content);
 
   @override
-  Widget getWidget(BuildContext context) {
+  Widget getWidget(BuildContext context, Key key) {
     return ChangeNotifierProvider.value(
+        key: key,
         value: this.metadata,
         builder: (bcontext, child) {
           String inviteTarget;
@@ -40,8 +41,7 @@ class InviteMessage extends Message {
             }
           }
           var lrt = Provider.of<ContactInfoState>(bcontext).lastMessageTime;
-          return MessageRow(InvitationBubble(overlay, inviteTarget, inviteNick, invite),
-              key: Provider.of<ContactInfoState>(bcontext).getMessageKey(this.metadata.conversationIdentifier, this.metadata.messageID, lrt));
+          return MessageRow(InvitationBubble(overlay, inviteTarget, inviteNick, invite));
         });
   }
 
