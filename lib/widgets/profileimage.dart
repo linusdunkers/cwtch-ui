@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cwtch/opaque.dart';
+import 'package:cwtch/themes/opaque.dart';
 import 'package:provider/provider.dart';
 
 import '../settings.dart';

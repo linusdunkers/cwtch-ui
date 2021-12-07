@@ -5,7 +5,7 @@ import 'package:cwtch/errorHandler.dart';
 import 'package:cwtch/settings.dart';
 import 'licenses.dart';
 import 'main.dart';
-import 'opaque.dart';
+import 'themes/opaque.dart';
 
 import 'dart:convert';
 import 'dart:io';

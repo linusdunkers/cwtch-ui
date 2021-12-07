@@ -2,10 +2,11 @@ import 'dart:collection';
 import 'dart:ui';
 import 'dart:core';
 
+import 'package:cwtch/themes/cwtch.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-import 'opaque.dart';
+import 'themes/opaque.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 const TapirGroupsExperiment = "tapir-groups-experiment";

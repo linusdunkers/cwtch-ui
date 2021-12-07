@@ -6,7 +6,7 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:flutter/material.dart';
-import 'package:cwtch/opaque.dart';
+import 'package:cwtch/themes/opaque.dart';
 import 'package:cwtch/settings.dart';
 import 'package:cwtch/widgets/buttontextfield.dart';
 import 'package:flutter_test/flutter_test.dart';
