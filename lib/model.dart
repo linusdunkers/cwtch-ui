@@ -689,10 +689,12 @@ class ContactInfoState extends ChangeNotifier {
 
   void updateMessageCache(int conversation, int messageID, DateTime timestamp, String senderHandle, String senderImage, String data) {
     this.messageCache.insert(0, MessageCache(MessageMetadata(profileOnion, conversation, messageID, timestamp, senderHandle, senderImage, "", {}, false, false), data));
+    this.totalMessages += 1;
   }
 
   void bumpMessageCache() {
     this.messageCache.insert(0, null);
+    this.totalMessages += 1;
   }
 
   void ackCache(int messageID) {

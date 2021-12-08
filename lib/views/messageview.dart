@@ -215,7 +215,6 @@ class _MessageViewState extends State<MessageView> {
     focusNode.requestFocus();
     Future.delayed(const Duration(milliseconds: 80), () {
       Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(Provider.of<ContactInfoState>(context, listen: false).identifier)?.bumpMessageCache();
-      Provider.of<ContactInfoState>(context, listen: false).totalMessages++;
       Provider.of<ContactInfoState>(context, listen: false).newMarker++;
       // Resort the contact list...
       Provider.of<ProfileInfoState>(context, listen: false).contactList.updateLastMessageTime(Provider.of<ContactInfoState>(context, listen: false).identifier, DateTime.now());

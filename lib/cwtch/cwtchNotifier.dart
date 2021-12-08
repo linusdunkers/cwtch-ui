@@ -145,7 +145,6 @@ class CwtchNotifier {
           }
           profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(identifier, DateTime.now());
           profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.updateMessageCache(identifier, messageID, timestamp, senderHandle, senderImage, data["Data"]);
-          profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.totalMessages++;
 
           // We only ever see messages from authenticated peers.
           // If the contact is marked as offline then override this - can happen when the contact is removed from the front
@@ -195,7 +194,6 @@ class CwtchNotifier {
           // Only bother to do anything if we know about the group and the provided index is greater than our current total...
           if (currentTotal != null && idx >= currentTotal) {
             profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.updateMessageCache(identifier, idx, timestampSent, senderHandle, senderImage, data["Data"]);
-            profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.totalMessages++;
 
             //if not currently open
             if (appState.selectedProfile != data["ProfileOnion"] || appState.selectedConversation != identifier) {
@@ -219,14 +217,6 @@ class CwtchNotifier {
           }
         } else {
           // This is not dealt with by IndexedAcknowledgment
-        }
-        break;
-      case "MessageCounterResync":
-        var contactHandle = data["RemotePeer"];
-        if (contactHandle == null || contactHandle == "") contactHandle = data["GroupID"];
-        var total = int.parse(data["Data"]);
-        if (total != profileCN.getProfile(data["Identity"])?.contactList.findContact(contactHandle)!.totalMessages) {
-          profileCN.getProfile(data["Identity"])?.contactList.findContact(contactHandle)!.totalMessages = total;
         }
         break;
       case "SendMessageToPeerError":
