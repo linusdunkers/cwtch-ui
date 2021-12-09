@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cwtch/main.dart';
 import 'package:cwtch/models/message.dart';
 import 'package:cwtch/models/profileservers.dart';
 import 'package:cwtch/models/servers.dart';
@@ -364,6 +365,8 @@ class CwtchNotifier {
         break;
       case "FileDownloaded":
         profileCN.getProfile(data["ProfileOnion"])?.downloadMarkFinished(data["FileKey"], data["FilePath"]);
+        break;
+      case "ImportingProfileEvent":
         break;
       default:
         EnvironmentConfig.debugLog("unhandled event: $type");

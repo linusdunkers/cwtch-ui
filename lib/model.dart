@@ -631,7 +631,7 @@ class ContactInfoState extends ChangeNotifier {
   set newMarker(int newVal) {
     // only unreadMessages++ can set newMarker = 1;
     // avoids drawing a marker when the convo is already open
-    if (newVal > 1) {
+    if (newVal >= 1) {
       this._newMarker = newVal;
       notifyListeners();
     }
