@@ -139,7 +139,7 @@ class _ContactsViewState extends State<ContactsView> {
   Widget _buildFilterable() {
     Widget txtfield = CwtchTextField(
       controller: ctrlrFilter,
-      labelText: AppLocalizations.of(context)!.search,
+      hintText: AppLocalizations.of(context)!.search,
       onChanged: (newVal) {
         Provider.of<ContactListState>(context, listen: false).filter = newVal;
       },

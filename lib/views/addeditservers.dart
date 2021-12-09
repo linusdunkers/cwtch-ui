@@ -117,7 +117,7 @@ class _AddEditServerViewState extends State<AddEditServerView> {
                               Visibility(
                                   visible: serverInfoState.onion.isNotEmpty,
                                   child: SwitchListTile(
-                                    title: Text(AppLocalizations.of(context)!.serverEnabled, style: TextStyle(color: settings.current().mainTextColor())),
+                                    title: Text(AppLocalizations.of(context)!.serverEnabled, style: TextStyle(color: settings.current().mainTextColor)),
                                     subtitle: Text(AppLocalizations.of(context)!.serverEnabledDescription),
                                     value: serverInfoState.running,
                                     onChanged: (bool value) {
@@ -128,14 +128,14 @@ class _AddEditServerViewState extends State<AddEditServerView> {
                                         Provider.of<FlwtchState>(context, listen: false).cwtch.StopServer(serverInfoState.onion);
                                       }
                                     },
-                                    activeTrackColor: settings.theme.defaultButtonActiveColor(),
-                                    inactiveTrackColor: settings.theme.defaultButtonDisabledColor(),
-                                    secondary: Icon(CwtchIcons.negative_heart_24px, color: settings.current().mainTextColor()),
+                                    activeTrackColor: settings.theme.defaultButtonActiveColor,
+                                    inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
+                                    secondary: Icon(CwtchIcons.negative_heart_24px, color: settings.current().mainTextColor),
                                   )),
 
                               // Auto start
                               SwitchListTile(
-                                title: Text(AppLocalizations.of(context)!.serverAutostartLabel, style: TextStyle(color: settings.current().mainTextColor())),
+                                title: Text(AppLocalizations.of(context)!.serverAutostartLabel, style: TextStyle(color: settings.current().mainTextColor)),
                                 subtitle: Text(AppLocalizations.of(context)!.serverAutostartDescription),
                                 value: serverInfoState.autoStart,
                                 onChanged: (bool value) {
@@ -145,9 +145,9 @@ class _AddEditServerViewState extends State<AddEditServerView> {
                                     Provider.of<FlwtchState>(context, listen: false).cwtch.SetServerAttribute(serverInfoState.onion, "autostart", value ? "true" : "false");
                                   }
                                 },
-                                activeTrackColor: settings.theme.defaultButtonActiveColor(),
-                                inactiveTrackColor: settings.theme.defaultButtonDisabledColor(),
-                                secondary: Icon(CwtchIcons.favorite_24dp, color: settings.current().mainTextColor()),
+                                activeTrackColor: settings.theme.defaultButtonActiveColor,
+                                inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
+                                secondary: Icon(CwtchIcons.favorite_24dp, color: settings.current().mainTextColor),
                               ),
 
                               // metrics
@@ -190,13 +190,13 @@ class _AddEditServerViewState extends State<AddEditServerView> {
                                     ),
                                     Checkbox(
                                       value: usePassword,
-                                      fillColor: MaterialStateProperty.all(settings.current().defaultButtonColor()),
-                                      activeColor: settings.current().defaultButtonActiveColor(),
+                                      fillColor: MaterialStateProperty.all(settings.current().defaultButtonColor),
+                                      activeColor: settings.current().defaultButtonActiveColor,
                                       onChanged: _handleSwitchPassword,
                                     ),
                                     Text(
                                       AppLocalizations.of(context)!.radioUsePassword,
-                                      style: TextStyle(color: settings.current().mainTextColor()),
+                                      style: TextStyle(color: settings.current().mainTextColor),
                                     ),
                                     SizedBox(
                                       height: 20,

@@ -5,29 +5,45 @@ import 'package:flutter/material.dart';
 
 import 'opaque.dart';
 
+final Color darkGreyPurple = Color(0xFF281831);
+final Color deepPurple = Color(0xFF422850);
+final Color mauvePurple = Color(0xFF8E64A5);
+final Color whiteishPurple = Color(0xFFE3DFE4);
+final Color lightGrey = Color(0xFF9E9E9E);
+final Color softGreen = Color(0xFFA0FFB0);
+final Color softRed = Color(0xFFFFA0B0);
+
+final Color whitePurple = Color(0xFFFFFDFF);
+final Color softPurple = Color(0xFFFDF3FC);
+final Color purple = Color(0xFFDFB9DE);
+final Color brightPurple = Color(0xFFD1B0E0); // not in new: portrait badge color
+final Color darkPurple = Color(0xFF350052);
+final Color greyPurple = Color(0xFF775F84); // not in new: portrait borders
+final Color pink = Color(0xFFE85DA1); // not in new: active button color
+final Color hotPink = Color(0xFFD20070); // Color(0xFFD01972);
+final Color softGrey = Color(0xFFB3B6B3); // not in new theme: blocked
+//static final Color softGreen = Color(0xFFA0FFB0);
+//static final Color softRed = Color(0xFFFFA0B0);
+
 class OpaqueDark extends OpaqueThemeType {
-  static final Color darkGreyPurple = Color(0xFF281831);
-  static final Color deepPurple = Color(0xFF422850);
-  static final Color mauvePurple = Color(0xFF8E64A5);
-  static final Color purple = Color(0xFFDFB9DE);
-  static final Color whitePurple = Color(0xFFE3DFE4);
-  static final Color softPurple = Color(0xFFFDF3FC);
-  static final Color pink = Color(0xFFE85DA1);
-  static final Color hotPink = Color(0xFFD01972);
-  static final Color lightGrey = Color(0xFF9E9E9E);
-  static final Color softGreen = Color(0xFFA0FFB0);
-  static final Color softRed = Color(0xFFFFA0B0);
+  static final Color background = darkGreyPurple;
+  static final Color header = darkGreyPurple;
+  static final Color userBubble = mauvePurple;
+  static final Color peerBubble = deepPurple;
+  static final Color font = whiteishPurple;
+  static final Color settings = whiteishPurple;
+  static final Color accent = hotPink;
 
   String identifier() {
-    return "dark";
+    return mode_dark;
   }
 
   Color backgroundMainColor() {
-    return darkGreyPurple;
+    return background; // darkGreyPurple;
   }
 
   Color backgroundPaneColor() {
-    return darkGreyPurple;
+    return header; //darkGreyPurple;
   }
 
   Color backgroundHilightElementColor() {
@@ -35,19 +51,19 @@ class OpaqueDark extends OpaqueThemeType {
   }
 
   Color mainTextColor() {
-    return whitePurple;
+    return font; //whiteishPurple;
   }
 
-  Color altTextColor() {
+  Color sendHintTextColor() {
     return mauvePurple;
   }
 
-  Color hilightElementTextColor() {
+  Color hilightElementColor() {
     return purple;
   }
 
   Color defaultButtonColor() {
-    return hotPink;
+    return accent; //hotPink;
   }
 
   Color defaultButtonActiveColor() {
@@ -55,7 +71,11 @@ class OpaqueDark extends OpaqueThemeType {
   }
 
   Color defaultButtonTextColor() {
-    return whitePurple;
+    return whiteishPurple;
+  }
+
+  Color defaultButtonDisabledColor() {
+    return lightGrey;
   }
 
   Color defaultButtonDisabledTextColor() {
@@ -70,6 +90,10 @@ class OpaqueDark extends OpaqueThemeType {
     return deepPurple;
   }
 
+  Color textfieldHintColor() {
+    return mainTextColor(); //TODO pick
+  }
+
   Color textfieldErrorColor() {
     return hotPink;
   }
@@ -78,12 +102,12 @@ class OpaqueDark extends OpaqueThemeType {
     return purple;
   }
 
-  Color scrollbarActiveColor() {
-    return hotPink;
+  Color portraitBackgroundColor() {
+    return deepPurple;
   }
 
   Color portraitOnlineBorderColor() {
-    return whitePurple;
+    return whiteishPurple;
   }
 
   Color portraitOfflineBorderColor() {
@@ -103,7 +127,7 @@ class OpaqueDark extends OpaqueThemeType {
   }
 
   Color portraitContactBadgeTextColor() {
-    return whitePurple;
+    return whiteishPurple;
   }
 
   Color portraitProfileBadgeColor() {
@@ -119,81 +143,86 @@ class OpaqueDark extends OpaqueThemeType {
   }
 
   Color toolbarIconColor() {
-    return whitePurple;
+    return settings; //whiteishPurple;
   }
 
   Color messageFromMeBackgroundColor() {
-    return mauvePurple;
+    return userBubble; //  mauvePurple;
   }
 
   Color messageFromMeTextColor() {
-    return whitePurple;
+    return font; //whiteishPurple;
   }
 
   Color messageFromOtherBackgroundColor() {
-    return deepPurple;
+    return peerBubble; //deepPurple;
   }
 
   Color messageFromOtherTextColor() {
-    return whitePurple;
+    return font; //whiteishPurple;
   }
 }
 
 class OpaqueLight extends OpaqueThemeType {
-  static final Color whitePurple = Color(0xFFFFFDFF);
-  static final Color softPurple = Color(0xFFFDF3FC);
-  static final Color purple = Color(0xFFDFB9DE);
-  static final Color brightPurple = Color(0xFFD1B0E0);
-  static final Color darkPurple = Color(0xFF350052);
-  static final Color greyPurple = Color(0xFF775F84);
-  static final Color pink = Color(0xFFE85DA1);
-  static final Color hotPink = Color(0xFFD01972);
-  static final Color lightGrey = Color(0xFFB3B6B3);
-  static final Color softGreen = Color(0xFFA0FFB0);
-  static final Color softRed = Color(0xFFFFA0B0);
+  static final Color background = whitePurple;
+  static final Color header = softPurple;
+  static final Color userBubble = purple;
+  static final Color peerBubble = softPurple;
+  static final Color font = darkPurple;
+  static final Color settings = darkPurple;
+  static final Color accent = hotPink;
+
 
   String identifier() {
-    return "light";
+    return mode_light;
   }
 
+  // Main screen background color (message pane, item rows)
   Color backgroundMainColor() {
-    return whitePurple;
+    return background; //whitePurple;
   }
 
+  // Top pane ane pane colors (settings)
   Color backgroundPaneColor() {
-    return softPurple;
+    return header; //softPurple;
   }
 
+  // Selected row color
   Color backgroundHilightElementColor() {
+    // Todo: lighten? cant
+    // hm... in light its the top pane color. but in dark its unique
     return softPurple;
   }
 
+  // Main text color
   Color mainTextColor() {
-    return darkPurple;
+    return settings;
   }
 
-  Color altTextColor() {
+  // Faded text color for suggestions in textfields
+  Color sendHintTextColor() {
     return purple;
   }
 
-  Color hilightElementTextColor() {
-    return darkPurple;
+  // pressed row, offline heart
+  Color hilightElementColor() {
+    return purple; //darkPurple; // todo shouldn't be this, too dark, makes font unreadable
   }
 
   Color defaultButtonColor() {
-    return hotPink;
+    return accent; // hotPink;
   }
 
   Color defaultButtonActiveColor() {
-    return pink;
+    return pink; // todo: lighten in light, darken in dark
   }
 
   Color defaultButtonTextColor() {
-    return whitePurple;
+    return whitePurple; // ?
   }
 
   Color defaultButtonDisabledColor() {
-    return lightGrey;
+    return softGrey;
   }
 
   Color textfieldBackgroundColor() {
@@ -203,17 +232,22 @@ class OpaqueLight extends OpaqueThemeType {
   Color textfieldBorderColor() {
     return purple;
   }
+  
+  Color textfieldHintColor() {
+    return font; //TODO pick
+  }
 
   Color textfieldErrorColor() {
     return hotPink;
   }
 
+  // todo button
   Color scrollbarDefaultColor() {
-    return darkPurple;
+    return accent;
   }
 
-  Color scrollbarActiveColor() {
-    return hotPink;
+  Color portraitBackgroundColor() {
+    return softPurple;
   }
 
   Color portraitOnlineBorderColor() {
@@ -224,27 +258,28 @@ class OpaqueLight extends OpaqueThemeType {
     return greyPurple;
   }
 
-
   Color portraitBlockedBorderColor() {
-    return lightGrey;
+    return softGrey;
   }
 
   Color portraitBlockedTextColor() {
-    return lightGrey;
+    return softGrey;
   }
 
   Color portraitContactBadgeColor() {
-    return hotPink;
+    return accent;
   }
 
   Color portraitContactBadgeTextColor() {
-    return whitePurple;
+    return whitePurple; // todo button color
   }
 
+  // TODO del
   Color portraitProfileBadgeColor() {
     return brightPurple;
   }
 
+  // TODO del
   Color portraitProfileBadgeTextColor() {
     return whitePurple;
   }
@@ -254,22 +289,22 @@ class OpaqueLight extends OpaqueThemeType {
   }
 
   Color toolbarIconColor() {
-    return darkPurple;
+    return settings; //darkPurple;
   }
 
   Color messageFromMeBackgroundColor() {
-    return brightPurple;
+    return userBubble; //brightPurple;
   }
 
   Color messageFromMeTextColor() {
-    return mainTextColor();
+    return font; //mainTextColor();
   }
 
   Color messageFromOtherBackgroundColor() {
-    return purple;
+    return peerBubble; //purple;
   }
 
   Color messageFromOtherTextColor() {
-    return darkPurple;
+    return font; //darkPurple;
   }
 }

@@ -104,7 +104,7 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                 CwtchTextField(
                                   controller: ctrlrNick,
                                   autofocus: false,
-                                  labelText: AppLocalizations.of(context)!.yourDisplayName,
+                                  hintText: AppLocalizations.of(context)!.yourDisplayName,
                                   validator: (value) {
                                     if (value.isEmpty) {
                                       return  AppLocalizations.of(context)!.displayNameTooltip;

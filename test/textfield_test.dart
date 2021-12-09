@@ -27,7 +27,7 @@ void main() {
     tester.binding.window.physicalSizeTestValue = Size(800, 300);
     final TextEditingController ctrlr1 = TextEditingController();
 
-    Widget testWidget = CwtchTextField(controller: ctrlr1, validator: (value) {  }, labelText: '',);
+    Widget testWidget = CwtchTextField(controller: ctrlr1, validator: (value) {  }, hintText: '',);
 
     Widget testHarness = MultiProvider(
       providers:[getSettingsEnglishDark()],
@@ -69,7 +69,7 @@ void main() {
 
     Widget testWidget = CwtchTextField(
       controller: ctrlr1,
-      labelText: strLabel1,
+      hintText: strLabel1,
       validator: (value) {
         if (value == null || value == "") return strFail1;
         final number = num.tryParse(value);

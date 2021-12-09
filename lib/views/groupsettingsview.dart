@@ -101,7 +101,7 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
                             ),
                             CwtchTextField(
                               controller: ctrlrGroupAddr,
-                              labelText: '',
+                              hintText: '',
                               validator: (value) {},
                             )
                           ]),
@@ -116,7 +116,7 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
                             CwtchTextField(
                               controller: TextEditingController(text: Provider.of<ContactInfoState>(context, listen: false).server),
                               validator: (value) {},
-                              labelText: '',
+                              hintText: '',
                             )
                           ]),
 

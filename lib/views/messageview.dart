@@ -104,6 +104,7 @@ class _MessageViewState extends State<MessageView> {
     return WillPopScope(
         onWillPop: _onWillPop,
         child: Scaffold(
+          backgroundColor: Provider.of<Settings>(context).theme.backgroundMainColor(),
           floatingActionButton: appState.unreadMessagesBelow
               ? FloatingActionButton(
                   child: Icon(Icons.arrow_downward),
@@ -253,7 +254,7 @@ class _MessageViewState extends State<MessageView> {
                             enabled: !isOffline,
                             decoration: InputDecoration(
                                 hintText: isOffline ? "" : AppLocalizations.of(context)!.placeholderEnterMessage,
-                                hintStyle: TextStyle(color: Provider.of<Settings>(context).theme.altTextColor()),
+                                hintStyle: TextStyle(color: Provider.of<Settings>(context).theme.sendHintTextColor()),
                                 enabledBorder: InputBorder.none,
                                 focusedBorder: InputBorder.none,
                                 enabled: true,
@@ -313,7 +314,8 @@ class _MessageViewState extends State<MessageView> {
       children = [composeBox];
     }
 
-    return Column(mainAxisSize: MainAxisSize.min, children: children);
+    return Container(
+        color: Provider.of<Settings>(context).theme.backgroundMainColor(), child: Column(mainAxisSize: MainAxisSize.min, children: children));
   }
 
   // Send the message if enter is pressed without the shift key...

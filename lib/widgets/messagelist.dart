@@ -35,6 +35,7 @@ class _MessageListState extends State<MessageList> {
 
     return RepaintBoundary(
         child: Container(
+            color: Provider.of<Settings>(context).theme.backgroundMainColor(),
             child: Column(children: [
       Visibility(
           visible: showMessageWarning,
@@ -65,7 +66,7 @@ class _MessageListState extends State<MessageList> {
                           fit: BoxFit.scaleDown,
                           alignment: Alignment.center,
                           image: AssetImage("assets/core/negative_heart_512px.png"),
-                          colorFilter: ColorFilter.mode(Provider.of<Settings>(context).theme.hilightElementTextColor(), BlendMode.srcIn))),
+                          colorFilter: ColorFilter.mode(Provider.of<Settings>(context).theme.hilightElementColor(), BlendMode.srcIn))),
               // Don't load messages for syncing server...
               child: loadMessages
                   ? ScrollablePositionedList.builder(

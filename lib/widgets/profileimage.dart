@@ -32,7 +32,7 @@ class _ProfileImageState extends State<ProfileImage> {
               ? BlendMode.softLight
               : BlendMode.darken
           : BlendMode.srcOut,
-      color: Provider.of<Settings>(context).theme.backgroundHilightElementColor(),
+      color: Provider.of<Settings>(context).theme.portraitBackgroundColor(),
       isAntiAlias: true,
       width: widget.diameter,
       height: widget.diameter,

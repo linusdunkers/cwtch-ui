@@ -4,6 +4,9 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:cwtch/settings.dart';
 
+const mode_light = "light";
+const mode_dark = "dark";
+
 abstract class OpaqueThemeType {
   static final Color red = Color(0xFFFF0000);
 
@@ -11,14 +14,17 @@ abstract class OpaqueThemeType {
     return "dummy";
   }
 
+  // Main screen background color (message pane, item rows)
   Color backgroundMainColor() {
     return red;
   }
 
+  // Top pane ane pane colors (settings)
   Color backgroundPaneColor() {
     return red;
   }
 
+  // Selected Row
   Color backgroundHilightElementColor() {
     return red;
   }
@@ -27,11 +33,14 @@ abstract class OpaqueThemeType {
     return red;
   }
 
-  Color altTextColor() {
+  // Faded text color for suggestions in textfields
+  // Todo: implement way more places
+  Color sendHintTextColor() {
     return red;
   }
 
-  Color hilightElementTextColor() {
+  // pressed row, offline heart
+  Color hilightElementColor() {
     return red;
   }
 
@@ -59,6 +68,10 @@ abstract class OpaqueThemeType {
     return red;
   }
 
+  Color textfieldHintColor() {
+    return red;
+  }
+
   Color textfieldErrorColor() {
     return red;
   }
@@ -67,7 +80,7 @@ abstract class OpaqueThemeType {
     return red;
   }
 
-  Color scrollbarActiveColor() {
+  Color portraitBackgroundColor() {
     return red;
   }
 
@@ -103,6 +116,8 @@ abstract class OpaqueThemeType {
     return red;
   }
 
+  // dropshaddpow
+  // todo: probably should not be reply icon color in messagerow
   Color dropShadowColor() {
     return red;
   }
@@ -148,7 +163,7 @@ ThemeData mkThemeData(Settings opaque) {
     primaryColor: opaque.current().backgroundMainColor(),
     canvasColor: opaque.current().backgroundPaneColor(),
     backgroundColor: opaque.current().backgroundMainColor(),
-    highlightColor: opaque.current().hilightElementTextColor(),
+    highlightColor: opaque.current().hilightElementColor(),
     iconTheme: IconThemeData(
       color: opaque.current().toolbarIconColor(),
     ),
@@ -164,7 +179,7 @@ ThemeData mkThemeData(Settings opaque) {
         actionsIconTheme: IconThemeData(
           color: opaque.current().mainTextColor(),
         )),
-    bottomNavigationBarTheme: BottomNavigationBarThemeData(type: BottomNavigationBarType.fixed, backgroundColor: opaque.current().backgroundHilightElementColor()),
+    //bottomNavigationBarTheme: BottomNavigationBarThemeData(type: BottomNavigationBarType.fixed, backgroundColor: opaque.current().backgroundHilightElementColor()),  // Can't determine current use
     textButtonTheme: TextButtonThemeData(
       style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all(opaque.current().defaultButtonColor()),
@@ -172,6 +187,7 @@ ThemeData mkThemeData(Settings opaque) {
           overlayColor: MaterialStateProperty.all(opaque.current().defaultButtonActiveColor()),
           padding: MaterialStateProperty.all(EdgeInsets.all(20))),
     ),
+    hintColor: opaque.current().textfieldHintColor(),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.resolveWith((states) => states.contains(MaterialState.disabled) ? opaque.current().defaultButtonDisabledColor() : opaque.current().defaultButtonColor()),
@@ -190,7 +206,7 @@ ThemeData mkThemeData(Settings opaque) {
       ),
     ),
     scrollbarTheme: ScrollbarThemeData(
-        isAlwaysShown: false, thumbColor: MaterialStateProperty.all(opaque.current().scrollbarActiveColor()), trackColor: MaterialStateProperty.all(opaque.current().scrollbarDefaultColor())),
+        isAlwaysShown: false, thumbColor: MaterialStateProperty.all(opaque.current().scrollbarDefaultColor())),
     tabBarTheme: TabBarTheme(indicator: UnderlineTabIndicator(borderSide: BorderSide(color: opaque.current().defaultButtonActiveColor()))),
     dialogTheme: DialogTheme(
         backgroundColor: opaque.current().backgroundPaneColor(),
