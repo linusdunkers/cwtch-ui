@@ -118,8 +118,17 @@ class _ProfileServersView extends State<ProfileServersView> {
           // Wait 500ms and hope the server is imported and add it's description in the UI and as an attribute
           Future.delayed(const Duration(milliseconds: 500), () {
             var profile = Provider.of<ProfileInfoState>(context);
-            profile.serverList.getServer(serverHandle)?.updateDescription(serverDesc);
-            Provider.of<FlwtchState>(context, listen: false).cwtch.SetContactAttribute(profile.onion, serverHandle, "local.server.description", serverDesc);
+            if (profile.serverList.getServer(serverHandle) != null) {
+              profile.serverList.getServer(serverHandle)?.updateDescription(
+                  serverDesc);
+
+              Provider
+                  .of<FlwtchState>(context, listen: false)
+                  .cwtch
+                  .SetConversationAttribute(profile.onion, profile.serverList
+                  .getServer(serverHandle)
+                  !.identifier, "server.description", serverDesc);
+            }
           });
           Navigator.of(context).pop();
         });

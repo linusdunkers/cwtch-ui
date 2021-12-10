@@ -84,7 +84,7 @@ class _RemoteServerViewState extends State<RemoteServerView> {
                           labelText: AppLocalizations.of(context)!.fieldDescriptionLabel,
                           icon: Icon(Icons.save),
                           onPressed: () {
-                            Provider.of<FlwtchState>(context, listen: false).cwtch.SetContactAttribute(profile.onion, serverInfoState.onion, "local.server.description", ctrlrDesc.text);
+                            Provider.of<FlwtchState>(context, listen: false).cwtch.SetConversationAttribute(profile.onion, serverInfoState.identifier, "server.description", ctrlrDesc.text);
                             serverInfoState.updateDescription(ctrlrDesc.text);
                           },
                         ),

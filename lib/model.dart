@@ -292,7 +292,7 @@ class ProfileInfoState extends ChangeNotifier {
       List<dynamic> servers = jsonDecode(serversJson);
       this._servers.replace(servers.map((server) {
         // TODO Keys...
-        return RemoteServerInfoState(onion: server["onion"], description: server["description"], status: server["status"]);
+        return RemoteServerInfoState(onion: server["onion"], identifier: server["identifier"], description: server["description"], status: server["status"]);
       }));
 
       this._contacts.contacts.forEach((contact) {

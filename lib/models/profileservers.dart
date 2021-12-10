@@ -67,11 +67,12 @@ class ProfileServerListState extends ChangeNotifier {
 
 class RemoteServerInfoState extends ChangeNotifier {
   final String onion;
+  final int identifier;
   String status;
   String description;
   List<ContactInfoState> _groups = [];
 
-  RemoteServerInfoState({required this.onion, required this.description, required this.status});
+  RemoteServerInfoState({required this.onion, required this.identifier, required this.description, required this.status});
   
   void updateDescription(String newDescription) {
     this.description = newDescription;
