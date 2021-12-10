@@ -166,7 +166,7 @@ class CwtchNotifier {
         var contact = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(conversation);
         // We return -1 for protocol message acks if there is no message
         if (messageID == -1) break;
-        var key = contact!.getMessageKeyOrFail(conversation, messageID, contact.lastMessageTime);
+        var key = contact!.getMessageKeyOrFail(conversation, messageID);
         if (key == null) break;
         try {
           var message = Provider.of<MessageMetadata>(key.currentContext!, listen: false);
@@ -217,7 +217,8 @@ class CwtchNotifier {
             notificationManager.notify("New Message From Group!");
           }
         } else {
-          // This is not dealt with by IndexedAcknowledgment
+          // This is dealt with by IndexedAcknowledgment
+          EnvironmentConfig.debugLog("new message from group from yourself - this should not happen");
         }
         break;
       case "SendMessageToPeerError":
@@ -226,7 +227,7 @@ class CwtchNotifier {
       case "IndexedFailure":
         var contact = profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(data["RemotePeer"]);
         var idx = int.parse(data["Index"]);
-        var key = contact?.getMessageKeyOrFail(contact.identifier, idx, contact.lastMessageTime);
+        var key = contact?.getMessageKeyOrFail(contact.identifier, idx);
         if (key != null) {
           var message = Provider.of<MessageMetadata>(key.currentContext!, listen: false);
           message.error = true;
@@ -301,7 +302,6 @@ class CwtchNotifier {
         break;
       case "ServerStateChange":
         // Update the Server Cache
-        //EnvironmentConfig.debugLog("server state changes $data");
         profileCN.getProfile(data["ProfileOnion"])?.updateServerStatusCache(data["GroupServer"], data["ConnectionState"]);
         profileCN.getProfile(data["ProfileOnion"])?.contactList.contacts.forEach((contact) {
           if (contact.isGroup == true && contact.server == data["GroupServer"]) {

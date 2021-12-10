@@ -30,7 +30,6 @@ import android.os.Build
 import android.os.Environment
 import android.database.Cursor
 import android.provider.MediaStore
-import cwtch.Cwtch
 
 class MainActivity: FlutterActivity() {
     override fun provideSplashScreen(): SplashScreen? = SplashView()
@@ -148,11 +147,6 @@ class MainActivity: FlutterActivity() {
             // that we can divert this method call to ReconnectCwtchForeground instead if so.
             val works = WorkManager.getInstance(this).getWorkInfosByTag(WORKER_TAG).get()
             for (workInfo in works) {
-                Log.i("handleCwtch:WorkManager", "$workInfo")
-                if (!workInfo.tags.contains(uniqueTag)) {
-                    Log.i("handleCwtch:WorkManager", "canceling ${workInfo.id} bc tags don't include $uniqueTag")
-                    WorkManager.getInstance(this).cancelWorkById(workInfo.id)
-                }
                 WorkManager.getInstance(this).cancelWorkById(workInfo.id)
             }
             WorkManager.getInstance(this).pruneWork()

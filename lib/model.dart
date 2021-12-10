@@ -667,9 +667,8 @@ class ContactInfoState extends ChangeNotifier {
     }
   }
 
-  GlobalKey<MessageRowState> getMessageKey(int conversation, int message, DateTime lastread) {
-    String index = "c: " + conversation.toString() + " m:" + message.toString(); //+ " lr:" +lastMessageTime.toIso8601String();
-    //EnvironmentConfig.debugLog("looked up key $index");
+  GlobalKey<MessageRowState> getMessageKey(int conversation, int message) {
+    String index = "c: " + conversation.toString() + " m:" + message.toString();
     if (keys[index] == null) {
       keys[index] = GlobalKey<MessageRowState>();
     }
@@ -677,8 +676,8 @@ class ContactInfoState extends ChangeNotifier {
     return ret;
   }
 
-  GlobalKey<MessageRowState>? getMessageKeyOrFail(int conversation, int message, DateTime lastread) {
-    String index = "c: " + conversation.toString() + " m:" + message.toString(); // + " lr:" +lastMessageTime.toIso8601String();
+  GlobalKey<MessageRowState>? getMessageKeyOrFail(int conversation, int message) {
+    String index = "c: " + conversation.toString() + " m:" + message.toString();
 
     if (keys[index] == null) {
       return null;

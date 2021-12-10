@@ -84,7 +84,7 @@ class _MessageListState extends State<MessageList> {
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               var message = snapshot.data as Message;
-                              var key = Provider.of<ContactInfoState>(outerContext, listen: false).getMessageKey(contactHandle, message.getMetadata().messageID, DateTime.now());
+                              var key = Provider.of<ContactInfoState>(outerContext, listen: false).getMessageKey(contactHandle, message.getMetadata().messageID);
                               return message.getWidget(context, key);
                             } else {
                               return MessageLoadingBubble();

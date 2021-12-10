@@ -133,10 +133,10 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                                 notificationManager.notify(dlID, newNotification);
                             }
                         } catch (e: Exception) {
-                            Log.i("FlwtchWorker->FileDownloadProgressUpdate", e.toString() + " :: " + e.getStackTrace());
+                            Log.d("FlwtchWorker->FileDownloadProgressUpdate", e.toString() + " :: " + e.getStackTrace());
                         }
                     } else if (evt.EventType == "FileDownloaded") {
-                        Log.i("FlwtchWorker", "file downloaded!");
+                        Log.d("FlwtchWorker", "file downloaded!");
                         val data = JSONObject(evt.Data);
                         val tempFile = data.getString("TempFile");
                         val fileKey = data.getString("FileKey");
@@ -147,7 +147,7 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                             val targetUri = Uri.parse(filePath);
                             val os = this.applicationContext.getContentResolver().openOutputStream(targetUri);
                             val bytesWritten = Files.copy(sourcePath, os);
-                            Log.i("FlwtchWorker", "copied " + bytesWritten.toString() + " bytes");
+                            Log.d("FlwtchWorker", "copied " + bytesWritten.toString() + " bytes");
                             if (bytesWritten != 0L) {
                                 os?.flush();
                                 os?.close();
@@ -184,7 +184,7 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                 val profile = (a.get("ProfileOnion") as? String) ?: ""
                 val conversation = a.getInt("conversation").toLong()
                 val indexI = a.getInt("index").toLong()
-                Log.i("FlwtchWorker", "Cwtch GetMessage " + profile + " " + conversation.toString() + " " + indexI.toString())
+                Log.d("FlwtchWorker", "Cwtch GetMessage " + profile + " " + conversation.toString() + " " + indexI.toString())
                 return Result.success(Data.Builder().putString("result", Cwtch.getMessage(profile, conversation, indexI)).build())
             }
             "GetMessageByID" -> {
