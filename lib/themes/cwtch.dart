@@ -56,7 +56,7 @@ class CwtchDark extends OpaqueThemeType {
   get sendHintTextColor => mauvePurple;
   get hilightElementColor => purple;
   get defaultButtonColor => accent; //hotPink;
-  get defaultButtonActiveColor => pink;
+  //get defaultButtonActiveColor => pink;
   get defaultButtonTextColor => whiteishPurple;
   get defaultButtonDisabledColor => lightGrey;
   get defaultButtonDisabledTextColor => darkGreyPurple;
@@ -102,7 +102,7 @@ class CwtchLight extends OpaqueThemeType {
   get sendHintTextColor  => purple;
   get hilightElementColor => purple; //darkPurple; // todo shouldn't be this, too dark, makes font unreadable
   get defaultButtonColor => accent; // hotPink;
-  get defaultButtonActiveColor => pink; // todo: lighten in light, darken in dark
+  //get defaultButtonActiveColor => pink; // todo: lighten in light, darken in dark
   get defaultButtonTextColor => whitePurple; // ?
   get defaultButtonDisabledColor => softGrey;
   get textfieldBackgroundColor => purple;

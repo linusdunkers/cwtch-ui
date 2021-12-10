@@ -65,11 +65,6 @@ class Settings extends ChangeNotifier {
   handleUpdate(dynamic settings) {
     // Set Theme and notify listeners
     this.setTheme(settings["Theme"], settings["ThemeMode"] ?? mode_dark);
-    /*if (settings["Theme"] == "light") {
-      this.setLight();
-    } else {
-      this.setDark();
-    }*/
 
     // Set Locale and notify listeners
     switchLocale(Locale(settings["Locale"]));

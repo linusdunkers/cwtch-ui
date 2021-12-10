@@ -68,7 +68,7 @@ abstract class OpaqueThemeType {
   get sendHintTextColor => red;
 
   get defaultButtonColor => red;
-  get defaultButtonActiveColor => mode == mode_light ? lighten(defaultButtonColor) : darken(defaultButtonColor);
+  get defaultButtonActiveColor => mode == mode_light ? darken(defaultButtonColor) : lighten(defaultButtonColor);
   get defaultButtonTextColor => red;
   get defaultButtonDisabledColor => red;
   get textfieldBackgroundColor => red;

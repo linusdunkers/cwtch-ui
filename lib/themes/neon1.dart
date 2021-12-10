@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'dart:core';
 
+import 'package:cwtch/themes/cwtch.dart';
 import 'package:flutter/material.dart';
 
 import 'opaque.dart';
@@ -34,7 +35,7 @@ OpaqueThemeType GetNeon1Theme(String mode) {
   }
 }
 
-class Neon1Dark extends OpaqueThemeType {
+class Neon1Dark extends CwtchDark {
   static final Color background = Color(0xFF290826);
   static final Color header = Color(0xFF290826);
   static final Color userBubble = Color(0xFFD20070);
@@ -49,19 +50,18 @@ class Neon1Dark extends OpaqueThemeType {
 
   get backgroundMainColor => background; // darkGreyPurple;
   get backgroundPaneColor => header; //darkGreyPurple;
-  get backgroundHilightElementColor => deepPurple;
+  //get backgroundHilightElementColor => deepPurple;
   get mainTextColor => font; //whiteishPurple;
-  get sendHintTextColor => mauvePurple;
-  get hilightElementColor => purple;
+  //get sendHintTextColor => mauvePurple;
+  //get hilightElementColor => purple;
   get defaultButtonColor => accent; //hotPink;
-  get defaultButtonActiveColor => pink;
-  get defaultButtonTextColor => whiteishPurple;
+  /*get defaultButtonTextColor => whiteishPurple;
   get defaultButtonDisabledColor => lightGrey;
   get defaultButtonDisabledTextColor => darkGreyPurple;
   get textfieldBackgroundColor => deepPurple;
-  get textfieldBorderColor => deepPurple;
+  get textfieldBorderColor => deepPurple;*/
   get textfieldHintColor => mainTextColor; //TODO pick
-  get textfieldErrorColor => hotPink;
+ /* get textfieldErrorColor => hotPink;
   get scrollbarDefaultColor => purple;
   get portraitBackgroundColor => deepPurple;
   get portraitOnlineBorderColor => whiteishPurple;
@@ -72,7 +72,7 @@ class Neon1Dark extends OpaqueThemeType {
   get portraitContactBadgeTextColor => whiteishPurple;
   get portraitProfileBadgeColor => mauvePurple;
   get portraitProfileBadgeTextColor => darkGreyPurple;
-  get dropShadowColor => mauvePurple;
+  get dropShadowColor => mauvePurple;*/
   get toolbarIconColor => settings; //whiteishPurple;
   get messageFromMeBackgroundColor => userBubble; //  mauvePurple;
   get messageFromMeTextColor => font; //whiteishPurple;
@@ -80,7 +80,7 @@ class Neon1Dark extends OpaqueThemeType {
   get messageFromOtherTextColor => font; //whiteishPurple;
 }
 
-class Neon1Light extends OpaqueThemeType {
+class Neon1Light extends CwtchLight {
   static final Color background = Color(0xFFFFFDFF);
   static final Color header = Color(0xFFFF94C2);
   static final Color userBubble = Color(0xFFFF94C2);
@@ -95,29 +95,28 @@ class Neon1Light extends OpaqueThemeType {
 
   get backgroundMainColor => background; //whitePurple;
   get backgroundPaneColor => header; //softPurple;
-  get backgroundHilightElementColor => softPurple;
+  //get backgroundHilightElementColor => softPurple;
   get mainTextColor => settings;
-  get sendHintTextColor  => purple;
-  get hilightElementColor => purple; //darkPurple; // todo shouldn't be this, too dark, makes font unreadable
+  //get sendHintTextColor  => purple;
+  //get hilightElementColor => purple; //darkPurple; // todo shouldn't be this, too dark, makes font unreadable
   get defaultButtonColor => accent; // hotPink;
-  get defaultButtonActiveColor => pink; // todo: lighten in light, darken in dark
-  get defaultButtonTextColor => whitePurple; // ?
+  /*get defaultButtonTextColor => whitePurple; // ?
   get defaultButtonDisabledColor => softGrey;
   get textfieldBackgroundColor => purple;
-  get textfieldBorderColor => purple;
+  get textfieldBorderColor => purple; */
   get textfieldHintColor => font; //TODO pick
-  get textfieldErrorColor => hotPink;
+  //get textfieldErrorColor => hotPink;
   get scrollbarDefaultColor => accent;
-  get portraitBackgroundColor => softPurple;
+  /*get portraitBackgroundColor => softPurple;
   get portraitOnlineBorderColor => greyPurple;
   get portraitOfflineBorderColor => greyPurple;
   get portraitBlockedBorderColor => softGrey;
-  get portraitBlockedTextColor => softGrey;
+  get portraitBlockedTextColor => softGrey;*/
   get portraitContactBadgeColor => accent;
-  get portraitContactBadgeTextColor => whitePurple;
+  /*get portraitContactBadgeTextColor => whitePurple;
   get portraitProfileBadgeColor => brightPurple;
   get portraitProfileBadgeTextColor => whitePurple;
-  get dropShadowColor => purple;
+  get dropShadowColor => purple;*/
   get toolbarIconColor => settings; //darkPurple;
   get messageFromMeBackgroundColor => userBubble; //brightPurple;
   get messageFromMeTextColor => font; //mainTextColor;
