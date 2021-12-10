@@ -105,7 +105,7 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
                               height: 20,
                             ),
                             SwitchListTile(
-                              title: Text(AppLocalizations.of(context)!.blockBtn, style: TextStyle(color: settings.current().mainTextColor())),
+                              title: Text(AppLocalizations.of(context)!.blockBtn, style: TextStyle(color: settings.current().mainTextColor)),
                               value: Provider.of<ContactInfoState>(context).isBlocked,
                               onChanged: (bool blocked) {
                                 // Save local blocked status
@@ -137,14 +137,14 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
                                   Provider.of<FlwtchState>(context, listen: false).cwtch.SendProfileEvent(profileOnion, setPeerAttributeJson);
                                 }
                               },
-                              activeTrackColor: settings.theme.defaultButtonActiveColor(),
-                              inactiveTrackColor: settings.theme.defaultButtonDisabledColor(),
-                              secondary: Icon(CwtchIcons.block_peer, color: settings.current().mainTextColor()),
+                              activeTrackColor: settings.theme.defaultButtonActiveColor,
+                              inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
+                              secondary: Icon(CwtchIcons.block_peer, color: settings.current().mainTextColor),
                             ),
                             ListTile(
-                                title: Text(AppLocalizations.of(context)!.savePeerHistory, style: TextStyle(color: settings.current().mainTextColor())),
+                                title: Text(AppLocalizations.of(context)!.savePeerHistory, style: TextStyle(color: settings.current().mainTextColor)),
                                 subtitle: Text(AppLocalizations.of(context)!.savePeerHistoryDescription),
-                                leading: Icon(CwtchIcons.peer_history, color: settings.current().mainTextColor()),
+                                leading: Icon(CwtchIcons.peer_history, color: settings.current().mainTextColor),
                                 trailing: DropdownButton(
                                     value: Provider.of<ContactInfoState>(context).savePeerHistory == "DefaultDeleteHistory"
                                         ? AppLocalizations.of(context)!.dontSavePeerHistory

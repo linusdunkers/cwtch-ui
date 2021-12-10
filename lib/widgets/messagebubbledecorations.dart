@@ -26,7 +26,7 @@ class _MessageBubbleDecoration extends State<MessageBubbleDecoration> {
           children: [
             Text(widget.prettyDate,
                 style:
-                    TextStyle(fontSize: 9.0, color: widget.fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor() : Provider.of<Settings>(context).theme.messageFromOtherTextColor()),
+                    TextStyle(fontSize: 9.0, color: widget.fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor),
                 textAlign: widget.fromMe ? TextAlign.right : TextAlign.left),
             !widget.fromMe
                 ? SizedBox(width: 1, height: 1)
@@ -35,14 +35,14 @@ class _MessageBubbleDecoration extends State<MessageBubbleDecoration> {
                     child: widget.ackd == true
                         ? Tooltip(
                             message: AppLocalizations.of(context)!.acknowledgedLabel,
-                            child: Icon(Icons.check_circle_outline, color: Provider.of<Settings>(context).theme.messageFromMeTextColor(), size: 16))
+                            child: Icon(Icons.check_circle_outline, color: Provider.of<Settings>(context).theme.messageFromMeTextColor, size: 16))
                         : (widget.errored == true
                             ? Tooltip(
                                 message: AppLocalizations.of(context)!.couldNotSendMsgError,
-                                child: Icon(Icons.error_outline, color: Provider.of<Settings>(context).theme.messageFromMeTextColor(), size: 16))
+                                child: Icon(Icons.error_outline, color: Provider.of<Settings>(context).theme.messageFromMeTextColor, size: 16))
                             : Tooltip(
                                 message: AppLocalizations.of(context)!.pendingLabel,
-                                child: Icon(Icons.hourglass_bottom_outlined, color: Provider.of<Settings>(context).theme.messageFromMeTextColor(), size: 16))))
+                                child: Icon(Icons.hourglass_bottom_outlined, color: Provider.of<Settings>(context).theme.messageFromMeTextColor, size: 16))))
           ],
         ));
   }

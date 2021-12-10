@@ -56,7 +56,7 @@ class InvitationBubbleState extends State<InvitationBubble> {
     var wdgSender = Center(
         widthFactor: 1,
         child: SelectableText(senderDisplayStr + '\u202F',
-            style: TextStyle(fontSize: 9.0, color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor() : Provider.of<Settings>(context).theme.messageFromOtherTextColor())));
+            style: TextStyle(fontSize: 9.0, color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor)));
 
     // If we receive an invite for ourselves, treat it as a bug. The UI no longer allows this so it could have only come from
     // some kind of malfeasance.
@@ -96,9 +96,9 @@ class InvitationBubbleState extends State<InvitationBubble> {
           widthFactor: 1.0,
           child: Container(
               decoration: BoxDecoration(
-                color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeBackgroundColor() : Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor(),
+                color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeBackgroundColor : Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor,
                 border:
-                    Border.all(color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeBackgroundColor() : Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor(), width: 1),
+                    Border.all(color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeBackgroundColor : Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor, width: 1),
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(borderRadiousEh),
                   topRight: Radius.circular(borderRadiousEh),
@@ -149,7 +149,7 @@ class InvitationBubbleState extends State<InvitationBubble> {
       SelectableText(
         chrome + '\u202F',
         style: TextStyle(
-          color: Provider.of<Settings>(context).theme.messageFromMeTextColor(),
+          color: Provider.of<Settings>(context).theme.messageFromMeTextColor,
         ),
         textAlign: TextAlign.left,
         maxLines: 2,
@@ -158,7 +158,7 @@ class InvitationBubbleState extends State<InvitationBubble> {
       SelectableText(
         targetName + '\u202F',
         style: TextStyle(
-          color: Provider.of<Settings>(context).theme.messageFromMeTextColor(),
+          color: Provider.of<Settings>(context).theme.messageFromMeTextColor,
         ),
         textAlign: TextAlign.left,
         maxLines: 2,
@@ -173,7 +173,7 @@ class InvitationBubbleState extends State<InvitationBubble> {
       SelectableText(
         chrome + '\u202F',
         style: TextStyle(
-          color: Provider.of<Settings>(context).theme.messageFromOtherTextColor(),
+          color: Provider.of<Settings>(context).theme.messageFromOtherTextColor,
         ),
         textAlign: TextAlign.left,
         textWidthBasis: TextWidthBasis.longestLine,
@@ -181,7 +181,7 @@ class InvitationBubbleState extends State<InvitationBubble> {
       ),
       SelectableText(
         targetName + '\u202F',
-        style: TextStyle(color: Provider.of<Settings>(context).theme.messageFromOtherTextColor()),
+        style: TextStyle(color: Provider.of<Settings>(context).theme.messageFromOtherTextColor),
         textAlign: TextAlign.left,
         maxLines: 2,
         textWidthBasis: TextWidthBasis.longestLine,

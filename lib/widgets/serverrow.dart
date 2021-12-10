@@ -29,7 +29,7 @@ class _ServerRowState extends State<ServerRow> {
           Padding(
               padding: const EdgeInsets.all(6.0), //border size
               child: Icon(CwtchIcons.dns_24px,
-                  color: server.running ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor() : Provider.of<Settings>(context).theme.portraitOfflineBorderColor(), size: 64)),
+                  color: server.running ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor : Provider.of<Settings>(context).theme.portraitOfflineBorderColor, size: 64)),
           Expanded(
               child: Column(
             children: [
@@ -38,7 +38,7 @@ class _ServerRowState extends State<ServerRow> {
                 semanticsLabel: server.description,
                 style: Provider.of<FlwtchState>(context)
                     .biggerFont
-                    .apply(color: server.running ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor() : Provider.of<Settings>(context).theme.portraitOfflineBorderColor()),
+                    .apply(color: server.running ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor : Provider.of<Settings>(context).theme.portraitOfflineBorderColor),
                 softWrap: true,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -49,7 +49,7 @@ class _ServerRowState extends State<ServerRow> {
                     server.onion,
                     softWrap: true,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(color: server.running ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor() : Provider.of<Settings>(context).theme.portraitOfflineBorderColor()),
+                    style: TextStyle(color: server.running ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor : Provider.of<Settings>(context).theme.portraitOfflineBorderColor),
                   )))
             ],
           )),
@@ -58,7 +58,7 @@ class _ServerRowState extends State<ServerRow> {
           IconButton(
             enableFeedback: true,
             tooltip: AppLocalizations.of(context)!.copyServerKeys,
-            icon: Icon(CwtchIcons.address_copy_2, color: Provider.of<Settings>(context).current().mainTextColor()),
+            icon: Icon(CwtchIcons.address_copy_2, color: Provider.of<Settings>(context).current().mainTextColor),
             onPressed: () {
               Clipboard.setData(new ClipboardData(text: server.serverBundle));
             },
@@ -68,7 +68,7 @@ class _ServerRowState extends State<ServerRow> {
           IconButton(
             enableFeedback: true,
             tooltip: AppLocalizations.of(context)!.editServerTitle,
-            icon: Icon(Icons.create, color: Provider.of<Settings>(context).current().mainTextColor()),
+            icon: Icon(Icons.create, color: Provider.of<Settings>(context).current().mainTextColor),
             onPressed: () {
               _pushEditServer(server);
             },

@@ -5,16 +5,14 @@ import 'package:flutter/material.dart';
 
 import 'opaque.dart';
 
-final cwtch_name = "Cwtch"; // todo translate
-final cwtch_theme = "cwtch";
+final neon1_theme = "neon1";
+final neon1_name = "Neon1"; //Todo translate
 
 final Color darkGreyPurple = Color(0xFF281831);
 final Color deepPurple = Color(0xFF422850);
 final Color mauvePurple = Color(0xFF8E64A5);
 final Color whiteishPurple = Color(0xFFE3DFE4);
 final Color lightGrey = Color(0xFF9E9E9E);
-final Color softGreen = Color(0xFFA0FFB0);
-final Color softRed = Color(0xFFFFA0B0);
 
 final Color whitePurple = Color(0xFFFFFDFF);
 final Color softPurple = Color(0xFFFDF3FC);
@@ -28,25 +26,25 @@ final Color softGrey = Color(0xFFB3B6B3); // not in new theme: blocked
 //static final Color softGreen = Color(0xFFA0FFB0);
 //static final Color softRed = Color(0xFFFFA0B0);
 
-OpaqueThemeType GetCwtchTheme(String mode) {
+OpaqueThemeType GetNeon1Theme(String mode) {
   if (mode == mode_dark) {
-    return CwtchDark();
+    return Neon1Dark();
   } else {
-    return CwtchLight();
+    return Neon1Light();
   }
 }
 
-class CwtchDark extends OpaqueThemeType {
-  static final Color background = darkGreyPurple;
-  static final Color header = darkGreyPurple;
-  static final Color userBubble = mauvePurple;
-  static final Color peerBubble = deepPurple;
-  static final Color font = whiteishPurple;
-  static final Color settings = whiteishPurple;
-  static final Color accent = hotPink;
+class Neon1Dark extends OpaqueThemeType {
+  static final Color background = Color(0xFF290826);
+  static final Color header = Color(0xFF290826);
+  static final Color userBubble = Color(0xFFD20070);
+  static final Color peerBubble = Color(0xFF26A9A4);
+  static final Color font = Color(0xFFFFFFFF);
+  static final Color settings = Color(0xFFFFFDFF);
+  static final Color accent = Color(0xFFA604FE);
 
-  get name => cwtch_name;
-  get theme => cwtch_theme;
+  get name => neon1_name;
+  get theme => neon1_theme;
   get mode => mode_dark;
 
   get backgroundMainColor => background; // darkGreyPurple;
@@ -82,17 +80,17 @@ class CwtchDark extends OpaqueThemeType {
   get messageFromOtherTextColor => font; //whiteishPurple;
 }
 
-class CwtchLight extends OpaqueThemeType {
-  static final Color background = whitePurple;
-  static final Color header = softPurple;
-  static final Color userBubble = purple;
-  static final Color peerBubble = softPurple;
-  static final Color font = darkPurple;
-  static final Color settings = darkPurple;
-  static final Color accent = hotPink;
+class Neon1Light extends OpaqueThemeType {
+  static final Color background = Color(0xFFFFFDFF);
+  static final Color header = Color(0xFFFF94C2);
+  static final Color userBubble = Color(0xFFFF94C2);
+  static final Color peerBubble = Color(0xFFE7F6F6);
+  static final Color font = Color(0xFF290826);
+  static final Color settings = Color(0xFF290826);
+  static final Color accent = Color(0xFFA604FE);
 
-  get name => cwtch_name;
-  get theme => cwtch_theme;
+  get name => neon1_name;
+  get theme => neon1_theme;
   get mode => mode_light;
 
   get backgroundMainColor => background; //whitePurple;

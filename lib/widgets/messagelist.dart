@@ -35,15 +35,15 @@ class _MessageListState extends State<MessageList> {
 
     return RepaintBoundary(
         child: Container(
-            color: Provider.of<Settings>(context).theme.backgroundMainColor(),
+            color: Provider.of<Settings>(context).theme.backgroundMainColor,
             child: Column(children: [
       Visibility(
           visible: showMessageWarning,
           child: Container(
               padding: EdgeInsets.all(5.0),
-              color: Provider.of<Settings>(context).theme.defaultButtonActiveColor(),
+              color: Provider.of<Settings>(context).theme.defaultButtonActiveColor,
               child: DefaultTextStyle(
-                style: TextStyle(color: Provider.of<Settings>(context).theme.defaultButtonTextColor()),
+                style: TextStyle(color: Provider.of<Settings>(context).theme.defaultButtonTextColor),
                 child: showSyncing
                     ? Text(AppLocalizations.of(context)!.serverNotSynced, textAlign: TextAlign.center)
                     : showOfflineWarning
@@ -66,7 +66,7 @@ class _MessageListState extends State<MessageList> {
                           fit: BoxFit.scaleDown,
                           alignment: Alignment.center,
                           image: AssetImage("assets/core/negative_heart_512px.png"),
-                          colorFilter: ColorFilter.mode(Provider.of<Settings>(context).theme.hilightElementColor(), BlendMode.srcIn))),
+                          colorFilter: ColorFilter.mode(Provider.of<Settings>(context).theme.hilightElementColor, BlendMode.srcIn))),
               // Don't load messages for syncing server...
               child: loadMessages
                   ? ScrollablePositionedList.builder(

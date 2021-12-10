@@ -33,10 +33,10 @@ void main() {
 
     Widget testWidget = ProfileImage(
       imagePath: "profiles/001-centaur.png",
-      badgeTextColor: settingsEnglishDark.theme.portraitProfileBadgeTextColor(),
-      badgeColor: settingsEnglishDark.theme.portraitProfileBadgeColor(),
+      badgeTextColor: settingsEnglishDark.theme.portraitProfileBadgeTextColor,
+      badgeColor: settingsEnglishDark.theme.portraitProfileBadgeColor,
       maskOut: false,
-      border: settingsEnglishDark.theme.portraitOfflineBorderColor(),
+      border: settingsEnglishDark.theme.portraitOfflineBorderColor,
       diameter: 64.0,
       badgeCount: 10,
     );

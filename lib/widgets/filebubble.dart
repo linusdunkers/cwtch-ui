@@ -61,7 +61,7 @@ class FileBubbleState extends State<FileBubble> {
     var wdgSender = Center(
         widthFactor: 1,
         child: SelectableText(senderDisplayStr + '\u202F',
-            style: TextStyle(fontSize: 9.0, color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor() : Provider.of<Settings>(context).theme.messageFromOtherTextColor())));
+            style: TextStyle(fontSize: 9.0, color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor)));
 
     var wdgMessage = !showFileSharing
         ? Text(AppLocalizations.of(context)!.messageEnableFileSharing)
@@ -84,7 +84,7 @@ class FileBubbleState extends State<FileBubble> {
       } else {
         wdgDecorations = LinearProgressIndicator(
           value: Provider.of<ProfileInfoState>(context).downloadProgress(widget.fileKey()),
-          color: Provider.of<Settings>(context).theme.defaultButtonActiveColor(),
+          color: Provider.of<Settings>(context).theme.defaultButtonActiveColor,
         );
       }
     } else if (flagStarted) {
@@ -114,9 +114,9 @@ class FileBubbleState extends State<FileBubble> {
           widthFactor: 1.0,
           child: Container(
               decoration: BoxDecoration(
-                color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeBackgroundColor() : Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor(),
+                color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeBackgroundColor : Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor,
                 border:
-                    Border.all(color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeBackgroundColor() : Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor(), width: 1),
+                    Border.all(color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeBackgroundColor : Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor, width: 1),
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(borderRadiousEh),
                   topRight: Radius.circular(borderRadiousEh),
@@ -196,7 +196,7 @@ class FileBubbleState extends State<FileBubble> {
           SelectableText(
             chrome + '\u202F',
             style: TextStyle(
-              color: Provider.of<Settings>(context).theme.messageFromMeTextColor(),
+              color: Provider.of<Settings>(context).theme.messageFromMeTextColor,
             ),
             textAlign: TextAlign.left,
             maxLines: 2,
@@ -205,7 +205,7 @@ class FileBubbleState extends State<FileBubble> {
           SelectableText(
             fileName + '\u202F',
             style: TextStyle(
-              color: Provider.of<Settings>(context).theme.messageFromMeTextColor(),
+              color: Provider.of<Settings>(context).theme.messageFromMeTextColor,
               fontWeight: FontWeight.bold,
               overflow: TextOverflow.ellipsis,
             ),
@@ -216,7 +216,7 @@ class FileBubbleState extends State<FileBubble> {
           SelectableText(
             prettyBytes(fileSize) + '\u202F' + '\n',
             style: TextStyle(
-              color: Provider.of<Settings>(context).theme.messageFromMeTextColor(),
+              color: Provider.of<Settings>(context).theme.messageFromMeTextColor,
             ),
             textAlign: TextAlign.left,
             maxLines: 2,
@@ -225,7 +225,7 @@ class FileBubbleState extends State<FileBubble> {
         subtitle: SelectableText(
           'sha512: ' + rootHash + '\u202F',
           style: TextStyle(
-            color: Provider.of<Settings>(context).theme.messageFromMeTextColor(),
+            color: Provider.of<Settings>(context).theme.messageFromMeTextColor,
             fontSize: 10,
             fontFamily: "monospace",
           ),
@@ -233,7 +233,7 @@ class FileBubbleState extends State<FileBubble> {
           maxLines: 4,
           textWidthBasis: TextWidthBasis.parent,
         ),
-        leading: Icon(Icons.attach_file, size: 32, color: Provider.of<Settings>(context).theme.messageFromMeTextColor()));
+        leading: Icon(Icons.attach_file, size: 32, color: Provider.of<Settings>(context).theme.messageFromMeTextColor));
   }
 
   // Construct an file chrome
@@ -244,7 +244,7 @@ class FileBubbleState extends State<FileBubble> {
         SelectableText(
           chrome + '\u202F',
           style: TextStyle(
-            color: Provider.of<Settings>(context).theme.messageFromOtherTextColor(),
+            color: Provider.of<Settings>(context).theme.messageFromOtherTextColor,
           ),
           textAlign: TextAlign.left,
           maxLines: 2,
@@ -253,7 +253,7 @@ class FileBubbleState extends State<FileBubble> {
         SelectableText(
           fileName + '\u202F',
           style: TextStyle(
-            color: Provider.of<Settings>(context).theme.messageFromOtherTextColor(),
+            color: Provider.of<Settings>(context).theme.messageFromOtherTextColor,
             fontWeight: FontWeight.bold,
             overflow: TextOverflow.ellipsis,
           ),
@@ -264,7 +264,7 @@ class FileBubbleState extends State<FileBubble> {
         SelectableText(
           AppLocalizations.of(context)!.labelFilesize + ': ' + prettyBytes(fileSize) + '\u202F' + '\n',
           style: TextStyle(
-            color: Provider.of<Settings>(context).theme.messageFromOtherTextColor(),
+            color: Provider.of<Settings>(context).theme.messageFromOtherTextColor,
           ),
           textAlign: TextAlign.left,
           maxLines: 2,
@@ -273,7 +273,7 @@ class FileBubbleState extends State<FileBubble> {
       subtitle: SelectableText(
         'sha512: ' + rootHash + '\u202F',
         style: TextStyle(
-          color: Provider.of<Settings>(context).theme.messageFromMeTextColor(),
+          color: Provider.of<Settings>(context).theme.messageFromMeTextColor,
           fontSize: 10,
           fontFamily: "monospace",
         ),
@@ -281,13 +281,13 @@ class FileBubbleState extends State<FileBubble> {
         maxLines: 4,
         textWidthBasis: TextWidthBasis.parent,
       ),
-      leading: Icon(Icons.attach_file, size: 32, color: Provider.of<Settings>(context).theme.messageFromOtherTextColor()),
+      leading: Icon(Icons.attach_file, size: 32, color: Provider.of<Settings>(context).theme.messageFromOtherTextColor),
       trailing: Visibility(
           visible: speed != "0 B/s",
           child: SelectableText(
             speed + '\u202F',
             style: TextStyle(
-              color: Provider.of<Settings>(context).theme.messageFromMeTextColor(),
+              color: Provider.of<Settings>(context).theme.messageFromMeTextColor,
             ),
             textAlign: TextAlign.left,
             maxLines: 1,

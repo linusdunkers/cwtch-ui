@@ -37,15 +37,9 @@ class Settings extends ChangeNotifier {
   bool blockUnknownConnections = false;
   bool streamerMode = false;
 
-  /// Set the dark theme.
-  void setDark() {
-    theme = OpaqueDark();
-    notifyListeners();
-  }
 
-  /// Set the Light theme.
-  void setLight() {
-    theme = OpaqueLight();
+  void setTheme(String themeId, String mode) {
+    theme = getTheme(themeId, mode);
     notifyListeners();
   }
 
@@ -70,11 +64,12 @@ class Settings extends ChangeNotifier {
   /// be sent to the function and new settings will be instantiated based on the contents.
   handleUpdate(dynamic settings) {
     // Set Theme and notify listeners
-    if (settings["Theme"] == "light") {
+    this.setTheme(settings["Theme"], settings["ThemeMode"] ?? mode_dark);
+    /*if (settings["Theme"] == "light") {
       this.setLight();
     } else {
       this.setDark();
-    }
+    }*/
 
     // Set Locale and notify listeners
     switchLocale(Locale(settings["Locale"]));
@@ -230,11 +225,11 @@ class Settings extends ChangeNotifier {
   /// Convert this Settings object to a JSON representation for serialization on the
   /// event bus.
   dynamic asJson() {
-    var themeString = theme.identifier();
 
     return {
       "Locale": this.locale.languageCode,
-      "Theme": themeString,
+      "Theme": theme.theme,
+      "ThemeMode": theme.mode,
       "PreviousPid": -1,
       "BlockUnknownConnections": blockUnknownConnections,
       "StreamerMode": streamerMode,

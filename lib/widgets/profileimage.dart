@@ -28,11 +28,11 @@ class _ProfileImageState extends State<ProfileImage> {
       filterQuality: FilterQuality.medium,
       // We need some theme specific blending here...we might want to consider making this a theme level attribute
       colorBlendMode: !widget.maskOut
-          ? Provider.of<Settings>(context).theme.identifier() == "dark"
+          ? Provider.of<Settings>(context).theme.mode == mode_dark
               ? BlendMode.softLight
               : BlendMode.darken
           : BlendMode.srcOut,
-      color: Provider.of<Settings>(context).theme.portraitBackgroundColor(),
+      color: Provider.of<Settings>(context).theme.portraitBackgroundColor,
       isAntiAlias: true,
       width: widget.diameter,
       height: widget.diameter,

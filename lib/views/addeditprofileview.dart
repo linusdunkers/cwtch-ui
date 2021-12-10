@@ -91,7 +91,7 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                       imagePath: Provider.of<ProfileInfoState>(context).imagePath,
                                       diameter: 120,
                                       maskOut: false,
-                                      border: theme.theme.portraitOnlineBorderColor(),
+                                      border: theme.theme.portraitOnlineBorderColor,
                                       badgeTextColor: Colors.red,
                                       badgeColor: Colors.red,
                                     )
@@ -145,13 +145,13 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                   child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
                                     Checkbox(
                                       value: usePassword,
-                                      fillColor: MaterialStateProperty.all(theme.current().defaultButtonColor()),
-                                      activeColor: theme.current().defaultButtonActiveColor(),
+                                      fillColor: MaterialStateProperty.all(theme.current().defaultButtonColor),
+                                      activeColor: theme.current().defaultButtonActiveColor,
                                       onChanged: _handleSwitchPassword,
                                     ),
                                     Text(
                                       AppLocalizations.of(context)!.radioUsePassword,
-                                      style: TextStyle(color: theme.current().mainTextColor()),
+                                      style: TextStyle(color: theme.current().mainTextColor),
                                     ),
                                     SizedBox(
                                       height: 20,

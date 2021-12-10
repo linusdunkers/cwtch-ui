@@ -33,6 +33,7 @@ class _AddEditServerViewState extends State<AddEditServerView> {
   final ctrlrOnion = TextEditingController(text: "");
 
   late bool usePassword;
+
   //late bool deleted;
 
   @override

@@ -25,7 +25,7 @@ import 'dart:io' show Platform, exit;
 import 'themes/opaque.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-var globalSettings = Settings(Locale("en", ''), OpaqueDark());
+var globalSettings = Settings(Locale("en", ''), CwtchDark());
 var globalErrorHandler = ErrorHandler();
 var globalTorStatus = TorStatus();
 var globalAppState = AppState();
