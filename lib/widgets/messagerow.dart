@@ -15,6 +15,7 @@ import '../settings.dart';
 
 class MessageRow extends StatefulWidget {
   final Widget child;
+
   MessageRow(this.child, {Key? key}) : super(key: key);
 
   @override
@@ -28,9 +29,12 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
   late Alignment _dragAlignment = Alignment.center;
   Alignment _dragAffinity = Alignment.center;
 
+  late int index;
+
   @override
   void initState() {
     super.initState();
+    index = Provider.of<MessageMetadata>(context, listen: false).messageID;
     _controller = AnimationController(vsync: this);
     _controller.addListener(() {
       setState(() {
@@ -41,15 +45,17 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
 
   @override
   void dispose() {
-    _controller.dispose();
+    if (_controller != null) {
+      _controller.dispose();
+    }
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     var fromMe = Provider.of<MessageMetadata>(context).senderHandle == Provider.of<ProfileInfoState>(context).onion;
-    var isContact = Provider.of<ProfileInfoState>(context).contactList.getContact(Provider.of<MessageMetadata>(context).senderHandle) != null;
-    var isBlocked = isContact ? Provider.of<ProfileInfoState>(context).contactList.getContact(Provider.of<MessageMetadata>(context).senderHandle)!.isBlocked : false;
+    var isContact = Provider.of<ProfileInfoState>(context).contactList.findContact(Provider.of<MessageMetadata>(context).senderHandle) != null;
+    var isBlocked = isContact ? Provider.of<ProfileInfoState>(context).contactList.findContact(Provider.of<MessageMetadata>(context).senderHandle)!.isBlocked : false;
     var actualMessage = Flexible(flex: 3, fit: FlexFit.loose, child: widget.child);
 
     _dragAffinity = fromMe ? Alignment.centerRight : Alignment.centerLeft;
@@ -60,7 +66,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
 
     var senderDisplayStr = "";
     if (!fromMe) {
-      ContactInfoState? contact = Provider.of<ProfileInfoState>(context).contactList.getContact(Provider.of<MessageMetadata>(context).senderHandle);
+      ContactInfoState? contact = Provider.of<ProfileInfoState>(context).contactList.findContact(Provider.of<MessageMetadata>(context).senderHandle);
       if (contact != null) {
         senderDisplayStr = contact.nickname;
       } else {
@@ -69,7 +75,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
     }
 
     Widget wdgIcons = Visibility(
-        visible: Provider.of<AppState>(context).hoveredIndex == Provider.of<MessageMetadata>(context).messageIndex,
+        visible: Provider.of<AppState>(context).hoveredIndex == Provider.of<MessageMetadata>(context).messageID,
         maintainSize: true,
         maintainAnimation: true,
         maintainState: true,
@@ -77,7 +83,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
         child: IconButton(
             tooltip: AppLocalizations.of(context)!.tooltipReplyToThisMessage,
             onPressed: () {
-              Provider.of<AppState>(context, listen: false).selectedIndex = Provider.of<MessageMetadata>(context, listen: false).messageIndex;
+              Provider.of<AppState>(context, listen: false).selectedIndex = Provider.of<MessageMetadata>(context, listen: false).messageID;
             },
             icon: Icon(Icons.reply, color: Provider.of<Settings>(context).theme.dropShadowColor())));
     Widget wdgSpacer = Flexible(child: SizedBox(width: 60, height: 10));
@@ -163,7 +169,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
         // For desktop...
         onHover: (event) {
           setState(() {
-            Provider.of<AppState>(context, listen: false).hoveredIndex = Provider.of<MessageMetadata>(context, listen: false).messageIndex;
+            Provider.of<AppState>(context, listen: false).hoveredIndex = Provider.of<MessageMetadata>(context, listen: false).messageID;
           });
         },
         onExit: (event) {
@@ -185,7 +191,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
             },
             onPanEnd: (details) {
               _runAnimation(details.velocity.pixelsPerSecond, size);
-              Provider.of<AppState>(context, listen: false).selectedIndex = Provider.of<MessageMetadata>(context, listen: false).messageIndex;
+              Provider.of<AppState>(context, listen: false).selectedIndex = Provider.of<MessageMetadata>(context, listen: false).messageID;
             },
             child: Padding(
                 padding: EdgeInsets.all(2),
@@ -198,8 +204,10 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
                       children: widgetRow,
                     )))));
     var mark = Provider.of<ContactInfoState>(context).newMarker;
-    if (mark > 0 && mark == Provider.of<ContactInfoState>(context).totalMessages - Provider.of<MessageMetadata>(context).messageIndex) {
-      return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Align(alignment:Alignment.center ,child:_bubbleNew()), mr]);
+    if (mark > 0 &&
+        Provider.of<ContactInfoState>(context).messageCache.length > mark &&
+        Provider.of<ContactInfoState>(context).messageCache[mark - 1]?.metadata.messageID == Provider.of<MessageMetadata>(context).messageID) {
+      return Column(crossAxisAlignment: fromMe ? CrossAxisAlignment.end : CrossAxisAlignment.start, children: [Align(alignment: Alignment.center, child: _bubbleNew()), mr]);
     } else {
       return mr;
     }
@@ -209,9 +217,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
     return Container(
         decoration: BoxDecoration(
           color: Provider.of<Settings>(context).theme.messageFromMeBackgroundColor(),
-          border: Border.all(
-              color: Provider.of<Settings>(context).theme.messageFromMeBackgroundColor(),
-              width: 1),
+          border: Border.all(color: Provider.of<Settings>(context).theme.messageFromMeBackgroundColor(), width: 1),
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(8),
             topRight: Radius.circular(8),
@@ -219,9 +225,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
             bottomRight: Radius.circular(8),
           ),
         ),
-        child: Padding(
-            padding: EdgeInsets.all(9.0),
-            child: Text(AppLocalizations.of(context)!.newMessagesLabel)));
+        child: Padding(padding: EdgeInsets.all(9.0), child: Text(AppLocalizations.of(context)!.newMessagesLabel)));
   }
 
   void _runAnimation(Offset pixelsPerSecond, Size size) {
@@ -249,12 +253,17 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
   }
 
   void _btnGoto() {
-    selectConversation(context, Provider.of<MessageMetadata>(context, listen: false).senderHandle);
+    var id = Provider.of<ProfileInfoState>(context, listen: false).contactList.findContact(Provider.of<MessageMetadata>(context, listen: false).senderHandle)?.identifier;
+    if (id == null) {
+      // Can't happen
+    } else {
+      selectConversation(context, id);
+    }
   }
 
   void _btnAdd() {
     var sender = Provider.of<MessageMetadata>(context, listen: false).senderHandle;
-    if (sender == null || sender == "") {
+    if (sender == "") {
       print("sender not yet loaded");
       return;
     }

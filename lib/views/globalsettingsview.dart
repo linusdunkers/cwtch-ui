@@ -191,9 +191,8 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                 secondary: Icon(CwtchIcons.enable_groups, color: settings.current().mainTextColor()),
                               ),
                               Visibility(
-                                visible: !Platform.isAndroid && !Platform.isIOS,
-                                child:
-                                  SwitchListTile(
+                                  visible: !Platform.isAndroid && !Platform.isIOS,
+                                  child: SwitchListTile(
                                     title: Text(AppLocalizations.of(context)!.settingServers, style: TextStyle(color: settings.current().mainTextColor())),
                                     subtitle: Text(AppLocalizations.of(context)!.settingServersDescription),
                                     value: settings.isExperimentEnabled(ServerManagementExperiment),

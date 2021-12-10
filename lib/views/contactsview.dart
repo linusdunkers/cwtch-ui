@@ -22,7 +22,7 @@ class ContactsView extends StatefulWidget {
 }
 
 // selectConversation can be called from anywhere to set the active conversation
-void selectConversation(BuildContext context, String handle) {
+void selectConversation(BuildContext context, int handle) {
   // requery instead of using contactinfostate directly because sometimes listview gets confused about data that resorts
   var initialIndex = Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(handle)!.unreadMessages;
   Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(handle)!.unreadMessages = 0;
@@ -36,7 +36,7 @@ void selectConversation(BuildContext context, String handle) {
   if (Provider.of<Settings>(context, listen: false).uiColumns(isLandscape).length == 1) _pushMessageView(context, handle);
 }
 
-void _pushMessageView(BuildContext context, String handle) {
+void _pushMessageView(BuildContext context, int handle) {
   var profileOnion = Provider.of<ProfileInfoState>(context, listen: false).onion;
   Navigator.of(context).push(
     MaterialPageRoute<void>(
@@ -111,7 +111,6 @@ class _ContactsViewState extends State<ContactsView> {
         onPressed: () {
           Clipboard.setData(new ClipboardData(text: Provider.of<ProfileInfoState>(context, listen: false).onion));
         }));
-
 
     // TODO servers
 

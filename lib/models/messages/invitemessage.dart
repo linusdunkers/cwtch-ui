@@ -17,18 +17,18 @@ class InviteMessage extends Message {
   InviteMessage(this.overlay, this.metadata, this.content);
 
   @override
-  Widget getWidget(BuildContext context) {
+  Widget getWidget(BuildContext context, Key key) {
     return ChangeNotifierProvider.value(
+        key: key,
         value: this.metadata,
         builder: (bcontext, child) {
-          String idx = this.metadata.contactHandle + this.metadata.messageIndex.toString();
           String inviteTarget;
           String inviteNick;
           String invite = this.content;
 
           if (this.content.length == TorV3ContactHandleLength) {
             inviteTarget = this.content;
-            var targetContact = Provider.of<ProfileInfoState>(context).contactList.getContact(inviteTarget);
+            var targetContact = Provider.of<ProfileInfoState>(context).contactList.findContact(inviteTarget);
             inviteNick = targetContact == null ? this.content : targetContact.nickname;
           } else {
             var parts = this.content.toString().split("||");
@@ -37,10 +37,10 @@ class InviteMessage extends Message {
               inviteTarget = jsonObj['GroupID'];
               inviteNick = jsonObj['GroupName'];
             } else {
-              return MessageRow(MalformedBubble());
+              return MessageRow(MalformedBubble(), key: key);
             }
           }
-          return MessageRow(InvitationBubble(overlay, inviteTarget, inviteNick, invite), key: Provider.of<ContactInfoState>(bcontext).getMessageKey(idx));
+          return MessageRow(InvitationBubble(overlay, inviteTarget, inviteNick, invite), key: key);
         });
   }
 
@@ -54,7 +54,7 @@ class InviteMessage extends Message {
           String invite = this.content;
           if (this.content.length == TorV3ContactHandleLength) {
             inviteTarget = this.content;
-            var targetContact = Provider.of<ProfileInfoState>(context).contactList.getContact(inviteTarget);
+            var targetContact = Provider.of<ProfileInfoState>(context).contactList.findContact(inviteTarget);
             inviteNick = targetContact == null ? this.content : targetContact.nickname;
           } else {
             var parts = this.content.toString().split("||");
