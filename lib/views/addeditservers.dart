@@ -53,7 +53,6 @@ class _AddEditServerViewState extends State<AddEditServerView> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: ctrlrOnion.text.isEmpty ? Text(AppLocalizations.of(context)!.addServerTitle) : Text(AppLocalizations.of(context)!.editServerTitle),
@@ -82,232 +81,222 @@ class _AddEditServerViewState extends State<AddEditServerView> {
                     child: Form(
                         key: _formKey,
                         child: Container(
-                         margin: EdgeInsets.fromLTRB(30, 0, 30, 10),
-                         padding: EdgeInsets.fromLTRB(20, 0 , 20, 10),
-                         child:  Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.stretch,
-                         children: [
+                            margin: EdgeInsets.fromLTRB(30, 0, 30, 10),
+                            padding: EdgeInsets.fromLTRB(20, 0, 20, 10),
+                            child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                              // Onion
+                              Visibility(
+                                  visible: serverInfoState.onion.isNotEmpty,
+                                  child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    CwtchLabel(label: AppLocalizations.of(context)!.serverAddress),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    SelectableText(serverInfoState.onion)
+                                  ])),
 
-                          // Onion
-                           Visibility(
-                           visible: serverInfoState.onion.isNotEmpty,
-                           child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                            SizedBox(
-                              height: 20,
-                            ),
-                            CwtchLabel(label: AppLocalizations.of(context)!.serverAddress),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            SelectableText(
-                              serverInfoState.onion
-                            )
-                          ])),
+                              // Description
+                              Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                CwtchLabel(label: AppLocalizations.of(context)!.serverDescriptionLabel),
+                                Text(AppLocalizations.of(context)!.serverDescriptionDescription),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                CwtchTextField(
+                                  controller: ctrlrDesc,
+                                  labelText: "Description",
+                                  autofocus: false,
+                                )
+                              ]),
 
-                         // Description
-                         Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                           SizedBox(
-                             height: 20,
-                           ),
-                           CwtchLabel(label: AppLocalizations.of(context)!.serverDescriptionLabel),
-                           Text(AppLocalizations.of(context)!.serverDescriptionDescription),
-                           SizedBox(
-                             height: 20,
-                           ),
-                            CwtchTextField(
-                                controller: ctrlrDesc,
-                                labelText: "Description",
-                                autofocus: false,
-                           )
-                         ]),
+                              SizedBox(
+                                height: 20,
+                              ),
 
-                           SizedBox(
-                             height: 20,
-                           ),
+                              // Enabled
+                              Visibility(
+                                  visible: serverInfoState.onion.isNotEmpty,
+                                  child: SwitchListTile(
+                                    title: Text(AppLocalizations.of(context)!.serverEnabled, style: TextStyle(color: settings.current().mainTextColor())),
+                                    subtitle: Text(AppLocalizations.of(context)!.serverEnabledDescription),
+                                    value: serverInfoState.running,
+                                    onChanged: (bool value) {
+                                      serverInfoState.setRunning(value);
+                                      if (value) {
+                                        Provider.of<FlwtchState>(context, listen: false).cwtch.LaunchServer(serverInfoState.onion);
+                                      } else {
+                                        Provider.of<FlwtchState>(context, listen: false).cwtch.StopServer(serverInfoState.onion);
+                                      }
+                                    },
+                                    activeTrackColor: settings.theme.defaultButtonActiveColor(),
+                                    inactiveTrackColor: settings.theme.defaultButtonDisabledColor(),
+                                    secondary: Icon(CwtchIcons.negative_heart_24px, color: settings.current().mainTextColor()),
+                                  )),
 
-                           // Enabled
-                            Visibility(
-                              visible: serverInfoState.onion.isNotEmpty,
-                              child: SwitchListTile(
-                               title: Text(AppLocalizations.of(context)!.serverEnabled, style: TextStyle(color: settings.current().mainTextColor())),
-                               subtitle: Text(AppLocalizations.of(context)!.serverEnabledDescription),
-                               value: serverInfoState.running,
-                               onChanged: (bool value) {
-                                 serverInfoState.setRunning(value);
-                                 if (value) {
-                                   Provider.of<FlwtchState>(context, listen: false).cwtch.LaunchServer(serverInfoState.onion);
-                                 } else {
-                                   Provider.of<FlwtchState>(context, listen: false).cwtch.StopServer(serverInfoState.onion);
-                                 }
-                               },
-                               activeTrackColor: settings.theme.defaultButtonActiveColor(),
-                               inactiveTrackColor: settings.theme.defaultButtonDisabledColor(),
-                               secondary: Icon(CwtchIcons.negative_heart_24px, color: settings.current().mainTextColor()),
-                              )),
+                              // Auto start
+                              SwitchListTile(
+                                title: Text(AppLocalizations.of(context)!.serverAutostartLabel, style: TextStyle(color: settings.current().mainTextColor())),
+                                subtitle: Text(AppLocalizations.of(context)!.serverAutostartDescription),
+                                value: serverInfoState.autoStart,
+                                onChanged: (bool value) {
+                                  serverInfoState.setAutostart(value);
 
-                           // Auto start
-                          SwitchListTile(
-                             title: Text(AppLocalizations.of(context)!.serverAutostartLabel, style: TextStyle(color: settings.current().mainTextColor())),
-                             subtitle: Text(AppLocalizations.of(context)!.serverAutostartDescription),
-                             value: serverInfoState.autoStart,
-                             onChanged: (bool value) {
-                               serverInfoState.setAutostart(value);
+                                  if (!serverInfoState.onion.isEmpty) {
+                                    Provider.of<FlwtchState>(context, listen: false).cwtch.SetServerAttribute(serverInfoState.onion, "autostart", value ? "true" : "false");
+                                  }
+                                },
+                                activeTrackColor: settings.theme.defaultButtonActiveColor(),
+                                inactiveTrackColor: settings.theme.defaultButtonDisabledColor(),
+                                secondary: Icon(CwtchIcons.favorite_24dp, color: settings.current().mainTextColor()),
+                              ),
 
-                               if (! serverInfoState.onion.isEmpty) {
-                                 Provider.of<FlwtchState>(context, listen: false).cwtch.SetServerAttribute(serverInfoState.onion, "autostart", value ? "true" : "false");
-                               }
-                             },
-                             activeTrackColor: settings.theme.defaultButtonActiveColor(),
-                             inactiveTrackColor: settings.theme.defaultButtonDisabledColor(),
-                             secondary: Icon(CwtchIcons.favorite_24dp, color: settings.current().mainTextColor()),
-                          ),
+                              // ***** Password *****
 
+                              // use password toggle
+                              Visibility(
+                                  visible: serverInfoState.onion.isEmpty,
+                                  child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    Checkbox(
+                                      value: usePassword,
+                                      fillColor: MaterialStateProperty.all(settings.current().defaultButtonColor()),
+                                      activeColor: settings.current().defaultButtonActiveColor(),
+                                      onChanged: _handleSwitchPassword,
+                                    ),
+                                    Text(
+                                      AppLocalizations.of(context)!.radioUsePassword,
+                                      style: TextStyle(color: settings.current().mainTextColor()),
+                                    ),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    Padding(
+                                        padding: EdgeInsets.symmetric(horizontal: 24),
+                                        child: Text(
+                                          usePassword ? AppLocalizations.of(context)!.encryptedServerDescription : AppLocalizations.of(context)!.plainServerDescription,
+                                          textAlign: TextAlign.center,
+                                        )),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                  ])),
 
-                          // ***** Password *****
+                              // current password
+                              Visibility(
+                                  visible: serverInfoState.onion.isNotEmpty && serverInfoState.isEncrypted,
+                                  child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
+                                    CwtchLabel(label: AppLocalizations.of(context)!.currentPasswordLabel),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    CwtchPasswordField(
+                                      controller: ctrlrOldPass,
+                                      autoFillHints: [AutofillHints.newPassword],
+                                      validator: (value) {
+                                        // Password field can be empty when just updating the profile, not on creation
+                                        if (serverInfoState.isEncrypted && serverInfoState.onion.isEmpty && value.isEmpty && usePassword) {
+                                          return AppLocalizations.of(context)!.passwordErrorEmpty;
+                                        }
+                                        if (Provider.of<ErrorHandler>(context).deletedServerError == true) {
+                                          return AppLocalizations.of(context)!.enterCurrentPasswordForDeleteServer;
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                  ])),
 
-                           // use password toggle
-                           Visibility(
-                               visible: serverInfoState.onion.isEmpty,
-                               child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-                                 SizedBox(
-                                   height: 20,
-                                 ),
-                                 Checkbox(
-                                   value: usePassword,
-                                   fillColor: MaterialStateProperty.all(settings.current().defaultButtonColor()),
-                                   activeColor: settings.current().defaultButtonActiveColor(),
-                                   onChanged: _handleSwitchPassword,
-                                 ),
-                                 Text(
-                                   AppLocalizations.of(context)!.radioUsePassword,
-                                   style: TextStyle(color: settings.current().mainTextColor()),
-                                 ),
-                                 SizedBox(
-                                   height: 20,
-                                 ),
-                                 Padding(
-                                     padding: EdgeInsets.symmetric(horizontal: 24),
-                                     child: Text(
-                                       usePassword ? AppLocalizations.of(context)!.encryptedServerDescription : AppLocalizations.of(context)!.plainServerDescription,
-                                       textAlign: TextAlign.center,
-                                     )),
-                                 SizedBox(
-                                   height: 20,
-                                 ),
-                               ])),
+                              // new passwords 1 & 2
+                              Visibility(
+                                // Currently we don't support password change for servers so also gate this on Add server, when ready to support changing password remove the onion.isEmpty check
+                                visible: serverInfoState.onion.isEmpty && usePassword,
+                                child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                  CwtchLabel(label: AppLocalizations.of(context)!.newPassword),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  CwtchPasswordField(
+                                    controller: ctrlrPass,
+                                    validator: (value) {
+                                      // Password field can be empty when just updating the profile, not on creation
+                                      if (serverInfoState.onion.isEmpty && value.isEmpty && usePassword) {
+                                        return AppLocalizations.of(context)!.passwordErrorEmpty;
+                                      }
+                                      if (value != ctrlrPass2.value.text) {
+                                        return AppLocalizations.of(context)!.passwordErrorMatch;
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  CwtchLabel(label: AppLocalizations.of(context)!.password2Label),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  CwtchPasswordField(
+                                      controller: ctrlrPass2,
+                                      validator: (value) {
+                                        // Password field can be empty when just updating the profile, not on creation
+                                        if (serverInfoState.onion.isEmpty && value.isEmpty && usePassword) {
+                                          return AppLocalizations.of(context)!.passwordErrorEmpty;
+                                        }
+                                        if (value != ctrlrPass.value.text) {
+                                          return AppLocalizations.of(context)!.passwordErrorMatch;
+                                        }
+                                        return null;
+                                      }),
+                                ]),
+                              ),
 
+                              SizedBox(
+                                height: 20,
+                              ),
 
-                           // current password
-                           Visibility(
-                               visible: serverInfoState.onion.isNotEmpty && serverInfoState.isEncrypted,
-                               child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-                                     CwtchLabel(label: AppLocalizations.of(context)!.currentPasswordLabel),
-                                     SizedBox(
-                                       height: 20,
-                                     ),
-                                     CwtchPasswordField(
-                                       controller: ctrlrOldPass,
-                                       autoFillHints: [AutofillHints.newPassword],
-                                       validator: (value) {
-                                         // Password field can be empty when just updating the profile, not on creation
-                                         if (serverInfoState.isEncrypted &&
-                                             serverInfoState.onion.isEmpty &&
-                                             value.isEmpty &&
-                                             usePassword) {
-                                           return AppLocalizations.of(context)!.passwordErrorEmpty;
-                                         }
-                                         if (Provider.of<ErrorHandler>(context).deletedServerError == true) {
-                                           return AppLocalizations.of(context)!.enterCurrentPasswordForDeleteServer;
-                                         }
-                                         return null;
-                                       },
-                                     ),
-                                     SizedBox(
-                                       height: 20,
-                                     ),
-                                   ])),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    child: ElevatedButton(
+                                      onPressed: serverInfoState.onion.isEmpty ? _createPressed : _savePressed,
+                                      child: Text(
+                                        serverInfoState.onion.isEmpty ? AppLocalizations.of(context)!.addServerTitle : AppLocalizations.of(context)!.saveServerButton,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Visibility(
+                                  visible: serverInfoState.onion.isNotEmpty,
+                                  child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.end, children: [
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    Tooltip(
+                                        message: AppLocalizations.of(context)!.enterCurrentPasswordForDeleteServer,
+                                        child: ElevatedButton.icon(
+                                          onPressed: () {
+                                            showAlertDialog(context);
+                                          },
+                                          icon: Icon(Icons.delete_forever),
+                                          label: Text(AppLocalizations.of(context)!.deleteBtn),
+                                        ))
+                                  ]))
 
-                          // new passwords 1 & 2
-                          Visibility(
-                            // Currently we don't support password change for servers so also gate this on Add server, when ready to support changing password remove the onion.isEmpty check
-                              visible: serverInfoState.onion.isEmpty && usePassword,
-                              child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                               CwtchLabel(label: AppLocalizations.of(context)!.newPassword),
-                               SizedBox(
-                                 height: 20,
-                               ),
-                               CwtchPasswordField(
-                                 controller: ctrlrPass,
-                                 validator: (value) {
-                                   // Password field can be empty when just updating the profile, not on creation
-                                   if (serverInfoState.onion.isEmpty && value.isEmpty && usePassword) {
-                                     return AppLocalizations.of(context)!.passwordErrorEmpty;
-                                   }
-                                   if (value != ctrlrPass2.value.text) {
-                                     return AppLocalizations.of(context)!.passwordErrorMatch;
-                                   }
-                                   return null;
-                                 },
-                               ),
-                               SizedBox(
-                                 height: 20,
-                               ),
-                               CwtchLabel(label: AppLocalizations.of(context)!.password2Label),
-                               SizedBox(
-                                 height: 20,
-                               ),
-                               CwtchPasswordField(
-                                   controller: ctrlrPass2,
-                                   validator: (value) {
-                                     // Password field can be empty when just updating the profile, not on creation
-                                     if (serverInfoState.onion.isEmpty && value.isEmpty && usePassword) {
-                                       return AppLocalizations.of(context)!.passwordErrorEmpty;
-                                     }
-                                     if (value != ctrlrPass.value.text) {
-                                       return AppLocalizations.of(context)!.passwordErrorMatch;
-                                     }
-                                     return null;
-                                   }),
-                             ]),
-                           ),
-
-                           SizedBox(
-                             height: 20,
-                           ),
-
-                           Row(
-                             mainAxisAlignment: MainAxisAlignment.center,
-                             children: [
-                               Expanded(
-                                 child: ElevatedButton(
-                                   onPressed: serverInfoState.onion.isEmpty ?  _createPressed : _savePressed,
-                                   child: Text(
-                                     serverInfoState.onion.isEmpty ? AppLocalizations.of(context)!.addServerTitle : AppLocalizations.of(context)!.saveServerButton,
-                                     textAlign: TextAlign.center,
-                                   ),
-                                 ),
-                               ),
-                             ],
-                           ),
-                           Visibility(
-                               visible: serverInfoState.onion.isNotEmpty,
-                               child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.end, children: [
-                                 SizedBox(
-                                   height: 20,
-                                 ),
-                                 Tooltip(
-                                     message: AppLocalizations.of(context)!.enterCurrentPasswordForDeleteServer,
-                                     child: ElevatedButton.icon(
-                                       onPressed: () {
-                                         showAlertDialog(context);
-                                       },
-                                       icon: Icon(Icons.delete_forever),
-                                       label: Text(AppLocalizations.of(context)!.deleteBtn),
-                                     ))
-                               ]))
-
-                           // ***** END Password *****
-
-                        ]))))));
+                              // ***** END Password *****
+                            ]))))));
       });
     });
   }
@@ -318,28 +307,19 @@ class _AddEditServerViewState extends State<AddEditServerView> {
     // match (and are provided if the user has requested an encrypted profile).
     if (_formKey.currentState!.validate()) {
       if (usePassword) {
-        Provider
-            .of<FlwtchState>(context, listen: false)
-            .cwtch
-            .CreateServer(ctrlrPass.value.text, ctrlrDesc.value.text, Provider.of<ServerInfoState>(context, listen: false).autoStart);
+        Provider.of<FlwtchState>(context, listen: false).cwtch.CreateServer(ctrlrPass.value.text, ctrlrDesc.value.text, Provider.of<ServerInfoState>(context, listen: false).autoStart);
       } else {
-        Provider
-            .of<FlwtchState>(context, listen: false)
-            .cwtch
-            .CreateServer(DefaultPassword, ctrlrDesc.value.text, Provider.of<ServerInfoState>(context, listen: false).autoStart);
+        Provider.of<FlwtchState>(context, listen: false).cwtch.CreateServer(DefaultPassword, ctrlrDesc.value.text, Provider.of<ServerInfoState>(context, listen: false).autoStart);
       }
       Navigator.of(context).pop();
     }
   }
 
   void _savePressed() {
-
     var server = Provider.of<ServerInfoState>(context, listen: false);
 
-    Provider.of<FlwtchState>(context, listen: false)
-        .cwtch.SetServerAttribute(server.onion, "description", ctrlrDesc.text);
+    Provider.of<FlwtchState>(context, listen: false).cwtch.SetServerAttribute(server.onion, "description", ctrlrDesc.text);
     server.setDescription(ctrlrDesc.text);
-
 
     if (_formKey.currentState!.validate()) {
       // TODO support change password
@@ -358,16 +338,11 @@ class _AddEditServerViewState extends State<AddEditServerView> {
     Widget continueButton = ElevatedButton(
         child: Text(AppLocalizations.of(context)!.deleteServerConfirmBtn),
         onPressed: () {
-          var onion = Provider
-              .of<ServerInfoState>(context, listen: false)
-              .onion;
-          Provider
-              .of<FlwtchState>(context, listen: false)
-              .cwtch
-              .DeleteServer(onion, Provider.of<ServerInfoState>(context, listen: false).isEncrypted ? ctrlrOldPass.value.text : DefaultPassword);
+          var onion = Provider.of<ServerInfoState>(context, listen: false).onion;
+          Provider.of<FlwtchState>(context, listen: false).cwtch.DeleteServer(onion, Provider.of<ServerInfoState>(context, listen: false).isEncrypted ? ctrlrOldPass.value.text : DefaultPassword);
           Future.delayed(
             const Duration(milliseconds: 500),
-                () {
+            () {
               if (globalErrorHandler.deletedServerSuccess) {
                 final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.deleteServerSuccess + ":" + onion));
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);

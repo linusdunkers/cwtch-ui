@@ -57,9 +57,9 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
                 SizedBox(
                   width: 10,
                 ),
-                Expanded(child: Text(MediaQuery.of(context).size.width > 600 ?
-                    AppLocalizations.of(context)!.titleManageProfiles : AppLocalizations.of(context)!.titleManageProfilesShort,
-                    style: TextStyle(color: settings.current().mainTextColor())))
+                Expanded(
+                    child: Text(MediaQuery.of(context).size.width > 600 ? AppLocalizations.of(context)!.titleManageProfiles : AppLocalizations.of(context)!.titleManageProfilesShort,
+                        style: TextStyle(color: settings.current().mainTextColor())))
               ]),
               actions: getActions(),
             ),
@@ -238,7 +238,7 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
         if (tiles.isEmpty) {
           return Center(
               child: Text(
-                AppLocalizations.of(context)!.unlockProfileTip,
+            AppLocalizations.of(context)!.unlockProfileTip,
             textAlign: TextAlign.center,
           ));
         }

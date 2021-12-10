@@ -11,6 +11,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 const TapirGroupsExperiment = "tapir-groups-experiment";
 const ServerManagementExperiment = "servers-experiment";
 const FileSharingExperiment = "filesharing";
+const ClickableLinksExperiment = "clickable-links";
 
 enum DualpaneMode {
   Single,

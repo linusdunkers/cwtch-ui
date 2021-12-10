@@ -28,7 +28,7 @@ Cwtch processes the following environment variables:
 First you will need a valid [flutter sdk installation](https://flutter.dev/docs/get-started/install).
 You will probably want to disable Analytics on the Flutter Tool: `flutter config --no-analytics`
 
-This project uses the flutter `dev` channel, which you will need to switch to: `flutter channel dev; flutter upgrade`.
+This project uses the flutter `stable` channel
 
 Once flutter is set up, run `flutter pub get` from this project folder to fetch dependencies.
 
@@ -42,17 +42,20 @@ To build a release version and load normal profiles, use `build-release.sh X` in
 - set `LD_LIBRARY_PATH="$PWD/linux"`
 - copy a `tor` binary to `linux/` or run `fetch-tor.sh` to download one
 - run `flutter config --enable-linux-desktop` if you've never done so before
-- optional: launch cwtch-ui directly by running `flutter run -d linux`
+- optional: launch cwtch-ui debug build by running `flutter run -d linux`
 - to build cwtch-ui, run `flutter build linux`
-- optional: launch cwtch-ui build with `env LD_LIBRARY_PATH=linux ./build/linux/x64/release/bundle/cwtch`
+- optional: launch cwtch-ui release build with `env LD_LIBRARY_PATH=linux ./build/linux/x64/release/bundle/cwtch`
 - to package the build, run `linux/package-release.sh`
 
 ### Building on Windows (for Windows)
 
 - copy `libCwtch.dll` to `windows/`, or run `fetch-libcwtch-go.ps1` to download it
 - run `fetch-tor-win.ps1` to fetch Tor for windows
-- optional: launch cwtch-ui directly by running `flutter run -d windows`
+- optional: launch cwtch-ui debug build by running `flutter run -d windows`
 - to build cwtch-ui, run `flutter build windows`
+- optional: to run the release build:
+	- `cp windows/libCwtch.dll .`
+	- `./build/windows/runner/Release/cwtch.exe`
 
 ### Building on Linux/Windows (for Android)
 
@@ -65,10 +68,8 @@ To build a release version and load normal profiles, use `build-release.sh X` in
 - copy `libCwtch.dylib` into the root folder, or run `fetch-libcwtch-go-macos.sh` to download it
 - run `fetch-tor-macos.sh` to fetch Tor or Download and install Tor Browser and `cp -r /Applications/Tor\ Browser.app/Contents/MacOS/Tor ./macos/`
 - `flutter build macos`
-- optional: launch cwtch-ui build with `./build/linux/x64/release/bundle/cwtch`
-- `./macos/package-release.sh`
-
-results in a Cwtch.dmg that has libCwtch.dylib and tor in it as well and can be installed into Applications
+- optional: launch cwtch-ui release build with `./build/macos/Build/Products/Release/Cwtch.app/Contents/MacOS/Cwtch`
+- To package the UI: `./macos/package-release.sh`, which results in a Cwtch.dmg that has libCwtch.dylib and tor in it as well and can be installed into Applications
 
 ### Known Platform Issues
 

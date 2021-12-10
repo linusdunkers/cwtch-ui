@@ -24,12 +24,7 @@ class ServerListState extends ChangeNotifier {
     if (idx >= 0) {
       _servers[idx] = sis;
     } else {
-      _servers.add(ServerInfoState(onion: onion,
-          serverBundle: serverBundle,
-          running: running,
-          description: description,
-          autoStart: autoStart,
-          isEncrypted: isEncrypted));
+      _servers.add(ServerInfoState(onion: onion, serverBundle: serverBundle, running: running, description: description, autoStart: autoStart, isEncrypted: isEncrypted));
     }
     notifyListeners();
   }
@@ -37,7 +32,7 @@ class ServerListState extends ChangeNotifier {
   void updateServer(String onion, String serverBundle, bool running, String description, bool autoStart, bool isEncrypted) {
     int idx = _servers.indexWhere((element) => element.onion == onion);
     if (idx >= 0) {
-      _servers[idx] = ServerInfoState(onion: onion,  serverBundle: serverBundle, running: running, description: description, autoStart: autoStart, isEncrypted: isEncrypted);
+      _servers[idx] = ServerInfoState(onion: onion, serverBundle: serverBundle, running: running, description: description, autoStart: autoStart, isEncrypted: isEncrypted);
     } else {
       print("Tried to update server list without a starting state...this is probably an error");
     }

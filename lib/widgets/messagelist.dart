@@ -76,18 +76,18 @@ class _MessageListState extends State<MessageList> {
                       reverse: true, // NOTE: There seems to be a bug in flutter that corrects the mouse wheel scroll, but not the drag direction...
                       itemBuilder: (itemBuilderContext, index) {
                         var profileOnion = Provider.of<ProfileInfoState>(outerContext, listen: false).onion;
-                        var contactHandle = Provider.of<ContactInfoState>(outerContext, listen: false).onion;
-                        var messageIndex = Provider.of<ContactInfoState>(outerContext).totalMessages - index - 1;
+                        var contactHandle = Provider.of<ContactInfoState>(outerContext, listen: false).identifier;
+                        var messageIndex = index;
 
                         return FutureBuilder(
                           future: messageHandler(outerContext, profileOnion, contactHandle, messageIndex),
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               var message = snapshot.data as Message;
-                              // Already includes MessageRow,,
-                              return message.getWidget(context);
+                              var key = Provider.of<ContactInfoState>(outerContext, listen: false).getMessageKey(contactHandle, message.getMetadata().messageID);
+                              return message.getWidget(context, key);
                             } else {
-                              return Text(''); //MessageLoadingBubble();
+                              return MessageLoadingBubble();
                             }
                           },
                         );

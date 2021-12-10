@@ -30,44 +30,45 @@ class _ServersView extends State<ServersView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text( MediaQuery.of(context).size.width > 600 ? AppLocalizations.of(context)!.serversManagerTitleLong : AppLocalizations.of(context)!.serversManagerTitleShort),
-        actions: getActions(),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _pushAddServer,
-        tooltip: AppLocalizations.of(context)!.addServerTooltip,
-        child: Icon(
-          Icons.add,
-          semanticLabel: AppLocalizations.of(context)!.addServerTooltip,
+        appBar: AppBar(
+          title: Text(MediaQuery.of(context).size.width > 600 ? AppLocalizations.of(context)!.serversManagerTitleLong : AppLocalizations.of(context)!.serversManagerTitleShort),
+          actions: getActions(),
         ),
-      ),
-      body: Consumer<ServerListState>(
-        builder: (context, svrs, child) {
-          final tiles = svrs.servers.map((ServerInfoState server) {
-            return ChangeNotifierProvider<ServerInfoState>.value(
-              value: server,
-              builder: (context, child) => RepaintBoundary(child: ServerRow()),
+        floatingActionButton: FloatingActionButton(
+          onPressed: _pushAddServer,
+          tooltip: AppLocalizations.of(context)!.addServerTooltip,
+          child: Icon(
+            Icons.add,
+            semanticLabel: AppLocalizations.of(context)!.addServerTooltip,
+          ),
+        ),
+        body: Consumer<ServerListState>(
+          builder: (context, svrs, child) {
+            final tiles = svrs.servers.map(
+              (ServerInfoState server) {
+                return ChangeNotifierProvider<ServerInfoState>.value(
+                  value: server,
+                  builder: (context, child) => RepaintBoundary(child: ServerRow()),
+                );
+              },
             );
+
+            final divided = ListTile.divideTiles(
+              context: context,
+              tiles: tiles,
+            ).toList();
+
+            if (tiles.isEmpty) {
+              return Center(
+                  child: Text(
+                AppLocalizations.of(context)!.unlockServerTip,
+                textAlign: TextAlign.center,
+              ));
+            }
+
+            return ListView(children: divided);
           },
-        );
-
-        final divided = ListTile.divideTiles(
-          context: context,
-          tiles: tiles,
-        ).toList();
-
-        if (tiles.isEmpty) {
-          return Center(
-            child: Text(
-              AppLocalizations.of(context)!.unlockServerTip,
-            textAlign: TextAlign.center,
-          ));
-        }
-
-        return ListView(children: divided);
-      },
-    ));
+        ));
   }
 
   List<Widget> getActions() {
@@ -93,41 +94,41 @@ class _ServersView extends State<ServersView> {
               padding: MediaQuery.of(context).viewInsets,
               child: RepaintBoundary(
                   child: Container(
-                    height: 200, // bespoke value courtesy of the [TextField] docs
-                    child: Center(
-                        child: Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                Text(AppLocalizations.of(context)!.enterServerPassword),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                CwtchPasswordField(
-                                  autofocus: true,
-                                  controller: ctrlrPassword,
-                                  action: unlock,
-                                  validator: (value) {},
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                                  Spacer(),
-                                  Expanded(
-                                      child: ElevatedButton(
-                                        child: Text(AppLocalizations.of(context)!.unlock, semanticsLabel: AppLocalizations.of(context)!.unlock),
-                                        onPressed: () {
-                                          unlock(ctrlrPassword.value.text);
-                                        },
-                                      )),
-                                  Spacer()
-                                ]),
-                              ],
-                            ))),
-                  )));
+                height: 200, // bespoke value courtesy of the [TextField] docs
+                child: Center(
+                    child: Padding(
+                        padding: EdgeInsets.all(10.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Text(AppLocalizations.of(context)!.enterServerPassword),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            CwtchPasswordField(
+                              autofocus: true,
+                              controller: ctrlrPassword,
+                              action: unlock,
+                              validator: (value) {},
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                              Spacer(),
+                              Expanded(
+                                  child: ElevatedButton(
+                                child: Text(AppLocalizations.of(context)!.unlock, semanticsLabel: AppLocalizations.of(context)!.unlock),
+                                onPressed: () {
+                                  unlock(ctrlrPassword.value.text);
+                                },
+                              )),
+                              Spacer()
+                            ]),
+                          ],
+                        ))),
+              )));
         });
   }
 
@@ -141,9 +142,11 @@ class _ServersView extends State<ServersView> {
     Navigator.of(context).push(MaterialPageRoute<void>(
       builder: (BuildContext context) {
         return MultiProvider(
-          providers: [ChangeNotifierProvider<ServerInfoState>(
-        create: (_) => ServerInfoState(onion: "", serverBundle: "", description: "", autoStart: true, running: false, isEncrypted: true),
-        )],
+          providers: [
+            ChangeNotifierProvider<ServerInfoState>(
+              create: (_) => ServerInfoState(onion: "", serverBundle: "", description: "", autoStart: true, running: false, isEncrypted: true),
+            )
+          ],
           child: AddEditServerView(),
         );
       },

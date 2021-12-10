@@ -51,7 +51,7 @@ class QuotedMessage extends Message {
             dynamic message = jsonDecode(this.content);
             return Text(message["body"]);
           } catch (e) {
-            return MalformedMessage(this.metadata).getWidget(context);
+            return MalformedMessage(this.metadata).getWidget(context, Key("malformed"));
           }
         });
   }
@@ -62,16 +62,15 @@ class QuotedMessage extends Message {
   }
 
   @override
-  Widget getWidget(BuildContext context) {
+  Widget getWidget(BuildContext context, Key key) {
     try {
       dynamic message = jsonDecode(this.content);
 
       if (message["body"] == null || message["quotedHash"] == null) {
-        return MalformedMessage(this.metadata).getWidget(context);
+        return MalformedMessage(this.metadata).getWidget(context, key);
       }
 
-      var quotedMessagePotentials = Provider.of<FlwtchState>(context).cwtch.GetMessageByContentHash(metadata.profileOnion, metadata.contactHandle, message["quotedHash"]);
-      int messageIndex = metadata.messageIndex;
+      var quotedMessagePotentials = Provider.of<FlwtchState>(context).cwtch.GetMessageByContentHash(metadata.profileOnion, metadata.conversationIdentifier, message["quotedHash"]);
       Future<LocallyIndexedMessage?> quotedMessage = quotedMessagePotentials.then((matchingMessages) {
         if (matchingMessages == "[]") {
           return null;
@@ -81,9 +80,7 @@ class QuotedMessage extends Message {
         // message
         try {
           var list = (jsonDecode(matchingMessages) as List<dynamic>).map((data) => LocallyIndexedMessage.fromJson(data)).toList();
-          LocallyIndexedMessage candidate = list.reversed.firstWhere((element) => messageIndex < element.index, orElse: () {
-            return list.firstWhere((element) => messageIndex > element.index);
-          });
+          LocallyIndexedMessage candidate = list.reversed.first;
           return candidate;
         } catch (e) {
           // Malformed Message will be returned...
@@ -94,18 +91,17 @@ class QuotedMessage extends Message {
       return ChangeNotifierProvider.value(
           value: this.metadata,
           builder: (bcontext, child) {
-            String idx = this.metadata.contactHandle + this.metadata.messageIndex.toString();
             return MessageRow(
                 QuotedMessageBubble(message["body"], quotedMessage.then((LocallyIndexedMessage? localIndex) {
                   if (localIndex != null) {
-                    return messageHandler(context, metadata.profileOnion, metadata.contactHandle, localIndex.index);
+                    return messageHandler(context, metadata.profileOnion, metadata.conversationIdentifier, localIndex.index);
                   }
                   return MalformedMessage(this.metadata);
                 })),
-                key: Provider.of<ContactInfoState>(bcontext).getMessageKey(idx));
+                key: key);
           });
     } catch (e) {
-      return MalformedMessage(this.metadata).getWidget(context);
+      return MalformedMessage(this.metadata).getWidget(context, key);
     }
   }
 }
