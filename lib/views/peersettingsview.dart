@@ -137,7 +137,7 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
                                   Provider.of<FlwtchState>(context, listen: false).cwtch.SendProfileEvent(profileOnion, setPeerAttributeJson);
                                 }
                               },
-                              activeTrackColor: settings.theme.defaultButtonActiveColor,
+                              activeTrackColor: settings.theme.defaultButtonColor,
                               inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
                               secondary: Icon(CwtchIcons.block_peer, color: settings.current().mainTextColor),
                             ),

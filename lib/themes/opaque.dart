@@ -3,6 +3,8 @@ import 'dart:core';
 
 import 'package:cwtch/themes/cwtch.dart';
 import 'package:cwtch/themes/neon1.dart';
+import 'package:cwtch/themes/vampire.dart';
+import 'package:cwtch/themes/witch.dart';
 import 'package:flutter/material.dart';
 import 'package:cwtch/settings.dart';
 
@@ -11,6 +13,8 @@ const mode_dark = "dark";
 
 final themes = { cwtch_theme: {mode_light: CwtchLight(), mode_dark: CwtchDark()},
   neon1_theme: {mode_light: Neon1Light(), mode_dark: Neon1Dark()},
+  witch_theme: {mode_light: WitchLight(), mode_dark: WitchDark()},
+  vampire_theme: {mode_light: VampireLight(), mode_dark: VampireDark()},
 };
 
 OpaqueThemeType getTheme(String themeId, String mode) {
@@ -68,7 +72,7 @@ abstract class OpaqueThemeType {
   get sendHintTextColor => red;
 
   get defaultButtonColor => red;
-  get defaultButtonActiveColor => mode == mode_light ? darken(defaultButtonColor) : lighten(defaultButtonColor);
+  get defaultButtonActiveColor => /*mode == mode_light ? darken(defaultButtonColor) :*/ lighten(defaultButtonColor);
   get defaultButtonTextColor => red;
   get defaultButtonDisabledColor => red;
   get textfieldBackgroundColor => red;

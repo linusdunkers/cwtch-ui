@@ -129,7 +129,7 @@ class _AddEditServerViewState extends State<AddEditServerView> {
                                         Provider.of<FlwtchState>(context, listen: false).cwtch.StopServer(serverInfoState.onion);
                                       }
                                     },
-                                    activeTrackColor: settings.theme.defaultButtonActiveColor,
+                                    activeTrackColor: settings.theme.defaultButtonColor,
                                     inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
                                     secondary: Icon(CwtchIcons.negative_heart_24px, color: settings.current().mainTextColor),
                                   )),
@@ -146,7 +146,7 @@ class _AddEditServerViewState extends State<AddEditServerView> {
                                     Provider.of<FlwtchState>(context, listen: false).cwtch.SetServerAttribute(serverInfoState.onion, "autostart", value ? "true" : "false");
                                   }
                                 },
-                                activeTrackColor: settings.theme.defaultButtonActiveColor,
+                                activeTrackColor: settings.theme.defaultButtonColor,
                                 inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
                                 secondary: Icon(CwtchIcons.favorite_24dp, color: settings.current().mainTextColor),
                               ),

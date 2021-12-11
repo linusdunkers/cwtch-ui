@@ -77,7 +77,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                           // Save Settings...
                           saveSettings(context);
                         },
-                        activeTrackColor: settings.theme.defaultButtonActiveColor,
+                        activeTrackColor: settings.theme.defaultButtonColor,
                         inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
                         secondary: Icon(CwtchIcons.change_theme, color: settings.current().mainTextColor),
                       ),
@@ -153,7 +153,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                           // Save Settings...
                           saveSettings(context);
                         },
-                        activeTrackColor: settings.theme.defaultButtonActiveColor,
+                        activeTrackColor: settings.theme.defaultButtonColor,
                         inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
                         secondary: Icon(CwtchIcons.block_unknown, color: settings.current().mainTextColor),
                       ),
@@ -166,7 +166,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                           // Save Settings...
                           saveSettings(context);
                         },
-                        activeTrackColor: settings.theme.defaultButtonActiveColor,
+                        activeTrackColor: settings.theme.defaultButtonColor,
                         inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
                         secondary: Icon(CwtchIcons.streamer_bunnymask, color: settings.current().mainTextColor),
                       ),
@@ -183,7 +183,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                           // Save Settings...
                           saveSettings(context);
                         },
-                        activeTrackColor: settings.theme.defaultButtonActiveColor,
+                        activeTrackColor: settings.theme.defaultButtonColor,
                         inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
                         secondary: Icon(CwtchIcons.enable_experiments, color: settings.current().mainTextColor),
                       ),
@@ -204,7 +204,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                   // Save Settings...
                                   saveSettings(context);
                                 },
-                                activeTrackColor: settings.theme.defaultButtonActiveColor,
+                                activeTrackColor: settings.theme.defaultButtonColor,
                                 inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
                                 secondary: Icon(CwtchIcons.enable_groups, color: settings.current().mainTextColor),
                               ),
@@ -224,7 +224,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                       // Save Settings...
                                       saveSettings(context);
                                     },
-                                    activeTrackColor: settings.theme.defaultButtonActiveColor,
+                                    activeTrackColor: settings.theme.defaultButtonColor,
                                     inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
                                     secondary: Icon(CwtchIcons.dns_24px, color: settings.current().mainTextColor),
                                   )),
@@ -240,7 +240,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                   }
                                   saveSettings(context);
                                 },
-                                activeTrackColor: settings.theme.defaultButtonActiveColor,
+                                activeTrackColor: settings.theme.defaultButtonColor,
                                 inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
                                 secondary: Icon(Icons.attach_file, color: settings.current().mainTextColor),
                               ),
@@ -256,7 +256,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                   }
                                   saveSettings(context);
                                 },
-                                activeTrackColor: settings.theme.defaultButtonActiveColor,
+                                activeTrackColor: settings.theme.defaultButtonColor,
                                 inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
                                 secondary: Icon(Icons.link, color: settings.current().mainTextColor),
                               ),

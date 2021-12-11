@@ -23,7 +23,7 @@ class _ContactRowState extends State<ContactRow> {
     var contact = Provider.of<ContactInfoState>(context);
     return Card(
         clipBehavior: Clip.antiAlias,
-        color: Provider.of<AppState>(context).selectedConversation == contact.onion ? Provider.of<Settings>(context).theme.backgroundHilightElementColor : null,
+        color: Provider.of<AppState>(context).selectedConversation == contact.identifier ? Provider.of<Settings>(context).theme.backgroundHilightElementColor : null,
         borderOnForeground: false,
         margin: EdgeInsets.all(0.0),
         child: InkWell(
