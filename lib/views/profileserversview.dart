@@ -47,7 +47,6 @@ class _ProfileServersView extends State<ProfileServersView> {
               .of(context)
               .size
               .width > 600 ? AppLocalizations.of(context)!.manageKnownServersLong : AppLocalizations.of(context)!.manageKnownServersShort),
-          //actions: getActions(),
         ),
         body: Consumer<ProfileInfoState>(builder: (context, profile, child) {
             ProfileServerListState servers = profile.serverList;
