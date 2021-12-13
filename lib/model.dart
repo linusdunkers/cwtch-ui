@@ -120,6 +120,7 @@ class ProfileListState extends ChangeNotifier {
 }
 
 class ContactListState extends ChangeNotifier {
+  ProfileServerListState? servers;
   List<ContactInfoState> _contacts = [];
   String _filter = "";
   int get num => _contacts.length;
@@ -131,6 +132,10 @@ class ContactListState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void connectServers(ProfileServerListState servers) {
+    this.servers = servers;
+  }
+
   List<ContactInfoState> filteredList() {
     if (!isFiltered) return contacts;
     return _contacts.where((ContactInfoState c) => c.onion.toLowerCase().startsWith(_filter) || (c.nickname.toLowerCase().contains(_filter))).toList();
@@ -138,11 +143,20 @@ class ContactListState extends ChangeNotifier {
 
   void addAll(Iterable<ContactInfoState> newContacts) {
     _contacts.addAll(newContacts);
+    servers?.clearGroups();
+    _contacts.forEach((contact) {
+      if (contact.isGroup) {
+        servers?.addGroup(contact);
+      }
+    });
     notifyListeners();
   }
 
   void add(ContactInfoState newContact) {
     _contacts.add(newContact);
+    if (newContact.isGroup) {
+      servers?.addGroup(newContact);
+    }
     notifyListeners();
   }
 
@@ -213,8 +227,8 @@ class ContactListState extends ChangeNotifier {
 }
 
 class ProfileInfoState extends ChangeNotifier {
-  ContactListState _contacts = ContactListState();
   ProfileServerListState _servers = ProfileServerListState();
+  ContactListState _contacts = ContactListState();
   final String onion;
   String _nickname = "";
   String _imagePath = "";
@@ -242,7 +256,11 @@ class ProfileInfoState extends ChangeNotifier {
     this._online = online;
     this._encrypted = encrypted;
 
+    _contacts.connectServers(this._servers);
+
     if (contactsJson != null && contactsJson != "" && contactsJson != "null") {
+      this.replaceServers(serversJson);
+
       List<dynamic> contacts = jsonDecode(contactsJson);
       this._contacts.addAll(contacts.map((contact) {
         return ContactInfoState(this.onion, contact["identifier"], contact["onion"],
@@ -265,7 +283,7 @@ class ProfileInfoState extends ChangeNotifier {
       }
     }
 
-    this.replaceServers(serversJson);
+
   }
 
   // Parse out the server list json into our server info state struct...
@@ -274,15 +292,22 @@ class ProfileInfoState extends ChangeNotifier {
       List<dynamic> servers = jsonDecode(serversJson);
       this._servers.replace(servers.map((server) {
         // TODO Keys...
-        return RemoteServerInfoState(onion: server["onion"], status: server["status"]);
+        return RemoteServerInfoState(onion: server["onion"], identifier: server["identifier"], description: server["description"], status: server["status"]);
       }));
+
+      this._contacts.contacts.forEach((contact) {
+        if (contact.isGroup) {
+          _servers.addGroup(contact);
+        }
+      });
+
       notifyListeners();
     }
   }
 
   //
   void updateServerStatusCache(String server, String status) {
-    this._servers.updateServerCache(server, status);
+    this._servers.updateServerState(server, status);
     notifyListeners();
   }
 

@@ -73,7 +73,11 @@ class _ServerRowState extends State<ServerRow> {
               _pushEditServer(server);
             },
           )
-        ])));
+        ]),
+        onTap: () {
+              _pushEditServer(server);
+        }
+        ));
   }
 
   void _pushEditServer(ServerInfoState server) {

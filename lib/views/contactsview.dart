@@ -1,4 +1,5 @@
 import 'package:cwtch/cwtch_icons_icons.dart';
+import 'package:cwtch/views/profileserversview.dart';
 import 'package:flutter/material.dart';
 import 'package:cwtch/views/torstatusview.dart';
 import 'package:cwtch/widgets/contactrow.dart';
@@ -112,7 +113,15 @@ class _ContactsViewState extends State<ContactsView> {
           Clipboard.setData(new ClipboardData(text: Provider.of<ProfileInfoState>(context, listen: false).onion));
         }));
 
-    // TODO servers
+    // Manage known Servers
+    if (Provider.of<Settings>(context, listen: false).isExperimentEnabled(ServerManagementExperiment)) {
+      actions.add(IconButton(
+          icon: Icon(CwtchIcons.dns_24px),
+          tooltip:  AppLocalizations.of(context)!.manageKnownServersButton,
+          onPressed: () {
+            _pushServers();
+          }));
+    }
 
     // Search contacts
     actions.add(IconButton(
@@ -162,12 +171,13 @@ class _ContactsViewState extends State<ContactsView> {
     ));
   }
 
-  void _pushTorStatus() {
+  void _pushServers() {
+    var profile = Provider.of<ProfileInfoState>(context);
     Navigator.of(context).push(MaterialPageRoute<void>(
       builder: (BuildContext context) {
         return MultiProvider(
-          providers: [Provider.value(value: Provider.of<FlwtchState>(context))],
-          child: TorStatusView(),
+          providers: [ChangeNotifierProvider(create: (context) => profile), Provider.value(value: Provider.of<FlwtchState>(context))],
+          child: ProfileServersView(),
         );
       },
     ));

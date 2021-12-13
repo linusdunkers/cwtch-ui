@@ -107,8 +107,7 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                   labelText: AppLocalizations.of(context)!.yourDisplayName,
                                   validator: (value) {
                                     if (value.isEmpty) {
-                                      // TODO l10n ize
-                                      return "Please enter a display name";
+                                      return  AppLocalizations.of(context)!.displayNameTooltip;
                                     }
                                     return null;
                                   },
