@@ -67,7 +67,7 @@ class MessageBubbleState extends State<MessageBubble> {
       wdgMessage = SelectableLinkify(
         text: widget.content + '\u202F',
         // TODO: onOpen breaks the "selectable" functionality. Maybe something to do with gesture handler?
-        options: LinkifyOptions(humanize: false),
+        options: LinkifyOptions(humanize: false, removeWww: false, looseUrl: true, defaultToHttps: true),
         linkifiers: [UrlLinkifier()],
         onOpen: (link) {
           _modalOpenLink(context, link);
@@ -159,6 +159,7 @@ class MessageBubbleState extends State<MessageBubble> {
                               onPressed: () async {
                                 if (await canLaunch(link.url)) {
                                   await launch(link.url);
+                                  Navigator.pop(bcontext);
                                 } else {
                                   throw 'Could not launch $link';
                                 }
