@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:cwtch/cwtch_icons_icons.dart';
 import 'package:cwtch/models/servers.dart';
+import 'package:cwtch/widgets/folderpicker.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:cwtch/settings.dart';
@@ -226,6 +227,39 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                 activeTrackColor: settings.theme.defaultButtonActiveColor(),
                                 inactiveTrackColor: settings.theme.defaultButtonDisabledColor(),
                                 secondary: Icon(Icons.attach_file, color: settings.current().mainTextColor()),
+                              ),
+                              Visibility(
+                                visible: settings.isExperimentEnabled(FileSharingExperiment),
+                                child: Column(children:[
+                                  SwitchListTile(
+                                    title: Text("Image Previews and Profile Pics", style: TextStyle(color: settings.current().mainTextColor())),
+                                    subtitle: Text("TODO: Write a description with lots of warnings about how image previews can be an insecurity vector and you should only enable them with great caution..."),
+                                    value: settings.isExperimentEnabled(ImagePreviewsExperiment),
+                                    onChanged: (bool value) {
+                                      if (value) {
+                                        settings.enableExperiment(ImagePreviewsExperiment);
+                                        settings.downloadPath = Provider.of<FlwtchState>(context, listen: false).cwtch.defaultDownloadPath();
+                                      } else {
+                                        settings.disableExperiment(ImagePreviewsExperiment);
+                                      }
+                                      saveSettings(context);
+                                    },
+                                    activeTrackColor: settings.theme.defaultButtonActiveColor(),
+                                    inactiveTrackColor: settings.theme.defaultButtonDisabledColor(),
+                                    secondary: Icon(Icons.attach_file, color: settings.current().mainTextColor()),
+                                  ),
+                                  Visibility(
+                                    visible: settings.isExperimentEnabled(ImagePreviewsExperiment),
+                                    child: CwtchFolderPicker(
+                                        label:"Download folder",//todo:l18n
+                                        initialValue: settings.downloadPath,
+                                        onSave: (newVal) {
+                                          settings.downloadPath = newVal;
+                                          saveSettings(context);
+                                        },
+                                    ),
+                                  ),
+                                ]),
                               ),
                             ],
                           )),

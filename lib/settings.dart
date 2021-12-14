@@ -11,6 +11,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 const TapirGroupsExperiment = "tapir-groups-experiment";
 const ServerManagementExperiment = "servers-experiment";
 const FileSharingExperiment = "filesharing";
+const ImagePreviewsExperiment = "filesharing-images";
 
 enum DualpaneMode {
   Single,
@@ -34,6 +35,7 @@ class Settings extends ChangeNotifier {
 
   bool blockUnknownConnections = false;
   bool streamerMode = false;
+  String _downloadPath = "";
 
   /// Set the dark theme.
   void setDark() {
@@ -89,6 +91,13 @@ class Settings extends ChangeNotifier {
     // single pane vs dual pane preferences
     _uiColumnModePortrait = uiColumnModeFromString(settings["UIColumnModePortrait"]);
     _uiColumnModeLandscape = uiColumnModeFromString(settings["UIColumnModeLandscape"]);
+
+    // image previews/profile pic storage path
+    for (var i = 0; i < 30; i++) {
+      print("|");
+    }
+    print("setting DownloadPath to " + settings["DownloadPath"]);
+    _downloadPath = settings["DownloadPath"] ?? "";
 
     // Push the experimental settings to Consumers of Settings
     notifyListeners();
@@ -222,6 +231,12 @@ class Settings extends ChangeNotifier {
     }
   }
 
+  String get downloadPath => _downloadPath;
+  set downloadPath(String newval) {
+    _downloadPath = newval;
+    notifyListeners();
+  }
+
   /// Construct a default settings object.
   Settings(this.locale, this.theme);
 
@@ -242,6 +257,7 @@ class Settings extends ChangeNotifier {
       "FirstTime": false,
       "UIColumnModePortrait": uiColumnModePortrait.toString(),
       "UIColumnModeLandscape": uiColumnModeLandscape.toString(),
+      "DownloadPath": _downloadPath,
     };
   }
 }

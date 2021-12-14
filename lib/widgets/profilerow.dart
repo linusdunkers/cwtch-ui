@@ -102,7 +102,7 @@ class _ProfileRowState extends State<ProfileRow> {
   }
 
   void _pushEditProfile({onion: "", displayName: "", profileImage: "", encrypted: true}) {
-    Provider.of<ErrorHandler>(context).reset();
+    Provider.of<ErrorHandler>(context, listen: false).reset();
     Navigator.of(context).push(MaterialPageRoute<void>(
       builder: (BuildContext context) {
         return MultiProvider(

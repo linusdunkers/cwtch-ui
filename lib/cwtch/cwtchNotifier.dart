@@ -263,7 +263,7 @@ class CwtchNotifier {
         settings.handleUpdate(jsonDecode(data["Data"]));
         break;
       case "SetAttribute":
-        if (data["Key"] == "public.name") {
+        if (data["Key"] == "public.profile.name") {//"public.name") {
           profileCN.getProfile(data["ProfileOnion"])?.nickname = data["Data"];
         } else {
           EnvironmentConfig.debugLog("unhandled set attribute event: ${data['Key']}");
@@ -364,6 +364,11 @@ class CwtchNotifier {
           }
         } else {
           EnvironmentConfig.debugLog("unhandled peer attribute event: ${data['Path']}");
+        }
+        break;
+      case "ManifestSizeReceived":
+        if (!profileCN.getProfile(data["ProfileOnion"])!.downloadActive(data["FileKey"])) {
+          profileCN.getProfile(data["ProfileOnion"])?.downloadUpdate(data["FileKey"], 0, 1);
         }
         break;
       case "ManifestSaved":

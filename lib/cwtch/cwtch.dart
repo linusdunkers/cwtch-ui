@@ -96,5 +96,8 @@ abstract class Cwtch {
   // ignore: non_constant_identifier_names
   void Shutdown();
 
+  // non-ffi
+  String defaultDownloadPath();
+
   void dispose();
 }

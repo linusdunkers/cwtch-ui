@@ -557,7 +557,7 @@ class CwtchFfi implements Cwtch {
     final SetProfileAttribute = setProfileAttribute.asFunction<VoidFromStringStringStringFn>();
     final u1 = profile.toNativeUtf8();
     final u2 = key.toNativeUtf8();
-    final u3 = key.toNativeUtf8();
+    final u3 = val.toNativeUtf8();
     SetProfileAttribute(u1, u1.length, u2, u2.length, u3, u3.length);
     malloc.free(u1);
     malloc.free(u2);
@@ -727,5 +727,11 @@ class CwtchFfi implements Cwtch {
     var free = library.lookup<NativeFunction<free_function>>("c_FreePointer");
     final Free = free.asFunction<FreeFn>();
     Free(ptr);
+  }
+
+  @override
+  String defaultDownloadPath() {
+    Map<String, String> envVars = Platform.environment;
+    return path.join(envVars['HOME']!, "Downloads");
   }
 }

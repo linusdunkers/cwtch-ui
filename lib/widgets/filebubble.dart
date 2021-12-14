@@ -33,6 +33,8 @@ class FileBubble extends StatefulWidget {
 }
 
 class FileBubbleState extends State<FileBubble> {
+  File? myFile;
+
   @override
   void initState() {
     super.initState();
@@ -62,6 +64,7 @@ class FileBubbleState extends State<FileBubble> {
         child: SelectableText(senderDisplayStr + '\u202F',
             style: TextStyle(fontSize: 9.0, color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor() : Provider.of<Settings>(context).theme.messageFromOtherTextColor())));
 
+    var isPreview = false;
     var wdgMessage = !showFileSharing
         ? Text(AppLocalizations.of(context)!.messageEnableFileSharing)
         : fromMe
@@ -76,7 +79,17 @@ class FileBubbleState extends State<FileBubble> {
     } else if (Provider.of<ProfileInfoState>(context).downloadComplete(widget.fileKey())) {
       // in this case, whatever marked download.complete would have also set the path
       var path = Provider.of<ProfileInfoState>(context).downloadFinalPath(widget.fileKey())!;
-      wdgDecorations = Text(AppLocalizations.of(context)!.fileSavedTo + ': ' + path + '\u202F');
+      var lpath = path.toLowerCase();
+      if (lpath.endsWith("jpg") || lpath.endsWith("jpeg") || lpath.endsWith("png") || lpath.endsWith("gif") || lpath.endsWith("webp") || lpath.endsWith("bmp")) {
+        if (myFile == null) {
+          setState(() { myFile = new File(path); });
+        }
+
+        isPreview = true;
+        wdgDecorations = GestureDetector(child: Image.file(myFile!, width: 200), onTap:(){pop(myFile!, wdgMessage);},);
+      } else {
+        wdgDecorations = Text(AppLocalizations.of(context)!.fileSavedTo + ': ' + path + '\u202F');
+      }
     } else if (Provider.of<ProfileInfoState>(context).downloadActive(widget.fileKey())) {
       if (!Provider.of<ProfileInfoState>(context).downloadGotManifest(widget.fileKey())) {
         wdgDecorations = Text(AppLocalizations.of(context)!.retrievingManifestMessage + '\u202F');
@@ -136,7 +149,7 @@ class FileBubbleState extends State<FileBubble> {
                               mainAxisSize: MainAxisSize.min,
                               children: fromMe
                                   ? [wdgMessage, Visibility(visible: widget.interactive, child: wdgDecorations)]
-                                  : [wdgSender, wdgMessage, Visibility(visible: widget.interactive, child: wdgDecorations)]),
+                                  : [wdgSender, isPreview ? Container() : wdgMessage, Visibility(visible: widget.interactive, child: wdgDecorations)]),
                         )
                       ])))));
     });
@@ -287,6 +300,24 @@ class FileBubbleState extends State<FileBubble> {
             maxLines: 1,
             textWidthBasis: TextWidthBasis.longestLine,
           )),
+    );
+  }
+
+  void pop(File myFile, Widget meta) async {
+    await showDialog(
+        context: context,
+        builder: (_) => Dialog(
+          child: Container(padding: EdgeInsets.all(10), width: 500, height: 550, child:Column(children:[meta,Container(
+            width: 300,
+            height: 300,
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: Image.file(myFile).image,
+                    fit: BoxFit.scaleDown
+                )
+            ),
+          ),Icon(Icons.arrow_downward)]),
+        ))
     );
   }
 }

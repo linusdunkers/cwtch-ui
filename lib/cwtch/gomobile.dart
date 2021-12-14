@@ -28,6 +28,7 @@ class CwtchGomobile implements Cwtch {
 
   late Future<dynamic> androidLibraryDir;
   late Future<dynamic> androidHomeDirectory;
+  String androidHomeDirectoryStr = "";
   late CwtchNotifier cwtchNotifier;
 
   CwtchGomobile(CwtchNotifier _cwtchNotifier) {
@@ -44,7 +45,8 @@ class CwtchGomobile implements Cwtch {
   // ignore: non_constant_identifier_names
   Future<void> Start() async {
     print("gomobile.dart: Start()...");
-    var cwtchDir = path.join((await androidHomeDirectory).path, ".cwtch");
+    androidHomeDirectoryStr = (await androidHomeDirectory).path;
+    var cwtchDir = path.join(androidHomeDirectoryStr, ".cwtch");
     if (EnvironmentConfig.BUILD_VER == dev_version) {
       cwtchDir = path.join(cwtchDir, "dev");
     }
@@ -282,5 +284,10 @@ class CwtchGomobile implements Cwtch {
   @override
   Future GetMessageByContentHash(String profile, String handle, String contentHash) {
     return cwtchPlatform.invokeMethod("GetMessageByContentHash", {"profile": profile, "contact": handle, "contentHash": contentHash});
+  }
+
+  @override
+  String defaultDownloadPath() {
+    return this.androidHomeDirectoryStr;
   }
 }

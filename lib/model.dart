@@ -364,13 +364,11 @@ class ProfileInfoState extends ChangeNotifier {
 
   void downloadUpdate(String fileKey, int progress, int numChunks) {
     if (!downloadActive(fileKey)) {
+      this._downloads[fileKey] = FileDownloadProgress(numChunks, DateTime.now());
       if (progress < 0) {
-        this._downloads[fileKey] = FileDownloadProgress(numChunks, DateTime.now());
         this._downloads[fileKey]!.interrupted = true;
-        notifyListeners();
-      } else {
-        print("error: received progress for unknown download " + fileKey);
       }
+      notifyListeners();
     } else {
       if (this._downloads[fileKey]!.interrupted) {
         this._downloads[fileKey]!.interrupted = false;
@@ -383,11 +381,10 @@ class ProfileInfoState extends ChangeNotifier {
 
   void downloadMarkManifest(String fileKey) {
     if (!downloadActive(fileKey)) {
-      print("error: received download completion notice for unknown download " + fileKey);
-    } else {
-      this._downloads[fileKey]!.gotManifest = true;
-      notifyListeners();
+      this._downloads[fileKey] = FileDownloadProgress(1, DateTime.now());
     }
+    this._downloads[fileKey]!.gotManifest = true;
+    notifyListeners();
   }
 
   void downloadMarkFinished(String fileKey, String finalPath) {
