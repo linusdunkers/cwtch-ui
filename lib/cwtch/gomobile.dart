@@ -149,6 +149,11 @@ class CwtchGomobile implements Cwtch {
     cwtchPlatform.invokeMethod("CreateDownloadableFile", {"ProfileOnion": profileOnion, "conversation": conversation, "filename": filenameSuggestion, "filekey": filekey});
   }
 
+  // ignore: non_constant_identifier_names
+  void ExportPreviewedFile(String sourceFile, String suggestion) {
+    cwtchPlatform.invokeMethod("ExportPreviewedFile", {"Path": sourceFile, "FileName": suggestion,});
+  }
+
   @override
   // ignore: non_constant_identifier_names
   void CheckDownloadStatus(String profileOnion, String fileKey) {

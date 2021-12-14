@@ -22,6 +22,7 @@ import io.flutter.plugin.common.ErrorLogResult
 
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
+import java.io.File
 
 import android.net.Uri
 import android.provider.DocumentsContract
@@ -57,9 +58,11 @@ class MainActivity: FlutterActivity() {
 
     // "Download to..." prompt extra arguments
     private val FILEPICKER_REQUEST_CODE = 234
+    private val PREVIEW_EXPORT_REQUEST_CODE = 235
     private var dlToProfile = ""
     private var dlToHandle = ""
     private var dlToFileKey = ""
+    private var exportFromPath = ""
 
     // handles clicks received from outside the app (ie, notifications)
     override fun onNewIntent(intent: Intent) {
@@ -102,6 +105,11 @@ class MainActivity: FlutterActivity() {
                     "manifestpath" to manifestPath,
                     "filekey" to this.dlToFileKey
             )), ErrorLogResult(""));//placeholder; this Result is never actually invoked
+        } else if (requestCode == PREVIEW_EXPORT_REQUEST_CODE) {
+            val targetPath = intent!!.getData().toString()
+            var srcFile = File(this.exportFromPath)
+            Log.i("MainActivity:PREVIEW_EXPORT", "exporting previewed file")
+            srcFile.copyTo(File(targetPath));
         }
     }
 
@@ -169,6 +177,26 @@ class MainActivity: FlutterActivity() {
                 putExtra(Intent.EXTRA_TITLE, suggestedName)
             }
             startActivityForResult(intent, FILEPICKER_REQUEST_CODE)
+            return
+        } else if (call.method == "ExportPreviewedFile") {
+            this.exportFromPath = argmap["Path"] ?: ""
+            val suggestion = argmap["FileName"] ?: "filename.ext"
+            var imgType = "jpeg"
+            if (suggestion.endsWith("png")) {
+                imgType = "png"
+            } else if (suggestion.endsWith("webp")) {
+                imgType = "webp"
+            } else if (suggestion.endsWith("bmp")) {
+                imgType = "bmp"
+            } else if (suggestion.endsWith("gif")) {
+                imgType = "gif"
+            }
+            val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+                addCategory(Intent.CATEGORY_OPENABLE)
+                type = "image/" + imgType
+                putExtra(Intent.EXTRA_TITLE, suggestion)
+            }
+            startActivityForResult(intent, PREVIEW_EXPORT_REQUEST_CODE)
             return
         }
 

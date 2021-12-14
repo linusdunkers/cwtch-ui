@@ -322,8 +322,13 @@ class FileBubbleState extends State<FileBubble> {
                     fit: BoxFit.scaleDown
                 )
             ),
-          ),Icon(Icons.arrow_downward)]),
+          ),IconButton(icon: Icon(Icons.arrow_downward), onPressed: androidExport),
+          ]),
         ))
     );
+  }
+
+  void androidExport() async {
+
   }
 }

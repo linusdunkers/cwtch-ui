@@ -227,7 +227,6 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                 inactiveTrackColor: settings.theme.defaultButtonDisabledColor(),
                                 secondary: Icon(Icons.attach_file, color: settings.current().mainTextColor()),
                               ),
-<<<<<<< HEAD
                               Visibility(
                                 visible: settings.isExperimentEnabled(FileSharingExperiment),
                                 child: Column(children:[

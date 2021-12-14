@@ -402,6 +402,11 @@ class CwtchFfi implements Cwtch {
     // android only - do nothing
   }
 
+  // ignore: non_constant_identifier_names
+  void ExportPreviewedFile(String sourceFile, String suggestion) {
+    // android only - do nothing
+  }
+
   @override
   // ignore: non_constant_identifier_names
   void CheckDownloadStatus(String profileOnion, String fileKey) {
