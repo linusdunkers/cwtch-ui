@@ -227,8 +227,8 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                 secondary: Icon(Icons.attach_file, color: settings.current().mainTextColor()),
                               ),
                               SwitchListTile(
-                                title: Text("Enable Clickable Links", style: TextStyle(color: settings.current().mainTextColor())),
-                                subtitle: Text("The clickable links experiment allows you to click on URLs shared in messages."),
+                                title: Text(AppLocalizations.of(context)!.enableExperimentClickableLinks, style: TextStyle(color: settings.current().mainTextColor())),
+                                subtitle: Text(AppLocalizations.of(context)!.experimentClickableLinksDescription),
                                 value: settings.isExperimentEnabled(ClickableLinksExperiment),
                                 onChanged: (bool value) {
                                   if (value) {
