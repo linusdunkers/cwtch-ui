@@ -41,7 +41,7 @@ class _CwtchButtonTextFieldState extends State<CwtchButtonTextField> {
         enableIMEPersonalizedLearning: false,
         decoration: InputDecoration(
             labelText: widget.labelText,
-            labelStyle: TextStyle(color: theme.current().mainTextColor(), backgroundColor: theme.current().textfieldBackgroundColor()),
+            labelStyle: TextStyle(color: theme.current().mainTextColor, backgroundColor: theme.current().textfieldBackgroundColor),
             suffixIcon: IconButton(
               onPressed: widget.onPressed,
               icon: widget.icon,

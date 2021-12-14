@@ -14,7 +14,7 @@ import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:glob/glob.dart';
 
-var globalSettings = Settings(Locale("en", ''), OpaqueDark());
+var globalSettings = Settings(Locale("en", ''), CwtchDark());
 var globalErrorHandler = ErrorHandler();
 
 void main() {

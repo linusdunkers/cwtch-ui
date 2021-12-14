@@ -130,7 +130,7 @@ class _RemoteServerViewState extends State<RemoteServerView> {
           children: [
             Text(
               group.nickname,
-              style: Provider.of<FlwtchState>(context).biggerFont.apply(color: Provider.of<Settings>(context).theme.portraitOnlineBorderColor()),
+              style: Provider.of<FlwtchState>(context).biggerFont.apply(color: Provider.of<Settings>(context).theme.portraitOnlineBorderColor),
               softWrap: true,
               overflow: TextOverflow.ellipsis,
             ),
@@ -141,7 +141,7 @@ class _RemoteServerViewState extends State<RemoteServerView> {
                       group.onion,
                       softWrap: true,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(color: Provider.of<Settings>(context).theme.portraitOnlineBorderColor()),
+                      style: TextStyle(color: Provider.of<Settings>(context).theme.portraitOnlineBorderColor),
                     )))
           ])
     );

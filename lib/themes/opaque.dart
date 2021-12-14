@@ -133,7 +133,7 @@ ThemeData mkThemeData(Settings opaque) {
         actionsIconTheme: IconThemeData(
           color: opaque.current().mainTextColor,
         )),
-    //bottomNavigationBarTheme: BottomNavigationBarThemeData(type: BottomNavigationBarType.fixed, backgroundColor: opaque.current().backgroundHilightElementColor()),  // Can't determine current use
+    //bottomNavigationBarTheme: BottomNavigationBarThemeData(type: BottomNavigationBarType.fixed, backgroundColor: opaque.current().backgroundHilightElementColor),  // Can't determine current use
     textButtonTheme: TextButtonThemeData(
       style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all(opaque.current().defaultButtonColor),

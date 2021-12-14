@@ -36,7 +36,7 @@ class _RemoteServerRowState extends State<RemoteServerRow> {
                     Padding(
                         padding: const EdgeInsets.all(6.0), //border size
                         child: Icon(CwtchIcons.dns_24px,
-                            color: running ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor() : Provider.of<Settings>(context).theme.portraitOfflineBorderColor(),
+                            color: running ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor : Provider.of<Settings>(context).theme.portraitOfflineBorderColor,
                             size: 64)
 
                     ),
@@ -46,7 +46,7 @@ class _RemoteServerRowState extends State<RemoteServerRow> {
                             Text(
                               description,
                               semanticsLabel: description,
-                              style: Provider.of<FlwtchState>(context).biggerFont.apply(color: running ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor() : Provider.of<Settings>(context).theme.portraitOfflineBorderColor()),
+                              style: Provider.of<FlwtchState>(context).biggerFont.apply(color: running ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor : Provider.of<Settings>(context).theme.portraitOfflineBorderColor),
                               softWrap: true,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -57,7 +57,7 @@ class _RemoteServerRowState extends State<RemoteServerRow> {
                                       server.onion,
                                       softWrap: true,
                                       overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(color: running ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor() : Provider.of<Settings>(context).theme.portraitOfflineBorderColor()),
+                                      style: TextStyle(color: running ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor : Provider.of<Settings>(context).theme.portraitOfflineBorderColor),
                                     )))
                           ],
                         )),

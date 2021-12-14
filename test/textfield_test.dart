@@ -7,6 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:cwtch/themes/opaque.dart';
+import 'package:cwtch/themes/cwtch.dart';
 import 'package:cwtch/settings.dart';
 import 'package:cwtch/widgets/textfield.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -14,8 +15,8 @@ import 'package:provider/provider.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-var settingsEnglishDark = Settings(Locale("en", ''), OpaqueDark());
-var settingsEnglishLight = Settings(Locale("en", ''), OpaqueLight());
+var settingsEnglishDark = Settings(Locale("en", ''), CwtchDark());
+var settingsEnglishLight = Settings(Locale("en", ''), CwtchLight());
 ChangeNotifierProvider<Settings> getSettingsEnglishDark() => ChangeNotifierProvider.value(value: settingsEnglishDark);
 
 String file(String slug) {
