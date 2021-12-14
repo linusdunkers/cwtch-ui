@@ -107,8 +107,7 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                   labelText: AppLocalizations.of(context)!.yourDisplayName,
                                   validator: (value) {
                                     if (value.isEmpty) {
-                                      // TODO l10n ize
-                                      return "Please enter a display name";
+                                      return  AppLocalizations.of(context)!.displayNameTooltip;
                                     }
                                     return null;
                                   },
@@ -296,11 +295,13 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
         // Profile Editing
         if (ctrlrPass.value.text.isEmpty) {
           // Don't update password, only update name
+          Provider.of<ProfileInfoState>(context, listen: false).nickname = ctrlrNick.value.text;
           Provider.of<FlwtchState>(context, listen: false).cwtch.SetProfileAttribute(Provider.of<ProfileInfoState>(context, listen: false).onion, "profile.name", ctrlrNick.value.text);
           Navigator.of(context).pop();
         } else {
           // At this points passwords have been validated to be the same and not empty
           // Update both password and name, even if name hasn't been changed...
+          Provider.of<ProfileInfoState>(context, listen: false).nickname = ctrlrNick.value.text;
           Provider.of<FlwtchState>(context, listen: false).cwtch.SetProfileAttribute(Provider.of<ProfileInfoState>(context, listen: false).onion, "profile.name", ctrlrNick.value.text);
           final updatePasswordEvent = {
             "EventType": "ChangePassword",

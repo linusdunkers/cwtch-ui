@@ -17,11 +17,11 @@ class FileMessage extends Message {
   FileMessage(this.metadata, this.content);
 
   @override
-  Widget getWidget(BuildContext context) {
+  Widget getWidget(BuildContext context, Key key) {
     return ChangeNotifierProvider.value(
+        key: key,
         value: this.metadata,
         builder: (bcontext, child) {
-          String idx = this.metadata.contactHandle + this.metadata.messageIndex.toString();
           dynamic shareObj = jsonDecode(this.content);
           if (shareObj == null) {
             return MessageRow(MalformedBubble());
@@ -35,7 +35,7 @@ class FileMessage extends Message {
             return MessageRow(MalformedBubble());
           }
 
-          return MessageRow(FileBubble(nameSuggestion, rootHash, nonce, fileSize), key: Provider.of<ContactInfoState>(bcontext).getMessageKey(idx));
+          return MessageRow(FileBubble(nameSuggestion, rootHash, nonce, fileSize), key: key);
         });
   }
 

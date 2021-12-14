@@ -192,9 +192,8 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                 secondary: Icon(CwtchIcons.enable_groups, color: settings.current().mainTextColor()),
                               ),
                               Visibility(
-                                visible: !Platform.isAndroid && !Platform.isIOS,
-                                child:
-                                  SwitchListTile(
+                                  visible: !Platform.isAndroid && !Platform.isIOS,
+                                  child: SwitchListTile(
                                     title: Text(AppLocalizations.of(context)!.settingServers, style: TextStyle(color: settings.current().mainTextColor())),
                                     subtitle: Text(AppLocalizations.of(context)!.settingServersDescription),
                                     value: settings.isExperimentEnabled(ServerManagementExperiment),
@@ -228,6 +227,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                 inactiveTrackColor: settings.theme.defaultButtonDisabledColor(),
                                 secondary: Icon(Icons.attach_file, color: settings.current().mainTextColor()),
                               ),
+<<<<<<< HEAD
                               Visibility(
                                 visible: settings.isExperimentEnabled(FileSharingExperiment),
                                 child: Column(children:[
@@ -258,6 +258,22 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                           saveSettings(context);
                                         },
                                     ),
+                                  ),
+                                  SwitchListTile(
+                                    title: Text(AppLocalizations.of(context)!.enableExperimentClickableLinks, style: TextStyle(color: settings.current().mainTextColor())),
+                                    subtitle: Text(AppLocalizations.of(context)!.experimentClickableLinksDescription),
+                                    value: settings.isExperimentEnabled(ClickableLinksExperiment),
+                                    onChanged: (bool value) {
+                                      if (value) {
+                                        settings.enableExperiment(ClickableLinksExperiment);
+                                      } else {
+                                        settings.disableExperiment(ClickableLinksExperiment);
+                                      }
+                                      saveSettings(context);
+                                    },
+                                    activeTrackColor: settings.theme.defaultButtonActiveColor(),
+                                    inactiveTrackColor: settings.theme.defaultButtonDisabledColor(),
+                                    secondary: Icon(Icons.link, color: settings.current().mainTextColor()),
                                   ),
                                 ]),
                               ),

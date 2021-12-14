@@ -12,6 +12,7 @@ const TapirGroupsExperiment = "tapir-groups-experiment";
 const ServerManagementExperiment = "servers-experiment";
 const FileSharingExperiment = "filesharing";
 const ImagePreviewsExperiment = "filesharing-images";
+const ClickableLinksExperiment = "clickable-links";
 
 enum DualpaneMode {
   Single,

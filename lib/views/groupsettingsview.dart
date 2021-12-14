@@ -78,9 +78,9 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
                               readonly: false,
                               onPressed: () {
                                 var profileOnion = Provider.of<ContactInfoState>(context, listen: false).profileOnion;
-                                var handle = Provider.of<ContactInfoState>(context, listen: false).onion;
+                                var handle = Provider.of<ContactInfoState>(context, listen: false).identifier;
                                 Provider.of<ContactInfoState>(context, listen: false).nickname = ctrlrNick.text;
-                                Provider.of<FlwtchState>(context, listen: false).cwtch.SetGroupAttribute(profileOnion, handle, "local.name", ctrlrNick.text);
+                                Provider.of<FlwtchState>(context, listen: false).cwtch.SetConversationAttribute(profileOnion, handle, "profile.name", ctrlrNick.text);
                                 // todo translations
                                 final snackBar = SnackBar(content: Text("Group Nickname changed successfully"));
                                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -140,7 +140,7 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
                                 child: ElevatedButton.icon(
                                   onPressed: () {
                                     var profileOnion = Provider.of<ContactInfoState>(context, listen: false).profileOnion;
-                                    var handle = Provider.of<ContactInfoState>(context, listen: false).onion;
+                                    var handle = Provider.of<ContactInfoState>(context, listen: false).identifier;
                                     // locally update cache...
                                     Provider.of<ContactInfoState>(context, listen: false).isArchived = true;
                                     Provider.of<FlwtchState>(context, listen: false).cwtch.ArchiveConversation(profileOnion, handle);
@@ -195,10 +195,11 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
       child: Text(AppLocalizations.of(context)!.yesLeave),
       onPressed: () {
         var profileOnion = Provider.of<ContactInfoState>(context, listen: false).profileOnion;
-        var handle = Provider.of<ContactInfoState>(context, listen: false).onion;
+        var identifier = Provider.of<ContactInfoState>(context, listen: false).identifier;
         // locally update cache...
         Provider.of<ContactInfoState>(context, listen: false).isArchived = true;
-        Provider.of<FlwtchState>(context, listen: false).cwtch.DeleteContact(profileOnion, handle);
+        Provider.of<ProfileInfoState>(context, listen: false).contactList.removeContact(identifier);
+        Provider.of<FlwtchState>(context, listen: false).cwtch.DeleteContact(profileOnion, identifier);
         Future.delayed(Duration(milliseconds: 500), () {
           Provider.of<AppState>(context, listen: false).selectedConversation = null;
           Navigator.of(context).popUntil((route) => route.settings.name == "conversations"); // dismiss dialog

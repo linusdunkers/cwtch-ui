@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cwtch/config.dart';
 import 'package:cwtch/models/message.dart';
 import 'package:file_picker_desktop/file_picker_desktop.dart';
 import 'package:flutter/cupertino.dart';
@@ -43,7 +44,7 @@ class FileBubbleState extends State<FileBubble> {
   @override
   Widget build(BuildContext context) {
     var fromMe = Provider.of<MessageMetadata>(context).senderHandle == Provider.of<ProfileInfoState>(context).onion;
-    var flagStarted = Provider.of<MessageMetadata>(context).flags & 0x02 > 0;
+    var flagStarted = Provider.of<MessageMetadata>(context).attributes["file-downloaded"] == "true";
     var borderRadiousEh = 15.0;
     var showFileSharing = Provider.of<Settings>(context).isExperimentEnabled(FileSharingExperiment);
     var prettyDate = DateFormat.yMd(Platform.localeName).add_jm().format(Provider.of<MessageMetadata>(context).timestamp);
@@ -51,7 +52,7 @@ class FileBubbleState extends State<FileBubble> {
     // If the sender is not us, then we want to give them a nickname...
     var senderDisplayStr = "";
     if (!fromMe) {
-      ContactInfoState? contact = Provider.of<ProfileInfoState>(context).contactList.getContact(Provider.of<MessageMetadata>(context).senderHandle);
+      ContactInfoState? contact = Provider.of<ProfileInfoState>(context).contactList.findContact(Provider.of<MessageMetadata>(context).senderHandle);
       if (contact != null) {
         senderDisplayStr = contact.nickname;
       } else {
@@ -102,15 +103,15 @@ class FileBubbleState extends State<FileBubble> {
     } else if (flagStarted) {
       // in this case, the download was done in a previous application launch,
       // so we probably have to request an info lookup
-      if (!Provider.of<ProfileInfoState>(context).downloadInterrupted(widget.fileKey()) ) {
+      if (!Provider.of<ProfileInfoState>(context).downloadInterrupted(widget.fileKey())) {
         wdgDecorations = Text(AppLocalizations.of(context)!.fileCheckingStatus + '...' + '\u202F');
         Provider.of<FlwtchState>(context, listen: false).cwtch.CheckDownloadStatus(Provider.of<ProfileInfoState>(context, listen: false).onion, widget.fileKey());
       } else {
         var path = Provider.of<ProfileInfoState>(context).downloadFinalPath(widget.fileKey()) ?? "";
-        wdgDecorations = Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children:[Text(AppLocalizations.of(context)!.fileInterrupted + ': ' + path + '\u202F'),ElevatedButton(onPressed: _btnResume, child: Text(AppLocalizations.of(context)!.verfiyResumeButton))]
-        );
+        wdgDecorations = Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(AppLocalizations.of(context)!.fileInterrupted + ': ' + path + '\u202F'),
+          ElevatedButton(onPressed: _btnResume, child: Text(AppLocalizations.of(context)!.verfiyResumeButton))
+        ]);
       }
     } else {
       wdgDecorations = Center(
@@ -159,15 +160,17 @@ class FileBubbleState extends State<FileBubble> {
     String? selectedFileName;
     File? file;
     var profileOnion = Provider.of<ProfileInfoState>(context, listen: false).onion;
-    var handle = Provider.of<MessageMetadata>(context, listen: false).senderHandle;
-    var contact = Provider.of<ContactInfoState>(context, listen: false).onion;
-    var idx = Provider.of<MessageMetadata>(context, listen: false).messageIndex;
+    var conversation = Provider.of<ContactInfoState>(context, listen: false).identifier;
+    var idx = Provider.of<MessageMetadata>(context, listen: false).messageID;
 
     if (Platform.isAndroid) {
       Provider.of<ProfileInfoState>(context, listen: false).downloadInit(widget.fileKey(), (widget.fileSize / 4096).ceil());
-      Provider.of<FlwtchState>(context, listen: false).cwtch.UpdateMessageFlags(profileOnion, contact, idx, Provider.of<MessageMetadata>(context, listen: false).flags | 0x02);
-      Provider.of<MessageMetadata>(context, listen: false).flags |= 0x02;
-      Provider.of<FlwtchState>(context, listen: false).cwtch.CreateDownloadableFile(profileOnion, handle, widget.nameSuggestion, widget.fileKey());
+      Provider.of<FlwtchState>(context, listen: false).cwtch.SetMessageAttribute(profileOnion, conversation, 0, idx, "file-downloaded", "true");
+      //Provider.of<MessageMetadata>(context, listen: false).attributes |= 0x02;
+      ContactInfoState? contact = Provider.of<ProfileInfoState>(context).contactList.findContact(Provider.of<MessageMetadata>(context).senderHandle);
+      if (contact != null) {
+        Provider.of<FlwtchState>(context, listen: false).cwtch.CreateDownloadableFile(profileOnion, contact.identifier, widget.nameSuggestion, widget.fileKey());
+      }
     } else {
       try {
         selectedFileName = await saveFile(
@@ -175,12 +178,15 @@ class FileBubbleState extends State<FileBubble> {
         );
         if (selectedFileName != null) {
           file = File(selectedFileName);
-          print("saving to " + file.path);
+          EnvironmentConfig.debugLog("saving to " + file.path);
           var manifestPath = file.path + ".manifest";
           Provider.of<ProfileInfoState>(context, listen: false).downloadInit(widget.fileKey(), (widget.fileSize / 4096).ceil());
-          Provider.of<FlwtchState>(context, listen: false).cwtch.UpdateMessageFlags(profileOnion, contact, idx, Provider.of<MessageMetadata>(context, listen: false).flags | 0x02);
-          Provider.of<MessageMetadata>(context, listen: false).flags |= 0x02;
-          Provider.of<FlwtchState>(context, listen: false).cwtch.DownloadFile(profileOnion, handle, file.path, manifestPath, widget.fileKey());
+          Provider.of<FlwtchState>(context, listen: false).cwtch.SetMessageAttribute(profileOnion, conversation, 0, idx, "file-downloaded", "true");
+          //Provider.of<MessageMetadata>(context, listen: false).flags |= 0x02;
+          ContactInfoState? contact = Provider.of<ProfileInfoState>(context).contactList.findContact(Provider.of<MessageMetadata>(context).senderHandle);
+          if (contact != null) {
+            Provider.of<FlwtchState>(context, listen: false).cwtch.DownloadFile(profileOnion, contact.identifier, file.path, manifestPath, widget.fileKey());
+          }
         }
       } catch (e) {
         print(e);
@@ -190,7 +196,7 @@ class FileBubbleState extends State<FileBubble> {
 
   void _btnResume() async {
     var profileOnion = Provider.of<ProfileInfoState>(context, listen: false).onion;
-    var handle = Provider.of<MessageMetadata>(context, listen: false).senderHandle;
+    var handle = Provider.of<MessageMetadata>(context, listen: false).conversationIdentifier;
     Provider.of<ProfileInfoState>(context, listen: false).downloadMarkResumed(widget.fileKey());
     Provider.of<FlwtchState>(context, listen: false).cwtch.VerifyOrResumeDownload(profileOnion, handle, widget.fileKey());
   }

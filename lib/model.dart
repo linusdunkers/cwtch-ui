@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:cwtch/config.dart';
+import 'package:cwtch/models/message.dart';
 import 'package:cwtch/widgets/messagerow.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cwtch/models/profileservers.dart';
@@ -29,7 +31,7 @@ class AppState extends ChangeNotifier {
   bool cwtchIsClosing = false;
   String appError = "";
   String? _selectedProfile;
-  String? _selectedConversation;
+  int? _selectedConversation;
   int _initialScrollIndex = 0;
   int _hoveredIndex = -1;
   int? _selectedIndex;
@@ -51,8 +53,8 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  String? get selectedConversation => _selectedConversation;
-  set selectedConversation(String? newVal) {
+  int? get selectedConversation => _selectedConversation;
+  set selectedConversation(int? newVal) {
     this._selectedConversation = newVal;
     notifyListeners();
   }
@@ -118,6 +120,7 @@ class ProfileListState extends ChangeNotifier {
 }
 
 class ContactListState extends ChangeNotifier {
+  ProfileServerListState? servers;
   List<ContactInfoState> _contacts = [];
   String _filter = "";
   int get num => _contacts.length;
@@ -129,6 +132,10 @@ class ContactListState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void connectServers(ProfileServerListState servers) {
+    this.servers = servers;
+  }
+
   List<ContactInfoState> filteredList() {
     if (!isFiltered) return contacts;
     return _contacts.where((ContactInfoState c) => c.onion.toLowerCase().startsWith(_filter) || (c.nickname.toLowerCase().contains(_filter))).toList();
@@ -136,11 +143,20 @@ class ContactListState extends ChangeNotifier {
 
   void addAll(Iterable<ContactInfoState> newContacts) {
     _contacts.addAll(newContacts);
+    servers?.clearGroups();
+    _contacts.forEach((contact) {
+      if (contact.isGroup) {
+        servers?.addGroup(contact);
+      }
+    });
     notifyListeners();
   }
 
   void add(ContactInfoState newContact) {
     _contacts.add(newContact);
+    if (newContact.isGroup) {
+      servers?.addGroup(newContact);
+    }
     notifyListeners();
   }
 
@@ -172,8 +188,8 @@ class ContactListState extends ChangeNotifier {
     //} </todo>
   }
 
-  void updateLastMessageTime(String forOnion, DateTime newMessageTime) {
-    var contact = getContact(forOnion);
+  void updateLastMessageTime(int forIdentifier, DateTime newMessageTime) {
+    var contact = getContact(forIdentifier);
     if (contact == null) return;
 
     // Assert that the new time is after the current last message time AND that
@@ -191,23 +207,28 @@ class ContactListState extends ChangeNotifier {
 
   List<ContactInfoState> get contacts => _contacts.sublist(0); //todo: copy?? dont want caller able to bypass changenotifier
 
-  ContactInfoState? getContact(String onion) {
-    int idx = _contacts.indexWhere((element) => element.onion == onion);
+  ContactInfoState? getContact(int identifier) {
+    int idx = _contacts.indexWhere((element) => element.identifier == identifier);
     return idx >= 0 ? _contacts[idx] : null;
   }
 
-  void removeContact(String onion) {
-    int idx = _contacts.indexWhere((element) => element.onion == onion);
+  void removeContact(int identifier) {
+    int idx = _contacts.indexWhere((element) => element.identifier == identifier);
     if (idx >= 0) {
       _contacts.removeAt(idx);
       notifyListeners();
     }
   }
+
+  ContactInfoState? findContact(String byHandle) {
+    int idx = _contacts.indexWhere((element) => element.onion == byHandle);
+    return idx >= 0 ? _contacts[idx] : null;
+  }
 }
 
 class ProfileInfoState extends ChangeNotifier {
-  ContactListState _contacts = ContactListState();
   ProfileServerListState _servers = ProfileServerListState();
+  ContactListState _contacts = ContactListState();
   final String onion;
   String _nickname = "";
   String _imagePath = "";
@@ -235,10 +256,14 @@ class ProfileInfoState extends ChangeNotifier {
     this._online = online;
     this._encrypted = encrypted;
 
+    _contacts.connectServers(this._servers);
+
     if (contactsJson != null && contactsJson != "" && contactsJson != "null") {
+      this.replaceServers(serversJson);
+
       List<dynamic> contacts = jsonDecode(contactsJson);
       this._contacts.addAll(contacts.map((contact) {
-        return ContactInfoState(this.onion, contact["onion"],
+        return ContactInfoState(this.onion, contact["identifier"], contact["onion"],
             nickname: contact["name"],
             status: contact["status"],
             imagePath: contact["picture"],
@@ -254,11 +279,11 @@ class ProfileInfoState extends ChangeNotifier {
 
       // dummy set to invoke sort-on-load
       if (this._contacts.num > 0) {
-        this._contacts.updateLastMessageTime(this._contacts._contacts.first.onion, this._contacts._contacts.first.lastMessageTime);
+        this._contacts.updateLastMessageTime(this._contacts._contacts.first.identifier, this._contacts._contacts.first.lastMessageTime);
       }
     }
 
-    this.replaceServers(serversJson);
+
   }
 
   // Parse out the server list json into our server info state struct...
@@ -267,15 +292,22 @@ class ProfileInfoState extends ChangeNotifier {
       List<dynamic> servers = jsonDecode(serversJson);
       this._servers.replace(servers.map((server) {
         // TODO Keys...
-        return RemoteServerInfoState(onion: server["onion"], status: server["status"]);
+        return RemoteServerInfoState(onion: server["onion"], identifier: server["identifier"], description: server["description"], status: server["status"]);
       }));
+
+      this._contacts.contacts.forEach((contact) {
+        if (contact.isGroup) {
+          _servers.addGroup(contact);
+        }
+      });
+
       notifyListeners();
     }
   }
 
   //
   void updateServerStatusCache(String server, String status) {
-    this._servers.updateServerCache(server, status);
+    this._servers.updateServerState(server, status);
     notifyListeners();
   }
 
@@ -341,6 +373,7 @@ class ProfileInfoState extends ChangeNotifier {
         } else {
           this._contacts.add(ContactInfoState(
                 this.onion,
+                contact["identifier"],
                 contact["onion"],
                 nickname: contact["name"],
                 status: contact["status"],
@@ -491,8 +524,15 @@ ContactAuthorization stringToContactAuthorization(String authStr) {
   }
 }
 
+class MessageCache {
+  final MessageMetadata metadata;
+  final String wrapper;
+  MessageCache(this.metadata, this.wrapper);
+}
+
 class ContactInfoState extends ChangeNotifier {
   final String profileOnion;
+  final int identifier;
   final String onion;
   late String _nickname;
 
@@ -504,6 +544,7 @@ class ContactInfoState extends ChangeNotifier {
   late int _totalMessages = 0;
   late DateTime _lastMessageTime;
   late Map<String, GlobalKey<MessageRowState>> keys;
+  late List<MessageCache?> messageCache;
   int _newMarker = 0;
   DateTime _newMarkerClearAt = DateTime.now();
 
@@ -512,7 +553,7 @@ class ContactInfoState extends ChangeNotifier {
   String? _server;
   late bool _archived;
 
-  ContactInfoState(this.profileOnion, this.onion,
+  ContactInfoState(this.profileOnion, this.identifier, this.onion,
       {nickname = "",
       isGroup = false,
       authorization = ContactAuthorization.unknown,
@@ -535,6 +576,7 @@ class ContactInfoState extends ChangeNotifier {
     this._lastMessageTime = lastMessageTime == null ? DateTime.fromMillisecondsSinceEpoch(0) : lastMessageTime;
     this._server = server;
     this._archived = archived;
+    this.messageCache = List.empty(growable: true);
     keys = Map<String, GlobalKey<MessageRowState>>();
   }
 
@@ -590,7 +632,7 @@ class ContactInfoState extends ChangeNotifier {
     if (newVal > 0) {
       this._newMarker = newVal;
     } else {
-      this._newMarkerClearAt = DateTime.now().add(const Duration(minutes:2));
+      this._newMarkerClearAt = DateTime.now().add(const Duration(minutes: 2));
     }
     this._unreadMessages = newVal;
     notifyListeners();
@@ -605,12 +647,13 @@ class ContactInfoState extends ChangeNotifier {
     }
     return this._newMarker;
   }
+
   // what's a getter that sometimes sets without a setter
   // that sometimes doesn't set
   set newMarker(int newVal) {
     // only unreadMessages++ can set newMarker = 1;
     // avoids drawing a marker when the convo is already open
-    if (newVal > 1) {
+    if (newVal >= 1) {
       this._newMarker = newVal;
       notifyListeners();
     }
@@ -646,11 +689,37 @@ class ContactInfoState extends ChangeNotifier {
     }
   }
 
-  GlobalKey<MessageRowState> getMessageKey(String index) {
+  GlobalKey<MessageRowState> getMessageKey(int conversation, int message) {
+    String index = "c: " + conversation.toString() + " m:" + message.toString();
     if (keys[index] == null) {
       keys[index] = GlobalKey<MessageRowState>();
     }
     GlobalKey<MessageRowState> ret = keys[index]!;
     return ret;
+  }
+
+  GlobalKey<MessageRowState>? getMessageKeyOrFail(int conversation, int message) {
+    String index = "c: " + conversation.toString() + " m:" + message.toString();
+
+    if (keys[index] == null) {
+      return null;
+    }
+    GlobalKey<MessageRowState> ret = keys[index]!;
+    return ret;
+  }
+
+  void updateMessageCache(int conversation, int messageID, DateTime timestamp, String senderHandle, String senderImage, String data) {
+    this.messageCache.insert(0, MessageCache(MessageMetadata(profileOnion, conversation, messageID, timestamp, senderHandle, senderImage, "", {}, false, false), data));
+    this.totalMessages += 1;
+  }
+
+  void bumpMessageCache() {
+    this.messageCache.insert(0, null);
+    this.totalMessages += 1;
+  }
+
+  void ackCache(int messageID) {
+    this.messageCache.firstWhere((element) => element?.metadata.messageID == messageID)?.metadata.ackd = true;
+    notifyListeners();
   }
 }

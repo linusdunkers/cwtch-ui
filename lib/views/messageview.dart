@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:crypto/crypto.dart';
+import 'package:cwtch/config.dart';
 import 'package:cwtch/cwtch_icons_icons.dart';
 import 'package:cwtch/models/message.dart';
 import 'package:cwtch/models/messages/quotedmessage.dart';
@@ -33,7 +34,7 @@ class MessageView extends StatefulWidget {
 class _MessageViewState extends State<MessageView> {
   final ctrlrCompose = TextEditingController();
   final focusNode = FocusNode();
-  String selectedContact = "";
+  int selectedContact = -1;
   ItemPositionsListener scrollListener = ItemPositionsListener.create();
   ItemScrollController scrollController = ItemScrollController();
 
@@ -41,10 +42,10 @@ class _MessageViewState extends State<MessageView> {
   void initState() {
     scrollListener.itemPositions.addListener(() {
       if (scrollListener.itemPositions.value.length != 0 &&
-        Provider.of<AppState>(context, listen: false).unreadMessagesBelow == true &&
-        scrollListener.itemPositions.value.any((element) => element.index == 0)) {
-          Provider.of<AppState>(context, listen: false).initialScrollIndex = 0;
-          Provider.of<AppState>(context, listen: false).unreadMessagesBelow = false;
+          Provider.of<AppState>(context, listen: false).unreadMessagesBelow == true &&
+          scrollListener.itemPositions.value.any((element) => element.index == 0)) {
+        Provider.of<AppState>(context, listen: false).initialScrollIndex = 0;
+        Provider.of<AppState>(context, listen: false).unreadMessagesBelow = false;
       }
     });
     super.initState();
@@ -168,7 +169,7 @@ class _MessageViewState extends State<MessageView> {
       if (Provider.of<AppState>(context, listen: false).selectedConversation != null && Provider.of<AppState>(context, listen: false).selectedIndex != null) {
         Provider.of<FlwtchState>(context, listen: false)
             .cwtch
-            .GetMessage(Provider.of<AppState>(context, listen: false).selectedProfile!, Provider.of<AppState>(context, listen: false).selectedConversation!,
+            .GetMessageByID(Provider.of<AppState>(context, listen: false).selectedProfile!, Provider.of<AppState>(context, listen: false).selectedConversation!,
                 Provider.of<AppState>(context, listen: false).selectedIndex!)
             .then((data) {
           try {
@@ -180,7 +181,7 @@ class _MessageViewState extends State<MessageView> {
             ChatMessage cm = new ChatMessage(o: QuotedMessageOverlay, d: quotedMessage);
             Provider.of<FlwtchState>(context, listen: false)
                 .cwtch
-                .SendMessage(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).onion, jsonEncode(cm));
+                .SendMessage(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).identifier, jsonEncode(cm));
           } catch (e) {}
           Provider.of<AppState>(context, listen: false).selectedIndex = null;
           _sendMessageHelper();
@@ -189,7 +190,7 @@ class _MessageViewState extends State<MessageView> {
         ChatMessage cm = new ChatMessage(o: TextMessageOverlay, d: ctrlrCompose.value.text);
         Provider.of<FlwtchState>(context, listen: false)
             .cwtch
-            .SendMessage(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).onion, jsonEncode(cm));
+            .SendMessage(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).identifier, jsonEncode(cm));
         _sendMessageHelper();
       }
     }
@@ -198,14 +199,14 @@ class _MessageViewState extends State<MessageView> {
   void _sendInvitation([String? ignoredParam]) {
     Provider.of<FlwtchState>(context, listen: false)
         .cwtch
-        .SendInvitation(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).onion, this.selectedContact);
+        .SendInvitation(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).identifier, this.selectedContact);
     _sendMessageHelper();
   }
 
   void _sendFile(String filePath) {
     Provider.of<FlwtchState>(context, listen: false)
         .cwtch
-        .ShareFile(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).onion, filePath);
+        .ShareFile(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).identifier, filePath);
     _sendMessageHelper();
   }
 
@@ -213,10 +214,10 @@ class _MessageViewState extends State<MessageView> {
     ctrlrCompose.clear();
     focusNode.requestFocus();
     Future.delayed(const Duration(milliseconds: 80), () {
-      Provider.of<ContactInfoState>(context, listen: false).totalMessages++;
+      Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(Provider.of<ContactInfoState>(context, listen: false).identifier)?.bumpMessageCache();
       Provider.of<ContactInfoState>(context, listen: false).newMarker++;
       // Resort the contact list...
-      Provider.of<ProfileInfoState>(context, listen: false).contactList.updateLastMessageTime(Provider.of<ContactInfoState>(context, listen: false).onion, DateTime.now());
+      Provider.of<ProfileInfoState>(context, listen: false).contactList.updateLastMessageTime(Provider.of<ContactInfoState>(context, listen: false).identifier, DateTime.now());
     });
   }
 
@@ -268,7 +269,8 @@ class _MessageViewState extends State<MessageView> {
     var children;
     if (Provider.of<AppState>(context).selectedConversation != null && Provider.of<AppState>(context).selectedIndex != null) {
       var quoted = FutureBuilder(
-        future: messageHandler(context, Provider.of<AppState>(context).selectedProfile!, Provider.of<AppState>(context).selectedConversation!, Provider.of<AppState>(context).selectedIndex!),
+        future:
+            messageHandler(context, Provider.of<AppState>(context).selectedProfile!, Provider.of<AppState>(context).selectedConversation!, Provider.of<AppState>(context).selectedIndex!, byID: true),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             var message = snapshot.data! as Message;
@@ -352,7 +354,7 @@ class _MessageViewState extends State<MessageView> {
                               return contact.onion != Provider.of<ContactInfoState>(context).onion;
                             }, onChanged: (newVal) {
                               setState(() {
-                                this.selectedContact = newVal;
+                                this.selectedContact = Provider.of<ProfileInfoState>(context).contactList.findContact(newVal)!.identifier;
                               });
                             })),
                         SizedBox(
@@ -361,7 +363,7 @@ class _MessageViewState extends State<MessageView> {
                         ElevatedButton(
                           child: Text(AppLocalizations.of(bcontext)!.inviteBtn, semanticsLabel: AppLocalizations.of(bcontext)!.inviteBtn),
                           onPressed: () {
-                            if (this.selectedContact != "") {
+                            if (this.selectedContact != -1) {
                               this._sendInvitation();
                             }
                             Navigator.pop(bcontext);
