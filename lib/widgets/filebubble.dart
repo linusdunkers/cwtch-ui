@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cwtch/config.dart';
 import 'package:cwtch/models/message.dart';
+import 'package:cwtch/widgets/malformedbubble.dart';
 import 'package:file_picker_desktop/file_picker_desktop.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -59,7 +60,7 @@ class FileBubbleState extends State<FileBubble> {
         senderDisplayStr = Provider.of<MessageMetadata>(context).senderHandle;
       }
     }
-
+    return LayoutBuilder(builder: (context, constraints) {
     var wdgSender = Center(
         widthFactor: 1,
         child: SelectableText(senderDisplayStr + '\u202F',
@@ -83,11 +84,29 @@ class FileBubbleState extends State<FileBubble> {
       var lpath = path.toLowerCase();
       if (lpath.endsWith("jpg") || lpath.endsWith("jpeg") || lpath.endsWith("png") || lpath.endsWith("gif") || lpath.endsWith("webp") || lpath.endsWith("bmp")) {
         if (myFile == null) {
-          setState(() { myFile = new File(path); });
+          setState(() {
+            myFile = new File(path);
+          });
         }
 
         isPreview = true;
-        wdgDecorations = GestureDetector(child: Image.file(myFile!, width: 200), onTap:(){pop(myFile!, wdgMessage);},);
+        wdgDecorations = GestureDetector(
+          child: Image.file(
+            myFile!,
+            cacheWidth: 2048, // limit the amount of space the image can decode too, we keep this high-ish to allow quality previews...
+            filterQuality: FilterQuality.medium,
+            fit: BoxFit.fill,
+            alignment: Alignment.center,
+            width: constraints.maxWidth,
+            isAntiAlias: false,
+            errorBuilder: (context, error, stackTrace) {
+              return MalformedBubble();
+            },
+          ),
+          onTap: () {
+            pop(myFile!, wdgMessage);
+          },
+        );
       } else {
         wdgDecorations = Text(AppLocalizations.of(context)!.fileSavedTo + ': ' + path + '\u202F');
       }
@@ -121,38 +140,29 @@ class FileBubbleState extends State<FileBubble> {
           ]));
     }
 
-    return LayoutBuilder(builder: (context, constraints) {
-      //print(constraints.toString()+", "+constraints.maxWidth.toString());
-      return Center(
-          widthFactor: 1.0,
-          child: Container(
-              decoration: BoxDecoration(
-                color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeBackgroundColor() : Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor(),
-                border:
-                    Border.all(color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeBackgroundColor() : Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor(), width: 1),
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(borderRadiousEh),
-                  topRight: Radius.circular(borderRadiousEh),
-                  bottomLeft: fromMe ? Radius.circular(borderRadiousEh) : Radius.zero,
-                  bottomRight: fromMe ? Radius.zero : Radius.circular(borderRadiousEh),
-                ),
-              ),
-              child: Center(
-                  widthFactor: 1.0,
-                  child: Padding(
-                      padding: EdgeInsets.all(9.0),
-                      child: Wrap(alignment: WrapAlignment.start, children: [
-                        Center(
-                          widthFactor: 1.0,
-                          child: Column(
-                              crossAxisAlignment: fromMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-                              mainAxisAlignment: fromMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: fromMe
-                                  ? [wdgMessage, Visibility(visible: widget.interactive, child: wdgDecorations)]
-                                  : [wdgSender, isPreview ? Container() : wdgMessage, Visibility(visible: widget.interactive, child: wdgDecorations)]),
-                        )
-                      ])))));
+
+      return Container(
+          constraints: constraints,
+          decoration: BoxDecoration(
+            color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeBackgroundColor() : Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor(),
+            border: Border.all(color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeBackgroundColor() : Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor(), width: 1),
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(borderRadiousEh),
+              topRight: Radius.circular(borderRadiousEh),
+              bottomLeft: fromMe ? Radius.circular(borderRadiousEh) : Radius.zero,
+              bottomRight: fromMe ? Radius.zero : Radius.circular(borderRadiousEh),
+            ),
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(9.0),
+            child: Column(
+                crossAxisAlignment: fromMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                mainAxisAlignment: fromMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: fromMe
+                    ? [wdgMessage, Visibility(visible: widget.interactive, child: wdgDecorations)]
+                    : [wdgSender, isPreview ? Container() : wdgMessage, Visibility(visible: widget.interactive, child: wdgDecorations)]),
+          ));
     });
   }
 
@@ -313,17 +323,24 @@ class FileBubbleState extends State<FileBubble> {
     await showDialog(
         context: context,
         builder: (_) => Dialog(
-          child: Container(padding: EdgeInsets.all(10), width: 500, height: 550, child:Column(children:[meta,Container(
-            width: 300,
-            height: 300,
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: Image.file(myFile).image,
-                    fit: BoxFit.scaleDown
-                )
-            ),
-          ),Icon(Icons.arrow_downward)]),
-        ))
-    );
+                child: Container(
+              padding: EdgeInsets.all(10),
+              width: 500,
+              height: 550,
+              child: Column(children: [
+                meta,
+                Container(
+                  width: 300,
+                  height: 300,
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                    image: Image.file(myFile, cacheHeight: 1024, cacheWidth: 1024).image,
+                    fit: BoxFit.fitWidth,
+                    filterQuality: FilterQuality.none,
+                  )),
+                ),
+                Icon(Icons.arrow_downward)
+              ]),
+            )));
   }
 }
