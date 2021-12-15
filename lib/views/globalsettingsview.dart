@@ -231,8 +231,8 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                 visible: settings.isExperimentEnabled(FileSharingExperiment),
                                 child: Column(children:[
                                   SwitchListTile(
-                                    title: Text("Image Previews and Profile Pics", style: TextStyle(color: settings.current().mainTextColor())),
-                                    subtitle: Text("Images"),
+                                    title: Text(AppLocalizations.of(context)!.settingImagePreviews, style: TextStyle(color: settings.current().mainTextColor())),
+                                    subtitle: Text(AppLocalizations.of(context)!.settingImagePreviewsDescription),
                                     value: settings.isExperimentEnabled(ImagePreviewsExperiment),
                                     onChanged: (bool value) {
                                       if (value) {
@@ -248,9 +248,9 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                     secondary: Icon(Icons.attach_file, color: settings.current().mainTextColor()),
                                   ),
                                   Visibility(
-                                    visible: settings.isExperimentEnabled(ImagePreviewsExperiment),
+                                    visible: settings.isExperimentEnabled(ImagePreviewsExperiment) && !Platform.isAndroid,
                                     child: CwtchFolderPicker(
-                                        label:"Download folder",//todo:l18n
+                                        label: AppLocalizations.of(context)!.settingDownloadFolder,
                                         initialValue: settings.downloadPath,
                                         onSave: (newVal) {
                                           settings.downloadPath = newVal;
