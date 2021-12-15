@@ -81,20 +81,14 @@ class _AddEditServerViewState extends State<AddEditServerView> {
                     child: Form(
                         key: _formKey,
                         child: Container(
-                            margin: EdgeInsets.fromLTRB(30, 0, 30, 10),
-                            padding: EdgeInsets.fromLTRB(20, 0, 20, 10),
+                            margin: EdgeInsets.fromLTRB(30, 5, 30, 10),
+                            padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
                             child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
                               // Onion
                               Visibility(
                                   visible: serverInfoState.onion.isNotEmpty,
                                   child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                    SizedBox(
-                                      height: 20,
-                                    ),
                                     CwtchLabel(label: AppLocalizations.of(context)!.serverAddress),
-                                    SizedBox(
-                                      height: 20,
-                                    ),
                                     SelectableText(serverInfoState.onion)
                                   ])),
 
@@ -155,6 +149,35 @@ class _AddEditServerViewState extends State<AddEditServerView> {
                                 inactiveTrackColor: settings.theme.defaultButtonDisabledColor(),
                                 secondary: Icon(CwtchIcons.favorite_24dp, color: settings.current().mainTextColor()),
                               ),
+
+                              // metrics
+                              Visibility(
+                                  visible: serverInfoState.onion.isNotEmpty,
+                                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    Text(AppLocalizations.of(context)!.serverMetricsLabel, style: Provider.of<FlwtchState>(context).biggerFont),
+                                    Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Row( crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                            Text(AppLocalizations.of(context)!.serverTotalMessagesLabel),
+                                          ]),
+                                          Text(serverInfoState.totalMessages.toString())
+                                        ]),
+
+                                    Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Row( crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                            Text(AppLocalizations.of(context)!.serverConnectionsLabel),
+                                          ]),
+                                          Text(serverInfoState.connections.toString())
+                                        ]),
+
+
+                                  ])),
 
                               // ***** Password *****
 
