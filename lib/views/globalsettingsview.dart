@@ -92,7 +92,6 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                       ),
                       ListTile(
                           title: Text(AppLocalizations.of(context)!.themeColorLabel),
-                          //AppLocalizations.of(context)!.settingTheme)),
                           trailing: DropdownButton<String>(
                               value: Provider.of<Settings>(context).theme.theme,
                               onChanged: (String? newValue) {

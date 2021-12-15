@@ -34,8 +34,6 @@ class _AddEditServerViewState extends State<AddEditServerView> {
 
   late bool usePassword;
 
-  //late bool deleted;
-
   @override
   void initState() {
     super.initState();

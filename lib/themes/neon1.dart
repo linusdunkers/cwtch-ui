@@ -38,28 +38,6 @@ class Neon1Dark extends CwtchDark {
   get messageFromMeTextColor => font; //whiteishPurple;
   get messageFromOtherBackgroundColor => peerBubble; //deepPurple;
   get messageFromOtherTextColor => font; //whiteishPurple;
-
-  /*get backgroundHilightElementColor => deepPurple;
-  get sendHintTextColor => mauvePurple;
-  get hilightElementColor => purple;
-  get defaultButtonTextColor => whiteishPurple;
-  get defaultButtonDisabledColor => lightGrey;
-  get defaultButtonDisabledTextColor => darkGreyPurple;
-  get textfieldBackgroundColor => deepPurple;
-  get textfieldBorderColor => deepPurple;
-  get textfieldErrorColor => hotPink;
-  get scrollbarDefaultColor => purple;
-  get portraitBackgroundColor => deepPurple;
-  get portraitOnlineBorderColor => whiteishPurple;
-  get portraitOfflineBorderColor => purple;
-  get portraitBlockedBorderColor => lightGrey;
-  get portraitBlockedTextColor => lightGrey;
-  get portraitContactBadgeColor => hotPink;
-  get portraitContactBadgeTextColor => whiteishPurple;
-  get portraitProfileBadgeColor => mauvePurple;
-  get portraitProfileBadgeTextColor => darkGreyPurple;
-  get dropShadowColor => mauvePurple;*/
-
 }
 
 class Neon1Light extends CwtchLight {
@@ -86,22 +64,4 @@ class Neon1Light extends CwtchLight {
   get messageFromMeTextColor => font; //mainTextColor;
   get messageFromOtherBackgroundColor => peerBubble; //purple;
   get messageFromOtherTextColor => font; //darkPurple;
-
-  /*get backgroundHilightElementColor => softPurple;
-  get sendHintTextColor  => purple;
-  get hilightElementColor => purple; //darkPurple; // todo shouldn't be this, too dark, makes font unreadable
-  get defaultButtonTextColor => whitePurple; // ?
-  get defaultButtonDisabledColor => softGrey;
-  get textfieldBackgroundColor => purple;
-  get textfieldBorderColor => purple;
-  get textfieldErrorColor => hotPink;
-  get portraitBackgroundColor => softPurple;
-  get portraitOnlineBorderColor => greyPurple;
-  get portraitOfflineBorderColor => greyPurple;
-  get portraitBlockedBorderColor => softGrey;
-  get portraitBlockedTextColor => softGrey;
-  get portraitContactBadgeTextColor => whitePurple;
-  get portraitProfileBadgeColor => brightPurple;
-  get portraitProfileBadgeTextColor => whitePurple;
-  get dropShadowColor => purple;*/
 }

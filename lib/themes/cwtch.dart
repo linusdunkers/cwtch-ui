@@ -24,8 +24,6 @@ final Color greyPurple = Color(0xFF775F84); // not in new: portrait borders
 final Color pink = Color(0xFFE85DA1); // not in new: active button color
 final Color hotPink = Color(0xFFD20070); // Color(0xFFD01972);
 final Color softGrey = Color(0xFFB3B6B3); // not in new theme: blocked
-//static final Color softGreen = Color(0xFFA0FFB0);
-//static final Color softRed = Color(0xFFFFA0B0);
 
 OpaqueThemeType GetCwtchTheme(String mode) {
   if (mode == mode_dark) {
@@ -54,7 +52,6 @@ class CwtchDark extends OpaqueThemeType {
   get sendHintTextColor => mauvePurple;
   get hilightElementColor => purple;
   get defaultButtonColor => accent; //hotPink;
-  //get defaultButtonActiveColor => pink;
   get defaultButtonTextColor => whiteishPurple;
   get defaultButtonDisabledColor => lightGrey;
   get defaultButtonDisabledTextColor => darkGreyPurple;
@@ -99,7 +96,6 @@ class CwtchLight extends OpaqueThemeType {
   get sendHintTextColor  => purple;
   get hilightElementColor => purple; //darkPurple; // todo shouldn't be this, too dark, makes font unreadable
   get defaultButtonColor => accent; // hotPink;
-  //get defaultButtonActiveColor => pink; // todo: lighten in light, darken in dark
   get defaultButtonTextColor => whitePurple; // ?
   get defaultButtonDisabledColor => softGrey;
   get textfieldBackgroundColor => purple;
