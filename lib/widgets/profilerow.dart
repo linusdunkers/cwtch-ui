@@ -32,11 +32,11 @@ class _ProfileRowState extends State<ProfileRow> {
                   padding: const EdgeInsets.all(6.0), //border size
                   child: ProfileImage(
                       badgeCount: 0,
-                      badgeColor: Provider.of<Settings>(context).theme.portraitProfileBadgeColor(),
-                      badgeTextColor: Provider.of<Settings>(context).theme.portraitProfileBadgeTextColor(),
+                      badgeColor: Provider.of<Settings>(context).theme.portraitProfileBadgeColor,
+                      badgeTextColor: Provider.of<Settings>(context).theme.portraitProfileBadgeTextColor,
                       diameter: 64.0,
                       imagePath: profile.imagePath,
-                      border: profile.isOnline ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor() : Provider.of<Settings>(context).theme.portraitOfflineBorderColor())),
+                      border: profile.isOnline ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor : Provider.of<Settings>(context).theme.portraitOfflineBorderColor)),
               Expanded(
                   child: Column(
                 children: [
@@ -60,7 +60,7 @@ class _ProfileRowState extends State<ProfileRow> {
               IconButton(
                 enableFeedback: true,
                 tooltip: AppLocalizations.of(context)!.editProfile + " " + profile.nickname,
-                icon: Icon(Icons.create, color: Provider.of<Settings>(context).current().mainTextColor()),
+                icon: Icon(Icons.create, color: Provider.of<Settings>(context).current().mainTextColor),
                 onPressed: () {
                   _pushEditProfile(onion: profile.onion, displayName: profile.nickname, profileImage: profile.imagePath, encrypted: profile.isEncrypted);
                 },

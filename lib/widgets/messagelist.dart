@@ -35,65 +35,66 @@ class _MessageListState extends State<MessageList> {
 
     return RepaintBoundary(
         child: Container(
+            color: Provider.of<Settings>(context).theme.backgroundMainColor,
             child: Column(children: [
-      Visibility(
-          visible: showMessageWarning,
-          child: Container(
-              padding: EdgeInsets.all(5.0),
-              color: Provider.of<Settings>(context).theme.defaultButtonActiveColor(),
-              child: DefaultTextStyle(
-                style: TextStyle(color: Provider.of<Settings>(context).theme.defaultButtonTextColor()),
-                child: showSyncing
-                    ? Text(AppLocalizations.of(context)!.serverNotSynced, textAlign: TextAlign.center)
-                    : showOfflineWarning
-                        ? Text(Provider.of<ContactInfoState>(context).isGroup ? AppLocalizations.of(context)!.serverConnectivityDisconnected : AppLocalizations.of(context)!.peerOfflineMessage,
-                            textAlign: TextAlign.center)
-                        // Only show the ephemeral status for peer conversations, not for groups...
-                        : (showEphemeralWarning
-                            ? Text(AppLocalizations.of(context)!.chatHistoryDefault, textAlign: TextAlign.center)
-                            :
-                            // We are not allowed to put null here, so put an empty text widget
-                            Text("")),
-              ))),
-      Expanded(
-          child: Container(
-              // Only show broken heart is the contact is offline...
-              decoration: BoxDecoration(
-                  image: Provider.of<ContactInfoState>(outerContext).isOnline()
-                      ? null
-                      : DecorationImage(
-                          fit: BoxFit.scaleDown,
-                          alignment: Alignment.center,
-                          image: AssetImage("assets/core/negative_heart_512px.png"),
-                          colorFilter: ColorFilter.mode(Provider.of<Settings>(context).theme.hilightElementTextColor(), BlendMode.srcIn))),
-              // Don't load messages for syncing server...
-              child: loadMessages
-                  ? ScrollablePositionedList.builder(
-                      itemPositionsListener: widget.scrollListener,
-                      itemScrollController: widget.scrollController,
-                      initialScrollIndex: initi > 4 ? initi - 4 : 0,
-                      itemCount: Provider.of<ContactInfoState>(outerContext).totalMessages,
-                      reverse: true, // NOTE: There seems to be a bug in flutter that corrects the mouse wheel scroll, but not the drag direction...
-                      itemBuilder: (itemBuilderContext, index) {
-                        var profileOnion = Provider.of<ProfileInfoState>(outerContext, listen: false).onion;
-                        var contactHandle = Provider.of<ContactInfoState>(outerContext, listen: false).identifier;
-                        var messageIndex = index;
+              Visibility(
+                  visible: showMessageWarning,
+                  child: Container(
+                      padding: EdgeInsets.all(5.0),
+                      color: Provider.of<Settings>(context).theme.defaultButtonActiveColor,
+                      child: DefaultTextStyle(
+                        style: TextStyle(color: Provider.of<Settings>(context).theme.defaultButtonTextColor),
+                        child: showSyncing
+                            ? Text(AppLocalizations.of(context)!.serverNotSynced, textAlign: TextAlign.center)
+                            : showOfflineWarning
+                                ? Text(Provider.of<ContactInfoState>(context).isGroup ? AppLocalizations.of(context)!.serverConnectivityDisconnected : AppLocalizations.of(context)!.peerOfflineMessage,
+                                    textAlign: TextAlign.center)
+                                // Only show the ephemeral status for peer conversations, not for groups...
+                                : (showEphemeralWarning
+                                    ? Text(AppLocalizations.of(context)!.chatHistoryDefault, textAlign: TextAlign.center)
+                                    :
+                                    // We are not allowed to put null here, so put an empty text widget
+                                    Text("")),
+                      ))),
+              Expanded(
+                  child: Container(
+                      // Only show broken heart is the contact is offline...
+                      decoration: BoxDecoration(
+                          image: Provider.of<ContactInfoState>(outerContext).isOnline()
+                              ? null
+                              : DecorationImage(
+                                  fit: BoxFit.scaleDown,
+                                  alignment: Alignment.center,
+                                  image: AssetImage("assets/core/negative_heart_512px.png"),
+                                  colorFilter: ColorFilter.mode(Provider.of<Settings>(context).theme.hilightElementColor, BlendMode.srcIn))),
+                      // Don't load messages for syncing server...
+                      child: loadMessages
+                          ? ScrollablePositionedList.builder(
+                              itemPositionsListener: widget.scrollListener,
+                              itemScrollController: widget.scrollController,
+                              initialScrollIndex: initi > 4 ? initi - 4 : 0,
+                              itemCount: Provider.of<ContactInfoState>(outerContext).totalMessages,
+                              reverse: true, // NOTE: There seems to be a bug in flutter that corrects the mouse wheel scroll, but not the drag direction...
+                              itemBuilder: (itemBuilderContext, index) {
+                                var profileOnion = Provider.of<ProfileInfoState>(outerContext, listen: false).onion;
+                                var contactHandle = Provider.of<ContactInfoState>(outerContext, listen: false).identifier;
+                                var messageIndex = index;
 
-                        return FutureBuilder(
-                          future: messageHandler(outerContext, profileOnion, contactHandle, messageIndex),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              var message = snapshot.data as Message;
-                              var key = Provider.of<ContactInfoState>(outerContext, listen: false).getMessageKey(contactHandle, message.getMetadata().messageID);
-                              return message.getWidget(context, key);
-                            } else {
-                              return MessageLoadingBubble();
-                            }
-                          },
-                        );
-                      },
-                    )
-                  : null))
-    ])));
+                                return FutureBuilder(
+                                  future: messageHandler(outerContext, profileOnion, contactHandle, messageIndex),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      var message = snapshot.data as Message;
+                                      var key = Provider.of<ContactInfoState>(outerContext, listen: false).getMessageKey(contactHandle, message.getMetadata().messageID);
+                                      return message.getWidget(context, key);
+                                    } else {
+                                      return MessageLoadingBubble();
+                                    }
+                                  },
+                                );
+                              },
+                            )
+                          : null))
+            ])));
   }
 }

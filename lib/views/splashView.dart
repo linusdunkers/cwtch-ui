@@ -27,8 +27,7 @@ class SplashView extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Text(appState.appError == "" ? "Loading Cwtch..." : appState.appError,
-                      style: TextStyle(
-                          fontSize: 16.0, color: appState.appError == "" ? Provider.of<Settings>(context).theme.mainTextColor() : Provider.of<Settings>(context).theme.textfieldErrorColor())),
+                      style: TextStyle(fontSize: 16.0, color: appState.appError == "" ? Provider.of<Settings>(context).theme.mainTextColor : Provider.of<Settings>(context).theme.textfieldErrorColor)),
                 ),
                 Image(image: AssetImage("assets/Open_Privacy_Logo_lightoutline.png")),
               ])),

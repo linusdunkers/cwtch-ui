@@ -5,8 +5,9 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
+import 'package:cwtch/themes/cwtch.dart';
 import 'package:flutter/material.dart';
-import 'package:cwtch/opaque.dart';
+import 'package:cwtch/themes/opaque.dart';
 import 'package:cwtch/settings.dart';
 import 'package:cwtch/widgets/profileimage.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -14,8 +15,8 @@ import 'package:provider/provider.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-var settingsEnglishDark = Settings(Locale("en", ''), OpaqueDark());
-var settingsEnglishLight = Settings(Locale("en", ''), OpaqueLight());
+var settingsEnglishDark = Settings(Locale("en", ''), CwtchDark());
+var settingsEnglishLight = Settings(Locale("en", ''), CwtchLight());
 ChangeNotifierProvider<Settings> getSettingsEnglishDark() => ChangeNotifierProvider.value(value: settingsEnglishDark);
 
 String file(String slug) {
@@ -33,10 +34,10 @@ void main() {
 
     Widget testWidget = ProfileImage(
       imagePath: "profiles/001-centaur.png",
-      badgeTextColor: settingsEnglishDark.theme.portraitProfileBadgeTextColor(),
-      badgeColor: settingsEnglishDark.theme.portraitProfileBadgeColor(),
+      badgeTextColor: settingsEnglishDark.theme.portraitProfileBadgeTextColor,
+      badgeColor: settingsEnglishDark.theme.portraitProfileBadgeColor,
       maskOut: false,
-      border: settingsEnglishDark.theme.portraitOfflineBorderColor(),
+      border: settingsEnglishDark.theme.portraitOfflineBorderColor,
       diameter: 64.0,
       badgeCount: 10,
     );

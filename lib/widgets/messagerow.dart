@@ -85,7 +85,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
             onPressed: () {
               Provider.of<AppState>(context, listen: false).selectedIndex = Provider.of<MessageMetadata>(context, listen: false).messageID;
             },
-            icon: Icon(Icons.reply, color: Provider.of<Settings>(context).theme.dropShadowColor())));
+            icon: Icon(Icons.reply, color: Provider.of<Settings>(context).theme.dropShadowColor)));
     Widget wdgSpacer = Flexible(child: SizedBox(width: 60, height: 10));
     var widgetRow = <Widget>[];
 
@@ -96,7 +96,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
         actualMessage,
       ];
     } else if (isBlocked && !showBlockedMessage) {
-      Color blockedMessageBackground = Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor();
+      Color blockedMessageBackground = Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor;
       Widget wdgPortrait = Padding(padding: EdgeInsets.all(4.0), child: Icon(CwtchIcons.account_blocked));
       widgetRow = <Widget>[
         wdgPortrait,
@@ -118,7 +118,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
                     AppLocalizations.of(context)!.blockedMessageMessage,
                     //key: Key(myKey),
                     style: TextStyle(
-                      color: Provider.of<Settings>(context).theme.messageFromOtherTextColor(),
+                      color: Provider.of<Settings>(context).theme.messageFromOtherTextColor,
                     ),
                     textAlign: TextAlign.center,
                     textWidthBasis: TextWidthBasis.longestLine,
@@ -152,8 +152,9 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
                 diameter: 48.0,
                 imagePath: Provider.of<MessageMetadata>(context).senderImage ?? contact.imagePath,
                 //maskOut: contact.status != "Authenticated",
-                border: contact.status == "Authenticated" ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor() : Provider.of<Settings>(context).theme.portraitOfflineBorderColor(),
-                badgeTextColor: Colors.red, badgeColor: Colors.red,
+                border: contact.status == "Authenticated" ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor : Provider.of<Settings>(context).theme.portraitOfflineBorderColor,
+                badgeTextColor: Colors.red,
+                badgeColor: Colors.red,
                 tooltip: isContact ? AppLocalizations.of(context)!.contactGoto.replaceFirst("%1", senderDisplayStr) : AppLocalizations.of(context)!.addContact,
               )));
 
@@ -216,8 +217,8 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
   Widget _bubbleNew() {
     return Container(
         decoration: BoxDecoration(
-          color: Provider.of<Settings>(context).theme.messageFromMeBackgroundColor(),
-          border: Border.all(color: Provider.of<Settings>(context).theme.messageFromMeBackgroundColor(), width: 1),
+          color: Provider.of<Settings>(context).theme.messageFromMeBackgroundColor,
+          border: Border.all(color: Provider.of<Settings>(context).theme.messageFromMeBackgroundColor, width: 1),
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(8),
             topRight: Radius.circular(8),

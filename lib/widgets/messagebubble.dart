@@ -48,7 +48,7 @@ class MessageBubbleState extends State<MessageBubble> {
       }
     }
     var wdgSender = SelectableText(senderDisplayStr,
-        style: TextStyle(fontSize: 9.0, color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor() : Provider.of<Settings>(context).theme.messageFromOtherTextColor()));
+        style: TextStyle(fontSize: 9.0, color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor));
 
     var wdgMessage;
 
@@ -58,7 +58,7 @@ class MessageBubbleState extends State<MessageBubble> {
         //key: Key(myKey),
         focusNode: _focus,
         style: TextStyle(
-          color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor() : Provider.of<Settings>(context).theme.messageFromOtherTextColor(),
+          color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor,
         ),
         textAlign: TextAlign.left,
         textWidthBasis: TextWidthBasis.longestLine,
@@ -75,10 +75,10 @@ class MessageBubbleState extends State<MessageBubble> {
         //key: Key(myKey),
         focusNode: _focus,
         style: TextStyle(
-          color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor() : Provider.of<Settings>(context).theme.messageFromOtherTextColor(),
+          color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor,
         ),
         linkStyle: TextStyle(
-          color: Provider.of<Settings>(context).current().mainTextColor(),
+          color: Provider.of<Settings>(context).current().mainTextColor,
         ),
         textAlign: TextAlign.left,
         textWidthBasis: TextWidthBasis.longestLine,
@@ -95,13 +95,11 @@ class MessageBubbleState extends State<MessageBubble> {
           child: Container(
               child: Container(
                   decoration: BoxDecoration(
-                    color: error
-                        ? malformedColor
-                        : (fromMe ? Provider.of<Settings>(context).theme.messageFromMeBackgroundColor() : Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor()),
+                    color: error ? malformedColor : (fromMe ? Provider.of<Settings>(context).theme.messageFromMeBackgroundColor : Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor),
                     border: Border.all(
                         color: error
                             ? malformedColor
-                            : (fromMe ? Provider.of<Settings>(context).theme.messageFromMeBackgroundColor() : Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor()),
+                            : (fromMe ? Provider.of<Settings>(context).theme.messageFromMeBackgroundColor : Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor),
                         width: 1),
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(borderRadiousEh),

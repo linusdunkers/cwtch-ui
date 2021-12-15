@@ -10,14 +10,12 @@ import '../main.dart';
 import '../model.dart';
 import '../settings.dart';
 
-
 class ProfileServersView extends StatefulWidget {
   @override
   _ProfileServersView createState() => _ProfileServersView();
 }
 
 class _ProfileServersView extends State<ProfileServersView> {
-
   @override
   void dispose() {
     super.dispose();
@@ -25,9 +23,10 @@ class _ProfileServersView extends State<ProfileServersView> {
 
   @override
   Widget build(BuildContext context) {
-
-    var knownServers = Provider.of<ProfileInfoState>(context).serverList.servers.map<String>((RemoteServerInfoState remoteServer) { return remoteServer.onion + ".onion"; }).toSet();
-    var importServerList = Provider.of<ServerListState>(context).servers.where((server) => !knownServers.contains(server.onion) ).map<DropdownMenuItem<String>>((ServerInfoState serverInfo) {
+    var knownServers = Provider.of<ProfileInfoState>(context).serverList.servers.map<String>((RemoteServerInfoState remoteServer) {
+      return remoteServer.onion + ".onion";
+    }).toSet();
+    var importServerList = Provider.of<ServerListState>(context).servers.where((server) => !knownServers.contains(server.onion)).map<DropdownMenuItem<String>>((ServerInfoState serverInfo) {
       return DropdownMenuItem<String>(
         value: serverInfo.onion,
         child: Text(
@@ -37,25 +36,22 @@ class _ProfileServersView extends State<ProfileServersView> {
       );
     }).toList();
 
-    importServerList.insert(0, DropdownMenuItem<String>(
-      value: "",
-      child: Text(AppLocalizations.of(context)!.importLocalServerSelectText)));
+    importServerList.insert(0, DropdownMenuItem<String>(value: "", child: Text(AppLocalizations.of(context)!.importLocalServerSelectText)));
 
     return Scaffold(
         appBar: AppBar(
-          title: Text(MediaQuery
-              .of(context)
-              .size
-              .width > 600 ? AppLocalizations.of(context)!.manageKnownServersLong : AppLocalizations.of(context)!.manageKnownServersShort),
+          title: Text(MediaQuery.of(context).size.width > 600 ? AppLocalizations.of(context)!.manageKnownServersLong : AppLocalizations.of(context)!.manageKnownServersShort),
         ),
-        body: Consumer<ProfileInfoState>(builder: (context, profile, child) {
+        body: Consumer<ProfileInfoState>(
+          builder: (context, profile, child) {
             ProfileServerListState servers = profile.serverList;
-            final tiles = servers.servers.map((RemoteServerInfoState server) {
-              return ChangeNotifierProvider<RemoteServerInfoState>.value(
-                value: server,
-                builder: (context, child) => RepaintBoundary(child: RemoteServerRow()),
-              );
-            },
+            final tiles = servers.servers.map(
+              (RemoteServerInfoState server) {
+                return ChangeNotifierProvider<RemoteServerInfoState>.value(
+                  value: server,
+                  builder: (context, child) => RepaintBoundary(child: RemoteServerRow()),
+                );
+              },
             );
 
             final divided = ListTile.divideTiles(
@@ -63,37 +59,31 @@ class _ProfileServersView extends State<ProfileServersView> {
               tiles: tiles,
             ).toList();
 
-            final importCard = Card( child: ListTile(
-              title: Text(AppLocalizations.of(context)!.importLocalServerLabel),
-              leading:  Icon(CwtchIcons.add_circle_24px , color: Provider.of<Settings>(context).current().mainTextColor()),
-              trailing: DropdownButton(
-                  onChanged: (String? importServer) {
-                    if (importServer!.isNotEmpty) {
-                      var server = Provider.of<ServerListState>(context).getServer(importServer)!;
-                      showImportConfirm(context, profile.onion, server.onion, server.description, server.serverBundle);
-                    }
-
-                  },
-                  value: "",
-                  items: importServerList,
-
-            )));
+            final importCard = Card(
+                child: ListTile(
+                    title: Text(AppLocalizations.of(context)!.importLocalServerLabel),
+                    leading: Icon(CwtchIcons.add_circle_24px, color: Provider.of<Settings>(context).current().mainTextColor),
+                    trailing: DropdownButton(
+                      onChanged: (String? importServer) {
+                        if (importServer!.isNotEmpty) {
+                          var server = Provider.of<ServerListState>(context).getServer(importServer)!;
+                          showImportConfirm(context, profile.onion, server.onion, server.description, server.serverBundle);
+                        }
+                      },
+                      value: "",
+                      items: importServerList,
+                    )));
 
             return LayoutBuilder(builder: (BuildContext context, BoxConstraints viewportConstraints) {
-             return Scrollbar(
-               isAlwaysShown: true,
-               child: SingleChildScrollView(
-                 clipBehavior: Clip.antiAlias,
-                 child:
-                Container(
-                margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
-                padding: EdgeInsets.fromLTRB(5, 0, 5, 10),
-                child: Column(children: [
-
-                  if (importServerList.length > 1)  importCard,
-
-              Column( children: divided )
-              ]))));});
+              return Scrollbar(
+                  isAlwaysShown: true,
+                  child: SingleChildScrollView(
+                      clipBehavior: Clip.antiAlias,
+                      child: Container(
+                          margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
+                          padding: EdgeInsets.fromLTRB(5, 0, 5, 10),
+                          child: Column(children: [if (importServerList.length > 1) importCard, Column(children: divided)]))));
+            });
 
             return ListView(children: divided);
           },
@@ -102,7 +92,7 @@ class _ProfileServersView extends State<ProfileServersView> {
 
   showImportConfirm(BuildContext context, String profileHandle, String serverHandle, String serverDesc, String bundle) {
     var serverLabel = serverDesc.isNotEmpty ? serverDesc : serverHandle;
-    serverHandle = serverHandle.substring(0, serverHandle.length-6 ); // remove '.onion'
+    serverHandle = serverHandle.substring(0, serverHandle.length - 6); // remove '.onion'
     // set up the buttons
     Widget cancelButton = ElevatedButton(
       child: Text(AppLocalizations.of(context)!.cancel),
@@ -118,15 +108,9 @@ class _ProfileServersView extends State<ProfileServersView> {
           Future.delayed(const Duration(milliseconds: 500), () {
             var profile = Provider.of<ProfileInfoState>(context);
             if (profile.serverList.getServer(serverHandle) != null) {
-              profile.serverList.getServer(serverHandle)?.updateDescription(
-                  serverDesc);
+              profile.serverList.getServer(serverHandle)?.updateDescription(serverDesc);
 
-              Provider
-                  .of<FlwtchState>(context, listen: false)
-                  .cwtch
-                  .SetConversationAttribute(profile.onion, profile.serverList
-                  .getServer(serverHandle)
-                  !.identifier, "server.description", serverDesc);
+              Provider.of<FlwtchState>(context, listen: false).cwtch.SetConversationAttribute(profile.onion, profile.serverList.getServer(serverHandle)!.identifier, "server.description", serverDesc);
             }
           });
           Navigator.of(context).pop();
@@ -149,7 +133,4 @@ class _ProfileServersView extends State<ProfileServersView> {
       },
     );
   }
-
-
-
 }

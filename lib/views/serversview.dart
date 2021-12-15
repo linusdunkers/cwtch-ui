@@ -77,7 +77,7 @@ class _ServersView extends State<ServersView> {
     // Unlock Profiles
     actions.add(IconButton(
       icon: Icon(CwtchIcons.lock_open_24px),
-      color: Provider.of<ServerListState>(context).servers.isEmpty ? Provider.of<Settings>(context).theme.defaultButtonColor() : Provider.of<Settings>(context).theme.mainTextColor(),
+      color: Provider.of<ServerListState>(context).servers.isEmpty ? Provider.of<Settings>(context).theme.defaultButtonColor : Provider.of<Settings>(context).theme.mainTextColor,
       tooltip: AppLocalizations.of(context)!.tooltipUnlockProfiles,
       onPressed: _modalUnlockServers,
     ));

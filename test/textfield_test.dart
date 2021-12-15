@@ -6,7 +6,8 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:flutter/material.dart';
-import 'package:cwtch/opaque.dart';
+import 'package:cwtch/themes/opaque.dart';
+import 'package:cwtch/themes/cwtch.dart';
 import 'package:cwtch/settings.dart';
 import 'package:cwtch/widgets/textfield.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -14,8 +15,8 @@ import 'package:provider/provider.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-var settingsEnglishDark = Settings(Locale("en", ''), OpaqueDark());
-var settingsEnglishLight = Settings(Locale("en", ''), OpaqueLight());
+var settingsEnglishDark = Settings(Locale("en", ''), CwtchDark());
+var settingsEnglishLight = Settings(Locale("en", ''), CwtchLight());
 ChangeNotifierProvider<Settings> getSettingsEnglishDark() => ChangeNotifierProvider.value(value: settingsEnglishDark);
 
 String file(String slug) {
@@ -27,7 +28,7 @@ void main() {
     tester.binding.window.physicalSizeTestValue = Size(800, 300);
     final TextEditingController ctrlr1 = TextEditingController();
 
-    Widget testWidget = CwtchTextField(controller: ctrlr1, validator: (value) {  }, labelText: '',);
+    Widget testWidget = CwtchTextField(controller: ctrlr1, validator: (value) {  }, hintText: '',);
 
     Widget testHarness = MultiProvider(
       providers:[getSettingsEnglishDark()],
@@ -69,7 +70,7 @@ void main() {
 
     Widget testWidget = CwtchTextField(
       controller: ctrlr1,
-      labelText: strLabel1,
+      hintText: strLabel1,
       validator: (value) {
         if (value == null || value == "") return strFail1;
         final number = num.tryParse(value);

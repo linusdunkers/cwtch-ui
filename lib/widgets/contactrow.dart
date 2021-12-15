@@ -23,7 +23,7 @@ class _ContactRowState extends State<ContactRow> {
     var contact = Provider.of<ContactInfoState>(context);
     return Card(
         clipBehavior: Clip.antiAlias,
-        color: Provider.of<AppState>(context).selectedConversation == contact.onion ? Provider.of<Settings>(context).theme.backgroundHilightElementColor() : null,
+        color: Provider.of<AppState>(context).selectedConversation == contact.identifier ? Provider.of<Settings>(context).theme.backgroundHilightElementColor : null,
         borderOnForeground: false,
         margin: EdgeInsets.all(0.0),
         child: InkWell(
@@ -32,16 +32,16 @@ class _ContactRowState extends State<ContactRow> {
               padding: const EdgeInsets.all(6.0), //border size
               child: ProfileImage(
                   badgeCount: contact.unreadMessages,
-                  badgeColor: Provider.of<Settings>(context).theme.portraitContactBadgeColor(),
-                  badgeTextColor: Provider.of<Settings>(context).theme.portraitContactBadgeTextColor(),
+                  badgeColor: Provider.of<Settings>(context).theme.portraitContactBadgeColor,
+                  badgeTextColor: Provider.of<Settings>(context).theme.portraitContactBadgeTextColor,
                   diameter: 64.0,
                   imagePath: contact.imagePath,
                   maskOut: !contact.isOnline(),
                   border: contact.isOnline()
-                      ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor()
+                      ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor
                       : contact.isBlocked
-                          ? Provider.of<Settings>(context).theme.portraitBlockedBorderColor()
-                          : Provider.of<Settings>(context).theme.portraitOfflineBorderColor()),
+                          ? Provider.of<Settings>(context).theme.portraitBlockedBorderColor
+                          : Provider.of<Settings>(context).theme.portraitOfflineBorderColor),
             ),
             Expanded(
                 child: Padding(
@@ -55,20 +55,20 @@ class _ContactRowState extends State<ContactRow> {
                           style: TextStyle(
                               fontSize: Provider.of<Settings>(context).theme.contactOnionTextSize(),
                               color: contact.isBlocked
-                                  ? Provider.of<Settings>(context).theme.portraitBlockedTextColor()
-                                  : Provider.of<Settings>(context).theme.mainTextColor()), //Provider.of<FlwtchState>(context).biggerFont,
+                                  ? Provider.of<Settings>(context).theme.portraitBlockedTextColor
+                                  : Provider.of<Settings>(context).theme.mainTextColor), //Provider.of<FlwtchState>(context).biggerFont,
                           softWrap: true,
                           overflow: TextOverflow.visible,
                         ),
                         Visibility(
                             visible: contact.isGroup && contact.status == "Authenticated",
                             child: LinearProgressIndicator(
-                              color: Provider.of<Settings>(context).theme.defaultButtonActiveColor(),
+                              color: Provider.of<Settings>(context).theme.defaultButtonActiveColor,
                             )),
                         Visibility(
                           visible: !Provider.of<Settings>(context).streamerMode,
                           child: Text(contact.onion,
-                              style: TextStyle(color: contact.isBlocked ? Provider.of<Settings>(context).theme.portraitBlockedTextColor() : Provider.of<Settings>(context).theme.mainTextColor())),
+                              style: TextStyle(color: contact.isBlocked ? Provider.of<Settings>(context).theme.portraitBlockedTextColor : Provider.of<Settings>(context).theme.mainTextColor)),
                         )
                       ],
                     ))),
@@ -81,7 +81,7 @@ class _ContactRowState extends State<ContactRow> {
                         iconSize: 16,
                         icon: Icon(
                           Icons.favorite,
-                          color: Provider.of<Settings>(context).theme.mainTextColor(),
+                          color: Provider.of<Settings>(context).theme.mainTextColor,
                         ),
                         tooltip: AppLocalizations.of(context)!.tooltipAcceptContactRequest,
                         onPressed: _btnApprove,
@@ -89,7 +89,7 @@ class _ContactRowState extends State<ContactRow> {
                       IconButton(
                         padding: EdgeInsets.zero,
                         iconSize: 16,
-                        icon: Icon(Icons.delete, color: Provider.of<Settings>(context).theme.mainTextColor()),
+                        icon: Icon(Icons.delete, color: Provider.of<Settings>(context).theme.mainTextColor),
                         tooltip: AppLocalizations.of(context)!.tooltipRejectContactRequest,
                         onPressed: _btnReject,
                       )
@@ -98,7 +98,7 @@ class _ContactRowState extends State<ContactRow> {
                       ? IconButton(
                           padding: EdgeInsets.zero,
                           iconSize: 16,
-                          icon: Icon(Icons.block, color: Provider.of<Settings>(context).theme.mainTextColor()),
+                          icon: Icon(Icons.block, color: Provider.of<Settings>(context).theme.mainTextColor),
                           onPressed: () {},
                         )
                       : Text(dateToNiceString(contact.lastMessageTime))),

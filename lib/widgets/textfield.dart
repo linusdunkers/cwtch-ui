@@ -7,9 +7,9 @@ doNothing(String x) {}
 // Provides a styled Text Field for use in Form Widgets.
 // Callers must provide a text controller, label helper text and a validator.
 class CwtchTextField extends StatefulWidget {
-  CwtchTextField({required this.controller, required this.labelText, this.validator, this.autofocus = false, this.onChanged = doNothing});
+  CwtchTextField({required this.controller, required this.hintText, this.validator, this.autofocus = false, this.onChanged = doNothing});
   final TextEditingController controller;
-  final String labelText;
+  final String hintText;
   final FormFieldValidator? validator;
   final Function(String) onChanged;
   final bool autofocus;
@@ -42,20 +42,19 @@ class _CwtchTextFieldState extends State<CwtchTextField> {
         enableIMEPersonalizedLearning: false,
         focusNode: _focusNode,
         decoration: InputDecoration(
-            labelText: widget.labelText,
-            labelStyle: TextStyle(color: theme.current().mainTextColor(), backgroundColor: theme.current().textfieldBackgroundColor()),
+            hintText: widget.hintText,
             floatingLabelBehavior: FloatingLabelBehavior.never,
             filled: true,
-            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), borderSide: BorderSide(color: theme.current().textfieldBorderColor(), width: 3.0)),
-            focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), borderSide: BorderSide(color: theme.current().textfieldErrorColor(), width: 3.0)),
-            errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), borderSide: BorderSide(color: theme.current().textfieldErrorColor(), width: 3.0)),
+            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), borderSide: BorderSide(color: theme.current().textfieldBorderColor, width: 3.0)),
+            focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), borderSide: BorderSide(color: theme.current().textfieldErrorColor, width: 3.0)),
+            errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), borderSide: BorderSide(color: theme.current().textfieldErrorColor, width: 3.0)),
             errorStyle: TextStyle(
-              color: theme.current().textfieldErrorColor(),
+              color: theme.current().textfieldErrorColor,
               fontWeight: FontWeight.bold,
             ),
-            fillColor: theme.current().textfieldBackgroundColor(),
+            fillColor: theme.current().textfieldBackgroundColor,
             contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), borderSide: BorderSide(color: theme.current().textfieldBorderColor(), width: 3.0))),
+            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), borderSide: BorderSide(color: theme.current().textfieldBorderColor, width: 3.0))),
       );
     });
   }
