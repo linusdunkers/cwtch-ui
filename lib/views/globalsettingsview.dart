@@ -2,7 +2,16 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:cwtch/cwtch_icons_icons.dart';
 import 'package:cwtch/models/servers.dart';
+import 'package:cwtch/themes/cwtch.dart';
+import 'package:cwtch/themes/ghost.dart';
+import 'package:cwtch/themes/mermaid.dart';
+import 'package:cwtch/themes/midnight.dart';
+import 'package:cwtch/themes/neon1.dart';
+import 'package:cwtch/themes/neon2.dart';
 import 'package:cwtch/themes/opaque.dart';
+import 'package:cwtch/themes/pumpkin.dart';
+import 'package:cwtch/themes/vampire.dart';
+import 'package:cwtch/themes/witch.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:cwtch/settings.dart';
@@ -82,7 +91,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                         secondary: Icon(CwtchIcons.change_theme, color: settings.current().mainTextColor),
                       ),
                       ListTile(
-                          title: Text("Colour Theme"),
+                          title: Text(AppLocalizations.of(context)!.themeColorLabel),
                           //AppLocalizations.of(context)!.settingTheme)),
                           trailing: DropdownButton<String>(
                               value: Provider.of<Settings>(context).theme.theme,
@@ -95,9 +104,11 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                               items: themes.keys.map<DropdownMenuItem<String>>((String themeId) {
                                 return DropdownMenuItem<String>(
                                   value: themeId,
-                                  child: Text(themes[themeId]?[mode_light]?.name ?? "Unknown"), //todo translate
+                                  child: Text(getThemeName(context, themeId)),
                                 );
-                              }).toList())),
+                              }).toList()),
+                        leading: Icon(CwtchIcons.change_theme, color: settings.current().mainTextColor),
+                      ),
                       ListTile(
                           title: Text(AppLocalizations.of(context)!.settingUIColumnPortrait, style: TextStyle(color: settings.current().mainTextColor)),
                           leading: Icon(Icons.table_chart, color: settings.current().mainTextColor),
@@ -316,6 +327,22 @@ String getLanguageFull(context, String languageCode) {
     return AppLocalizations.of(context)!.localeRU;
   }
   return languageCode;
+}
+
+/// Since we don't seem to able to dynamically pull translations, this function maps themes to their names
+String getThemeName(context, String theme) {
+  switch (theme) {
+    case cwtch_theme: return AppLocalizations.of(context)!.themeNameCwtch;
+    case ghost_theme: return AppLocalizations.of(context)!.themeNameGhost;
+    case mermaid_theme: return AppLocalizations.of(context)!.themeNameMermaid;
+    case midnight_theme: return AppLocalizations.of(context)!.themeNameMidnight;
+    case neon1_theme: return AppLocalizations.of(context)!.themeNameNeon1;
+    case neon2_theme: return AppLocalizations.of(context)!.themeNameNeon2;
+    case pumpkin_theme: return AppLocalizations.of(context)!.themeNamePumpkin;
+    case vampire_theme: return AppLocalizations.of(context)!.themeNameVampire;
+    case witch_theme: return AppLocalizations.of(context)!.themeNameWitch;
+  }
+  return theme;
 }
 
 /// Send an UpdateGlobalSettings to the Event Bus

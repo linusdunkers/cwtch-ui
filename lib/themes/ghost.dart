@@ -6,8 +6,7 @@ import 'package:flutter/material.dart';
 
 import 'opaque.dart';
 
-final ghost_theme = "ghost";
-final ghost_name = "Ghost"; //Todo translate
+const ghost_theme = "ghost";
 
 OpaqueThemeType GetGhostTheme(String mode) {
   if (mode == mode_dark) {
@@ -26,7 +25,6 @@ class GhostDark extends CwtchDark {
   static final Color settings = Color(0xFFFDFFFD);
   static final Color accent = Color(0xFFD20070);
 
-  get name => ghost_name;
   get theme => ghost_theme;
   get mode => mode_dark;
 
@@ -51,7 +49,6 @@ class GhostLight extends CwtchLight {
   static final Color settings = Color(0xFF0D0D1F);
   static final Color accent = Color(0xFFD20070);
 
-  get name => ghost_name;
   get theme => ghost_theme;
   get mode => mode_light;
 

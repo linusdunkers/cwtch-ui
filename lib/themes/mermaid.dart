@@ -6,8 +6,7 @@ import 'package:flutter/material.dart';
 
 import 'opaque.dart';
 
-final mermaid_theme = "mermaid";
-final mermaid_name = "Mermaid"; //Todo translate
+const mermaid_theme = "mermaid";
 
 OpaqueThemeType GetMermaidTheme(String mode) {
   if (mode == mode_dark) {
@@ -26,7 +25,6 @@ class MermaidDark extends CwtchDark {
   static final Color settings = Color(0xFFF7FCFD);
   static final Color accent = Color(0xFF8E64A5);
 
-  get name => mermaid_name;
   get theme => mermaid_theme;
   get mode => mode_dark;
 
@@ -51,7 +49,6 @@ class MermaidLight extends CwtchLight {
   static final Color settings = Color(0xFF102426);
   static final Color accent = Color(0xFF8E64A5);
 
-  get name => mermaid_name;
   get theme => mermaid_theme;
   get mode => mode_light;
 

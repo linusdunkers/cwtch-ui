@@ -6,8 +6,7 @@ import 'package:flutter/material.dart';
 
 import 'opaque.dart';
 
-final midnight_theme = "midnight";
-final midnight_name = "Midnight"; //Todo translate
+const midnight_theme = "midnight";
 
 OpaqueThemeType GetMidnightTheme(String mode) {
   if (mode == mode_dark) {
@@ -26,7 +25,6 @@ class MidnightDark extends CwtchDark {
   static final Color settings = Color(0xFFFFFDFF);
   static final Color accent = Color(0xFFD20070);
 
-  get name => midnight_name;
   get theme => midnight_theme;
   get mode => mode_dark;
 
@@ -51,7 +49,6 @@ class MidnightLight extends CwtchLight {
   static final Color settings = Color(0xFF1B1B1B);
   static final Color accent = Color(0xFFD20070);
 
-  get name => midnight_name;
   get theme => midnight_theme;
   get mode => mode_light;
 

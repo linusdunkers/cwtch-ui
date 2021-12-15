@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'opaque.dart';
 
-final cwtch_name = "Cwtch"; // todo translate
-final cwtch_theme = "cwtch";
+const cwtch_theme = "cwtch";
 
 final Color darkGreyPurple = Color(0xFF281831);
 final Color deepPurple = Color(0xFF422850);
@@ -45,7 +44,6 @@ class CwtchDark extends OpaqueThemeType {
   static final Color settings = whiteishPurple;
   static final Color accent = hotPink;
 
-  get name => cwtch_name;
   get theme => cwtch_theme;
   get mode => mode_dark;
 
@@ -91,7 +89,6 @@ class CwtchLight extends OpaqueThemeType {
   static final Color settings = darkPurple;
   static final Color accent = hotPink;
 
-  get name => cwtch_name;
   get theme => cwtch_theme;
   get mode => mode_light;
 

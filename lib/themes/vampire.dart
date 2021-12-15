@@ -6,8 +6,7 @@ import 'package:flutter/material.dart';
 
 import 'opaque.dart';
 
-final vampire_theme = "vampire";
-final vampire_name = "Vampire"; //Todo translate
+const vampire_theme = "vampire";
 
 OpaqueThemeType GetVampireTheme(String mode) {
   if (mode == mode_dark) {
@@ -26,7 +25,6 @@ class VampireDark extends CwtchDark {
   static final Color settings = Color(0xFFFDFFFD);
   static final Color accent = Color(0xFF8E64A5);
 
-  get name => vampire_name;
   get theme => vampire_theme;
   get mode => mode_dark;
 
@@ -51,7 +49,6 @@ class VampireLight extends CwtchLight {
   static final Color settings = Color(0xFF281831);
   static final Color accent = Color(0xFF8E64A5);
 
-  get name => vampire_name;
   get theme => vampire_theme;
   get mode => mode_light;
 

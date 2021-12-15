@@ -62,7 +62,6 @@ Color darken(Color color, [double amount = 0.15]) {
 abstract class OpaqueThemeType {
   static final Color red = Color(0xFFFF0000);
 
-  get name => "Dummy";
   get theme => "dummy";
   get mode => mode_light;
 

@@ -6,8 +6,7 @@ import 'package:flutter/material.dart';
 
 import 'opaque.dart';
 
-final witch_theme = "witch";
-final witch_name = "Witch"; //Todo translate
+const witch_theme = "witch";
 
 OpaqueThemeType GetWitchTheme(String mode) {
   if (mode == mode_dark) {
@@ -26,7 +25,6 @@ class WitchDark extends CwtchDark {
   static final Color settings = Color(0xFFFDFFFD);
   static final Color accent = Color(0xFFD20070);
 
-  get name => witch_name;
   get theme => witch_theme;
   get mode => mode_dark;
 
@@ -51,7 +49,6 @@ class WitchLight extends CwtchLight {
   static final Color settings = Color(0xFF0E1E0E);
   static final Color accent = Color(0xFFD20070);
 
-  get name => witch_name;
   get theme => witch_theme;
   get mode => mode_light;
 

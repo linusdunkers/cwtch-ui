@@ -6,8 +6,7 @@ import 'package:flutter/material.dart';
 
 import 'opaque.dart';
 
-final neon1_theme = "neon1";
-final neon1_name = "Neon1"; //Todo translate
+const neon1_theme = "neon1";
 
 OpaqueThemeType GetNeon1Theme(String mode) {
   if (mode == mode_dark) {
@@ -26,7 +25,6 @@ class Neon1Dark extends CwtchDark {
   static final Color settings = Color(0xFFFFFDFF);
   static final Color accent = Color(0xFFA604FE);
 
-  get name => neon1_name;
   get theme => neon1_theme;
   get mode => mode_dark;
 
@@ -73,7 +71,6 @@ class Neon1Light extends CwtchLight {
   static final Color settings = Color(0xFF290826);
   static final Color accent = Color(0xFFA604FE);
 
-  get name => neon1_name;
   get theme => neon1_theme;
   get mode => mode_light;
 

@@ -6,8 +6,7 @@ import 'package:flutter/material.dart';
 
 import 'opaque.dart';
 
-final pumpkin_theme = "pumpkin";
-final pumpkin_name = "Pumpkin"; //Todo translate
+const pumpkin_theme = "pumpkin";
 
 OpaqueThemeType GetPumpkinTheme(String mode) {
   if (mode == mode_dark) {
@@ -26,7 +25,6 @@ class PumpkinDark extends CwtchDark {
   static final Color settings = Color(0xFFFFFBF6);
   static final Color accent = Color(0xFF8E64A5);
 
-  get name => pumpkin_name;
   get theme => pumpkin_theme;
   get mode => mode_dark;
 
@@ -51,7 +49,6 @@ class PumpkinLight extends CwtchLight {
   static final Color settings = Color(0xFF281831);
   static final Color accent = Color(0xFF8E64A5);
 
-  get name => pumpkin_name;
   get theme => pumpkin_theme;
   get mode => mode_light;
 
