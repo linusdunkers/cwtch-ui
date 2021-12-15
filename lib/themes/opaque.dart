@@ -2,17 +2,28 @@ import 'dart:ui';
 import 'dart:core';
 
 import 'package:cwtch/themes/cwtch.dart';
+import 'package:cwtch/themes/mermaid.dart';
 import 'package:cwtch/themes/neon1.dart';
+import 'package:cwtch/themes/pumpkin.dart';
 import 'package:cwtch/themes/vampire.dart';
 import 'package:cwtch/themes/witch.dart';
 import 'package:flutter/material.dart';
 import 'package:cwtch/settings.dart';
 
+import 'ghost.dart';
+import 'midnight.dart';
+import 'neon2.dart';
+
 const mode_light = "light";
 const mode_dark = "dark";
 
 final themes = { cwtch_theme: {mode_light: CwtchLight(), mode_dark: CwtchDark()},
+  ghost_theme: {mode_light: GhostLight(), mode_dark: GhostDark()},
+  mermaid_theme: {mode_light: MermaidLight(), mode_dark: MermaidDark()},
+  midnight_theme: {mode_light: MidnightLight(), mode_dark: MidnightDark()},
   neon1_theme: {mode_light: Neon1Light(), mode_dark: Neon1Dark()},
+  neon2_theme: {mode_light: Neon2Light(), mode_dark: Neon2Dark()},
+  pumpkin_theme: {mode_light: PumpkinLight(), mode_dark: PumpkinDark()},
   witch_theme: {mode_light: WitchLight(), mode_dark: WitchDark()},
   vampire_theme: {mode_light: VampireLight(), mode_dark: VampireDark()},
 };
