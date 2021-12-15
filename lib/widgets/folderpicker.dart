@@ -28,40 +28,40 @@ class _CwtchFolderPickerState extends State<CwtchFolderPicker> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(10),
-      padding: EdgeInsets.all(2),
-      child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
-      CwtchLabel(label: widget.label),
-      SizedBox(
-        height: 20,
-      ),
-      CwtchButtonTextField(
-        controller: ctrlrVal,
-        readonly: Platform.isAndroid,
-        onPressed: () async {
-          if (Platform.isAndroid) {
-            return;
-          }
-
-          try {
-            var selectedDirectory = await getDirectoryPath();
-            if (selectedDirectory != null) {
-              //File directory = File(selectedDirectory);
-              selectedDirectory += "/";
-              ctrlrVal.text = selectedDirectory;
-              if (widget.onSave != null) {
-                widget.onSave!(selectedDirectory);
+        margin: EdgeInsets.all(10),
+        padding: EdgeInsets.all(2),
+        child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
+          CwtchLabel(label: widget.label),
+          SizedBox(
+            height: 20,
+          ),
+          CwtchButtonTextField(
+            controller: ctrlrVal,
+            readonly: Platform.isAndroid,
+            onPressed: () async {
+              if (Platform.isAndroid) {
+                return;
               }
-            } else {
-              // User canceled the picker
-            }
-          } catch (e) {
-            print(e);
-          }
-        },
-        icon: Icon(Icons.folder),
-        tooltip: "Browse",//todo: l18n
-      )
-    ]));
+
+              try {
+                var selectedDirectory = await getDirectoryPath();
+                if (selectedDirectory != null) {
+                  //File directory = File(selectedDirectory);
+                  selectedDirectory += "/";
+                  ctrlrVal.text = selectedDirectory;
+                  if (widget.onSave != null) {
+                    widget.onSave!(selectedDirectory);
+                  }
+                } else {
+                  // User canceled the picker
+                }
+              } catch (e) {
+                print(e);
+              }
+            },
+            icon: Icon(Icons.folder),
+            tooltip: "Browse", //todo: l18n
+          )
+        ]));
   }
 }

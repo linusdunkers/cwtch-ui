@@ -282,8 +282,6 @@ class ProfileInfoState extends ChangeNotifier {
         this._contacts.updateLastMessageTime(this._contacts._contacts.first.identifier, this._contacts._contacts.first.lastMessageTime);
       }
     }
-
-
   }
 
   // Parse out the server list json into our server info state struct...

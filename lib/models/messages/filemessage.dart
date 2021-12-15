@@ -19,7 +19,6 @@ class FileMessage extends Message {
   @override
   Widget getWidget(BuildContext context, Key key) {
     return ChangeNotifierProvider.value(
-        key: key,
         value: this.metadata,
         builder: (bcontext, child) {
           dynamic shareObj = jsonDecode(this.content);

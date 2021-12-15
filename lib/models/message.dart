@@ -58,11 +58,15 @@ Message compileOverlay(MessageMetadata metadata, String messageData) {
 }
 
 Future<Message> messageHandler(BuildContext context, String profileOnion, int conversationIdentifier, int index, {bool byID = false}) {
-  var cache = Provider.of<ProfileInfoState>(context).contactList.getContact(conversationIdentifier)?.messageCache;
-  if (cache != null && cache.length > index) {
-    if (cache[index] != null) {
-      return Future.value(compileOverlay(cache[index]!.metadata, cache[index]!.wrapper));
+  try {
+    var cache = Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(conversationIdentifier)?.messageCache;
+    if (cache != null && cache.length > index) {
+      if (cache[index] != null) {
+        return Future.value(compileOverlay(cache[index]!.metadata, cache[index]!.wrapper));
+      }
     }
+  } catch (e) {
+    // provider check failed...make an expensive call...
   }
 
   try {

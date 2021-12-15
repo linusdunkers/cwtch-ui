@@ -229,7 +229,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                               ),
                               Visibility(
                                 visible: settings.isExperimentEnabled(FileSharingExperiment),
-                                child: Column(children:[
+                                child: Column(children: [
                                   SwitchListTile(
                                     title: Text(AppLocalizations.of(context)!.settingImagePreviews, style: TextStyle(color: settings.current().mainTextColor())),
                                     subtitle: Text(AppLocalizations.of(context)!.settingImagePreviewsDescription),

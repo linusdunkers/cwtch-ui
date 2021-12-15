@@ -19,7 +19,6 @@ class InviteMessage extends Message {
   @override
   Widget getWidget(BuildContext context, Key key) {
     return ChangeNotifierProvider.value(
-        key: key,
         value: this.metadata,
         builder: (bcontext, child) {
           String inviteTarget;
@@ -37,7 +36,7 @@ class InviteMessage extends Message {
               inviteTarget = jsonObj['GroupID'];
               inviteNick = jsonObj['GroupName'];
             } else {
-              return MessageRow(MalformedBubble(), key: key);
+              return MessageRow(MalformedBubble());
             }
           }
           return MessageRow(InvitationBubble(overlay, inviteTarget, inviteNick, invite), key: key);

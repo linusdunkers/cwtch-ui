@@ -23,46 +23,42 @@ class _RemoteServerRowState extends State<RemoteServerRow> {
   @override
   Widget build(BuildContext context) {
     var server = Provider.of<RemoteServerInfoState>(context);
-    var description = server.description.isNotEmpty ?  server.description : server.onion;
+    var description = server.description.isNotEmpty ? server.description : server.onion;
     var running = server.status == "Synced";
-    return  Consumer<ProfileInfoState>(
-        builder: (context, profile, child) {
-          return Card(clipBehavior: Clip.antiAlias,
+    return Consumer<ProfileInfoState>(builder: (context, profile, child) {
+      return Card(
+          clipBehavior: Clip.antiAlias,
           margin: EdgeInsets.all(0.0),
           child: InkWell(
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                Padding(
+                    padding: const EdgeInsets.all(6.0), //border size
+                    child: Icon(CwtchIcons.dns_24px,
+                        color: running ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor() : Provider.of<Settings>(context).theme.portraitOfflineBorderColor(), size: 64)),
+                Expanded(
+                    child: Column(
                   children: [
-                    Padding(
-                        padding: const EdgeInsets.all(6.0), //border size
-                        child: Icon(CwtchIcons.dns_24px,
-                            color: running ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor() : Provider.of<Settings>(context).theme.portraitOfflineBorderColor(),
-                            size: 64)
-
+                    Text(
+                      description,
+                      semanticsLabel: description,
+                      style: Provider.of<FlwtchState>(context)
+                          .biggerFont
+                          .apply(color: running ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor() : Provider.of<Settings>(context).theme.portraitOfflineBorderColor()),
+                      softWrap: true,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    Expanded(
-                        child: Column(
-                          children: [
-                            Text(
-                              description,
-                              semanticsLabel: description,
-                              style: Provider.of<FlwtchState>(context).biggerFont.apply(color: running ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor() : Provider.of<Settings>(context).theme.portraitOfflineBorderColor()),
-                              softWrap: true,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            Visibility(
-                                visible: !Provider.of<Settings>(context).streamerMode,
-                                child: ExcludeSemantics(
-                                    child: Text(
-                                      server.onion,
-                                      softWrap: true,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(color: running ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor() : Provider.of<Settings>(context).theme.portraitOfflineBorderColor()),
-                                    )))
-                          ],
-                        )),
-
-                  ]),
+                    Visibility(
+                        visible: !Provider.of<Settings>(context).streamerMode,
+                        child: ExcludeSemantics(
+                            child: Text(
+                          server.onion,
+                          softWrap: true,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(color: running ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor() : Provider.of<Settings>(context).theme.portraitOfflineBorderColor()),
+                        )))
+                  ],
+                )),
+              ]),
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute<void>(
                     settings: RouteSettings(name: "remoteserverview"),
@@ -72,7 +68,7 @@ class _RemoteServerRowState extends State<RemoteServerRow> {
                         child: RemoteServerView(),
                       );
                     }));
-              }
-          ));});
-    }
+              }));
+    });
+  }
 }

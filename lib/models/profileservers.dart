@@ -35,7 +35,7 @@ class ProfileServerListState extends ChangeNotifier {
       // online v offline
       if (a.status == "Synced" && b.status != "Synced") {
         return -1;
-      } else  if (a.status != "Synced" && b.status == "Synced") {
+      } else if (a.status != "Synced" && b.status == "Synced") {
         return 1;
       }
 
@@ -73,7 +73,7 @@ class RemoteServerInfoState extends ChangeNotifier {
   List<ContactInfoState> _groups = [];
 
   RemoteServerInfoState({required this.onion, required this.identifier, required this.description, required this.status});
-  
+
   void updateDescription(String newDescription) {
     this.description = newDescription;
     notifyListeners();

@@ -49,6 +49,26 @@ class FileBubbleState extends State<FileBubble> {
     var borderRadiousEh = 15.0;
     var showFileSharing = Provider.of<Settings>(context).isExperimentEnabled(FileSharingExperiment);
     var prettyDate = DateFormat.yMd(Platform.localeName).add_jm().format(Provider.of<MessageMetadata>(context).timestamp);
+    var downloadComplete = Provider.of<ProfileInfoState>(context).downloadComplete(widget.fileKey());
+    var downloadInterrupted = Provider.of<ProfileInfoState>(context).downloadInterrupted(widget.fileKey());
+
+    if (downloadInterrupted) {
+      Provider.of<FlwtchState>(context, listen: false).cwtch.CheckDownloadStatus(Provider.of<ProfileInfoState>(context, listen: false).onion, widget.fileKey());
+    }
+    var path = Provider.of<ProfileInfoState>(context).downloadFinalPath(widget.fileKey());
+    if (downloadComplete) {
+      var lpath = path!.toLowerCase();
+      if (lpath.endsWith("jpg") || lpath.endsWith("jpeg") || lpath.endsWith("png") || lpath.endsWith("gif") || lpath.endsWith("webp") || lpath.endsWith("bmp")) {
+        if (myFile == null) {
+          setState(() {
+            myFile = new File(path);
+          });
+        }
+      }
+    }
+
+    var downloadActive = Provider.of<ProfileInfoState>(context).downloadActive(widget.fileKey());
+    var downloadGotManifest = Provider.of<ProfileInfoState>(context).downloadGotManifest(widget.fileKey());
 
     // If the sender is not us, then we want to give them a nickname...
     var senderDisplayStr = "";
@@ -61,85 +81,76 @@ class FileBubbleState extends State<FileBubble> {
       }
     }
     return LayoutBuilder(builder: (context, constraints) {
-    var wdgSender = Center(
-        widthFactor: 1,
-        child: SelectableText(senderDisplayStr + '\u202F',
-            style: TextStyle(fontSize: 9.0, color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor() : Provider.of<Settings>(context).theme.messageFromOtherTextColor())));
-
-    var isPreview = false;
-    var wdgMessage = !showFileSharing
-        ? Text(AppLocalizations.of(context)!.messageEnableFileSharing)
-        : fromMe
-            ? senderFileChrome(AppLocalizations.of(context)!.messageFileSent, widget.nameSuggestion, widget.rootHash, widget.fileSize)
-            : (fileChrome(AppLocalizations.of(context)!.messageFileOffered + ":", widget.nameSuggestion, widget.rootHash, widget.fileSize,
-                Provider.of<ProfileInfoState>(context).downloadSpeed(widget.fileKey())));
-    Widget wdgDecorations;
-    if (!showFileSharing) {
-      wdgDecorations = Text('\u202F');
-    } else if (fromMe) {
-      wdgDecorations = MessageBubbleDecoration(ackd: Provider.of<MessageMetadata>(context).ackd, errored: Provider.of<MessageMetadata>(context).error, fromMe: fromMe, prettyDate: prettyDate);
-    } else if (Provider.of<ProfileInfoState>(context).downloadComplete(widget.fileKey())) {
-      // in this case, whatever marked download.complete would have also set the path
-      var path = Provider.of<ProfileInfoState>(context).downloadFinalPath(widget.fileKey())!;
-      var lpath = path.toLowerCase();
-      if (lpath.endsWith("jpg") || lpath.endsWith("jpeg") || lpath.endsWith("png") || lpath.endsWith("gif") || lpath.endsWith("webp") || lpath.endsWith("bmp")) {
-        if (myFile == null) {
-          setState(() {
-            myFile = new File(path);
-          });
-        }
-
-        isPreview = true;
-        wdgDecorations = GestureDetector(
-          child: Image.file(
-            myFile!,
-            cacheWidth: 2048, // limit the amount of space the image can decode too, we keep this high-ish to allow quality previews...
-            filterQuality: FilterQuality.medium,
-            fit: BoxFit.fill,
-            alignment: Alignment.center,
-            width: constraints.maxWidth,
-            isAntiAlias: false,
-            errorBuilder: (context, error, stackTrace) {
-              return MalformedBubble();
-            },
-          ),
-          onTap: () {
-            pop(myFile!, wdgMessage);
-          },
-        );
-      } else {
-        wdgDecorations = Text(AppLocalizations.of(context)!.fileSavedTo + ': ' + path + '\u202F');
-      }
-    } else if (Provider.of<ProfileInfoState>(context).downloadActive(widget.fileKey())) {
-      if (!Provider.of<ProfileInfoState>(context).downloadGotManifest(widget.fileKey())) {
-        wdgDecorations = Text(AppLocalizations.of(context)!.retrievingManifestMessage + '\u202F');
-      } else {
-        wdgDecorations = LinearProgressIndicator(
-          value: Provider.of<ProfileInfoState>(context).downloadProgress(widget.fileKey()),
-          color: Provider.of<Settings>(context).theme.defaultButtonActiveColor(),
-        );
-      }
-    } else if (flagStarted) {
-      // in this case, the download was done in a previous application launch,
-      // so we probably have to request an info lookup
-      if (!Provider.of<ProfileInfoState>(context).downloadInterrupted(widget.fileKey())) {
-        wdgDecorations = Text(AppLocalizations.of(context)!.fileCheckingStatus + '...' + '\u202F');
-        Provider.of<FlwtchState>(context, listen: false).cwtch.CheckDownloadStatus(Provider.of<ProfileInfoState>(context, listen: false).onion, widget.fileKey());
-      } else {
-        var path = Provider.of<ProfileInfoState>(context).downloadFinalPath(widget.fileKey()) ?? "";
-        wdgDecorations = Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(AppLocalizations.of(context)!.fileInterrupted + ': ' + path + '\u202F'),
-          ElevatedButton(onPressed: _btnResume, child: Text(AppLocalizations.of(context)!.verfiyResumeButton))
-        ]);
-      }
-    } else {
-      wdgDecorations = Center(
+      var wdgSender = Center(
           widthFactor: 1,
-          child: Wrap(children: [
-            Padding(padding: EdgeInsets.all(5), child: ElevatedButton(child: Text(AppLocalizations.of(context)!.downloadFileButton + '\u202F'), onPressed: _btnAccept)),
-          ]));
-    }
+          child: SelectableText(senderDisplayStr + '\u202F',
+              style: TextStyle(fontSize: 9.0, color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor() : Provider.of<Settings>(context).theme.messageFromOtherTextColor())));
 
+      var isPreview = false;
+      var wdgMessage = !showFileSharing
+          ? Text(AppLocalizations.of(context)!.messageEnableFileSharing)
+          : fromMe
+              ? senderFileChrome(AppLocalizations.of(context)!.messageFileSent, widget.nameSuggestion, widget.rootHash, widget.fileSize)
+              : (fileChrome(AppLocalizations.of(context)!.messageFileOffered + ":", widget.nameSuggestion, widget.rootHash, widget.fileSize,
+                  Provider.of<ProfileInfoState>(context).downloadSpeed(widget.fileKey())));
+      Widget wdgDecorations;
+      if (!showFileSharing) {
+        wdgDecorations = Text('\u202F');
+      } else if (fromMe) {
+        wdgDecorations = MessageBubbleDecoration(ackd: Provider.of<MessageMetadata>(context).ackd, errored: Provider.of<MessageMetadata>(context).error, fromMe: fromMe, prettyDate: prettyDate);
+      } else if (downloadComplete) {
+        // in this case, whatever marked download.complete would have also set the path
+        var lpath = path!.toLowerCase();
+        if (lpath.endsWith("jpg") || lpath.endsWith("jpeg") || lpath.endsWith("png") || lpath.endsWith("gif") || lpath.endsWith("webp") || lpath.endsWith("bmp")) {
+          isPreview = true;
+          wdgDecorations = GestureDetector(
+            child: Image.file(
+              myFile!,
+              cacheWidth: 2048, // limit the amount of space the image can decode too, we keep this high-ish to allow quality previews...
+              filterQuality: FilterQuality.medium,
+              fit: BoxFit.fill,
+              alignment: Alignment.center,
+              width: constraints.maxWidth,
+              isAntiAlias: false,
+              errorBuilder: (context, error, stackTrace) {
+                return MalformedBubble();
+              },
+            ),
+            onTap: () {
+              pop(myFile!, wdgMessage);
+            },
+          );
+        } else {
+          wdgDecorations = Text(AppLocalizations.of(context)!.fileSavedTo + ': ' + path + '\u202F');
+        }
+      } else if (downloadActive) {
+        if (!downloadGotManifest) {
+          wdgDecorations = Text(AppLocalizations.of(context)!.retrievingManifestMessage + '\u202F');
+        } else {
+          wdgDecorations = LinearProgressIndicator(
+            value: Provider.of<ProfileInfoState>(context).downloadProgress(widget.fileKey()),
+            color: Provider.of<Settings>(context).theme.defaultButtonActiveColor(),
+          );
+        }
+      } else if (flagStarted) {
+        // in this case, the download was done in a previous application launch,
+        // so we probably have to request an info lookup
+        if (!downloadInterrupted) {
+          wdgDecorations = Text(AppLocalizations.of(context)!.fileCheckingStatus + '...' + '\u202F');
+        } else {
+          var path = Provider.of<ProfileInfoState>(context).downloadFinalPath(widget.fileKey()) ?? "";
+          wdgDecorations = Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(AppLocalizations.of(context)!.fileInterrupted + ': ' + path + '\u202F'),
+            ElevatedButton(onPressed: _btnResume, child: Text(AppLocalizations.of(context)!.verfiyResumeButton))
+          ]);
+        }
+      } else {
+        wdgDecorations = Center(
+            widthFactor: 1,
+            child: Wrap(children: [
+              Padding(padding: EdgeInsets.all(5), child: ElevatedButton(child: Text(AppLocalizations.of(context)!.downloadFileButton + '\u202F'), onPressed: _btnAccept)),
+            ]));
+      }
 
       return Container(
           constraints: constraints,
@@ -193,7 +204,7 @@ class FileBubbleState extends State<FileBubble> {
           Provider.of<ProfileInfoState>(context, listen: false).downloadInit(widget.fileKey(), (widget.fileSize / 4096).ceil());
           Provider.of<FlwtchState>(context, listen: false).cwtch.SetMessageAttribute(profileOnion, conversation, 0, idx, "file-downloaded", "true");
           //Provider.of<MessageMetadata>(context, listen: false).flags |= 0x02;
-          ContactInfoState? contact = Provider.of<ProfileInfoState>(context).contactList.findContact(Provider.of<MessageMetadata>(context).senderHandle);
+          ContactInfoState? contact = Provider.of<ProfileInfoState>(context, listen: false).contactList.findContact(Provider.of<MessageMetadata>(context).senderHandle);
           if (contact != null) {
             Provider.of<FlwtchState>(context, listen: false).cwtch.DownloadFile(profileOnion, contact.identifier, file.path, manifestPath, widget.fileKey());
           }
