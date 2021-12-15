@@ -140,7 +140,7 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                         val data = JSONObject(evt.Data);
                         val tempFile = data.getString("TempFile");
                         val fileKey = data.getString("FileKey");
-                        if (tempFile != "") {
+                        if (tempFile != "" && tempFile != data.getString("FilePath")) {
                             val filePath = data.getString("FilePath");
                             Log.i("FlwtchWorker", "moving "+tempFile+" to "+filePath);
                             val sourcePath = Paths.get(tempFile);

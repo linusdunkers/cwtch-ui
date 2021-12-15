@@ -232,7 +232,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                 child: Column(children:[
                                   SwitchListTile(
                                     title: Text("Image Previews and Profile Pics", style: TextStyle(color: settings.current().mainTextColor())),
-                                    subtitle: Text("TODO: Write a description with lots of warnings about how image previews can be an insecurity vector and you should only enable them with great caution..."),
+                                    subtitle: Text("Images"),
                                     value: settings.isExperimentEnabled(ImagePreviewsExperiment),
                                     onChanged: (bool value) {
                                       if (value) {

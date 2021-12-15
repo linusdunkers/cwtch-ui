@@ -23,6 +23,9 @@ import io.flutter.plugin.common.ErrorLogResult
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 import java.io.File
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.nio.file.StandardCopyOption
 
 import android.net.Uri
 import android.provider.DocumentsContract
@@ -109,7 +112,16 @@ class MainActivity: FlutterActivity() {
             val targetPath = intent!!.getData().toString()
             var srcFile = File(this.exportFromPath)
             Log.i("MainActivity:PREVIEW_EXPORT", "exporting previewed file")
-            srcFile.copyTo(File(targetPath));
+            val sourcePath = Paths.get(this.exportFromPath);
+            val targetUri = Uri.parse(targetPath);
+            val os = this.applicationContext.getContentResolver().openOutputStream(targetUri);
+            val bytesWritten = Files.copy(sourcePath, os);
+            Log.d("MainActivity:PREVIEW_EXPORT", "copied " + bytesWritten.toString() + " bytes");
+            if (bytesWritten != 0L) {
+                os?.flush();
+                os?.close();
+                //Files.delete(sourcePath);
+            }
         }
     }
 
