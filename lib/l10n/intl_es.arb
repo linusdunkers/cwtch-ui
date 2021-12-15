@@ -1,6 +1,8 @@
 {
     "@@locale": "es",
-    "@@last_modified": "2021-12-13T23:43:26+01:00",
+    "@@last_modified": "2021-12-15T02:08:40+01:00",
+    "settingImagePreviewsDescription": "Images will be downloaded and previewed automatically. Please note that image previews can often lead to security vulnerabilities, and you should not enable this Experiment if you use Cwtch with untrusted contacts. Profile pictures are planned for Cwtch 1.6.",
+    "settingImagePreviews": "Image Previews and Profile Pictures",
     "experimentClickableLinksDescription": "The clickable links experiment allows you to click on URLs shared in messages",
     "enableExperimentClickableLinks": "Enable Clickable Links",
     "serverConnectionsLabel": "Connection",
