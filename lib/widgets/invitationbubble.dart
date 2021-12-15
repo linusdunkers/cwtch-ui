@@ -97,8 +97,7 @@ class InvitationBubbleState extends State<InvitationBubble> {
           child: Container(
               decoration: BoxDecoration(
                 color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeBackgroundColor : Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor,
-                border:
-                    Border.all(color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeBackgroundColor : Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor, width: 1),
+                border: Border.all(color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeBackgroundColor : Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor, width: 1),
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(borderRadiousEh),
                   topRight: Radius.circular(borderRadiousEh),

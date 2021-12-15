@@ -86,10 +86,10 @@ class _AddEditServerViewState extends State<AddEditServerView> {
                               // Onion
                               Visibility(
                                   visible: serverInfoState.onion.isNotEmpty,
-                                  child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                    CwtchLabel(label: AppLocalizations.of(context)!.serverAddress),
-                                    SelectableText(serverInfoState.onion)
-                                  ])),
+                                  child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [CwtchLabel(label: AppLocalizations.of(context)!.serverAddress), SelectableText(serverInfoState.onion)])),
 
                               // Description
                               Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -157,25 +157,18 @@ class _AddEditServerViewState extends State<AddEditServerView> {
                                       height: 20,
                                     ),
                                     Text(AppLocalizations.of(context)!.serverMetricsLabel, style: Provider.of<FlwtchState>(context).biggerFont),
-                                    Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Row( crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                            Text(AppLocalizations.of(context)!.serverTotalMessagesLabel),
-                                          ]),
-                                          Text(serverInfoState.totalMessages.toString())
-                                        ]),
-
-                                    Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Row( crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                            Text(AppLocalizations.of(context)!.serverConnectionsLabel),
-                                          ]),
-                                          Text(serverInfoState.connections.toString())
-                                        ]),
-
-
+                                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                                      Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                        Text(AppLocalizations.of(context)!.serverTotalMessagesLabel),
+                                      ]),
+                                      Text(serverInfoState.totalMessages.toString())
+                                    ]),
+                                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                                      Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                        Text(AppLocalizations.of(context)!.serverConnectionsLabel),
+                                      ]),
+                                      Text(serverInfoState.connections.toString())
+                                    ]),
                                   ])),
 
                               // ***** Password *****

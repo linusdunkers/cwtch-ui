@@ -93,7 +93,7 @@ class CwtchLight extends OpaqueThemeType {
   get backgroundPaneColor => header; //softPurple;
   get backgroundHilightElementColor => softPurple;
   get mainTextColor => settings;
-  get sendHintTextColor  => purple;
+  get sendHintTextColor => purple;
   get hilightElementColor => purple; //darkPurple; // todo shouldn't be this, too dark, makes font unreadable
   get defaultButtonColor => accent; // hotPink;
   get defaultButtonTextColor => whitePurple; // ?

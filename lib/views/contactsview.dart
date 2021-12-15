@@ -117,7 +117,7 @@ class _ContactsViewState extends State<ContactsView> {
     if (Provider.of<Settings>(context, listen: false).isExperimentEnabled(TapirGroupsExperiment) || Provider.of<Settings>(context, listen: false).isExperimentEnabled(ServerManagementExperiment)) {
       actions.add(IconButton(
           icon: Icon(CwtchIcons.dns_24px),
-          tooltip:  AppLocalizations.of(context)!.manageKnownServersButton,
+          tooltip: AppLocalizations.of(context)!.manageKnownServersButton,
           onPressed: () {
             _pushServers();
           }));

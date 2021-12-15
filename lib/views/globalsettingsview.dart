@@ -91,21 +91,21 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                         secondary: Icon(CwtchIcons.change_theme, color: settings.current().mainTextColor),
                       ),
                       ListTile(
-                          title: Text(AppLocalizations.of(context)!.themeColorLabel),
-                          trailing: DropdownButton<String>(
-                              value: Provider.of<Settings>(context).theme.theme,
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  settings.setTheme(newValue!, settings.theme.mode);
-                                  saveSettings(context);
-                                });
-                              },
-                              items: themes.keys.map<DropdownMenuItem<String>>((String themeId) {
-                                return DropdownMenuItem<String>(
-                                  value: themeId,
-                                  child: Text(getThemeName(context, themeId)),
-                                );
-                              }).toList()),
+                        title: Text(AppLocalizations.of(context)!.themeColorLabel),
+                        trailing: DropdownButton<String>(
+                            value: Provider.of<Settings>(context).theme.theme,
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                settings.setTheme(newValue!, settings.theme.mode);
+                                saveSettings(context);
+                              });
+                            },
+                            items: themes.keys.map<DropdownMenuItem<String>>((String themeId) {
+                              return DropdownMenuItem<String>(
+                                value: themeId,
+                                child: Text(getThemeName(context, themeId)),
+                              );
+                            }).toList()),
                         leading: Icon(CwtchIcons.change_theme, color: settings.current().mainTextColor),
                       ),
                       ListTile(
@@ -331,15 +331,24 @@ String getLanguageFull(context, String languageCode) {
 /// Since we don't seem to able to dynamically pull translations, this function maps themes to their names
 String getThemeName(context, String theme) {
   switch (theme) {
-    case cwtch_theme: return AppLocalizations.of(context)!.themeNameCwtch;
-    case ghost_theme: return AppLocalizations.of(context)!.themeNameGhost;
-    case mermaid_theme: return AppLocalizations.of(context)!.themeNameMermaid;
-    case midnight_theme: return AppLocalizations.of(context)!.themeNameMidnight;
-    case neon1_theme: return AppLocalizations.of(context)!.themeNameNeon1;
-    case neon2_theme: return AppLocalizations.of(context)!.themeNameNeon2;
-    case pumpkin_theme: return AppLocalizations.of(context)!.themeNamePumpkin;
-    case vampire_theme: return AppLocalizations.of(context)!.themeNameVampire;
-    case witch_theme: return AppLocalizations.of(context)!.themeNameWitch;
+    case cwtch_theme:
+      return AppLocalizations.of(context)!.themeNameCwtch;
+    case ghost_theme:
+      return AppLocalizations.of(context)!.themeNameGhost;
+    case mermaid_theme:
+      return AppLocalizations.of(context)!.themeNameMermaid;
+    case midnight_theme:
+      return AppLocalizations.of(context)!.themeNameMidnight;
+    case neon1_theme:
+      return AppLocalizations.of(context)!.themeNameNeon1;
+    case neon2_theme:
+      return AppLocalizations.of(context)!.themeNameNeon2;
+    case pumpkin_theme:
+      return AppLocalizations.of(context)!.themeNamePumpkin;
+    case vampire_theme:
+      return AppLocalizations.of(context)!.themeNameVampire;
+    case witch_theme:
+      return AppLocalizations.of(context)!.themeNameWitch;
   }
   return theme;
 }

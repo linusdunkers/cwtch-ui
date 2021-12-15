@@ -17,7 +17,8 @@ import 'neon2.dart';
 const mode_light = "light";
 const mode_dark = "dark";
 
-final themes = { cwtch_theme: {mode_light: CwtchLight(), mode_dark: CwtchDark()},
+final themes = {
+  cwtch_theme: {mode_light: CwtchLight(), mode_dark: CwtchDark()},
   ghost_theme: {mode_light: GhostLight(), mode_dark: GhostDark()},
   mermaid_theme: {mode_light: MermaidLight(), mode_dark: MermaidDark()},
   midnight_theme: {mode_light: MidnightLight(), mode_dark: MidnightDark()},
@@ -169,13 +170,10 @@ ThemeData mkThemeData(Settings opaque) {
         )),
       ),
     ),
-    scrollbarTheme: ScrollbarThemeData(
-        isAlwaysShown: false, thumbColor: MaterialStateProperty.all(opaque.current().scrollbarDefaultColor)),
+    scrollbarTheme: ScrollbarThemeData(isAlwaysShown: false, thumbColor: MaterialStateProperty.all(opaque.current().scrollbarDefaultColor)),
     tabBarTheme: TabBarTheme(indicator: UnderlineTabIndicator(borderSide: BorderSide(color: opaque.current().defaultButtonActiveColor))),
     dialogTheme: DialogTheme(
-        backgroundColor: opaque.current().backgroundPaneColor,
-        titleTextStyle: TextStyle(color: opaque.current().mainTextColor),
-        contentTextStyle: TextStyle(color: opaque.current().mainTextColor)),
+        backgroundColor: opaque.current().backgroundPaneColor, titleTextStyle: TextStyle(color: opaque.current().mainTextColor), contentTextStyle: TextStyle(color: opaque.current().mainTextColor)),
     textTheme: TextTheme(
         headline1: TextStyle(color: opaque.current().mainTextColor),
         headline2: TextStyle(color: opaque.current().mainTextColor),
@@ -196,10 +194,7 @@ ThemeData mkThemeData(Settings opaque) {
       trackColor: MaterialStateProperty.all(opaque.current().dropShadowColor),
     ),
     floatingActionButtonTheme: FloatingActionButtonThemeData(
-        backgroundColor: opaque.current().defaultButtonColor,
-        hoverColor: opaque.current().defaultButtonActiveColor,
-        enableFeedback: true,
-        splashColor: opaque.current().defaultButtonActiveColor),
+        backgroundColor: opaque.current().defaultButtonColor, hoverColor: opaque.current().defaultButtonActiveColor, enableFeedback: true, splashColor: opaque.current().defaultButtonActiveColor),
     textSelectionTheme: TextSelectionThemeData(
         cursorColor: opaque.current().defaultButtonActiveColor, selectionColor: opaque.current().defaultButtonActiveColor, selectionHandleColor: opaque.current().defaultButtonActiveColor),
   );

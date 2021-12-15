@@ -37,7 +37,6 @@ class Settings extends ChangeNotifier {
   bool blockUnknownConnections = false;
   bool streamerMode = false;
 
-
   void setTheme(String themeId, String mode) {
     theme = getTheme(themeId, mode);
     notifyListeners();
@@ -220,7 +219,6 @@ class Settings extends ChangeNotifier {
   /// Convert this Settings object to a JSON representation for serialization on the
   /// event bus.
   dynamic asJson() {
-
     return {
       "Locale": this.locale.languageCode,
       "Theme": theme.theme,

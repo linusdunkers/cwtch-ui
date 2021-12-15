@@ -314,8 +314,7 @@ class _MessageViewState extends State<MessageView> {
       children = [composeBox];
     }
 
-    return Container(
-        color: Provider.of<Settings>(context).theme.backgroundMainColor, child: Column(mainAxisSize: MainAxisSize.min, children: children));
+    return Container(color: Provider.of<Settings>(context).theme.backgroundMainColor, child: Column(mainAxisSize: MainAxisSize.min, children: children));
   }
 
   // Send the message if enter is pressed without the shift key...

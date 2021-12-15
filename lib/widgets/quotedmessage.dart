@@ -90,9 +90,7 @@ class QuotedMessageBubbleState extends State<QuotedMessageBubble> {
           child: Container(
               child: Container(
                   decoration: BoxDecoration(
-                    color: error
-                        ? malformedColor
-                        : (fromMe ? Provider.of<Settings>(context).theme.messageFromMeBackgroundColor : Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor),
+                    color: error ? malformedColor : (fromMe ? Provider.of<Settings>(context).theme.messageFromMeBackgroundColor : Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor),
                     border: Border.all(
                         color: error
                             ? malformedColor
