@@ -92,8 +92,8 @@ class CwtchNotifier {
         if (serverInfoState != null) {
           status = serverInfoState.status;
         }
-        if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"]) == null) {
-          profileCN.getProfile(data["ProfileOnion"])?.contactList.add(ContactInfoState(data["ProfileOnion"], data["ConversationID"], data["GroupID"],
+        if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(int.parse(data["ConversationID"])) == null) {
+          profileCN.getProfile(data["ProfileOnion"])?.contactList.add(ContactInfoState(data["ProfileOnion"], int.parse(data["ConversationID"]), data["GroupID"],
               authorization: ContactAuthorization.approved,
               imagePath: data["PicturePath"],
               nickname: data["GroupName"],
@@ -101,7 +101,7 @@ class CwtchNotifier {
               server: data["GroupServer"],
               isGroup: true,
               lastMessageTime: DateTime.now()));
-          profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(data["GroupID"], DateTime.now());
+          profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(int.parse(data["ConversationID"]), DateTime.now());
         }
         break;
       case "PeerDeleted":
@@ -303,8 +303,8 @@ class CwtchNotifier {
       case "AcceptGroupInvite":
         EnvironmentConfig.debugLog("accept group invite");
 
-        profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"])!.authorization = ContactAuthorization.approved;
-        profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(data["GroupID"], DateTime.fromMillisecondsSinceEpoch(0));
+        profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(int.parse(data["ConversationID"]))!.authorization = ContactAuthorization.approved;
+        profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(int.parse(data["ConversationID"]), DateTime.fromMillisecondsSinceEpoch(0));
         break;
       case "ServerStateChange":
         // Update the Server Cache
@@ -317,13 +317,14 @@ class CwtchNotifier {
         profileCN.getProfile(data["ProfileOnion"])?.contactList.resort();
         break;
       case "SetGroupAttribute":
+        int identifier = int.parse(data["ConversationID"]);
         if (data["Key"] == "local.name") {
-          if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"]) != null) {
-            profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"])!.nickname = data["Data"];
+          if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier) != null) {
+            profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.nickname = data["Data"];
           }
         } else if (data["Key"] == "local.archived") {
-          if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"]) != null) {
-            profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["GroupID"])!.isArchived = data["Data"] == "true";
+          if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier) != null) {
+            profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.isArchived = data["Data"] == "true";
           }
         } else {
           EnvironmentConfig.debugLog("unhandled set group attribute event: ${data['Key']}");
