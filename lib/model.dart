@@ -53,6 +53,11 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void SetModalState(ModalState newState) {
+    modalState = newState;
+    notifyListeners();
+  }
+
   String? get selectedProfile => _selectedProfile;
   set selectedProfile(String? newVal) {
     this._selectedProfile = newVal;

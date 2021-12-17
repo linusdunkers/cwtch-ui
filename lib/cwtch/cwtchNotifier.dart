@@ -374,6 +374,12 @@ class CwtchNotifier {
         break;
       case "ImportingProfileEvent":
         break;
+      case "StartingStorageMigration":
+        appState.SetModalState(ModalState.storageMigration);
+        break;
+      case "DoneStorageMigration":
+        appState.SetModalState(ModalState.none);
+        break;
       default:
         EnvironmentConfig.debugLog("unhandled event: $type");
     }
