@@ -151,7 +151,10 @@ class CwtchGomobile implements Cwtch {
 
   // ignore: non_constant_identifier_names
   void ExportPreviewedFile(String sourceFile, String suggestion) {
-    cwtchPlatform.invokeMethod("ExportPreviewedFile", {"Path": sourceFile, "FileName": suggestion,});
+    cwtchPlatform.invokeMethod("ExportPreviewedFile", {
+      "Path": sourceFile,
+      "FileName": suggestion,
+    });
   }
 
   @override

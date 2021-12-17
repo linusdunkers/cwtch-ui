@@ -250,12 +250,12 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                   Visibility(
                                     visible: settings.isExperimentEnabled(ImagePreviewsExperiment) && !Platform.isAndroid,
                                     child: CwtchFolderPicker(
-                                        label: AppLocalizations.of(context)!.settingDownloadFolder,
-                                        initialValue: settings.downloadPath,
-                                        onSave: (newVal) {
-                                          settings.downloadPath = newVal;
-                                          saveSettings(context);
-                                        },
+                                      label: AppLocalizations.of(context)!.settingDownloadFolder,
+                                      initialValue: settings.downloadPath,
+                                      onSave: (newVal) {
+                                        settings.downloadPath = newVal;
+                                        saveSettings(context);
+                                      },
                                     ),
                                   ),
                                   SwitchListTile(
