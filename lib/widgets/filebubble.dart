@@ -82,7 +82,7 @@ class FileBubbleState extends State<FileBubble> {
         senderDisplayStr = Provider.of<MessageMetadata>(context).senderHandle;
       }
     }
-    return LayoutBuilder(builder: (context, constraints) {
+    return LayoutBuilder(builder: (bcontext, constraints) {
       var wdgSender = Center(
           widthFactor: 1,
           child: SelectableText(senderDisplayStr + '\u202F',
@@ -119,7 +119,7 @@ class FileBubbleState extends State<FileBubble> {
               },
             ),
             onTap: () {
-              pop(myFile!, wdgMessage);
+              pop(bcontext, myFile!, wdgMessage);
             },
           );
         } else {
@@ -334,30 +334,23 @@ class FileBubbleState extends State<FileBubble> {
     );
   }
 
-  void pop(File myFile, Widget meta) async {
+  void pop(context, File myFile, Widget meta) async {
     await showDialog(
         context: context,
         builder: (_) => Dialog(
-                child: Container(
+            alignment: Alignment.center,
+            child: Container(
               padding: EdgeInsets.all(10),
-              width: 500,
-              height: 550,
               child: Column(children: [
                 meta,
-                Container(
-                  width: 300,
-                  height: 300,
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                    image: Image.file(myFile, cacheHeight: 1024, cacheWidth: 1024).image,
-                    fit: BoxFit.fitWidth,
-                    filterQuality: FilterQuality.none,
-                  )),
+                Image.file(
+                  myFile,
+                  cacheHeight: (MediaQuery.of(context).size.height * 0.6).floor(),
+                  cacheWidth: (MediaQuery.of(context).size.width * 0.6).floor(),
+                  fit: BoxFit.scaleDown,
                 ),
-                Visibility(
-                    visible: Platform.isAndroid,
-                    child: IconButton(icon: Icon(Icons.arrow_downward), onPressed: androidExport)
-                ),
+                Visibility(visible: !Platform.isAndroid, child: Text(myFile.path, textAlign: TextAlign.center)),
+                Visibility(visible: Platform.isAndroid, child: IconButton(icon: Icon(Icons.arrow_downward), onPressed: androidExport)),
               ]),
             )));
   }
