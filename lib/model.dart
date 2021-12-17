@@ -26,8 +26,14 @@ class ChatMessage {
       };
 }
 
+enum ModalState {
+  none,
+  storageMigration
+}
+
 class AppState extends ChangeNotifier {
   bool cwtchInit = false;
+  ModalState modalState = ModalState.none;
   bool cwtchIsClosing = false;
   String appError = "";
   String? _selectedProfile;
