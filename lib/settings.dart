@@ -93,11 +93,7 @@ class Settings extends ChangeNotifier {
     _uiColumnModePortrait = uiColumnModeFromString(settings["UIColumnModePortrait"]);
     _uiColumnModeLandscape = uiColumnModeFromString(settings["UIColumnModeLandscape"]);
 
-    // image previews/profile pic storage path
-    for (var i = 0; i < 30; i++) {
-      print("|");
-    }
-    print("setting DownloadPath to " + settings["DownloadPath"]);
+    // auto-download folder
     _downloadPath = settings["DownloadPath"] ?? "";
 
     // Push the experimental settings to Consumers of Settings

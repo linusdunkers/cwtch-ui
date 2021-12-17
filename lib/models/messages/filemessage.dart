@@ -34,7 +34,7 @@ class FileMessage extends Message {
             return MessageRow(MalformedBubble());
           }
 
-          return MessageRow(FileBubble(nameSuggestion, rootHash, nonce, fileSize), key: key);
+          return MessageRow(FileBubble(nameSuggestion, rootHash, nonce, fileSize, isAuto: metadata.isAuto), key: key);
         });
   }
 
@@ -59,6 +59,7 @@ class FileMessage extends Message {
             rootHash,
             nonce,
             fileSize,
+            isAuto: metadata.isAuto,
             interactive: false,
           );
         });

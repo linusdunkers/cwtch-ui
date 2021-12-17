@@ -23,8 +23,9 @@ class FileBubble extends StatefulWidget {
   final String nonce;
   final int fileSize;
   final bool interactive;
+  final bool isAuto;
 
-  FileBubble(this.nameSuggestion, this.rootHash, this.nonce, this.fileSize, {this.interactive = true});
+  FileBubble(this.nameSuggestion, this.rootHash, this.nonce, this.fileSize, {this.isAuto = false, this.interactive = true});
 
   @override
   FileBubbleState createState() => FileBubbleState();
@@ -52,9 +53,10 @@ class FileBubbleState extends State<FileBubble> {
     var downloadComplete = Provider.of<ProfileInfoState>(context).downloadComplete(widget.fileKey());
     var downloadInterrupted = Provider.of<ProfileInfoState>(context).downloadInterrupted(widget.fileKey());
 
-    if (downloadInterrupted) {
+    if (flagStarted && !downloadInterrupted) {
       Provider.of<FlwtchState>(context, listen: false).cwtch.CheckDownloadStatus(Provider.of<ProfileInfoState>(context, listen: false).onion, widget.fileKey());
     }
+
     var path = Provider.of<ProfileInfoState>(context).downloadFinalPath(widget.fileKey());
     if (downloadComplete) {
       var lpath = path!.toLowerCase();
@@ -144,12 +146,14 @@ class FileBubbleState extends State<FileBubble> {
             ElevatedButton(onPressed: _btnResume, child: Text(AppLocalizations.of(context)!.verfiyResumeButton))
           ]);
         }
-      } else {
+      } else if (!widget.isAuto) {
         wdgDecorations = Center(
             widthFactor: 1,
             child: Wrap(children: [
               Padding(padding: EdgeInsets.all(5), child: ElevatedButton(child: Text(AppLocalizations.of(context)!.downloadFileButton + '\u202F'), onPressed: _btnAccept)),
             ]));
+      } else {
+        wdgDecorations = Container();
       }
 
       return Container(

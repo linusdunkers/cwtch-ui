@@ -706,8 +706,8 @@ class ContactInfoState extends ChangeNotifier {
     return ret;
   }
 
-  void updateMessageCache(int conversation, int messageID, DateTime timestamp, String senderHandle, String senderImage, String data) {
-    this.messageCache.insert(0, MessageCache(MessageMetadata(profileOnion, conversation, messageID, timestamp, senderHandle, senderImage, "", {}, false, false), data));
+  void updateMessageCache(int conversation, int messageID, DateTime timestamp, String senderHandle, String senderImage, bool isAuto, String data) {
+    this.messageCache.insert(0, MessageCache(MessageMetadata(profileOnion, conversation, messageID, timestamp, senderHandle, senderImage, "", {}, false, false, isAuto), data));
     this.totalMessages += 1;
   }
 
