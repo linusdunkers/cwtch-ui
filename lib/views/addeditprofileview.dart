@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
+import 'package:cwtch/config.dart';
 import 'package:cwtch/cwtch/cwtch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -278,7 +280,7 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
     // TODO Toast
   }
 
-  void _createPressed() {
+  void _createPressed() async {
     // This will run all the validations in the form including
     // checking that display name is not empty, and an actual check that the passwords
     // match (and are provided if the user has requested an encrypted profile).
@@ -301,17 +303,32 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
         } else {
           // At this points passwords have been validated to be the same and not empty
           // Update both password and name, even if name hasn't been changed...
+          var profile = Provider.of<ProfileInfoState>(context, listen: false).onion;
           Provider.of<ProfileInfoState>(context, listen: false).nickname = ctrlrNick.value.text;
-          Provider.of<FlwtchState>(context, listen: false).cwtch.SetProfileAttribute(Provider.of<ProfileInfoState>(context, listen: false).onion, "profile.name", ctrlrNick.value.text);
-          final updatePasswordEvent = {
-            "EventType": "ChangePassword",
-            "Data": {"Password": ctrlrOldPass.text, "NewPassword": ctrlrPass.text}
-          };
-          final updatePasswordEventJson = jsonEncode(updatePasswordEvent);
+          Provider.of<FlwtchState>(context, listen: false).cwtch.SetProfileAttribute(profile, "profile.name", ctrlrNick.value.text);
+          Provider.of<FlwtchState>(context, listen: false).cwtch.ChangePassword(profile, ctrlrOldPass.text, ctrlrPass.text, ctrlrPass2.text);
 
-          Provider.of<FlwtchState>(context, listen: false).cwtch.SendProfileEvent(Provider.of<ProfileInfoState>(context, listen: false).onion, updatePasswordEventJson);
-
-          Navigator.of(context).pop();
+          EnvironmentConfig.debugLog("waiting for change password response");
+          Future.delayed(const Duration(milliseconds: 500), () {
+            if (globalErrorHandler.changePasswordError) {
+              // TODO: This isn't ideal, but because onChange can be fired during this future check
+              // and because the context can change after being popped we have this kind of double assertion...
+              // There is probably a better pattern to handle this...
+              if (AppLocalizations.of(context) != null) {
+                final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.passwordChangeError));
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                Navigator.pop(context);
+                return;
+              }
+            }
+          }).whenComplete(() {
+            if (globalErrorHandler.explicitChangePasswordSuccess) {
+              final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.newPassword));
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              Navigator.pop(context);
+              return; // otherwise round and round we go...
+            }
+          });
         }
       }
     }

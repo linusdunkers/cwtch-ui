@@ -6,11 +6,16 @@ class ErrorHandler extends ChangeNotifier {
 
   // Add Contact Specific Errors...
   static const String addContactErrorPrefix = "addcontact";
+  static const String changePasswordErrorPrefix = "changepassword";
   static const String invalidImportStringErrorType = "invalid_import_string";
   static const String contactAlreadyExistsErrorType = "contact_already_exists";
   bool invalidImportStringError = false;
   bool contactAlreadyExistsError = false;
   bool explicitAddContactSuccess = false;
+
+  // ChangePassword
+  bool changePasswordError = false;
+  bool explicitChangePasswordSuccess = false;
 
   // Import Bundle Specific Errors
   static const String importBundleErrorPrefix = "importBundle";
@@ -39,6 +44,9 @@ class ErrorHandler extends ChangeNotifier {
     deletedServerError = false;
     deletedServerSuccess = false;
 
+    changePasswordError = false;
+    explicitChangePasswordSuccess = false;
+
     notifyListeners();
   }
 
@@ -57,6 +65,9 @@ class ErrorHandler extends ChangeNotifier {
         break;
       case deleteProfileErrorPrefix:
         handleDeleteProfileError(errorType);
+        break;
+      case changePasswordErrorPrefix:
+        handleChangePasswordError(errorType);
         break;
       case deletedServerErrorPrefix:
         handleDeletedServerError(errorType);
@@ -111,6 +122,21 @@ class ErrorHandler extends ChangeNotifier {
         break;
       default:
         deleteProfileError = true;
+        break;
+    }
+  }
+
+  handleChangePasswordError(String errorType) {
+    // Reset add contact errors
+    changePasswordError = false;
+    explicitChangePasswordSuccess = false;
+
+    switch (errorType) {
+      case successErrorType:
+        explicitChangePasswordSuccess = true;
+        break;
+      default:
+        changePasswordError = true;
         break;
     }
   }

@@ -150,5 +150,6 @@ class MessageMetadata extends ChangeNotifier {
     notifyListeners();
   }
 
-  MessageMetadata(this.profileOnion, this.conversationIdentifier, this.messageID, this.timestamp, this.senderHandle, this.senderImage, this.signature, this._attributes, this._ackd, this._error, this.isAuto);
+  MessageMetadata(
+      this.profileOnion, this.conversationIdentifier, this.messageID, this.timestamp, this.senderHandle, this.senderImage, this.signature, this._attributes, this._ackd, this._error, this.isAuto);
 }

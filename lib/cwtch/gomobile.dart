@@ -284,4 +284,9 @@ class CwtchGomobile implements Cwtch {
   String defaultDownloadPath() {
     return this.androidHomeDirectoryStr;
   }
+
+  @override
+  void ChangePassword(String profile, String pass, String newpass, String newpassAgain) {
+    cwtchPlatform.invokeMethod("ChangePassword", {"ProfileOnion": profile, "OldPass": pass, "NewPass": newpass, "NewPassAgain": newpassAgain});
+  }
 }
