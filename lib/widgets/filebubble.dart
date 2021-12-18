@@ -49,6 +49,7 @@ class FileBubbleState extends State<FileBubble> {
     var flagStarted = Provider.of<MessageMetadata>(context).attributes["file-downloaded"] == "true";
     var borderRadiousEh = 15.0;
     var showFileSharing = Provider.of<Settings>(context).isExperimentEnabled(FileSharingExperiment);
+    var showImagePreviews = Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment);
     var prettyDate = DateFormat.yMd(Platform.localeName).add_jm().format(Provider.of<MessageMetadata>(context).timestamp);
     var downloadComplete = Provider.of<ProfileInfoState>(context).downloadComplete(widget.fileKey());
     var downloadInterrupted = Provider.of<ProfileInfoState>(context).downloadInterrupted(widget.fileKey());
@@ -74,10 +75,12 @@ class FileBubbleState extends State<FileBubble> {
 
     // If the sender is not us, then we want to give them a nickname...
     var senderDisplayStr = "";
+    var senderIsContact = false;
     if (!fromMe) {
       ContactInfoState? contact = Provider.of<ProfileInfoState>(context).contactList.findContact(Provider.of<MessageMetadata>(context).senderHandle);
       if (contact != null) {
         senderDisplayStr = contact.nickname;
+        senderIsContact = true;
       } else {
         senderDisplayStr = Provider.of<MessageMetadata>(context).senderHandle;
       }
@@ -103,7 +106,7 @@ class FileBubbleState extends State<FileBubble> {
       } else if (downloadComplete) {
         // in this case, whatever marked download.complete would have also set the path
         var lpath = path!.toLowerCase();
-        if (lpath.endsWith("jpg") || lpath.endsWith("jpeg") || lpath.endsWith("png") || lpath.endsWith("gif") || lpath.endsWith("webp") || lpath.endsWith("bmp")) {
+        if (showImagePreviews && (lpath.endsWith("jpg") || lpath.endsWith("jpeg") || lpath.endsWith("png") || lpath.endsWith("gif") || lpath.endsWith("webp") || lpath.endsWith("bmp"))) {
           isPreview = true;
           wdgDecorations = GestureDetector(
             child: Image.file(
@@ -138,14 +141,23 @@ class FileBubbleState extends State<FileBubble> {
         // in this case, the download was done in a previous application launch,
         // so we probably have to request an info lookup
         if (!downloadInterrupted) {
-          wdgDecorations = Text(AppLocalizations.of(context)!.fileCheckingStatus + '...' + '\u202F');
+          wdgDecorations = Text(
+              AppLocalizations.of(context)!.fileCheckingStatus + '...' +
+                  '\u202F');
         } else {
-          var path = Provider.of<ProfileInfoState>(context).downloadFinalPath(widget.fileKey()) ?? "";
-          wdgDecorations = Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(AppLocalizations.of(context)!.fileInterrupted + ': ' + path + '\u202F'),
-            ElevatedButton(onPressed: _btnResume, child: Text(AppLocalizations.of(context)!.verfiyResumeButton))
-          ]);
+          var path = Provider.of<ProfileInfoState>(context).downloadFinalPath(
+              widget.fileKey()) ?? "";
+          wdgDecorations =
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(AppLocalizations.of(context)!.fileInterrupted + ': ' +
+                    path + '\u202F'),
+                ElevatedButton(onPressed: _btnResume,
+                    child: Text(
+                        AppLocalizations.of(context)!.verfiyResumeButton))
+              ]);
         }
+      } else if (!senderIsContact) {
+        wdgDecorations = Text("Add this account to your contacts in order to accept this file.");
       } else if (!widget.isAuto) {
         wdgDecorations = Center(
             widthFactor: 1,

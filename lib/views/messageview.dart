@@ -5,6 +5,7 @@ import 'package:cwtch/config.dart';
 import 'package:cwtch/cwtch_icons_icons.dart';
 import 'package:cwtch/models/message.dart';
 import 'package:cwtch/models/messages/quotedmessage.dart';
+import 'package:cwtch/widgets/malformedbubble.dart';
 import 'package:cwtch/widgets/messageloadingbubble.dart';
 import 'package:cwtch/widgets/profileimage.dart';
 
@@ -37,6 +38,7 @@ class _MessageViewState extends State<MessageView> {
   int selectedContact = -1;
   ItemPositionsListener scrollListener = ItemPositionsListener.create();
   ItemScrollController scrollController = ItemScrollController();
+  File? imagePreview;
 
   @override
   void initState() {
@@ -85,7 +87,7 @@ class _MessageViewState extends State<MessageView> {
         appBarButtons.add(IconButton(
           icon: Icon(Icons.attach_file, size: 24),
           tooltip: AppLocalizations.of(context)!.tooltipSendFile,
-          onPressed: _showFilePicker,
+          onPressed: (){_showFilePicker(context);},
         ));
       }
       appBarButtons.add(IconButton(
@@ -354,7 +356,7 @@ class _MessageViewState extends State<MessageView> {
                               return contact.onion != Provider.of<ContactInfoState>(context).onion;
                             }, onChanged: (newVal) {
                               setState(() {
-                                this.selectedContact = Provider.of<ProfileInfoState>(context).contactList.findContact(newVal)!.identifier;
+                                this.selectedContact = Provider.of<ProfileInfoState>(context, listen: false).contactList.findContact(newVal)!.identifier;
                               });
                             })),
                         SizedBox(
@@ -375,7 +377,8 @@ class _MessageViewState extends State<MessageView> {
         });
   }
 
-  void _showFilePicker() async {
+  void _showFilePicker(BuildContext ctx) async {
+    imagePreview = null;
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     if (result != null) {
       File file = File(result.files.first.path);
@@ -383,11 +386,74 @@ class _MessageViewState extends State<MessageView> {
       // a manifest (see : https://git.openprivacy.ca/cwtch.im/cwtch/src/branch/master/protocol/files/manifest.go#L25)
       if (file.lengthSync() <= 10737418240) {
         print("Sending " + file.path);
-        _sendFile(file.path);
+        _confirmFileSend(ctx, file.path);
       } else {
-        print("file size cannot exceed 10 gigabytes");
-        //todo: toast error
+        final snackBar = SnackBar(
+          content: Text("File size cannot exceed 10 GB"),
+          duration: Duration(seconds: 4),
+        );
+        ScaffoldMessenger.of(ctx).showSnackBar(snackBar);
       }
     }
+  }
+
+  void _confirmFileSend(BuildContext ctx, String path) async {
+    showModalBottomSheet<void>(
+        context: ctx,
+        builder: (BuildContext bcontext) {
+          var lpath = path.toLowerCase();
+          var showPreview = false;
+          if (Provider.of<Settings>(context, listen: false).isExperimentEnabled(ImagePreviewsExperiment) && (lpath.endsWith("jpg") || lpath.endsWith("jpeg") || lpath.endsWith("png") || lpath.endsWith("gif") || lpath.endsWith("webp") || lpath.endsWith("bmp"))) {
+            showPreview = true;
+            if (imagePreview == null) {
+              imagePreview = new File(path);
+            }
+          }
+          return Container(
+              height: 300, // bespoke value courtesy of the [TextField] docs
+              child: Center(
+                child: Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Text("Are you sure you want to send $path?"),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Visibility(visible: showPreview, child: showPreview ? Image.file(
+                          imagePreview!,
+                          cacheHeight: 150, // limit the amount of space the image can decode too, we keep this high-ish to allow quality previews...
+                          filterQuality: FilterQuality.medium,
+                          fit: BoxFit.fill,
+                          alignment: Alignment.center,
+                          height: 150,
+                          isAntiAlias: false,
+                          errorBuilder: (context, error, stackTrace) {
+                            return MalformedBubble();
+                          },
+                        ) : Container()),
+                        Visibility(visible: showPreview, child: SizedBox(height: 10,)),
+                        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                          ElevatedButton(
+                            child: Text("Cancel", semanticsLabel: "Cancel"),
+                            onPressed: () {
+                              Navigator.pop(bcontext);
+                            },
+                          ),
+                          SizedBox(width: 20,),
+                          ElevatedButton(
+                            child: Text("Send File", semanticsLabel: "Send File"),
+                            onPressed: () {
+                              _sendFile(path);
+                              Navigator.pop(bcontext);
+                            },
+                          ),
+                        ]),
+                      ],
+                    )),
+              ));
+        });
   }
 }
