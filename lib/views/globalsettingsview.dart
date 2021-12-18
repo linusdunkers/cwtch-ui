@@ -2,6 +2,16 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:cwtch/cwtch_icons_icons.dart';
 import 'package:cwtch/models/servers.dart';
+import 'package:cwtch/themes/cwtch.dart';
+import 'package:cwtch/themes/ghost.dart';
+import 'package:cwtch/themes/mermaid.dart';
+import 'package:cwtch/themes/midnight.dart';
+import 'package:cwtch/themes/neon1.dart';
+import 'package:cwtch/themes/neon2.dart';
+import 'package:cwtch/themes/opaque.dart';
+import 'package:cwtch/themes/pumpkin.dart';
+import 'package:cwtch/themes/vampire.dart';
+import 'package:cwtch/themes/witch.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:cwtch/settings.dart';
@@ -36,7 +46,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
   Widget _buildSettingsList() {
     return Consumer<Settings>(builder: (context, settings, child) {
       return LayoutBuilder(builder: (BuildContext context, BoxConstraints viewportConstraints) {
-        var appIcon = Icon(Icons.info, color: settings.current().mainTextColor());
+        var appIcon = Icon(Icons.info, color: settings.current().mainTextColor);
         return Scrollbar(
             isAlwaysShown: true,
             child: SingleChildScrollView(
@@ -47,8 +57,8 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                     ),
                     child: Column(children: [
                       ListTile(
-                          title: Text(AppLocalizations.of(context)!.settingLanguage, style: TextStyle(color: settings.current().mainTextColor())),
-                          leading: Icon(CwtchIcons.change_language, color: settings.current().mainTextColor()),
+                          title: Text(AppLocalizations.of(context)!.settingLanguage, style: TextStyle(color: settings.current().mainTextColor)),
+                          leading: Icon(CwtchIcons.change_language, color: settings.current().mainTextColor),
                           trailing: DropdownButton(
                               value: Provider.of<Settings>(context).locale.languageCode,
                               onChanged: (String? newValue) {
@@ -64,25 +74,43 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                 );
                               }).toList())),
                       SwitchListTile(
-                        title: Text(AppLocalizations.of(context)!.settingTheme, style: TextStyle(color: settings.current().mainTextColor())),
-                        value: settings.current().identifier() == "light",
+                        title: Text(AppLocalizations.of(context)!.settingTheme, style: TextStyle(color: settings.current().mainTextColor)),
+                        value: settings.current().mode == mode_light,
                         onChanged: (bool value) {
                           if (value) {
-                            settings.setLight();
+                            settings.setTheme(settings.theme.theme, mode_light);
                           } else {
-                            settings.setDark();
+                            settings.setTheme(settings.theme.theme, mode_dark);
                           }
 
                           // Save Settings...
                           saveSettings(context);
                         },
-                        activeTrackColor: settings.theme.defaultButtonActiveColor(),
-                        inactiveTrackColor: settings.theme.defaultButtonDisabledColor(),
-                        secondary: Icon(CwtchIcons.change_theme, color: settings.current().mainTextColor()),
+                        activeTrackColor: settings.theme.defaultButtonColor,
+                        inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
+                        secondary: Icon(CwtchIcons.change_theme, color: settings.current().mainTextColor),
                       ),
                       ListTile(
-                          title: Text(AppLocalizations.of(context)!.settingUIColumnPortrait, style: TextStyle(color: settings.current().mainTextColor())),
-                          leading: Icon(Icons.table_chart, color: settings.current().mainTextColor()),
+                        title: Text(AppLocalizations.of(context)!.themeColorLabel),
+                        trailing: DropdownButton<String>(
+                            value: Provider.of<Settings>(context).theme.theme,
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                settings.setTheme(newValue!, settings.theme.mode);
+                                saveSettings(context);
+                              });
+                            },
+                            items: themes.keys.map<DropdownMenuItem<String>>((String themeId) {
+                              return DropdownMenuItem<String>(
+                                value: themeId,
+                                child: Text(getThemeName(context, themeId)),
+                              );
+                            }).toList()),
+                        leading: Icon(CwtchIcons.change_theme, color: settings.current().mainTextColor),
+                      ),
+                      ListTile(
+                          title: Text(AppLocalizations.of(context)!.settingUIColumnPortrait, style: TextStyle(color: settings.current().mainTextColor)),
+                          leading: Icon(Icons.table_chart, color: settings.current().mainTextColor),
                           trailing: DropdownButton(
                               value: settings.uiColumnModePortrait.toString(),
                               onChanged: (String? newValue) {
@@ -100,9 +128,9 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                             AppLocalizations.of(context)!.settingUIColumnLandscape,
                             textWidthBasis: TextWidthBasis.longestLine,
                             softWrap: true,
-                            style: TextStyle(color: settings.current().mainTextColor()),
+                            style: TextStyle(color: settings.current().mainTextColor),
                           ),
-                          leading: Icon(Icons.table_chart, color: settings.current().mainTextColor()),
+                          leading: Icon(Icons.table_chart, color: settings.current().mainTextColor),
                           trailing: Container(
                               width: 200.0,
                               child: DropdownButton(
@@ -122,7 +150,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                     );
                                   }).toList()))),
                       SwitchListTile(
-                        title: Text(AppLocalizations.of(context)!.blockUnknownLabel, style: TextStyle(color: settings.current().mainTextColor())),
+                        title: Text(AppLocalizations.of(context)!.blockUnknownLabel, style: TextStyle(color: settings.current().mainTextColor)),
                         subtitle: Text(AppLocalizations.of(context)!.descriptionBlockUnknownConnections),
                         value: settings.blockUnknownConnections,
                         onChanged: (bool value) {
@@ -135,12 +163,12 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                           // Save Settings...
                           saveSettings(context);
                         },
-                        activeTrackColor: settings.theme.defaultButtonActiveColor(),
-                        inactiveTrackColor: settings.theme.defaultButtonDisabledColor(),
-                        secondary: Icon(CwtchIcons.block_unknown, color: settings.current().mainTextColor()),
+                        activeTrackColor: settings.theme.defaultButtonColor,
+                        inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
+                        secondary: Icon(CwtchIcons.block_unknown, color: settings.current().mainTextColor),
                       ),
                       SwitchListTile(
-                        title: Text(AppLocalizations.of(context)!.streamerModeLabel, style: TextStyle(color: settings.current().mainTextColor())),
+                        title: Text(AppLocalizations.of(context)!.streamerModeLabel, style: TextStyle(color: settings.current().mainTextColor)),
                         subtitle: Text(AppLocalizations.of(context)!.descriptionStreamerMode),
                         value: settings.streamerMode,
                         onChanged: (bool value) {
@@ -148,12 +176,12 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                           // Save Settings...
                           saveSettings(context);
                         },
-                        activeTrackColor: settings.theme.defaultButtonActiveColor(),
-                        inactiveTrackColor: settings.theme.defaultButtonDisabledColor(),
-                        secondary: Icon(CwtchIcons.streamer_bunnymask, color: settings.current().mainTextColor()),
+                        activeTrackColor: settings.theme.defaultButtonColor,
+                        inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
+                        secondary: Icon(CwtchIcons.streamer_bunnymask, color: settings.current().mainTextColor),
                       ),
                       SwitchListTile(
-                        title: Text(AppLocalizations.of(context)!.experimentsEnabled, style: TextStyle(color: settings.current().mainTextColor())),
+                        title: Text(AppLocalizations.of(context)!.experimentsEnabled, style: TextStyle(color: settings.current().mainTextColor)),
                         subtitle: Text(AppLocalizations.of(context)!.descriptionExperiments),
                         value: settings.experimentsEnabled,
                         onChanged: (bool value) {
@@ -165,16 +193,16 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                           // Save Settings...
                           saveSettings(context);
                         },
-                        activeTrackColor: settings.theme.defaultButtonActiveColor(),
-                        inactiveTrackColor: settings.theme.defaultButtonDisabledColor(),
-                        secondary: Icon(CwtchIcons.enable_experiments, color: settings.current().mainTextColor()),
+                        activeTrackColor: settings.theme.defaultButtonColor,
+                        inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
+                        secondary: Icon(CwtchIcons.enable_experiments, color: settings.current().mainTextColor),
                       ),
                       Visibility(
                           visible: settings.experimentsEnabled,
                           child: Column(
                             children: [
                               SwitchListTile(
-                                title: Text(AppLocalizations.of(context)!.enableGroups, style: TextStyle(color: settings.current().mainTextColor())),
+                                title: Text(AppLocalizations.of(context)!.enableGroups, style: TextStyle(color: settings.current().mainTextColor)),
                                 subtitle: Text(AppLocalizations.of(context)!.descriptionExperimentsGroups),
                                 value: settings.isExperimentEnabled(TapirGroupsExperiment),
                                 onChanged: (bool value) {
@@ -186,14 +214,14 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                   // Save Settings...
                                   saveSettings(context);
                                 },
-                                activeTrackColor: settings.theme.defaultButtonActiveColor(),
-                                inactiveTrackColor: settings.theme.defaultButtonDisabledColor(),
-                                secondary: Icon(CwtchIcons.enable_groups, color: settings.current().mainTextColor()),
+                                activeTrackColor: settings.theme.defaultButtonColor,
+                                inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
+                                secondary: Icon(CwtchIcons.enable_groups, color: settings.current().mainTextColor),
                               ),
                               Visibility(
                                   visible: !Platform.isAndroid && !Platform.isIOS,
                                   child: SwitchListTile(
-                                    title: Text(AppLocalizations.of(context)!.settingServers, style: TextStyle(color: settings.current().mainTextColor())),
+                                    title: Text(AppLocalizations.of(context)!.settingServers, style: TextStyle(color: settings.current().mainTextColor)),
                                     subtitle: Text(AppLocalizations.of(context)!.settingServersDescription),
                                     value: settings.isExperimentEnabled(ServerManagementExperiment),
                                     onChanged: (bool value) {
@@ -206,12 +234,12 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                       // Save Settings...
                                       saveSettings(context);
                                     },
-                                    activeTrackColor: settings.theme.defaultButtonActiveColor(),
-                                    inactiveTrackColor: settings.theme.defaultButtonDisabledColor(),
-                                    secondary: Icon(CwtchIcons.dns_24px, color: settings.current().mainTextColor()),
+                                    activeTrackColor: settings.theme.defaultButtonColor,
+                                    inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
+                                    secondary: Icon(CwtchIcons.dns_24px, color: settings.current().mainTextColor),
                                   )),
                               SwitchListTile(
-                                title: Text(AppLocalizations.of(context)!.settingFileSharing, style: TextStyle(color: settings.current().mainTextColor())),
+                                title: Text(AppLocalizations.of(context)!.settingFileSharing, style: TextStyle(color: settings.current().mainTextColor)),
                                 subtitle: Text(AppLocalizations.of(context)!.descriptionFileSharing),
                                 value: settings.isExperimentEnabled(FileSharingExperiment),
                                 onChanged: (bool value) {
@@ -222,13 +250,13 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                   }
                                   saveSettings(context);
                                 },
-                                activeTrackColor: settings.theme.defaultButtonActiveColor(),
-                                inactiveTrackColor: settings.theme.defaultButtonDisabledColor(),
-                                secondary: Icon(Icons.attach_file, color: settings.current().mainTextColor()),
+                                activeTrackColor: settings.theme.defaultButtonColor,
+                                inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
+                                secondary: Icon(Icons.attach_file, color: settings.current().mainTextColor),
                               ),
                               SwitchListTile(
-                                title: Text("Enable Clickable Links", style: TextStyle(color: settings.current().mainTextColor())),
-                                subtitle: Text("The clickable links experiment allows you to click on URLs shared in messages."),
+                                title: Text(AppLocalizations.of(context)!.enableExperimentClickableLinks, style: TextStyle(color: settings.current().mainTextColor)),
+                                subtitle: Text(AppLocalizations.of(context)!.experimentClickableLinksDescription),
                                 value: settings.isExperimentEnabled(ClickableLinksExperiment),
                                 onChanged: (bool value) {
                                   if (value) {
@@ -238,9 +266,9 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                   }
                                   saveSettings(context);
                                 },
-                                activeTrackColor: settings.theme.defaultButtonActiveColor(),
-                                inactiveTrackColor: settings.theme.defaultButtonDisabledColor(),
-                                secondary: Icon(Icons.link, color: settings.current().mainTextColor()),
+                                activeTrackColor: settings.theme.defaultButtonColor,
+                                inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
+                                secondary: Icon(Icons.link, color: settings.current().mainTextColor),
                               ),
                             ],
                           )),
@@ -251,8 +279,8 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                           applicationLegalese: '\u{a9} 2021 Open Privacy Research Society',
                           aboutBoxChildren: <Widget>[
                             Padding(
-                              padding: EdgeInsets.fromLTRB(
-                                  24.0 + 10.0 + (appIcon.size ?? 24.0), 16.0, 0.0, 0.0), // About has 24 padding (ln 389) and there appears to be another 10 of padding in the widget
+                              padding: EdgeInsets.fromLTRB(24.0 + 10.0 + (appIcon.size ?? 24.0), 16.0, 0.0, 0.0),
+                              // About has 24 padding (ln 389) and there appears to be another 10 of padding in the widget
                               child: SelectableText(AppLocalizations.of(context)!.versionBuilddate.replaceAll("%1", EnvironmentConfig.BUILD_VER).replaceAll("%2", EnvironmentConfig.BUILD_DATE)),
                             )
                           ]),
@@ -298,6 +326,31 @@ String getLanguageFull(context, String languageCode) {
     return AppLocalizations.of(context)!.localeRU;
   }
   return languageCode;
+}
+
+/// Since we don't seem to able to dynamically pull translations, this function maps themes to their names
+String getThemeName(context, String theme) {
+  switch (theme) {
+    case cwtch_theme:
+      return AppLocalizations.of(context)!.themeNameCwtch;
+    case ghost_theme:
+      return AppLocalizations.of(context)!.themeNameGhost;
+    case mermaid_theme:
+      return AppLocalizations.of(context)!.themeNameMermaid;
+    case midnight_theme:
+      return AppLocalizations.of(context)!.themeNameMidnight;
+    case neon1_theme:
+      return AppLocalizations.of(context)!.themeNameNeon1;
+    case neon2_theme:
+      return AppLocalizations.of(context)!.themeNameNeon2;
+    case pumpkin_theme:
+      return AppLocalizations.of(context)!.themeNamePumpkin;
+    case vampire_theme:
+      return AppLocalizations.of(context)!.themeNameVampire;
+    case witch_theme:
+      return AppLocalizations.of(context)!.themeNameWitch;
+  }
+  return theme;
 }
 
 /// Send an UpdateGlobalSettings to the Event Bus

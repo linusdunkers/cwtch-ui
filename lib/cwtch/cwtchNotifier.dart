@@ -79,6 +79,12 @@ class CwtchNotifier {
           server.setRunning(data["Intent"] == "running");
         }
         break;
+      case "ServerStatsUpdate":
+        EnvironmentConfig.debugLog("ServerStatsUpdate $data");
+        var totalMessages = int.parse(data["TotalMessages"]);
+        var connections = int.parse(data["Connections"]);
+        serverListState.updateServerStats(data["Identity"], totalMessages, connections);
+        break;
       case "GroupCreated":
         // Retrieve Server Status from Cache...
         String status = "";

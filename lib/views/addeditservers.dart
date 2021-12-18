@@ -33,7 +33,6 @@ class _AddEditServerViewState extends State<AddEditServerView> {
   final ctrlrOnion = TextEditingController(text: "");
 
   late bool usePassword;
-  //late bool deleted;
 
   @override
   void initState() {
@@ -81,22 +80,16 @@ class _AddEditServerViewState extends State<AddEditServerView> {
                     child: Form(
                         key: _formKey,
                         child: Container(
-                            margin: EdgeInsets.fromLTRB(30, 0, 30, 10),
-                            padding: EdgeInsets.fromLTRB(20, 0, 20, 10),
+                            margin: EdgeInsets.fromLTRB(30, 5, 30, 10),
+                            padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
                             child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
                               // Onion
                               Visibility(
                                   visible: serverInfoState.onion.isNotEmpty,
-                                  child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                    SizedBox(
-                                      height: 20,
-                                    ),
-                                    CwtchLabel(label: AppLocalizations.of(context)!.serverAddress),
-                                    SizedBox(
-                                      height: 20,
-                                    ),
-                                    SelectableText(serverInfoState.onion)
-                                  ])),
+                                  child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [CwtchLabel(label: AppLocalizations.of(context)!.serverAddress), SelectableText(serverInfoState.onion)])),
 
                               // Description
                               Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -110,7 +103,7 @@ class _AddEditServerViewState extends State<AddEditServerView> {
                                 ),
                                 CwtchTextField(
                                   controller: ctrlrDesc,
-                                  labelText: "Description",
+                                  hintText: AppLocalizations.of(context)!.fieldDescriptionLabel,
                                   autofocus: false,
                                 )
                               ]),
@@ -123,7 +116,7 @@ class _AddEditServerViewState extends State<AddEditServerView> {
                               Visibility(
                                   visible: serverInfoState.onion.isNotEmpty,
                                   child: SwitchListTile(
-                                    title: Text(AppLocalizations.of(context)!.serverEnabled, style: TextStyle(color: settings.current().mainTextColor())),
+                                    title: Text(AppLocalizations.of(context)!.serverEnabled, style: TextStyle(color: settings.current().mainTextColor)),
                                     subtitle: Text(AppLocalizations.of(context)!.serverEnabledDescription),
                                     value: serverInfoState.running,
                                     onChanged: (bool value) {
@@ -134,14 +127,14 @@ class _AddEditServerViewState extends State<AddEditServerView> {
                                         Provider.of<FlwtchState>(context, listen: false).cwtch.StopServer(serverInfoState.onion);
                                       }
                                     },
-                                    activeTrackColor: settings.theme.defaultButtonActiveColor(),
-                                    inactiveTrackColor: settings.theme.defaultButtonDisabledColor(),
-                                    secondary: Icon(CwtchIcons.negative_heart_24px, color: settings.current().mainTextColor()),
+                                    activeTrackColor: settings.theme.defaultButtonColor,
+                                    inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
+                                    secondary: Icon(CwtchIcons.negative_heart_24px, color: settings.current().mainTextColor),
                                   )),
 
                               // Auto start
                               SwitchListTile(
-                                title: Text(AppLocalizations.of(context)!.serverAutostartLabel, style: TextStyle(color: settings.current().mainTextColor())),
+                                title: Text(AppLocalizations.of(context)!.serverAutostartLabel, style: TextStyle(color: settings.current().mainTextColor)),
                                 subtitle: Text(AppLocalizations.of(context)!.serverAutostartDescription),
                                 value: serverInfoState.autoStart,
                                 onChanged: (bool value) {
@@ -151,10 +144,32 @@ class _AddEditServerViewState extends State<AddEditServerView> {
                                     Provider.of<FlwtchState>(context, listen: false).cwtch.SetServerAttribute(serverInfoState.onion, "autostart", value ? "true" : "false");
                                   }
                                 },
-                                activeTrackColor: settings.theme.defaultButtonActiveColor(),
-                                inactiveTrackColor: settings.theme.defaultButtonDisabledColor(),
-                                secondary: Icon(CwtchIcons.favorite_24dp, color: settings.current().mainTextColor()),
+                                activeTrackColor: settings.theme.defaultButtonColor,
+                                inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
+                                secondary: Icon(CwtchIcons.favorite_24dp, color: settings.current().mainTextColor),
                               ),
+
+                              // metrics
+                              Visibility(
+                                  visible: serverInfoState.onion.isNotEmpty,
+                                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    Text(AppLocalizations.of(context)!.serverMetricsLabel, style: Provider.of<FlwtchState>(context).biggerFont),
+                                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                                      Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                        Text(AppLocalizations.of(context)!.serverTotalMessagesLabel),
+                                      ]),
+                                      Text(serverInfoState.totalMessages.toString())
+                                    ]),
+                                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                                      Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                        Text(AppLocalizations.of(context)!.serverConnectionsLabel),
+                                      ]),
+                                      Text(serverInfoState.connections.toString())
+                                    ]),
+                                  ])),
 
                               // ***** Password *****
 
@@ -167,13 +182,13 @@ class _AddEditServerViewState extends State<AddEditServerView> {
                                     ),
                                     Checkbox(
                                       value: usePassword,
-                                      fillColor: MaterialStateProperty.all(settings.current().defaultButtonColor()),
-                                      activeColor: settings.current().defaultButtonActiveColor(),
+                                      fillColor: MaterialStateProperty.all(settings.current().defaultButtonColor),
+                                      activeColor: settings.current().defaultButtonActiveColor,
                                       onChanged: _handleSwitchPassword,
                                     ),
                                     Text(
                                       AppLocalizations.of(context)!.radioUsePassword,
-                                      style: TextStyle(color: settings.current().mainTextColor()),
+                                      style: TextStyle(color: settings.current().mainTextColor),
                                     ),
                                     SizedBox(
                                       height: 20,

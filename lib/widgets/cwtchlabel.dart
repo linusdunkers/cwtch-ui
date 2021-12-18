@@ -18,7 +18,7 @@ class _CwtchLabelState extends State<CwtchLabel> {
     return Consumer<Settings>(builder: (context, theme, child) {
       return Text(
         widget.label,
-        style: TextStyle(fontSize: 20, color: theme.current().mainTextColor()),
+        style: TextStyle(fontSize: 20, color: theme.current().mainTextColor),
       );
     });
   }

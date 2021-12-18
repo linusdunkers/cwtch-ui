@@ -5,12 +5,13 @@ import 'package:provider/provider.dart';
 // Provides a styled Text Field for use in Form Widgets.
 // Callers must provide a text controller, label helper text and a validator.
 class CwtchButtonTextField extends StatefulWidget {
-  CwtchButtonTextField({required this.controller, required this.onPressed, required this.icon, required this.tooltip, this.readonly = true});
+  CwtchButtonTextField({required this.controller, required this.onPressed, required this.icon, required this.tooltip, this.readonly = true, this.labelText});
   final TextEditingController controller;
   final Function()? onPressed;
   final Icon icon;
   final String tooltip;
   final bool readonly;
+  String? labelText;
 
   @override
   _CwtchButtonTextFieldState createState() => _CwtchButtonTextFieldState();
@@ -39,29 +40,31 @@ class _CwtchButtonTextFieldState extends State<CwtchButtonTextField> {
         focusNode: _focusNode,
         enableIMEPersonalizedLearning: false,
         decoration: InputDecoration(
+            labelText: widget.labelText,
+            labelStyle: TextStyle(color: theme.current().mainTextColor, backgroundColor: theme.current().textfieldBackgroundColor),
             suffixIcon: IconButton(
               onPressed: widget.onPressed,
               icon: widget.icon,
               padding: EdgeInsets.fromLTRB(0.0, 4.0, 2.0, 2.0),
               tooltip: widget.tooltip,
               enableFeedback: true,
-              color: theme.current().mainTextColor(),
-              highlightColor: theme.current().defaultButtonColor(),
-              focusColor: theme.current().defaultButtonActiveColor(),
-              splashColor: theme.current().defaultButtonActiveColor(),
+              color: theme.current().mainTextColor,
+              highlightColor: theme.current().defaultButtonColor,
+              focusColor: theme.current().defaultButtonActiveColor,
+              splashColor: theme.current().defaultButtonActiveColor,
             ),
             floatingLabelBehavior: FloatingLabelBehavior.never,
             filled: true,
-            fillColor: theme.current().textfieldBackgroundColor(),
-            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), borderSide: BorderSide(color: theme.current().textfieldBorderColor(), width: 3.0)),
-            focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), borderSide: BorderSide(color: theme.current().textfieldErrorColor(), width: 3.0)),
-            errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), borderSide: BorderSide(color: theme.current().textfieldErrorColor(), width: 3.0)),
+            fillColor: theme.current().textfieldBackgroundColor,
+            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), borderSide: BorderSide(color: theme.current().textfieldBorderColor, width: 3.0)),
+            focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), borderSide: BorderSide(color: theme.current().textfieldErrorColor, width: 3.0)),
+            errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), borderSide: BorderSide(color: theme.current().textfieldErrorColor, width: 3.0)),
             errorStyle: TextStyle(
-              color: theme.current().textfieldErrorColor(),
+              color: theme.current().textfieldErrorColor,
               fontWeight: FontWeight.bold,
             ),
             contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), borderSide: BorderSide(color: theme.current().textfieldBorderColor(), width: 3.0))),
+            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), borderSide: BorderSide(color: theme.current().textfieldBorderColor, width: 3.0))),
       );
     });
   }
