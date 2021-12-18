@@ -94,10 +94,12 @@ Section
     ;Store installation folder
     WriteRegStr HKCU "Software\Cwtch" "installLocation" $INSTDIR
 
+    WriteUninstaller "$INSTDIR\uninstall.exe"
+
 SectionEnd
 
 Section "Uninstall"
-    RMDir "$INSTDIR" /r /REBOOTOK
+    RMDir /r /REBOOTOK "$INSTDIR"
 
     DeleteRegKey /ifempty HKCU "Software\Cwtch\installLocation"
 SectionEnd
