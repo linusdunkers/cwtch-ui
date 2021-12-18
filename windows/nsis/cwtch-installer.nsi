@@ -65,6 +65,11 @@ ShowInstDetails show
 !insertmacro MUI_PAGE_INSTFILES
 !insertmacro MUI_PAGE_FINISH
 
+!insertmacro MUI_UNPAGE_WELCOME
+!insertmacro MUI_UNPAGE_CONFIRM
+!insertmacro MUI_UNPAGE_INSTFILES
+!insertmacro MUI_UNPAGE_FINISH
+
 ; Languages --------------------------------
 
 !insertmacro MUI_LANGUAGE "English"
@@ -81,12 +86,20 @@ Section
         FILE /r "..\..\build\windows\runner\Release\"
     #FILESLISTEND
 
+    CreateDirectory "$SMPROGRAMS\Cwtch"
 
     # create a shortcut in the start menu programs directory
-    CreateDirectory "$SMPROGRAMS\Cwtch"
     CreateShortcut "$SMPROGRAMS\Cwtch\Cwtch.lnk" "$INSTDIR\cwtch.exe" "" "$INSTDIR\cwtch.ico"
 
     ;Store installation folder
     WriteRegStr HKCU "Software\Cwtch" "installLocation" $INSTDIR
 
+    WriteUninstaller "$INSTDIR\uninstall.exe"
+
+SectionEnd
+
+Section "Uninstall"
+    RMDir /r /REBOOTOK "$INSTDIR"
+
+    DeleteRegKey /ifempty HKCU "Software\Cwtch\installLocation"
 SectionEnd
