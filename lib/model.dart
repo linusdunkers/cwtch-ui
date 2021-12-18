@@ -26,8 +26,14 @@ class ChatMessage {
       };
 }
 
+enum ModalState {
+  none,
+  storageMigration
+}
+
 class AppState extends ChangeNotifier {
   bool cwtchInit = false;
+  ModalState modalState = ModalState.none;
   bool cwtchIsClosing = false;
   String appError = "";
   String? _selectedProfile;
@@ -44,6 +50,11 @@ class AppState extends ChangeNotifier {
 
   void SetAppError(String error) {
     appError = error;
+    notifyListeners();
+  }
+
+  void SetModalState(ModalState newState) {
+    modalState = newState;
     notifyListeners();
   }
 

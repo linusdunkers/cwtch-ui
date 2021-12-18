@@ -110,7 +110,7 @@ class FlwtchState extends State<Flwtch> {
             supportedLocales: AppLocalizations.supportedLocales,
             title: 'Cwtch',
             theme: mkThemeData(settings),
-            home: appState.cwtchInit == true ? ShiftRightFixer(child: ProfileMgrView()) : SplashView(),
+            home: (!appState.cwtchInit || appState.modalState != ModalState.none) ?  SplashView() : ShiftRightFixer(child: ProfileMgrView()),
           ),
         );
       },
