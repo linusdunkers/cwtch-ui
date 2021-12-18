@@ -115,7 +115,7 @@ class FileBubbleState extends State<FileBubble> {
                   myFile!,
                   cacheWidth: 2048, // limit the amount of space the image can decode too, we keep this high-ish to allow quality previews...
                   filterQuality: FilterQuality.medium,
-                  fit: BoxFit.cover,
+                  fit: BoxFit.scaleDown,
                   alignment: Alignment.center,
                   height: MediaQuery.of(bcontext).size.height * 0.30,
                   isAntiAlias: false,
@@ -354,8 +354,9 @@ class FileBubbleState extends State<FileBubble> {
                 meta,
                 Image.file(
                   myFile,
-                  cacheHeight: (MediaQuery.of(context).size.height * 0.6).floor(),
                   cacheWidth: (MediaQuery.of(context).size.width * 0.6).floor(),
+                  width: (MediaQuery.of(context).size.width * 0.6),
+                  height: (MediaQuery.of(context).size.height * 0.6),
                   fit: BoxFit.scaleDown,
                 ),
                 Visibility(visible: !Platform.isAndroid, child: Text(myFile.path, textAlign: TextAlign.center)),
