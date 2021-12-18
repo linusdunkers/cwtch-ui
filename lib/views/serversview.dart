@@ -30,6 +30,7 @@ class _ServersView extends State<ServersView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Provider.of<Settings>(context, listen: false).theme.backgroundMainColor,
         appBar: AppBar(
           title: Text(MediaQuery.of(context).size.width > 600 ? AppLocalizations.of(context)!.serversManagerTitleLong : AppLocalizations.of(context)!.serversManagerTitleShort),
           actions: getActions(),
