@@ -49,7 +49,6 @@ class FileBubbleState extends State<FileBubble> {
     var flagStarted = Provider.of<MessageMetadata>(context).attributes["file-downloaded"] == "true";
     var borderRadiousEh = 15.0;
     var showFileSharing = Provider.of<Settings>(context).isExperimentEnabled(FileSharingExperiment);
-    var showImagePreviews = Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment);
     var prettyDate = DateFormat.yMd(Platform.localeName).add_jm().format(Provider.of<MessageMetadata>(context).timestamp);
     var downloadComplete = Provider.of<ProfileInfoState>(context).downloadComplete(widget.fileKey());
     var downloadInterrupted = Provider.of<ProfileInfoState>(context).downloadInterrupted(widget.fileKey());
@@ -61,7 +60,7 @@ class FileBubbleState extends State<FileBubble> {
     var path = Provider.of<ProfileInfoState>(context).downloadFinalPath(widget.fileKey());
     if (downloadComplete) {
       var lpath = path!.toLowerCase();
-      if (lpath.endsWith("jpg") || lpath.endsWith("jpeg") || lpath.endsWith("png") || lpath.endsWith("gif") || lpath.endsWith("webp") || lpath.endsWith("bmp")) {
+      if (lpath.endsWith(".jpg") || lpath.endsWith(".jpeg") || lpath.endsWith(".png") || lpath.endsWith(".gif") || lpath.endsWith(".webp") || lpath.endsWith(".bmp")) {
         if (myFile == null) {
           setState(() {
             myFile = new File(path);
@@ -107,8 +106,7 @@ class FileBubbleState extends State<FileBubble> {
             child: MessageBubbleDecoration(ackd: Provider.of<MessageMetadata>(context).ackd, errored: Provider.of<MessageMetadata>(context).error, fromMe: fromMe, prettyDate: prettyDate));
       } else if (downloadComplete) {
         // in this case, whatever marked download.complete would have also set the path
-        var lpath = path!.toLowerCase();
-        if (showImagePreviews && (lpath.endsWith("jpg") || lpath.endsWith("jpeg") || lpath.endsWith("png") || lpath.endsWith("gif") || lpath.endsWith("webp") || lpath.endsWith("bmp"))) {
+        if (Provider.of<Settings>(context).shouldPreview(path!)) {
           isPreview = true;
           wdgDecorations = Center(
               child: GestureDetector(
@@ -161,7 +159,7 @@ class FileBubbleState extends State<FileBubble> {
               ]));
         }
       } else if (!senderIsContact) {
-        wdgDecorations = Text("Add this account to your contacts in order to accept this file.");
+        wdgDecorations = Text(AppLocalizations.of(context)!.msgAddToAccept);
       } else if (!widget.isAuto) {
         wdgDecorations = Visibility(
             visible: widget.interactive,

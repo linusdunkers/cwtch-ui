@@ -389,7 +389,7 @@ class _MessageViewState extends State<MessageView> {
         _confirmFileSend(ctx, file.path);
       } else {
         final snackBar = SnackBar(
-          content: Text("File size cannot exceed 10 GB"),
+          content: Text(AppLocalizations.of(context)!.msgFileTooBig),
           duration: Duration(seconds: 4),
         );
         ScaffoldMessenger.of(ctx).showSnackBar(snackBar);
@@ -401,9 +401,8 @@ class _MessageViewState extends State<MessageView> {
     showModalBottomSheet<void>(
         context: ctx,
         builder: (BuildContext bcontext) {
-          var lpath = path.toLowerCase();
           var showPreview = false;
-          if (Provider.of<Settings>(context, listen: false).isExperimentEnabled(ImagePreviewsExperiment) && (lpath.endsWith("jpg") || lpath.endsWith("jpeg") || lpath.endsWith("png") || lpath.endsWith("gif") || lpath.endsWith("webp") || lpath.endsWith("bmp"))) {
+          if (Provider.of<Settings>(context, listen: false).shouldPreview(path)) {
             showPreview = true;
             if (imagePreview == null) {
               imagePreview = new File(path);
@@ -418,7 +417,7 @@ class _MessageViewState extends State<MessageView> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        Text("Are you sure you want to send $path?"),
+                        Text(AppLocalizations.of(context)!.msgConfirmSend + " $path?"),
                         SizedBox(
                           height: 20,
                         ),
@@ -437,14 +436,14 @@ class _MessageViewState extends State<MessageView> {
                         Visibility(visible: showPreview, child: SizedBox(height: 10,)),
                         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                           ElevatedButton(
-                            child: Text("Cancel", semanticsLabel: "Cancel"),
+                            child: Text(AppLocalizations.of(context)!.cancel, semanticsLabel: AppLocalizations.of(context)!.cancel),
                             onPressed: () {
                               Navigator.pop(bcontext);
                             },
                           ),
                           SizedBox(width: 20,),
                           ElevatedButton(
-                            child: Text("Send File", semanticsLabel: "Send File"),
+                            child: Text(AppLocalizations.of(context)!.btnSendFile, semanticsLabel: AppLocalizations.of(context)!.btnSendFile),
                             onPressed: () {
                               _sendFile(path);
                               Navigator.pop(bcontext);

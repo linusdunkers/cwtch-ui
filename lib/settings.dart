@@ -228,6 +228,20 @@ class Settings extends ChangeNotifier {
     }
   }
 
+  // checks experiment settings and file extension for image previews
+  // (ignores file size; if the user manually accepts the file, assume it's okay to preview)
+  bool shouldPreview(String path) {
+    var lpath = path.toLowerCase();
+    return isExperimentEnabled(ImagePreviewsExperiment) && (
+        lpath.endsWith(".jpg") ||
+        lpath.endsWith(".jpeg") ||
+        lpath.endsWith(".png") ||
+        lpath.endsWith(".gif") ||
+        lpath.endsWith(".webp") ||
+        lpath.endsWith(".bmp")
+    );
+  }
+
   String get downloadPath => _downloadPath;
   set downloadPath(String newval) {
     _downloadPath = newval;
