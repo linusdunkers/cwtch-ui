@@ -700,7 +700,7 @@ class CwtchFfi implements Cwtch {
   @override
   String defaultDownloadPath() {
     Map<String, String> envVars = Platform.environment;
-    return path.join(envVars['HOME']!, "Downloads");
+    return path.join(envVars[Platform.isWindows ? 'UserProfile' : 'HOME']!, "Downloads");
   }
 
   @override

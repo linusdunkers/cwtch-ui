@@ -49,12 +49,14 @@ abstract class Cwtch {
   void ShareFile(String profile, int handle, String filepath);
   // ignore: non_constant_identifier_names
   void DownloadFile(String profile, int handle, String filepath, String manifestpath, String filekey);
+  // android-only
   // ignore: non_constant_identifier_names
   void CreateDownloadableFile(String profile, int handle, String filenameSuggestion, String filekey);
   // ignore: non_constant_identifier_names
   void CheckDownloadStatus(String profile, String fileKey);
   // ignore: non_constant_identifier_names
   void VerifyOrResumeDownload(String profile, int handle, String filekey);
+  // android-only
   // ignore: non_constant_identifier_names
   void ExportPreviewedFile(String sourceFile, String suggestion);
 

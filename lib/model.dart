@@ -399,15 +399,14 @@ class ProfileInfoState extends ChangeNotifier {
       if (progress < 0) {
         this._downloads[fileKey]!.interrupted = true;
       }
-      notifyListeners();
     } else {
       if (this._downloads[fileKey]!.interrupted) {
         this._downloads[fileKey]!.interrupted = false;
       }
       this._downloads[fileKey]!.chunksDownloaded = progress;
       this._downloads[fileKey]!.chunksTotal = numChunks;
-      notifyListeners();
     }
+    notifyListeners();
   }
 
   void downloadMarkManifest(String fileKey) {
