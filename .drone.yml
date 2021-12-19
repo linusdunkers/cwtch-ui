@@ -8,7 +8,7 @@ clone:
 
 steps:
   - name: clone
-    image: cirrusci/flutter:2.5.3
+    image: cirrusci/flutter:2.8.0
     environment:
       buildbot_key_b64:
         from_secret: buildbot_key_b64
@@ -24,7 +24,7 @@ steps:
       - git checkout $DRONE_COMMIT
 
   - name: fetch
-    image: cirrusci/flutter:2.5.3
+    image: cirrusci/flutter:2.8.0
     volumes:
       - name: deps
         path: /root/.pub-cache
@@ -47,7 +47,7 @@ steps:
   #    #Todo: fix all the lint errors and add `-set_exit_status` above to enforce linting
 
   - name: build-linux
-    image: openpriv/flutter-desktop:linux-fstable-2.5.3
+    image: openpriv/flutter-desktop:linux-fstable-2.8.0
     volumes:
       - name: deps
         path: /root/.pub-cache
@@ -61,7 +61,7 @@ steps:
       - rm -r cwtch
 
   - name: test-build-android
-    image: cirrusci/flutter:2.5.3
+    image: cirrusci/flutter:2.8.0
     when:
       event: pull_request
     volumes:
@@ -71,7 +71,7 @@ steps:
       - flutter build apk --debug
 
   - name: build-android
-    image: cirrusci/flutter:2.5.3
+    image: cirrusci/flutter:2.8.0
     when:
       event: push
     environment:
@@ -95,7 +95,7 @@ steps:
       #- cp build/app/outputs/flutter-apk/app-debug.apk deploy/android
 
   - name: widget-tests
-    image: cirrusci/flutter:2.5.3
+    image: cirrusci/flutter:2.8.0
     volumes:
       - name: deps
         path: /root/.pub-cache
@@ -174,7 +174,7 @@ clone:
 
 steps:
   - name: clone
-    image: openpriv/flutter-desktop:windows-sdk30-fstable2.5.3
+    image: openpriv/flutter-desktop:windows-sdk30-fstable-2.8.1
     environment:
       buildbot_key_b64:
         from_secret: buildbot_key_b64
@@ -192,7 +192,7 @@ steps:
       - git checkout $Env:DRONE_COMMIT
 
   - name: fetch
-    image: openpriv/flutter-desktop:windows-sdk30-fstable2.5.3
+    image: openpriv/flutter-desktop:windows-sdk30-fstable-2.8.1
     commands:
       - powershell -command "Invoke-WebRequest -Uri https://git.openprivacy.ca/openprivacy/buildfiles/raw/branch/master/tor/tor-win64-0.4.6.5.zip -OutFile tor.zip"
       - powershell -command "if ((Get-FileHash tor.zip -Algorithm sha512).Hash -ne '7917561a7a063440a1ddfa9cb544ab9ffd09de84cea3dd66e3cc9cd349dd9f85b74a522ec390d7a974bc19b424c4d53af60e57bbc47e763d13cab6a203c4592f' ) { Write-Error 'tor.zip sha512sum mismatch' }"
@@ -201,7 +201,7 @@ steps:
       - .\fetch-libcwtch-go.ps1
 
   - name: build-windows
-    image: openpriv/flutter-desktop:windows-sdk30-fstable2.5.3
+    image: openpriv/flutter-desktop:windows-sdk30-fstable-2.8.1
     commands:
       - flutter pub get
       - $Env:version += type .\VERSION
@@ -257,7 +257,7 @@ steps:
       - move *.sha512 deploy\$Env:builddir
 
   - name: deploy-windows
-    image: openpriv/flutter-desktop:windows-sdk30-fstable2.5.3
+    image: openpriv/flutter-desktop:windows-sdk30-fstable-2.8.1
     when:
       event: push
       status: [ success ]
