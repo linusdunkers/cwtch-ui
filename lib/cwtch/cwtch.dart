@@ -15,7 +15,9 @@ abstract class Cwtch {
   // ignore: non_constant_identifier_names
   void LoadProfiles(String pass);
   // ignore: non_constant_identifier_names
-  void DeleteProfile(String onion, String pass);
+  void DeleteProfile(String profile, String pass);
+  // ignore: non_constant_identifier_names
+  void ChangePassword(String profile, String pass, String newpass, String newpassAgain);
 
   // ignore: non_constant_identifier_names
   void ResetTor();

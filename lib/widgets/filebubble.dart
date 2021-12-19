@@ -86,8 +86,8 @@ class FileBubbleState extends State<FileBubble> {
       }
     }
     return LayoutBuilder(builder: (bcontext, constraints) {
-      var wdgSender = Center(
-          widthFactor: 1,
+      var wdgSender = Visibility(
+          visible: widget.interactive,
           child: SelectableText(senderDisplayStr + '\u202F',
               style: TextStyle(fontSize: 9.0, color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor() : Provider.of<Settings>(context).theme.messageFromOtherTextColor())));
 
@@ -102,40 +102,47 @@ class FileBubbleState extends State<FileBubble> {
       if (!showFileSharing) {
         wdgDecorations = Text('\u202F');
       } else if (fromMe) {
-        wdgDecorations = MessageBubbleDecoration(ackd: Provider.of<MessageMetadata>(context).ackd, errored: Provider.of<MessageMetadata>(context).error, fromMe: fromMe, prettyDate: prettyDate);
+        wdgDecorations = Visibility(
+            visible: widget.interactive,
+            child: MessageBubbleDecoration(ackd: Provider.of<MessageMetadata>(context).ackd, errored: Provider.of<MessageMetadata>(context).error, fromMe: fromMe, prettyDate: prettyDate));
       } else if (downloadComplete) {
         // in this case, whatever marked download.complete would have also set the path
         var lpath = path!.toLowerCase();
         if (showImagePreviews && (lpath.endsWith("jpg") || lpath.endsWith("jpeg") || lpath.endsWith("png") || lpath.endsWith("gif") || lpath.endsWith("webp") || lpath.endsWith("bmp"))) {
           isPreview = true;
-          wdgDecorations = GestureDetector(
-            child: Image.file(
-              myFile!,
-              cacheWidth: 2048, // limit the amount of space the image can decode too, we keep this high-ish to allow quality previews...
-              filterQuality: FilterQuality.medium,
-              fit: BoxFit.fill,
-              alignment: Alignment.center,
-              width: constraints.maxWidth,
-              isAntiAlias: false,
-              errorBuilder: (context, error, stackTrace) {
-                return MalformedBubble();
-              },
-            ),
+          wdgDecorations = Center(
+              child: GestureDetector(
+            child: Padding(
+                padding: EdgeInsets.all(1.0),
+                child: Image.file(
+                  myFile!,
+                  cacheWidth: 2048, // limit the amount of space the image can decode too, we keep this high-ish to allow quality previews...
+                  filterQuality: FilterQuality.medium,
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.center,
+                  height: MediaQuery.of(bcontext).size.height * 0.30,
+                  isAntiAlias: false,
+                  errorBuilder: (context, error, stackTrace) {
+                    return MalformedBubble();
+                  },
+                )),
             onTap: () {
               pop(bcontext, myFile!, wdgMessage);
             },
-          );
+          ));
         } else {
-          wdgDecorations = Text(AppLocalizations.of(context)!.fileSavedTo + ': ' + path + '\u202F');
+          wdgDecorations = Visibility(visible: widget.interactive, child: Text(AppLocalizations.of(context)!.fileSavedTo + ': ' + path + '\u202F'));
         }
       } else if (downloadActive) {
         if (!downloadGotManifest) {
-          wdgDecorations = Text(AppLocalizations.of(context)!.retrievingManifestMessage + '\u202F');
+          wdgDecorations = Visibility(visible: widget.interactive, child: Text(AppLocalizations.of(context)!.retrievingManifestMessage + '\u202F'));
         } else {
-          wdgDecorations = LinearProgressIndicator(
-            value: Provider.of<ProfileInfoState>(context).downloadProgress(widget.fileKey()),
-            color: Provider.of<Settings>(context).theme.defaultButtonActiveColor(),
-          );
+          wdgDecorations = Visibility(
+              visible: widget.interactive,
+              child: LinearProgressIndicator(
+                value: Provider.of<ProfileInfoState>(context).downloadProgress(widget.fileKey()),
+                color: Provider.of<Settings>(context).theme.defaultButtonActiveColor(),
+              ));
         }
       } else if (flagStarted) {
         // in this case, the download was done in a previous application launch,
@@ -145,25 +152,24 @@ class FileBubbleState extends State<FileBubble> {
               AppLocalizations.of(context)!.fileCheckingStatus + '...' +
                   '\u202F');
         } else {
-          var path = Provider.of<ProfileInfoState>(context).downloadFinalPath(
-              widget.fileKey()) ?? "";
-          wdgDecorations =
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(AppLocalizations.of(context)!.fileInterrupted + ': ' +
-                    path + '\u202F'),
-                ElevatedButton(onPressed: _btnResume,
-                    child: Text(
-                        AppLocalizations.of(context)!.verfiyResumeButton))
-              ]);
+          var path = Provider.of<ProfileInfoState>(context).downloadFinalPath(widget.fileKey()) ?? "";
+          wdgDecorations = Visibility(
+              visible: widget.interactive,
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(AppLocalizations.of(context)!.fileInterrupted + ': ' + path + '\u202F'),
+                ElevatedButton(onPressed: _btnResume, child: Text(AppLocalizations.of(context)!.verfiyResumeButton))
+              ]));
         }
       } else if (!senderIsContact) {
         wdgDecorations = Text("Add this account to your contacts in order to accept this file.");
       } else if (!widget.isAuto) {
-        wdgDecorations = Center(
-            widthFactor: 1,
-            child: Wrap(children: [
-              Padding(padding: EdgeInsets.all(5), child: ElevatedButton(child: Text(AppLocalizations.of(context)!.downloadFileButton + '\u202F'), onPressed: _btnAccept)),
-            ]));
+        wdgDecorations = Visibility(
+            visible: widget.interactive,
+            child: Center(
+                widthFactor: 1,
+                child: Wrap(children: [
+                  Padding(padding: EdgeInsets.all(5), child: ElevatedButton(child: Text(AppLocalizations.of(context)!.downloadFileButton + '\u202F'), onPressed: _btnAccept)),
+                ])));
       } else {
         wdgDecorations = Container();
       }
@@ -186,9 +192,7 @@ class FileBubbleState extends State<FileBubble> {
                 crossAxisAlignment: fromMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                 mainAxisAlignment: fromMe ? MainAxisAlignment.end : MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
-                children: fromMe
-                    ? [wdgMessage, Visibility(visible: widget.interactive, child: wdgDecorations)]
-                    : [wdgSender, isPreview ? Container() : wdgMessage, Visibility(visible: widget.interactive, child: wdgDecorations)]),
+                children: fromMe ? [wdgMessage, Visibility(visible: widget.interactive, child: wdgDecorations)] : [wdgSender, isPreview ? Container() : wdgMessage, wdgDecorations]),
           ));
     });
   }
@@ -357,8 +361,9 @@ class FileBubbleState extends State<FileBubble> {
                 meta,
                 Image.file(
                   myFile,
-                  cacheHeight: (MediaQuery.of(context).size.height * 0.6).floor(),
                   cacheWidth: (MediaQuery.of(context).size.width * 0.6).floor(),
+                  width: (MediaQuery.of(context).size.width * 0.6),
+                  height: (MediaQuery.of(context).size.height * 0.6),
                   fit: BoxFit.scaleDown,
                 ),
                 Visibility(visible: !Platform.isAndroid, child: Text(myFile.path, textAlign: TextAlign.center)),

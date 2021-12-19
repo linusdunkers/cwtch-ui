@@ -115,13 +115,13 @@ class CwtchFfi implements Cwtch {
   }
 
   CwtchFfi(CwtchNotifier _cwtchNotifier) {
-    String library_path = getLibraryPath();
-    if (library_path == UNSUPPORTED_OS) {
+    String libraryPath = getLibraryPath();
+    if (libraryPath == UNSUPPORTED_OS) {
       print("OS ${Platform.operatingSystem} not supported by cwtch/ffi");
       // emergency, ideally the app stays on splash and just posts the error till user closes
       exit(0);
     }
-    library = DynamicLibrary.open(library_path);
+    library = DynamicLibrary.open(libraryPath);
     cwtchNotifier = _cwtchNotifier;
   }
 
@@ -715,5 +715,22 @@ class CwtchFfi implements Cwtch {
     _UnsafeFreePointerAnyUseOfThisFunctionMustBeDoubleApproved(jsonMessageBytes);
     malloc.free(utf8profile);
     return jsonMessage;
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void ChangePassword(String profile, String pass, String newpass, String newpassAgain) {
+    var changePasswordC = library.lookup<NativeFunction<void_from_string_string_string_string_function>>("c_ChangePassword");
+    // ignore: non_constant_identifier_names
+    final ChangePasswordFn = changePasswordC.asFunction<VoidFromStringStringStringStringFn>();
+    final utf8profile = profile.toNativeUtf8();
+    final utf8pass = pass.toNativeUtf8();
+    final utf8newpass = newpass.toNativeUtf8();
+    final utf8newpasssagain = newpassAgain.toNativeUtf8();
+    ChangePasswordFn(utf8profile, utf8profile.length, utf8pass, utf8pass.length, utf8newpass, utf8newpass.length, utf8newpasssagain, utf8newpasssagain.length);
+    malloc.free(utf8profile);
+    malloc.free(utf8pass);
+    malloc.free(utf8newpass);
+    malloc.free(utf8newpasssagain);
   }
 }

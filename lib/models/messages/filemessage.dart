@@ -54,14 +54,16 @@ class FileMessage extends Message {
           if (!validHash(rootHash, nonce)) {
             return MessageRow(MalformedBubble());
           }
-          return FileBubble(
-            nameSuggestion,
-            rootHash,
-            nonce,
-            fileSize,
-            isAuto: metadata.isAuto,
-            interactive: false,
-          );
+          return Container(
+              alignment: Alignment.center,
+              child: FileBubble(
+                nameSuggestion,
+                rootHash,
+                nonce,
+                fileSize,
+                isAuto: metadata.isAuto,
+                interactive: false,
+              ));
         });
   }
 

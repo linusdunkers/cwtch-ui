@@ -224,7 +224,10 @@ class CwtchNotifier {
         }
         break;
       case "SendMessageToPeerError":
-        // Ignore
+        // Ignore dealt with by IndexedFailure
+        break;
+      case "SendMessageToGroupError":
+        // Ignore dealt with by IndexedFailure
         break;
       case "IndexedFailure":
         var contact = profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(data["RemotePeer"]);
