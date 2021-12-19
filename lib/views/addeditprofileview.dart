@@ -18,7 +18,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../cwtch_icons_icons.dart';
 import '../errorHandler.dart';
 import '../main.dart';
-import '../opaque.dart';
+import '../themes/opaque.dart';
 import '../settings.dart';
 
 class AddEditProfileView extends StatefulWidget {
@@ -93,7 +93,7 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                       imagePath: Provider.of<ProfileInfoState>(context).imagePath,
                                       diameter: 120,
                                       maskOut: false,
-                                      border: theme.theme.portraitOnlineBorderColor(),
+                                      border: theme.theme.portraitOnlineBorderColor,
                                       badgeTextColor: Colors.red,
                                       badgeColor: Colors.red,
                                     )
@@ -106,7 +106,7 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                 CwtchTextField(
                                   controller: ctrlrNick,
                                   autofocus: false,
-                                  labelText: AppLocalizations.of(context)!.yourDisplayName,
+                                  hintText: AppLocalizations.of(context)!.yourDisplayName,
                                   validator: (value) {
                                     if (value.isEmpty) {
                                       return AppLocalizations.of(context)!.displayNameTooltip;
@@ -147,13 +147,13 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                   child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
                                     Checkbox(
                                       value: usePassword,
-                                      fillColor: MaterialStateProperty.all(theme.current().defaultButtonColor()),
-                                      activeColor: theme.current().defaultButtonActiveColor(),
+                                      fillColor: MaterialStateProperty.all(theme.current().defaultButtonColor),
+                                      activeColor: theme.current().defaultButtonActiveColor,
                                       onChanged: _handleSwitchPassword,
                                     ),
                                     Text(
                                       AppLocalizations.of(context)!.radioUsePassword,
-                                      style: TextStyle(color: theme.current().mainTextColor()),
+                                      style: TextStyle(color: theme.current().mainTextColor),
                                     ),
                                     SizedBox(
                                       height: 20,

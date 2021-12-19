@@ -26,8 +26,14 @@ class ChatMessage {
       };
 }
 
+enum ModalState {
+  none,
+  storageMigration
+}
+
 class AppState extends ChangeNotifier {
   bool cwtchInit = false;
+  ModalState modalState = ModalState.none;
   bool cwtchIsClosing = false;
   String appError = "";
   String? _selectedProfile;
@@ -44,6 +50,11 @@ class AppState extends ChangeNotifier {
 
   void SetAppError(String error) {
     appError = error;
+    notifyListeners();
+  }
+
+  void SetModalState(ModalState newState) {
+    modalState = newState;
     notifyListeners();
   }
 
@@ -149,6 +160,7 @@ class ContactListState extends ChangeNotifier {
         servers?.addGroup(contact);
       }
     });
+    resort();
     notifyListeners();
   }
 
@@ -157,6 +169,7 @@ class ContactListState extends ChangeNotifier {
     if (newContact.isGroup) {
       servers?.addGroup(newContact);
     }
+    resort();
     notifyListeners();
   }
 
@@ -164,12 +177,18 @@ class ContactListState extends ChangeNotifier {
     _contacts.sort((ContactInfoState a, ContactInfoState b) {
       // return -1 = a first in list
       // return 1 = b first in list
+
       // blocked contacts last
       if (a.isBlocked == true && b.isBlocked != true) return 1;
       if (a.isBlocked != true && b.isBlocked == true) return -1;
       // archive is next...
       if (!a.isArchived && b.isArchived) return -1;
       if (a.isArchived && !b.isArchived) return 1;
+
+      // unapproved top
+      if (a.isInvitation && !b.isInvitation) return -1;
+      if (!a.isInvitation && b.isInvitation) return 1;
+
       // special sorting for contacts with no messages in either history
       if (a.lastMessageTime.millisecondsSinceEpoch == 0 && b.lastMessageTime.millisecondsSinceEpoch == 0) {
         // online contacts first

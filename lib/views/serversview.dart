@@ -30,6 +30,7 @@ class _ServersView extends State<ServersView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Provider.of<Settings>(context, listen: false).theme.backgroundMainColor,
         appBar: AppBar(
           title: Text(MediaQuery.of(context).size.width > 600 ? AppLocalizations.of(context)!.serversManagerTitleLong : AppLocalizations.of(context)!.serversManagerTitleShort),
           actions: getActions(),
@@ -77,7 +78,7 @@ class _ServersView extends State<ServersView> {
     // Unlock Profiles
     actions.add(IconButton(
       icon: Icon(CwtchIcons.lock_open_24px),
-      color: Provider.of<ServerListState>(context).servers.isEmpty ? Provider.of<Settings>(context).theme.defaultButtonColor() : Provider.of<Settings>(context).theme.mainTextColor(),
+      color: Provider.of<ServerListState>(context).servers.isEmpty ? Provider.of<Settings>(context).theme.defaultButtonColor : Provider.of<Settings>(context).theme.mainTextColor,
       tooltip: AppLocalizations.of(context)!.tooltipUnlockProfiles,
       onPressed: _modalUnlockServers,
     ));

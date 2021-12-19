@@ -62,7 +62,7 @@ class _ProfileServersView extends State<ProfileServersView> {
             final importCard = Card(
                 child: ListTile(
                     title: Text(AppLocalizations.of(context)!.importLocalServerLabel),
-                    leading: Icon(CwtchIcons.add_circle_24px, color: Provider.of<Settings>(context).current().mainTextColor()),
+                    leading: Icon(CwtchIcons.add_circle_24px, color: Provider.of<Settings>(context).current().mainTextColor),
                     trailing: DropdownButton(
                       onChanged: (String? importServer) {
                         if (importServer!.isNotEmpty) {

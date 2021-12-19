@@ -163,7 +163,7 @@ class _AddContactViewState extends State<AddContactView> {
                     }
                   });
                 },
-                labelText: '',
+                hintText: '',
               )
             ])));
   }
@@ -197,11 +197,15 @@ class _AddContactViewState extends State<AddContactView> {
                     },
                     isExpanded: true, // magic property
                     value: server,
-                    items: Provider.of<ProfileInfoState>(context).serverList.servers.map<DropdownMenuItem<String>>((RemoteServerInfoState serverInfo) {
+                    items: Provider.of<ProfileInfoState>(context)
+                        .serverList
+                        .servers
+                        .where((serverInfo) => serverInfo.status == "Synced")
+                        .map<DropdownMenuItem<String>>((RemoteServerInfoState serverInfo) {
                       return DropdownMenuItem<String>(
                         value: serverInfo.onion,
                         child: Text(
-                          serverInfo.onion,
+                          serverInfo.description,
                           overflow: TextOverflow.ellipsis,
                         ),
                       );
@@ -215,7 +219,7 @@ class _AddContactViewState extends State<AddContactView> {
                 ),
                 CwtchTextField(
                   controller: ctrlrGroupName,
-                  labelText: AppLocalizations.of(context)!.groupNameLabel,
+                  hintText: AppLocalizations.of(context)!.groupNameLabel,
                   onChanged: (newValue) {},
                   validator: (value) {},
                 ),

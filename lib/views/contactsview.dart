@@ -78,7 +78,7 @@ class _ContactsViewState extends State<ContactsView> {
             ProfileImage(
               imagePath: Provider.of<ProfileInfoState>(context).imagePath,
               diameter: 42,
-              border: Provider.of<Settings>(context).current().portraitOnlineBorderColor(),
+              border: Provider.of<Settings>(context).current().portraitOnlineBorderColor,
               badgeTextColor: Colors.red,
               badgeColor: Colors.red,
             ),
@@ -87,7 +87,7 @@ class _ContactsViewState extends State<ContactsView> {
             ),
             Expanded(
                 child: Text("%1 » %2".replaceAll("%1", Provider.of<ProfileInfoState>(context).nickname).replaceAll("%2", AppLocalizations.of(context)!.titleManageContacts),
-                    overflow: TextOverflow.ellipsis, style: TextStyle(color: Provider.of<Settings>(context).current().mainTextColor()))),
+                    overflow: TextOverflow.ellipsis, style: TextStyle(color: Provider.of<Settings>(context).current().mainTextColor))),
           ])),
           actions: getActions(context),
         ),
@@ -114,7 +114,7 @@ class _ContactsViewState extends State<ContactsView> {
         }));
 
     // Manage known Servers
-    if (Provider.of<Settings>(context, listen: false).isExperimentEnabled(ServerManagementExperiment)) {
+    if (Provider.of<Settings>(context, listen: false).isExperimentEnabled(TapirGroupsExperiment) || Provider.of<Settings>(context, listen: false).isExperimentEnabled(ServerManagementExperiment)) {
       actions.add(IconButton(
           icon: Icon(CwtchIcons.dns_24px),
           tooltip: AppLocalizations.of(context)!.manageKnownServersButton,
@@ -139,7 +139,7 @@ class _ContactsViewState extends State<ContactsView> {
   Widget _buildFilterable() {
     Widget txtfield = CwtchTextField(
       controller: ctrlrFilter,
-      labelText: AppLocalizations.of(context)!.search,
+      hintText: AppLocalizations.of(context)!.search,
       onChanged: (newVal) {
         Provider.of<ContactListState>(context, listen: false).filter = newVal;
       },

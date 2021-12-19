@@ -19,7 +19,7 @@ class _TorIconState extends State<TorIcon> {
     return RepaintBoundary(
         child: Icon(
       Provider.of<TorStatus>(context).progress == 0 ? CwtchIcons.onion_off : (Provider.of<TorStatus>(context).progress == 100 ? CwtchIcons.onion_on : CwtchIcons.onion_waiting),
-      color: Provider.of<Settings>(context).theme.mainTextColor(),
+      color: Provider.of<Settings>(context).theme.mainTextColor,
       semanticLabel: Provider.of<TorStatus>(context).progress == 100
           ? AppLocalizations.of(context)!.networkStatusOnline
           : (Provider.of<TorStatus>(context).progress == 0 ? AppLocalizations.of(context)!.networkStatusDisconnected : AppLocalizations.of(context)!.networkStatusAttemptingTor),

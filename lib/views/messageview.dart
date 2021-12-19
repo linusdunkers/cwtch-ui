@@ -106,6 +106,7 @@ class _MessageViewState extends State<MessageView> {
     return WillPopScope(
         onWillPop: _onWillPop,
         child: Scaffold(
+          backgroundColor: Provider.of<Settings>(context).theme.backgroundMainColor,
           floatingActionButton: appState.unreadMessagesBelow
               ? FloatingActionButton(
                   child: Icon(Icons.arrow_downward),
@@ -122,7 +123,7 @@ class _MessageViewState extends State<MessageView> {
               ProfileImage(
                 imagePath: Provider.of<ContactInfoState>(context).imagePath,
                 diameter: 42,
-                border: Provider.of<Settings>(context).current().portraitOnlineBorderColor(),
+                border: Provider.of<Settings>(context).current().portraitOnlineBorderColor,
                 badgeTextColor: Colors.red,
                 badgeColor: Colors.red,
               ),
@@ -227,7 +228,7 @@ class _MessageViewState extends State<MessageView> {
     bool isOffline = Provider.of<ContactInfoState>(context).isOnline() == false;
 
     var composeBox = Container(
-      color: Provider.of<Settings>(context).theme.backgroundMainColor(),
+      color: Provider.of<Settings>(context).theme.backgroundMainColor,
       padding: EdgeInsets.all(2),
       margin: EdgeInsets.all(2),
       height: 100,
@@ -235,7 +236,7 @@ class _MessageViewState extends State<MessageView> {
         children: <Widget>[
           Expanded(
               child: Container(
-                  decoration: BoxDecoration(border: Border(top: BorderSide(color: Provider.of<Settings>(context).theme.defaultButtonActiveColor()))),
+                  decoration: BoxDecoration(border: Border(top: BorderSide(color: Provider.of<Settings>(context).theme.defaultButtonActiveColor))),
                   child: RawKeyboardListener(
                       focusNode: FocusNode(),
                       onKey: handleKeyPress,
@@ -255,12 +256,12 @@ class _MessageViewState extends State<MessageView> {
                             enabled: !isOffline,
                             decoration: InputDecoration(
                                 hintText: isOffline ? "" : AppLocalizations.of(context)!.placeholderEnterMessage,
-                                hintStyle: TextStyle(color: Provider.of<Settings>(context).theme.altTextColor()),
+                                hintStyle: TextStyle(color: Provider.of<Settings>(context).theme.sendHintTextColor),
                                 enabledBorder: InputBorder.none,
                                 focusedBorder: InputBorder.none,
                                 enabled: true,
                                 suffixIcon: ElevatedButton(
-                                  child: Icon(CwtchIcons.send_24px, size: 24, color: Provider.of<Settings>(context).theme.defaultButtonTextColor()),
+                                  child: Icon(CwtchIcons.send_24px, size: 24, color: Provider.of<Settings>(context).theme.defaultButtonTextColor),
                                   onPressed: isOffline ? null : _sendMessage,
                                 ))),
                       )))),
@@ -280,8 +281,8 @@ class _MessageViewState extends State<MessageView> {
                 margin: EdgeInsets.all(5),
                 padding: EdgeInsets.all(5),
                 color: message.getMetadata().senderHandle != Provider.of<AppState>(context).selectedProfile
-                    ? Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor()
-                    : Provider.of<Settings>(context).theme.messageFromMeBackgroundColor(),
+                    ? Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor
+                    : Provider.of<Settings>(context).theme.messageFromMeBackgroundColor,
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Stack(children: [
                     Align(
@@ -315,7 +316,7 @@ class _MessageViewState extends State<MessageView> {
       children = [composeBox];
     }
 
-    return Column(mainAxisSize: MainAxisSize.min, children: children);
+    return Container(color: Provider.of<Settings>(context).theme.backgroundMainColor, child: Column(mainAxisSize: MainAxisSize.min, children: children));
   }
 
   // Send the message if enter is pressed without the shift key...

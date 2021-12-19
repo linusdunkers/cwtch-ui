@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:cwtch/config.dart';
 import 'package:cwtch/notification_manager.dart';
+import 'package:cwtch/themes/cwtch.dart';
 import 'package:cwtch/views/messageview.dart';
 import 'package:cwtch/widgets/rightshiftfixer.dart';
 import 'package:flutter/foundation.dart';
@@ -21,10 +22,10 @@ import 'models/servers.dart';
 import 'views/profilemgrview.dart';
 import 'views/splashView.dart';
 import 'dart:io' show Platform, exit;
-import 'opaque.dart';
+import 'themes/opaque.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-var globalSettings = Settings(Locale("en", ''), OpaqueDark());
+var globalSettings = Settings(Locale("en", ''), CwtchDark());
 var globalErrorHandler = ErrorHandler();
 var globalTorStatus = TorStatus();
 var globalAppState = AppState();
@@ -109,7 +110,7 @@ class FlwtchState extends State<Flwtch> {
             supportedLocales: AppLocalizations.supportedLocales,
             title: 'Cwtch',
             theme: mkThemeData(settings),
-            home: appState.cwtchInit == true ? ShiftRightFixer(child: ProfileMgrView()) : SplashView(),
+            home: (!appState.cwtchInit || appState.modalState != ModalState.none) ?  SplashView() : ShiftRightFixer(child: ProfileMgrView()),
           ),
         );
       },

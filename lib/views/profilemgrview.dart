@@ -46,20 +46,20 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
             return Provider.of<AppState>(context, listen: false).cwtchIsClosing;
           },
           child: Scaffold(
-            backgroundColor: settings.theme.backgroundMainColor(),
+            backgroundColor: settings.theme.backgroundMainColor,
             appBar: AppBar(
               title: Row(children: [
                 Icon(
                   CwtchIcons.cwtch_knott,
                   size: 36,
-                  color: settings.theme.mainTextColor(),
+                  color: settings.theme.mainTextColor,
                 ),
                 SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: Text(MediaQuery.of(context).size.width > 600 ? AppLocalizations.of(context)!.titleManageProfiles : AppLocalizations.of(context)!.titleManageProfilesShort,
-                        style: TextStyle(color: settings.current().mainTextColor())))
+                        style: TextStyle(color: settings.current().mainTextColor)))
               ]),
               actions: getActions(),
             ),
@@ -93,7 +93,7 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
     // Unlock Profiles
     actions.add(IconButton(
       icon: Icon(CwtchIcons.lock_open_24px),
-      color: Provider.of<ProfileListState>(context).profiles.isEmpty ? Provider.of<Settings>(context).theme.defaultButtonColor() : Provider.of<Settings>(context).theme.mainTextColor(),
+      color: Provider.of<ProfileListState>(context).profiles.isEmpty ? Provider.of<Settings>(context).theme.defaultButtonColor : Provider.of<Settings>(context).theme.mainTextColor,
       tooltip: AppLocalizations.of(context)!.tooltipUnlockProfiles,
       onPressed: _modalUnlockProfiles,
     ));

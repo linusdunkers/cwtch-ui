@@ -39,9 +39,32 @@ class ServerListState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateServerStats(String onion, int newTotalMessages, int newConnections) {
+    var server = getServer(onion);
+    if (server != null) {
+      server.setStats(newTotalMessages, newConnections);
+      resort();
+      notifyListeners();
+    }
+  }
+
   void delete(String onion) {
     _servers.removeWhere((element) => element.onion == onion);
     notifyListeners();
+  }
+
+  void resort() {
+    _servers.sort((ServerInfoState a, ServerInfoState b) {
+      // return -1 = a first in list
+      // return 1 = b first in list
+      if (a.totalMessages > b.totalMessages) {
+        return -1;
+      } else if (b.totalMessages > a.totalMessages) {
+        return 1;
+      }
+
+      return 0;
+    });
   }
 
   List<ServerInfoState> get servers => _servers.sublist(0); //todo: copy?? dont want caller able to bypass changenotifier
@@ -55,6 +78,8 @@ class ServerInfoState extends ChangeNotifier {
   bool running;
   bool autoStart;
   bool isEncrypted;
+  int totalMessages = 0;
+  int connections = 0;
 
   ServerInfoState({required this.onion, required this.serverBundle, required this.running, required this.description, required this.autoStart, required this.isEncrypted});
 
@@ -70,6 +95,12 @@ class ServerInfoState extends ChangeNotifier {
 
   void setDescription(String val) {
     description = val;
+    notifyListeners();
+  }
+
+  void setStats(int newTotalMessages, int newConnections) {
+    totalMessages = newTotalMessages;
+    connections = newConnections;
     notifyListeners();
   }
 }

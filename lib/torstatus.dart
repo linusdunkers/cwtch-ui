@@ -18,6 +18,9 @@ class TorStatus extends ChangeNotifier {
 
     progress = new_progress;
     status = new_status;
+    if (new_progress != 100) {
+      status = "$new_progress% - $new_status";
+    }
 
     notifyListeners();
   }
