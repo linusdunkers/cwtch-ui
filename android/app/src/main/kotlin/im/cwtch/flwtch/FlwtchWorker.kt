@@ -180,6 +180,13 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                 val pass = (a.get("pass") as? String) ?: ""
                 Cwtch.loadProfiles(pass)
             }
+            "ChangePassword" -> {
+                val profile = (a.get("ProfileOnion") as? String) ?: ""
+                val pass = (a.get("OldPass") as? String) ?: ""
+                val passNew = (a.get("NewPass") as? String) ?: ""
+                val passNew2 = (a.get("NewPassAgain") as? String) ?: ""
+                Cwtch.changePassword(profile, pass, passNew, passNew2)
+            }
             "GetMessage" -> {
                 val profile = (a.get("ProfileOnion") as? String) ?: ""
                 val conversation = a.getInt("conversation").toLong()

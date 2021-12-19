@@ -229,14 +229,9 @@ class CwtchNotifier {
           EnvironmentConfig.debugLog("new message from group from yourself - this should not happen");
         }
         break;
-      case "SendMessageToPeerError":
-        // Ignore dealt with by IndexedFailure
-        break;
-      case "SendMessageToGroupError":
-        // Ignore dealt with by IndexedFailure
-        break;
       case "IndexedFailure":
-        var contact = profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(data["RemotePeer"]);
+        var identifier = int.parse(data["ConversationID"]);
+        var contact = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier);
         var idx = int.parse(data["Index"]);
         var key = contact?.getMessageKeyOrFail(contact.identifier, idx);
         if (key != null) {
@@ -314,21 +309,6 @@ class CwtchNotifier {
           }
         });
         profileCN.getProfile(data["ProfileOnion"])?.contactList.resort();
-        break;
-      case "SetPeerAttribute":
-        if (data["Key"] == "local.name") {
-          if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["RemotePeer"]) != null) {
-            profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["RemotePeer"])!.nickname = data["Data"];
-          }
-        } else if (data["Key"] == "local.archived") {
-          if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["RemotePeer"]) != null) {
-            profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(data["RemotePeer"])!.isArchived = data["Data"] == "true";
-          }
-        } else if (data["Key"] == "LastKnowSignature") {
-          // group syncing information that isn't relevant to the UI...
-        } else {
-          EnvironmentConfig.debugLog("unhandled set peer attribute event: ${data['Key']}");
-        }
         break;
       case "NewRetValMessageFromPeer":
         if (data["Path"] == "profile.name") {
