@@ -58,11 +58,15 @@ Message compileOverlay(MessageMetadata metadata, String messageData) {
 }
 
 Future<Message> messageHandler(BuildContext context, String profileOnion, int conversationIdentifier, int index, {bool byID = false}) {
-  var cache = Provider.of<ProfileInfoState>(context).contactList.getContact(conversationIdentifier)?.messageCache;
-  if (cache != null && cache.length > index) {
-    if (cache[index] != null) {
-      return Future.value(compileOverlay(cache[index]!.metadata, cache[index]!.wrapper));
+  try {
+    var cache = Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(conversationIdentifier)?.messageCache;
+    if (cache != null && cache.length > index) {
+      if (cache[index] != null) {
+        return Future.value(compileOverlay(cache[index]!.metadata, cache[index]!.wrapper));
+      }
     }
+  } catch (e) {
+    // provider check failed...make an expensive call...
   }
 
   try {
@@ -75,7 +79,7 @@ Future<Message> messageHandler(BuildContext context, String profileOnion, int co
     }
 
     return rawMessageEnvelopeFuture.then((dynamic rawMessageEnvelope) {
-      var metadata = MessageMetadata(profileOnion, conversationIdentifier, index, DateTime.now(), "", "", "", <String, String>{}, false, true);
+      var metadata = MessageMetadata(profileOnion, conversationIdentifier, index, DateTime.now(), "", "", "", <String, String>{}, false, true, false);
       try {
         dynamic messageWrapper = jsonDecode(rawMessageEnvelope);
         // There are 2 conditions in which this error condition can be met:
@@ -103,7 +107,7 @@ Future<Message> messageHandler(BuildContext context, String profileOnion, int co
         var ackd = messageWrapper['Acknowledged'];
         var error = messageWrapper['Error'] != null;
         var signature = messageWrapper['Signature'];
-        metadata = MessageMetadata(profileOnion, conversationIdentifier, messageID, timestamp, senderHandle, senderImage, signature, attributes, ackd, error);
+        metadata = MessageMetadata(profileOnion, conversationIdentifier, messageID, timestamp, senderHandle, senderImage, signature, attributes, ackd, error, false);
 
         return compileOverlay(metadata, messageWrapper['Message']);
       } catch (e) {
@@ -112,7 +116,7 @@ Future<Message> messageHandler(BuildContext context, String profileOnion, int co
       }
     });
   } catch (e) {
-    return Future.value(MalformedMessage(MessageMetadata(profileOnion, conversationIdentifier, -1, DateTime.now(), "", "", "", <String, String>{}, false, true)));
+    return Future.value(MalformedMessage(MessageMetadata(profileOnion, conversationIdentifier, -1, DateTime.now(), "", "", "", <String, String>{}, false, true, false)));
   }
 }
 
@@ -128,6 +132,7 @@ class MessageMetadata extends ChangeNotifier {
   final dynamic _attributes;
   bool _ackd;
   bool _error;
+  final bool isAuto;
 
   final String? signature;
 
@@ -145,5 +150,6 @@ class MessageMetadata extends ChangeNotifier {
     notifyListeners();
   }
 
-  MessageMetadata(this.profileOnion, this.conversationIdentifier, this.messageID, this.timestamp, this.senderHandle, this.senderImage, this.signature, this._attributes, this._ackd, this._error);
+  MessageMetadata(
+      this.profileOnion, this.conversationIdentifier, this.messageID, this.timestamp, this.senderHandle, this.senderImage, this.signature, this._attributes, this._ackd, this._error, this.isAuto);
 }

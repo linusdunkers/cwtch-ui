@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:cwtch/cwtch_icons_icons.dart';
 import 'package:cwtch/models/servers.dart';
+import 'package:cwtch/widgets/folderpicker.dart';
 import 'package:cwtch/themes/cwtch.dart';
 import 'package:cwtch/themes/ghost.dart';
 import 'package:cwtch/themes/mermaid.dart';
@@ -254,21 +255,54 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                 inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
                                 secondary: Icon(Icons.attach_file, color: settings.current().mainTextColor),
                               ),
-                              SwitchListTile(
-                                title: Text(AppLocalizations.of(context)!.enableExperimentClickableLinks, style: TextStyle(color: settings.current().mainTextColor)),
-                                subtitle: Text(AppLocalizations.of(context)!.experimentClickableLinksDescription),
-                                value: settings.isExperimentEnabled(ClickableLinksExperiment),
-                                onChanged: (bool value) {
-                                  if (value) {
-                                    settings.enableExperiment(ClickableLinksExperiment);
-                                  } else {
-                                    settings.disableExperiment(ClickableLinksExperiment);
-                                  }
-                                  saveSettings(context);
-                                },
-                                activeTrackColor: settings.theme.defaultButtonColor,
-                                inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
-                                secondary: Icon(Icons.link, color: settings.current().mainTextColor),
+                              Visibility(
+                                visible: settings.isExperimentEnabled(FileSharingExperiment),
+                                child: Column(children: [
+                                  SwitchListTile(
+                                    title: Text(AppLocalizations.of(context)!.settingImagePreviews, style: TextStyle(color: settings.current().mainTextColor)),
+                                    subtitle: Text(AppLocalizations.of(context)!.settingImagePreviewsDescription),
+                                    value: settings.isExperimentEnabled(ImagePreviewsExperiment),
+                                    onChanged: (bool value) {
+                                      if (value) {
+                                        settings.enableExperiment(ImagePreviewsExperiment);
+                                        settings.downloadPath = Provider.of<FlwtchState>(context, listen: false).cwtch.defaultDownloadPath();
+                                      } else {
+                                        settings.disableExperiment(ImagePreviewsExperiment);
+                                      }
+                                      saveSettings(context);
+                                    },
+                                    activeTrackColor: settings.theme.defaultButtonActiveColor,
+                                    inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
+                                    secondary: Icon(Icons.attach_file, color: settings.current().mainTextColor),
+                                  ),
+                                  Visibility(
+                                    visible: settings.isExperimentEnabled(ImagePreviewsExperiment) && !Platform.isAndroid,
+                                    child: CwtchFolderPicker(
+                                      label: AppLocalizations.of(context)!.settingDownloadFolder,
+                                      initialValue: settings.downloadPath,
+                                      onSave: (newVal) {
+                                        settings.downloadPath = newVal;
+                                        saveSettings(context);
+                                      },
+                                    ),
+                                  ),
+                                  SwitchListTile(
+                                    title: Text(AppLocalizations.of(context)!.enableExperimentClickableLinks, style: TextStyle(color: settings.current().mainTextColor)),
+                                    subtitle: Text(AppLocalizations.of(context)!.experimentClickableLinksDescription),
+                                    value: settings.isExperimentEnabled(ClickableLinksExperiment),
+                                    onChanged: (bool value) {
+                                      if (value) {
+                                        settings.enableExperiment(ClickableLinksExperiment);
+                                      } else {
+                                        settings.disableExperiment(ClickableLinksExperiment);
+                                      }
+                                      saveSettings(context);
+                                    },
+                                    activeTrackColor: settings.theme.defaultButtonActiveColor,
+                                    inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
+                                    secondary: Icon(Icons.link, color: settings.current().mainTextColor),
+                                  ),
+                                ]),
                               ),
                             ],
                           )),

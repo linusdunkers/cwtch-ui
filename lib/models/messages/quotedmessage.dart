@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:cwtch/models/message.dart';
 import 'package:cwtch/models/messages/malformedmessage.dart';
+import 'package:cwtch/widgets/malformedbubble.dart';
 import 'package:cwtch/widgets/messagerow.dart';
 import 'package:cwtch/widgets/quotedmessage.dart';
 import 'package:flutter/widgets.dart';
@@ -51,7 +52,7 @@ class QuotedMessage extends Message {
             dynamic message = jsonDecode(this.content);
             return Text(message["body"]);
           } catch (e) {
-            return MalformedMessage(this.metadata).getWidget(context, Key("malformed"));
+            return MalformedBubble();
           }
         });
   }
@@ -67,7 +68,7 @@ class QuotedMessage extends Message {
       dynamic message = jsonDecode(this.content);
 
       if (message["body"] == null || message["quotedHash"] == null) {
-        return MalformedMessage(this.metadata).getWidget(context, key);
+        return MalformedBubble();
       }
 
       var quotedMessagePotentials = Provider.of<FlwtchState>(context).cwtch.GetMessageByContentHash(metadata.profileOnion, metadata.conversationIdentifier, message["quotedHash"]);
@@ -94,14 +95,14 @@ class QuotedMessage extends Message {
             return MessageRow(
                 QuotedMessageBubble(message["body"], quotedMessage.then((LocallyIndexedMessage? localIndex) {
                   if (localIndex != null) {
-                    return messageHandler(context, metadata.profileOnion, metadata.conversationIdentifier, localIndex.index);
+                    return messageHandler(bcontext, metadata.profileOnion, metadata.conversationIdentifier, localIndex.index);
                   }
                   return MalformedMessage(this.metadata);
                 })),
                 key: key);
           });
     } catch (e) {
-      return MalformedMessage(this.metadata).getWidget(context, key);
+      return MalformedBubble();
     }
   }
 }

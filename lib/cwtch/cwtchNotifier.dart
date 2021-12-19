@@ -141,6 +141,7 @@ class CwtchNotifier {
         var timestamp = DateTime.tryParse(data['TimestampReceived'])!;
         var senderHandle = data['RemotePeer'];
         var senderImage = data['Picture'];
+        var isAuto = data['Auto'] == "true";
 
         // We might not have received a contact created for this contact yet...
         // In that case the **next** event we receive will actually update these values...
@@ -151,7 +152,7 @@ class CwtchNotifier {
             profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.newMarker++;
           }
           profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(identifier, DateTime.now());
-          profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.updateMessageCache(identifier, messageID, timestamp, senderHandle, senderImage, data["Data"]);
+          profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.updateMessageCache(identifier, messageID, timestamp, senderHandle, senderImage, isAuto, data["Data"]);
 
           // We only ever see messages from authenticated peers.
           // If the contact is marked as offline then override this - can happen when the contact is removed from the front
@@ -197,10 +198,11 @@ class CwtchNotifier {
           var senderImage = data['Picture'];
           var timestampSent = DateTime.tryParse(data['TimestampSent'])!;
           var currentTotal = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.totalMessages;
+          var isAuto = data['Auto'] == "true";
 
           // Only bother to do anything if we know about the group and the provided index is greater than our current total...
           if (currentTotal != null && idx >= currentTotal) {
-            profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.updateMessageCache(identifier, idx, timestampSent, senderHandle, senderImage, data["Data"]);
+            profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.updateMessageCache(identifier, idx, timestampSent, senderHandle, senderImage, isAuto, data["Data"]);
 
             //if not currently open
             if (appState.selectedProfile != data["ProfileOnion"] || appState.selectedConversation != identifier) {
@@ -228,7 +230,10 @@ class CwtchNotifier {
         }
         break;
       case "SendMessageToPeerError":
-        // Ignore
+        // Ignore dealt with by IndexedFailure
+        break;
+      case "SendMessageToGroupError":
+        // Ignore dealt with by IndexedFailure
         break;
       case "IndexedFailure":
         var contact = profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(data["RemotePeer"]);
@@ -337,6 +342,11 @@ class CwtchNotifier {
           // Not yet..
         } else {
           EnvironmentConfig.debugLog("unhandled ret val event: ${data['Path']}");
+        }
+        break;
+      case "ManifestSizeReceived":
+        if (!profileCN.getProfile(data["ProfileOnion"])!.downloadActive(data["FileKey"])) {
+          profileCN.getProfile(data["ProfileOnion"])?.downloadUpdate(data["FileKey"], 0, 1);
         }
         break;
       case "ManifestSaved":

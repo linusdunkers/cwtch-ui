@@ -414,12 +414,9 @@ class ProfileInfoState extends ChangeNotifier {
 
   void downloadUpdate(String fileKey, int progress, int numChunks) {
     if (!downloadActive(fileKey)) {
+      this._downloads[fileKey] = FileDownloadProgress(numChunks, DateTime.now());
       if (progress < 0) {
-        this._downloads[fileKey] = FileDownloadProgress(numChunks, DateTime.now());
         this._downloads[fileKey]!.interrupted = true;
-        notifyListeners();
-      } else {
-        print("error: received progress for unknown download " + fileKey);
       }
     } else {
       if (this._downloads[fileKey]!.interrupted) {
@@ -427,17 +424,16 @@ class ProfileInfoState extends ChangeNotifier {
       }
       this._downloads[fileKey]!.chunksDownloaded = progress;
       this._downloads[fileKey]!.chunksTotal = numChunks;
-      notifyListeners();
     }
+    notifyListeners();
   }
 
   void downloadMarkManifest(String fileKey) {
     if (!downloadActive(fileKey)) {
-      print("error: received download completion notice for unknown download " + fileKey);
-    } else {
-      this._downloads[fileKey]!.gotManifest = true;
-      notifyListeners();
+      this._downloads[fileKey] = FileDownloadProgress(1, DateTime.now());
     }
+    this._downloads[fileKey]!.gotManifest = true;
+    notifyListeners();
   }
 
   void downloadMarkFinished(String fileKey, String finalPath) {
@@ -728,8 +724,8 @@ class ContactInfoState extends ChangeNotifier {
     return ret;
   }
 
-  void updateMessageCache(int conversation, int messageID, DateTime timestamp, String senderHandle, String senderImage, String data) {
-    this.messageCache.insert(0, MessageCache(MessageMetadata(profileOnion, conversation, messageID, timestamp, senderHandle, senderImage, "", {}, false, false), data));
+  void updateMessageCache(int conversation, int messageID, DateTime timestamp, String senderHandle, String senderImage, bool isAuto, String data) {
+    this.messageCache.insert(0, MessageCache(MessageMetadata(profileOnion, conversation, messageID, timestamp, senderHandle, senderImage, "", {}, false, false, isAuto), data));
     this.totalMessages += 1;
   }
 

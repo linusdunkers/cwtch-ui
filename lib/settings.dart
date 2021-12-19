@@ -12,6 +12,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 const TapirGroupsExperiment = "tapir-groups-experiment";
 const ServerManagementExperiment = "servers-experiment";
 const FileSharingExperiment = "filesharing";
+const ImagePreviewsExperiment = "filesharing-images";
 const ClickableLinksExperiment = "clickable-links";
 
 enum DualpaneMode {
@@ -36,6 +37,7 @@ class Settings extends ChangeNotifier {
 
   bool blockUnknownConnections = false;
   bool streamerMode = false;
+  String _downloadPath = "";
 
   void setTheme(String themeId, String mode) {
     theme = getTheme(themeId, mode);
@@ -80,6 +82,9 @@ class Settings extends ChangeNotifier {
     // single pane vs dual pane preferences
     _uiColumnModePortrait = uiColumnModeFromString(settings["UIColumnModePortrait"]);
     _uiColumnModeLandscape = uiColumnModeFromString(settings["UIColumnModeLandscape"]);
+
+    // auto-download folder
+    _downloadPath = settings["DownloadPath"] ?? "";
 
     // Push the experimental settings to Consumers of Settings
     notifyListeners();
@@ -213,6 +218,26 @@ class Settings extends ChangeNotifier {
     }
   }
 
+  // checks experiment settings and file extension for image previews
+  // (ignores file size; if the user manually accepts the file, assume it's okay to preview)
+  bool shouldPreview(String path) {
+    var lpath = path.toLowerCase();
+    return isExperimentEnabled(ImagePreviewsExperiment) && (
+        lpath.endsWith(".jpg") ||
+        lpath.endsWith(".jpeg") ||
+        lpath.endsWith(".png") ||
+        lpath.endsWith(".gif") ||
+        lpath.endsWith(".webp") ||
+        lpath.endsWith(".bmp")
+    );
+  }
+
+  String get downloadPath => _downloadPath;
+  set downloadPath(String newval) {
+    _downloadPath = newval;
+    notifyListeners();
+  }
+
   /// Construct a default settings object.
   Settings(this.locale, this.theme);
 
@@ -232,6 +257,7 @@ class Settings extends ChangeNotifier {
       "FirstTime": false,
       "UIColumnModePortrait": uiColumnModePortrait.toString(),
       "UIColumnModeLandscape": uiColumnModeLandscape.toString(),
+      "DownloadPath": _downloadPath,
     };
   }
 }

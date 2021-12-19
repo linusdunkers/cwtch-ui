@@ -15,7 +15,9 @@ abstract class Cwtch {
   // ignore: non_constant_identifier_names
   void LoadProfiles(String pass);
   // ignore: non_constant_identifier_names
-  void DeleteProfile(String onion, String pass);
+  void DeleteProfile(String profile, String pass);
+  // ignore: non_constant_identifier_names
+  void ChangePassword(String profile, String pass, String newpass, String newpassAgain);
 
   // ignore: non_constant_identifier_names
   void ResetTor();
@@ -49,12 +51,16 @@ abstract class Cwtch {
   void ShareFile(String profile, int handle, String filepath);
   // ignore: non_constant_identifier_names
   void DownloadFile(String profile, int handle, String filepath, String manifestpath, String filekey);
+  // android-only
   // ignore: non_constant_identifier_names
   void CreateDownloadableFile(String profile, int handle, String filenameSuggestion, String filekey);
   // ignore: non_constant_identifier_names
   void CheckDownloadStatus(String profile, String fileKey);
   // ignore: non_constant_identifier_names
   void VerifyOrResumeDownload(String profile, int handle, String filekey);
+  // android-only
+  // ignore: non_constant_identifier_names
+  void ExportPreviewedFile(String sourceFile, String suggestion);
 
   // ignore: non_constant_identifier_names
   void ArchiveConversation(String profile, int handle);
@@ -93,6 +99,9 @@ abstract class Cwtch {
 
   // ignore: non_constant_identifier_names
   void Shutdown();
+
+  // non-ffi
+  String defaultDownloadPath();
 
   void dispose();
 }

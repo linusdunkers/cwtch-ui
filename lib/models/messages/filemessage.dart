@@ -19,7 +19,6 @@ class FileMessage extends Message {
   @override
   Widget getWidget(BuildContext context, Key key) {
     return ChangeNotifierProvider.value(
-        key: key,
         value: this.metadata,
         builder: (bcontext, child) {
           dynamic shareObj = jsonDecode(this.content);
@@ -35,7 +34,7 @@ class FileMessage extends Message {
             return MessageRow(MalformedBubble());
           }
 
-          return MessageRow(FileBubble(nameSuggestion, rootHash, nonce, fileSize), key: key);
+          return MessageRow(FileBubble(nameSuggestion, rootHash, nonce, fileSize, isAuto: metadata.isAuto), key: key);
         });
   }
 
@@ -55,13 +54,16 @@ class FileMessage extends Message {
           if (!validHash(rootHash, nonce)) {
             return MessageRow(MalformedBubble());
           }
-          return FileBubble(
-            nameSuggestion,
-            rootHash,
-            nonce,
-            fileSize,
-            interactive: false,
-          );
+          return Container(
+              alignment: Alignment.center,
+              child: FileBubble(
+                nameSuggestion,
+                rootHash,
+                nonce,
+                fileSize,
+                isAuto: metadata.isAuto,
+                interactive: false,
+              ));
         });
   }
 
