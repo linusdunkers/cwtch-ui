@@ -3,7 +3,6 @@ import 'package:cwtch/config.dart';
 import 'package:cwtch/notification_manager.dart';
 import 'package:cwtch/themes/cwtch.dart';
 import 'package:cwtch/views/messageview.dart';
-import 'package:cwtch/widgets/rightshiftfixer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:cwtch/cwtch/ffi.dart';
 import 'package:cwtch/cwtch/gomobile.dart';
@@ -11,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:cwtch/errorHandler.dart';
 import 'package:cwtch/settings.dart';
 import 'package:cwtch/torstatus.dart';
-import 'package:cwtch/views/triplecolview.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'cwtch/cwtch.dart';
@@ -110,7 +108,7 @@ class FlwtchState extends State<Flwtch> {
             supportedLocales: AppLocalizations.supportedLocales,
             title: 'Cwtch',
             theme: mkThemeData(settings),
-            home: (!appState.cwtchInit || appState.modalState != ModalState.none) ?  SplashView() : ShiftRightFixer(child: ProfileMgrView()),
+            home: (!appState.cwtchInit || appState.modalState != ModalState.none) ?  SplashView() : ProfileMgrView(),
           ),
         );
       },
