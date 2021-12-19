@@ -1,6 +1,12 @@
 {
     "@@locale": "pl",
-    "@@last_modified": "2021-12-16T21:50:40+01:00",
+    "@@last_modified": "2021-12-19T02:59:05+01:00",
+    "msgAddToAccept": "Add this account to your contacts in order to accept this file.",
+    "btnSendFile": "Send File",
+    "msgConfirmSend": "Are you sure you want to send",
+    "msgFileTooBig": "File size cannot exceed 10 GB",
+    "storageMigrationModalMessage": "Migrating profiles to new storage format. This could take a few minutes...",
+    "loadingCwtch": "Loading Cwtch...",
     "themeColorLabel": "Color Theme",
     "themeNameNeon2": "Neon2",
     "themeNameNeon1": "Neon1",
