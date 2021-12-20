@@ -151,7 +151,7 @@ class _AddEditServerViewState extends State<AddEditServerView> {
 
                               // metrics
                               Visibility(
-                                  visible: serverInfoState.onion.isNotEmpty,
+                                  visible: serverInfoState.onion.isNotEmpty && serverInfoState.running,
                                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                                     SizedBox(
                                       height: 20,
