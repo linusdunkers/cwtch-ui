@@ -443,10 +443,17 @@ class ProfileInfoState extends ChangeNotifier {
       // so setting numChunks correctly shouldn't matter
       this.downloadInit(fileKey, 1);
     }
-    this._downloads[fileKey]!.timeEnd = DateTime.now();
-    this._downloads[fileKey]!.downloadedTo = finalPath;
-    this._downloads[fileKey]!.complete = true;
-    notifyListeners();
+    // only update if different
+    if (!this._downloads[fileKey]!.complete) {
+      this._downloads[fileKey]!.timeEnd = DateTime.now();
+      this._downloads[fileKey]!.downloadedTo = finalPath;
+      this._downloads[fileKey]!.complete = true;
+      notifyListeners();
+    }
+  }
+
+  bool downloadKnown(String fileKey) {
+    return this._downloads.containsKey(fileKey);
   }
 
   bool downloadActive(String fileKey) {

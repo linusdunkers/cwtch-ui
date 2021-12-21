@@ -7,6 +7,7 @@ import 'package:cwtch/widgets/messagerow.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
+import '../../main.dart';
 import '../../model.dart';
 
 class FileMessage extends Message {
@@ -29,6 +30,13 @@ class FileMessage extends Message {
           String rootHash = shareObj['h'] as String;
           String nonce = shareObj['n'] as String;
           int fileSize = shareObj['s'] as int;
+          String fileKey = rootHash + "." + nonce;
+
+          if (metadata.attributes["file-downloaded"] == "true") {
+            if (!Provider.of<ProfileInfoState>(context).downloadKnown(fileKey)) {
+              Provider.of<FlwtchState>(context, listen: false).cwtch.CheckDownloadStatus(Provider.of<ProfileInfoState>(context, listen: false).onion, fileKey);
+            }
+          }
 
           if (!validHash(rootHash, nonce)) {
             return MessageRow(MalformedBubble());
