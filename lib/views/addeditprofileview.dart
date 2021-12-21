@@ -317,7 +317,6 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
               if (AppLocalizations.of(context) != null) {
                 final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.passwordChangeError));
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                Navigator.pop(context);
                 return;
               }
             }
