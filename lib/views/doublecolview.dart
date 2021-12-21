@@ -29,7 +29,12 @@ class _DoubleColumnViewState extends State<DoubleColumnView> {
         Flexible(
           flex: cols[1],
           child: flwtch.selectedConversation == null
-              ? Card(child: Center(child: Text(AppLocalizations.of(context)!.addContactFirst)))
+              ? Container(
+                  color: Provider.of<Settings>(context).theme.backgroundMainColor,
+                  child: Card(
+                      margin: EdgeInsets.all(0.0),
+                      shape: new RoundedRectangleBorder(side: new BorderSide(color: Provider.of<Settings>(context).theme.defaultButtonColor, width: 4.0), borderRadius: BorderRadius.circular(4.0)),
+                      child: Center(child: Text(AppLocalizations.of(context)!.addContactFirst))))
               : //dev
               MultiProvider(providers: [
                   ChangeNotifierProvider.value(value: Provider.of<ProfileInfoState>(context)),

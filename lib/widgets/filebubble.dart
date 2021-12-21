@@ -109,25 +109,28 @@ class FileBubbleState extends State<FileBubble> {
         if (Provider.of<Settings>(context).shouldPreview(path!)) {
           isPreview = true;
           wdgDecorations = Center(
-              child: GestureDetector(
-            child: Padding(
-                padding: EdgeInsets.all(1.0),
-                child: Image.file(
-                  myFile!,
-                  cacheWidth: 2048, // limit the amount of space the image can decode too, we keep this high-ish to allow quality previews...
-                  filterQuality: FilterQuality.medium,
-                  fit: BoxFit.scaleDown,
-                  alignment: Alignment.center,
-                  height: MediaQuery.of(bcontext).size.height * 0.30,
-                  isAntiAlias: false,
-                  errorBuilder: (context, error, stackTrace) {
-                    return MalformedBubble();
-                  },
-                )),
-            onTap: () {
-              pop(bcontext, myFile!, wdgMessage);
-            },
-          ));
+              child: MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
+                    child: Padding(
+                        padding: EdgeInsets.all(1.0),
+                        child: Image.file(
+                          myFile!,
+                          cacheWidth: 2048,
+                          // limit the amount of space the image can decode too, we keep this high-ish to allow quality previews...
+                          filterQuality: FilterQuality.medium,
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.center,
+                          height: MediaQuery.of(bcontext).size.height * 0.30,
+                          isAntiAlias: false,
+                          errorBuilder: (context, error, stackTrace) {
+                            return MalformedBubble();
+                          },
+                        )),
+                    onTap: () {
+                      pop(bcontext, myFile!, wdgMessage);
+                    },
+                  )));
         } else {
           wdgDecorations = Visibility(visible: widget.interactive, child: Text(AppLocalizations.of(context)!.fileSavedTo + ': ' + path + '\u202F'));
         }
@@ -146,9 +149,7 @@ class FileBubbleState extends State<FileBubble> {
         // in this case, the download was done in a previous application launch,
         // so we probably have to request an info lookup
         if (!downloadInterrupted) {
-          wdgDecorations = Text(
-              AppLocalizations.of(context)!.fileCheckingStatus + '...' +
-                  '\u202F');
+          wdgDecorations = Text(AppLocalizations.of(context)!.fileCheckingStatus + '...' + '\u202F');
         } else {
           var path = Provider.of<ProfileInfoState>(context).downloadFinalPath(widget.fileKey()) ?? "";
           wdgDecorations = Visibility(
@@ -356,13 +357,24 @@ class FileBubbleState extends State<FileBubble> {
             child: Container(
               padding: EdgeInsets.all(10),
               child: Column(children: [
-                meta,
+                ListTile(
+                    title: meta,
+                    trailing: IconButton(
+                        icon: Icon(Icons.close),
+                        color: Provider.of<Settings>(context, listen: false).theme.toolbarIconColor,
+                        iconSize: 32,
+                        onPressed: () {
+                          Navigator.pop(context, true);
+                        })),
                 Image.file(
                   myFile,
                   cacheWidth: (MediaQuery.of(context).size.width * 0.6).floor(),
                   width: (MediaQuery.of(context).size.width * 0.6),
                   height: (MediaQuery.of(context).size.height * 0.6),
                   fit: BoxFit.scaleDown,
+                ),
+                SizedBox(
+                  height: 20,
                 ),
                 Visibility(visible: !Platform.isAndroid, child: Text(myFile.path, textAlign: TextAlign.center)),
                 Visibility(visible: Platform.isAndroid, child: IconButton(icon: Icon(Icons.arrow_downward), onPressed: androidExport)),

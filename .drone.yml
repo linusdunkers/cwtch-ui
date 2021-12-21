@@ -106,6 +106,7 @@ steps:
 
   - name: deploy-buildfiles
     image: kroniak/ssh-client
+    pull: if-not-exists
     environment:
       BUILDFILES_KEY:
         from_secret: buildfiles_key
@@ -129,6 +130,7 @@ steps:
 
   - name: notify-email
     image: drillster/drone-email
+    pull: if-not-exists
     settings:
       host: build.openprivacy.ca
       port: 25
@@ -139,6 +141,7 @@ steps:
 
   - name: notify-gogs
     image: openpriv/drone-gogs
+    pull: if-not-exists
     when:
       event: pull_request
       status: [ success, changed, failure ]
@@ -220,7 +223,8 @@ steps:
       - powershell -command "Expand-Archive -Path tor.zip -DestinationPath $Env:releasedir\Tor"
 
   - name: package-windows
-    image: openpriv/nsis:latest
+    image: openpriv/nsis
+    pull: if-not-exists
     when:
       event: push
       status: [ success ]
