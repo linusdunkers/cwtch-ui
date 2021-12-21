@@ -47,6 +47,7 @@ class CwtchDark extends OpaqueThemeType {
 
   get backgroundMainColor => background; // darkGreyPurple;
   get backgroundPaneColor => header; //darkGreyPurple;
+  get topbarColor => header; //darkGreyPurple;
   get backgroundHilightElementColor => deepPurple;
   get mainTextColor => font; //whiteishPurple;
   get sendHintTextColor => mauvePurple;
@@ -90,7 +91,8 @@ class CwtchLight extends OpaqueThemeType {
   get mode => mode_light;
 
   get backgroundMainColor => background; //whitePurple;
-  get backgroundPaneColor => header; //softPurple;
+  get backgroundPaneColor => background; //whitePurple;
+  get topbarColor => header; //softPurple;
   get backgroundHilightElementColor => softPurple;
   get mainTextColor => settings;
   get sendHintTextColor => purple;

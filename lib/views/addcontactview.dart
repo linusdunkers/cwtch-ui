@@ -52,22 +52,26 @@ class _AddContactViewState extends State<AddContactView> {
 
     /// We display a different number of tabs depending on the experiment setup
     bool groupsEnabled = Provider.of<Settings>(context).isExperimentEnabled(TapirGroupsExperiment);
-    return Consumer<ErrorHandler>(builder: (context, globalErrorHandler, child) {
-      return DefaultTabController(
-          length: groupsEnabled ? 2 : 1,
-          child: Column(children: [
-            (groupsEnabled ? getTabBarWithGroups() : getTabBarWithAddPeerOnly()),
-            Expanded(
-                child: TabBarView(
-              children: (groupsEnabled
-                  ? [
-                      addPeerTab(),
-                      addGroupTab(),
-                    ]
-                  : [addPeerTab()]),
-            )),
-          ]));
-    });
+    return Scrollbar(
+        isAlwaysShown: true,
+        child: SingleChildScrollView(
+            clipBehavior: Clip.antiAlias,
+            child: Consumer<ErrorHandler>(builder: (context, globalErrorHandler, child) {
+              return DefaultTabController(
+                  length: groupsEnabled ? 2 : 1,
+                  child: Column(children: [
+                    (groupsEnabled ? getTabBarWithGroups() : getTabBarWithAddPeerOnly()),
+                    Expanded(
+                        child: TabBarView(
+                      children: (groupsEnabled
+                          ? [
+                              addPeerTab(),
+                              addGroupTab(),
+                            ]
+                          : [addPeerTab()]),
+                    )),
+                  ]));
+            })));
   }
 
   void _copyOnion() {

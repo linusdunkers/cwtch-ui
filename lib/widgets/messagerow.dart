@@ -56,7 +56,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
     var fromMe = Provider.of<MessageMetadata>(context).senderHandle == Provider.of<ProfileInfoState>(context).onion;
     var isContact = Provider.of<ProfileInfoState>(context).contactList.findContact(Provider.of<MessageMetadata>(context).senderHandle) != null;
     var isBlocked = isContact ? Provider.of<ProfileInfoState>(context).contactList.findContact(Provider.of<MessageMetadata>(context).senderHandle)!.isBlocked : false;
-    var actualMessage = Flexible(flex: 3, fit: FlexFit.loose, child: widget.child);
+    var actualMessage = Flexible(flex: Platform.isAndroid ? 10 : 3, fit: FlexFit.loose, child: widget.child);
 
     _dragAffinity = fromMe ? Alignment.centerRight : Alignment.centerLeft;
 
@@ -74,19 +74,22 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
       }
     }
 
-    Widget wdgIcons = Visibility(
-        visible: Provider.of<AppState>(context).hoveredIndex == Provider.of<MessageMetadata>(context).messageID,
-        maintainSize: true,
-        maintainAnimation: true,
-        maintainState: true,
-        maintainInteractivity: false,
-        child: IconButton(
-            tooltip: AppLocalizations.of(context)!.tooltipReplyToThisMessage,
-            onPressed: () {
-              Provider.of<AppState>(context, listen: false).selectedIndex = Provider.of<MessageMetadata>(context, listen: false).messageID;
-            },
-            icon: Icon(Icons.reply, color: Provider.of<Settings>(context).theme.dropShadowColor)));
-    Widget wdgSpacer = Flexible(child: SizedBox(width: 60, height: 10));
+    Widget wdgIcons = Platform.isAndroid
+        ? SizedBox.shrink()
+        : Visibility(
+            visible: Provider.of<AppState>(context).hoveredIndex == Provider.of<MessageMetadata>(context).messageID,
+            maintainSize: true,
+            maintainAnimation: true,
+            maintainState: true,
+            maintainInteractivity: false,
+            child: IconButton(
+                tooltip: AppLocalizations.of(context)!.tooltipReplyToThisMessage,
+                onPressed: () {
+                  Provider.of<AppState>(context, listen: false).selectedIndex = Provider.of<MessageMetadata>(context, listen: false).messageID;
+                },
+                icon: Icon(Icons.reply, color: Provider.of<Settings>(context).theme.dropShadowColor)));
+
+    Widget wdgSpacer = Flexible(flex: 1, child: SizedBox(width: Platform.isAndroid ? 20 : 60, height: 10));
     var widgetRow = <Widget>[];
 
     if (fromMe) {
