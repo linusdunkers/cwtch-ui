@@ -69,8 +69,10 @@ abstract class OpaqueThemeType {
   // Main screen background color (message pane, item rows)
   get backgroundMainColor => red;
 
-  // Top pane ane pane colors (settings)
+  // pane colors (settings)
   get backgroundPaneColor => red;
+
+  get topbarColor => red;
 
   get mainTextColor => red;
 
@@ -134,7 +136,7 @@ ThemeData mkThemeData(Settings opaque) {
     ),
     cardColor: opaque.current().backgroundMainColor,
     appBarTheme: AppBarTheme(
-        backgroundColor: opaque.current().backgroundPaneColor,
+        backgroundColor: opaque.current().topbarColor,
         iconTheme: IconThemeData(
           color: opaque.current().mainTextColor,
         ),

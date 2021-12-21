@@ -20,7 +20,7 @@ class MidnightDark extends CwtchDark {
   static final Color background = Color(0xFF1B1B1B);
   static final Color header = Color(0xFF1B1B1B);
   static final Color userBubble = Color(0xFF373737);
-  static final Color peerBubble = Color(0xFF212121);
+  static final Color peerBubble = Color(0xFF494949);
   static final Color font = Color(0xFFFFFFFF);
   static final Color settings = Color(0xFFFFFDFF);
   static final Color accent = Color(0xFFD20070);
@@ -30,6 +30,7 @@ class MidnightDark extends CwtchDark {
 
   get backgroundMainColor => background; // darkGreyPurple;
   get backgroundPaneColor => header; //darkGreyPurple;
+  get topbarColor => header; //darkGreyPurple;
   get mainTextColor => font; //whiteishPurple;
   get defaultButtonColor => accent; //hotPink;
   get textfieldHintColor => mainTextColor; //TODO pick
@@ -44,7 +45,7 @@ class MidnightLight extends CwtchLight {
   static final Color background = Color(0xFFFFFDFF);
   static final Color header = Color(0xFFE0E0E0);
   static final Color userBubble = Color(0xFFE0E0E0);
-  static final Color peerBubble = Color(0xFFF3F3F3);
+  static final Color peerBubble = Color(0xFFBABDBE);
   static final Color font = Color(0xFF1B1B1B);
   static final Color settings = Color(0xFF1B1B1B);
   static final Color accent = Color(0xFFD20070);
@@ -53,7 +54,8 @@ class MidnightLight extends CwtchLight {
   get mode => mode_light;
 
   get backgroundMainColor => background; //whitePurple;
-  get backgroundPaneColor => header; //softPurple;
+  get backgroundPaneColor => background; //whitePurple;
+  get topbarColor => header; //softPurple;
   get mainTextColor => settings;
   get defaultButtonColor => accent; // hotPink;
   get textfieldHintColor => font; //TODO pick

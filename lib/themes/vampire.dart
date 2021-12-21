@@ -30,6 +30,7 @@ class VampireDark extends CwtchDark {
 
   get backgroundMainColor => background; // darkGreyPurple;
   get backgroundPaneColor => header; //darkGreyPurple;
+  get topbarColor => header; //darkGreyPurple;
   get mainTextColor => font; //whiteishPurple;
   get defaultButtonColor => accent; //hotPink;
   get textfieldHintColor => mainTextColor; //TODO pick
@@ -53,7 +54,8 @@ class VampireLight extends CwtchLight {
   get mode => mode_light;
 
   get backgroundMainColor => background; //whitePurple;
-  get backgroundPaneColor => header; //softPurple;
+  get backgroundPaneColor => background; //whitePurple;
+  get topbarColor => header; //softPurple;
   get mainTextColor => settings;
   get defaultButtonColor => accent; // hotPink;
   get textfieldHintColor => font; //TODO pick
