@@ -45,17 +45,17 @@ class FileBubbleState extends State<FileBubble> {
 
   @override
   Widget build(BuildContext context) {
-    var fromMe = Provider.of<MessageMetadata>(context).senderHandle == Provider.of<ProfileInfoState>(context).onion;
+    var fromMe = Provider.of<MessageMetadata>(context, listen: false).senderHandle == Provider.of<ProfileInfoState>(context).onion;
     var flagStarted = Provider.of<MessageMetadata>(context).attributes["file-downloaded"] == "true";
     var borderRadiousEh = 15.0;
-    var showFileSharing = Provider.of<Settings>(context).isExperimentEnabled(FileSharingExperiment);
+    var showFileSharing = Provider.of<Settings>(context, listen: false).isExperimentEnabled(FileSharingExperiment);
     var prettyDate = DateFormat.yMd(Platform.localeName).add_jm().format(Provider.of<MessageMetadata>(context).timestamp);
     var downloadComplete = Provider.of<ProfileInfoState>(context).downloadComplete(widget.fileKey());
     var downloadInterrupted = Provider.of<ProfileInfoState>(context).downloadInterrupted(widget.fileKey());
 
-    if (flagStarted && !downloadInterrupted) {
+    /*if (flagStarted && !downloadInterrupted) {
       Provider.of<FlwtchState>(context, listen: false).cwtch.CheckDownloadStatus(Provider.of<ProfileInfoState>(context, listen: false).onion, widget.fileKey());
-    }
+    }*/
 
     var path = Provider.of<ProfileInfoState>(context).downloadFinalPath(widget.fileKey());
     if (downloadComplete) {
