@@ -53,10 +53,6 @@ class FileBubbleState extends State<FileBubble> {
     var downloadComplete = Provider.of<ProfileInfoState>(context).downloadComplete(widget.fileKey());
     var downloadInterrupted = Provider.of<ProfileInfoState>(context).downloadInterrupted(widget.fileKey());
 
-    /*if (flagStarted && !downloadInterrupted) {
-      Provider.of<FlwtchState>(context, listen: false).cwtch.CheckDownloadStatus(Provider.of<ProfileInfoState>(context, listen: false).onion, widget.fileKey());
-    }*/
-
     var path = Provider.of<ProfileInfoState>(context).downloadFinalPath(widget.fileKey());
     if (downloadComplete) {
       var lpath = path!.toLowerCase();
