@@ -9,6 +9,7 @@ import 'package:cwtch/themes/vampire.dart';
 import 'package:cwtch/themes/witch.dart';
 import 'package:flutter/material.dart';
 import 'package:cwtch/settings.dart';
+import 'package:flutter/services.dart';
 
 import 'ghost.dart';
 import 'midnight.dart';
@@ -136,6 +137,13 @@ ThemeData mkThemeData(Settings opaque) {
     ),
     cardColor: opaque.current().backgroundMainColor,
     appBarTheme: AppBarTheme(
+        systemOverlayStyle: SystemUiOverlayStyle(
+          // Status bar color
+            statusBarColor: opaque.current().topbarColor,
+          // Status bar brightness (optional)
+          statusBarIconBrightness: opaque.current().mode == mode_light ? Brightness.dark : Brightness.light, // For Android (dark icons)
+          statusBarBrightness: opaque.current().mode == mode_light ? Brightness.dark : Brightness.light, // For iOS (dark icons)
+        ),
         backgroundColor: opaque.current().topbarColor,
         iconTheme: IconThemeData(
           color: opaque.current().mainTextColor,
