@@ -50,7 +50,8 @@ class CwtchNotifier {
         profileCN.add(data["Identity"], data["name"], data["picture"], data["ContactsJson"], data["ServerList"], data["Online"] == "true", data["tag"] != "v1-defaultPassword");
         break;
       case "ContactCreated":
-        EnvironmentConfig.debugLog("NewServer $data");
+        EnvironmentConfig.debugLog("ContactCreated $data");
+
         profileCN.getProfile(data["ProfileOnion"])?.contactList.add(ContactInfoState(
               data["ProfileOnion"],
               int.parse(data["ConversationID"]),
@@ -58,7 +59,8 @@ class CwtchNotifier {
               nickname: data["nick"],
               status: data["status"],
               imagePath: data["picture"],
-              authorization: stringToContactAuthorization(data["authorization"]),
+              blocked: data["blocked"] == "true",
+              accepted: data["accepted"] == "true",
               savePeerHistory: data["saveConversationHistory"] == null ? "DeleteHistoryConfirmed" : data["saveConversationHistory"],
               numMessages: int.parse(data["numMessages"]),
               numUnread: int.parse(data["unread"]),
@@ -94,7 +96,8 @@ class CwtchNotifier {
         }
         if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(int.parse(data["ConversationID"])) == null) {
           profileCN.getProfile(data["ProfileOnion"])?.contactList.add(ContactInfoState(data["ProfileOnion"], int.parse(data["ConversationID"]), data["GroupID"],
-              authorization: ContactAuthorization.approved,
+              blocked: data["blocked"] == "true",
+              accepted: data["accepted"] == "true",
               imagePath: data["PicturePath"],
               nickname: data["GroupName"],
               status: status,
@@ -127,10 +130,6 @@ class CwtchNotifier {
           if (data["ConnectionState"] != null) {
             contact.status = data["ConnectionState"];
           }
-          if (data["authorization"] != null) {
-            contact.authorization = stringToContactAuthorization(data["authorization"]);
-          }
-          // contact.[status/isBlocked] might change the list's sort order
           profileCN.getProfile(data["ProfileOnion"])?.contactList.resort();
         }
         break;
@@ -289,7 +288,8 @@ class CwtchNotifier {
           if (profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(groupInvite["GroupID"]) == null) {
             var identifier = int.parse(data["ConversationID"]);
             profileCN.getProfile(data["ProfileOnion"])?.contactList.add(ContactInfoState(data["ProfileOnion"], identifier, groupInvite["GroupID"],
-                authorization: ContactAuthorization.approved,
+                blocked: data["blocked"] == "true",
+                accepted: data["accepted"] == "true",
                 imagePath: data["PicturePath"],
                 nickname: groupInvite["GroupName"],
                 server: groupInvite["ServerHost"],

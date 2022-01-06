@@ -111,13 +111,19 @@ class CwtchGomobile implements Cwtch {
   @override
   // ignore: non_constant_identifier_names
   void AcceptContact(String profileOnion, int conversation) {
-    cwtchPlatform.invokeMethod("AcceptContact", {"ProfileOnion": profileOnion, "conversation": conversation});
+    cwtchPlatform.invokeMethod("AcceptConversation", {"ProfileOnion": profileOnion, "conversation": conversation});
   }
 
   @override
   // ignore: non_constant_identifier_names
   void BlockContact(String profileOnion, int conversation) {
     cwtchPlatform.invokeMethod("BlockContact", {"ProfileOnion": profileOnion, "conversation": conversation});
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void UnblockContact(String profileOnion, int conversation) {
+    cwtchPlatform.invokeMethod("UnblockContact", {"ProfileOnion": profileOnion, "conversation": conversation});
   }
 
   @override
@@ -207,7 +213,7 @@ class CwtchGomobile implements Cwtch {
   @override
   // ignore: non_constant_identifier_names
   void SetConversationAttribute(String profile, int conversation, String key, String val) {
-    cwtchPlatform.invokeMethod("SetContactAttribute", {"ProfileOnion": profile, "conversation": conversation, "Key": key, "Val": val});
+    cwtchPlatform.invokeMethod("SetConversationAttribute", {"ProfileOnion": profile, "conversation": conversation, "Key": key, "Val": val});
   }
 
   @override

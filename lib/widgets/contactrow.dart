@@ -111,14 +111,14 @@ class _ContactRowState extends State<ContactRow> {
   }
 
   void _btnApprove() {
-    // Update the UI
-    Provider.of<ContactInfoState>(context, listen: false).authorization = ContactAuthorization.approved;
+    Provider.of<ContactInfoState>(context, listen: false).accepted = true;
     Provider.of<FlwtchState>(context, listen: false)
         .cwtch
         .AcceptContact(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).identifier);
   }
 
   void _btnReject() {
+    Provider.of<ContactInfoState>(context, listen: false).blocked = true;
     ContactInfoState contact = Provider.of<ContactInfoState>(context, listen: false);
     if (contact.isGroup == true) {
       // FIXME This flow is incrorect. Groups never just show up on the contact list anymore

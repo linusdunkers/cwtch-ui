@@ -286,7 +286,8 @@ class ProfileInfoState extends ChangeNotifier {
             nickname: contact["name"],
             status: contact["status"],
             imagePath: contact["picture"],
-            authorization: stringToContactAuthorization(contact["authorization"]),
+            accepted: contact["accepted"],
+            blocked: contact["blocked"],
             savePeerHistory: contact["saveConversationHistory"],
             numMessages: contact["numMessages"],
             numUnread: contact["numUnread"],
@@ -382,10 +383,11 @@ class ProfileInfoState extends ChangeNotifier {
     if (contactsJson != null && contactsJson != "" && contactsJson != "null") {
       List<dynamic> contacts = jsonDecode(contactsJson);
       contacts.forEach((contact) {
-        var profileContact = this._contacts.getContact(contact["onion"]);
+        var profileContact = this._contacts.getContact(contact["identifier"]);
         if (profileContact != null) {
           profileContact.status = contact["status"];
           profileContact.totalMessages = contact["numMessages"];
+          profileContact.unreadMessages = contact["numUnread"];
           profileContact.lastMessageTime = DateTime.fromMillisecondsSinceEpoch(1000 * int.parse(contact["lastMsgTime"]));
         } else {
           this._contacts.add(ContactInfoState(
@@ -395,7 +397,8 @@ class ProfileInfoState extends ChangeNotifier {
                 nickname: contact["name"],
                 status: contact["status"],
                 imagePath: contact["picture"],
-                authorization: stringToContactAuthorization(contact["authorization"]),
+                accepted: contact["accepted"],
+                blocked: contact["blocked"],
                 savePeerHistory: contact["saveConversationHistory"],
                 numMessages: contact["numMessages"],
                 numUnread: contact["numUnread"],
@@ -406,6 +409,7 @@ class ProfileInfoState extends ChangeNotifier {
         }
       });
     }
+    this._contacts.resort();
   }
 
   void downloadInit(String fileKey, int numChunks) {
@@ -534,19 +538,6 @@ String prettyBytes(int bytes) {
   }
 }
 
-enum ContactAuthorization { unknown, approved, blocked }
-
-ContactAuthorization stringToContactAuthorization(String authStr) {
-  switch (authStr) {
-    case "approved":
-      return ContactAuthorization.approved;
-    case "blocked":
-      return ContactAuthorization.blocked;
-    default:
-      return ContactAuthorization.unknown;
-  }
-}
-
 class MessageCache {
   final MessageMetadata metadata;
   final String wrapper;
@@ -559,7 +550,8 @@ class ContactInfoState extends ChangeNotifier {
   final String onion;
   late String _nickname;
 
-  late ContactAuthorization _authorization;
+  late bool _accepted;
+  late bool _blocked;
   late String _status;
   late String _imagePath;
   late String _savePeerHistory;
@@ -579,7 +571,8 @@ class ContactInfoState extends ChangeNotifier {
   ContactInfoState(this.profileOnion, this.identifier, this.onion,
       {nickname = "",
       isGroup = false,
-      authorization = ContactAuthorization.unknown,
+      accepted = false,
+      blocked = false,
       status = "",
       imagePath = "",
       savePeerHistory = "DeleteHistoryConfirmed",
@@ -590,7 +583,8 @@ class ContactInfoState extends ChangeNotifier {
       archived = false}) {
     this._nickname = nickname;
     this._isGroup = isGroup;
-    this._authorization = authorization;
+    this._accepted = accepted;
+    this._blocked = blocked;
     this._status = status;
     this._imagePath = imagePath;
     this._totalMessages = numMessages;
@@ -633,13 +627,17 @@ class ContactInfoState extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool get isBlocked => this._authorization == ContactAuthorization.blocked;
+  bool get isBlocked => this._blocked;
 
-  bool get isInvitation => this._authorization == ContactAuthorization.unknown;
+  bool get isInvitation => !this._blocked && !this._accepted;
 
-  ContactAuthorization get authorization => this._authorization;
-  set authorization(ContactAuthorization newAuth) {
-    this._authorization = newAuth;
+  set accepted(bool newVal) {
+    this._accepted = newVal;
+        notifyListeners();
+  }
+
+  set blocked(bool newVal) {
+    this._blocked = newVal;
     notifyListeners();
   }
 

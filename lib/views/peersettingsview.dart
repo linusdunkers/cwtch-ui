@@ -108,33 +108,15 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
                               title: Text(AppLocalizations.of(context)!.blockBtn, style: TextStyle(color: settings.current().mainTextColor)),
                               value: Provider.of<ContactInfoState>(context).isBlocked,
                               onChanged: (bool blocked) {
-                                // Save local blocked status
-                                if (blocked) {
-                                  Provider.of<ContactInfoState>(context, listen: false).authorization = ContactAuthorization.blocked;
-                                } else {
-                                  Provider.of<ContactInfoState>(context, listen: false).authorization = ContactAuthorization.unknown;
-                                }
+                                Provider.of<ContactInfoState>(context, listen: false).blocked = blocked;
 
-                                // Save New peer authorization
                                 var profileOnion = Provider.of<ContactInfoState>(context, listen: false).profileOnion;
-
-                                var onion = Provider.of<ContactInfoState>(context, listen: false).onion;
-                                Provider.of<ContactInfoState>(context, listen: false).nickname = ctrlrNick.text;
+                                var identifier = Provider.of<ContactInfoState>(context, listen: false).identifier;
 
                                 if (blocked) {
-                                  final setPeerAttribute = {
-                                    "EventType": "UpdatePeerAuthorization",
-                                    "Data": {"RemotePeer": onion, "Authorization": "blocked"},
-                                  };
-                                  final setPeerAttributeJson = jsonEncode(setPeerAttribute);
-                                  Provider.of<FlwtchState>(context, listen: false).cwtch.SendProfileEvent(profileOnion, setPeerAttributeJson);
+                                  Provider.of<FlwtchState>(context, listen: false).cwtch.BlockContact(profileOnion, identifier);
                                 } else {
-                                  final setPeerAttribute = {
-                                    "EventType": "UpdatePeerAuthorization",
-                                    "Data": {"RemotePeer": onion, "Authorization": "authorized"},
-                                  };
-                                  final setPeerAttributeJson = jsonEncode(setPeerAttribute);
-                                  Provider.of<FlwtchState>(context, listen: false).cwtch.SendProfileEvent(profileOnion, setPeerAttributeJson);
+                                  Provider.of<FlwtchState>(context, listen: false).cwtch.UnblockContact(profileOnion, identifier);
                                 }
                               },
                               activeTrackColor: settings.theme.defaultButtonColor,

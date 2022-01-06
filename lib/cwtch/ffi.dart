@@ -344,6 +344,17 @@ class CwtchFfi implements Cwtch {
 
   @override
   // ignore: non_constant_identifier_names
+  void UnblockContact(String profileOnion, int contactHandle) {
+    var unblockContact = library.lookup<NativeFunction<string_int_to_void_function>>("c_UnblockContact");
+    // ignore: non_constant_identifier_names
+    final UnblockContact = unblockContact.asFunction<VoidFromStringIntFn>();
+    final u1 = profileOnion.toNativeUtf8();
+    UnblockContact(u1, u1.length, contactHandle);
+    malloc.free(u1);
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
   void SendMessage(String profileOnion, int contactHandle, String message) {
     var sendMessage = library.lookup<NativeFunction<void_from_string_int_string_function>>("c_SendMessage");
     // ignore: non_constant_identifier_names

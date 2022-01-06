@@ -209,7 +209,7 @@ class _AddContactViewState extends State<AddContactView> {
                       return DropdownMenuItem<String>(
                         value: serverInfo.onion,
                         child: Text(
-                          serverInfo.description,
+                          serverInfo.description.isNotEmpty ? serverInfo.description : serverInfo.onion,
                           overflow: TextOverflow.ellipsis,
                         ),
                       );
