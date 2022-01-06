@@ -239,7 +239,7 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
             "SendInvitation" -> {
                 val profile = (a.get("ProfileOnion") as? String) ?: ""
                 val conversation = a.getInt("conversation").toLong()
-                val target = (a.get("target") as? Long) ?: -1
+                val target = a.getInt("conversation").toLong()
                 Cwtch.sendInvitation(profile, conversation, target)
             }
             "ShareFile" -> {
@@ -300,12 +300,12 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
             }
             "ArchiveConversation" -> {
                 val profile = (a.get("ProfileOnion") as? String) ?: ""
-                val conversation = (a.get("conversation") as? Long) ?: -1
+                val conversation = a.getInt("conversation").toLong()
                 Cwtch.archiveConversation(profile, conversation)
             }
             "DeleteConversation" -> {
                 val profile = (a.get("ProfileOnion") as? String) ?: ""
-                val conversation = (a.get("conversation") as? Long) ?: -1
+                val conversation = a.getInt("conversation").toLong()
                 Cwtch.deleteContact(profile, conversation)
             }
             "SetProfileAttribute" -> {
@@ -316,7 +316,7 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
             }
             "SetConversationAttribute" -> {
                 val profile = (a.get("ProfileOnion") as? String) ?: ""
-                val conversation = (a.get("conversation") as? Long) ?: -1
+                val conversation = a.getInt("conversation").toLong()
                 val key = (a.get("Key") as? String) ?: ""
                 val v = (a.get("Val") as? String) ?: ""
                 Cwtch.setConversationAttribute(profile, conversation, key, v)
