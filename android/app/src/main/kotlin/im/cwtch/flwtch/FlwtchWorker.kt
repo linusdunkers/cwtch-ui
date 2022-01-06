@@ -225,6 +225,11 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                 val conversation = a.getInt("conversation").toLong()
                 Cwtch.blockContact(profile, conversation)
             }
+            "UnblockContact" -> {
+                val profile = (a.get("ProfileOnion") as? String) ?: ""
+                val conversation = a.getInt("conversation").toLong()
+                Cwtch.unblockContact(profile, conversation)
+            }
             "SendMessage" -> {
                 val profile = (a.get("ProfileOnion") as? String) ?: ""
                 val conversation = a.getInt("conversation").toLong()
