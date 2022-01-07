@@ -239,7 +239,7 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
             "SendInvitation" -> {
                 val profile = (a.get("ProfileOnion") as? String) ?: ""
                 val conversation = a.getInt("conversation").toLong()
-                val target = a.getInt("conversation").toLong()
+                val target = a.getInt("target").toLong()
                 Cwtch.sendInvitation(profile, conversation, target)
             }
             "ShareFile" -> {
