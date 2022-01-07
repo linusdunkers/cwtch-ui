@@ -154,7 +154,8 @@ class _MessageViewState extends State<MessageView> {
       builder: (BuildContext bcontext) {
         if (Provider.of<ContactInfoState>(context, listen: false).isGroup == true) {
           return MultiProvider(
-            providers: [ChangeNotifierProvider.value(value: Provider.of<ContactInfoState>(context))],
+            providers: [ChangeNotifierProvider.value(value: Provider.of<ContactInfoState>(context)),
+              ChangeNotifierProvider.value(value: Provider.of<ProfileInfoState>(context))],
             child: GroupSettingsView(),
           );
         } else {
