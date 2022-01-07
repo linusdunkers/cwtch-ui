@@ -137,26 +137,17 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
                                       setState(() {
                                         // Set whether or not to dave the Contact History...
                                         var profileOnion = Provider.of<ContactInfoState>(context, listen: false).profileOnion;
-                                        var onion = Provider.of<ContactInfoState>(context, listen: false).onion;
-                                        const SaveHistoryKey = "SavePeerHistory";
+                                        var identifier = Provider.of<ContactInfoState>(context, listen: false).identifier;
+                                        const SaveHistoryKey = "profile.SavePeerHistory";
+                                        const SaveHistory = "SaveHistory";
+                                        const DelHistory = "DeleteHistoryConfirmed";
 
                                         if (newValue == AppLocalizations.of(context)!.savePeerHistory) {
-                                          Provider.of<ContactInfoState>(context, listen: false).savePeerHistory = "SaveHistory";
-                                          final setPeerAttribute = {
-                                            "EventType": "SetPeerAttribute",
-                                            "Data": {"RemotePeer": onion, "Key": SaveHistoryKey, "Data": "SaveHistory"},
-                                          };
-                                          final setPeerAttributeJson = jsonEncode(setPeerAttribute);
-                                          Provider.of<FlwtchState>(context, listen: false).cwtch.SendProfileEvent(profileOnion, setPeerAttributeJson);
+                                          Provider.of<ContactInfoState>(context, listen: false).savePeerHistory = SaveHistory;
+                                          Provider.of<FlwtchState>(context, listen: false).cwtch.SetConversationAttribute(profileOnion, identifier, SaveHistoryKey, SaveHistory);
                                         } else {
-                                          Provider.of<ContactInfoState>(context, listen: false).savePeerHistory = "DeleteHistoryConfirmed";
-                                          final setPeerAttribute = {
-                                            "EventType": "SetPeerAttribute",
-                                            "Data": {"RemotePeer": onion, "Key": SaveHistoryKey, "Data": "DeleteHistoryConfirmed"},
-                                          };
-
-                                          final setPeerAttributeJson = jsonEncode(setPeerAttribute);
-                                          Provider.of<FlwtchState>(context, listen: false).cwtch.SendProfileEvent(profileOnion, setPeerAttributeJson);
+                                          Provider.of<ContactInfoState>(context, listen: false).savePeerHistory = DelHistory;
+                                          Provider.of<FlwtchState>(context, listen: false).cwtch.SetConversationAttribute(profileOnion, identifier, SaveHistoryKey, DelHistory);
                                         }
                                       });
                                     },
