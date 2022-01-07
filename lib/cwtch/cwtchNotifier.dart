@@ -96,8 +96,8 @@ class CwtchNotifier {
         }
         if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(int.parse(data["ConversationID"])) == null) {
           profileCN.getProfile(data["ProfileOnion"])?.contactList.add(ContactInfoState(data["ProfileOnion"], int.parse(data["ConversationID"]), data["GroupID"],
-              blocked: data["blocked"] == "true",
-              accepted: data["accepted"] == "true",
+              blocked: false, // we created
+              accepted: true, // we created
               imagePath: data["PicturePath"],
               nickname: data["GroupName"],
               status: status,
@@ -288,8 +288,8 @@ class CwtchNotifier {
           if (profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(groupInvite["GroupID"]) == null) {
             var identifier = int.parse(data["ConversationID"]);
             profileCN.getProfile(data["ProfileOnion"])?.contactList.add(ContactInfoState(data["ProfileOnion"], identifier, groupInvite["GroupID"],
-                blocked: data["blocked"] == "true",
-                accepted: data["accepted"] == "true",
+                blocked: false, // NewGroup only issued on accepting invite
+                accepted: true, // NewGroup only issued on accepting invite
                 imagePath: data["PicturePath"],
                 nickname: groupInvite["GroupName"],
                 server: groupInvite["ServerHost"],
