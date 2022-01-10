@@ -139,7 +139,7 @@ ThemeData mkThemeData(Settings opaque) {
     appBarTheme: AppBarTheme(
         systemOverlayStyle: SystemUiOverlayStyle(
           // Status bar color
-            statusBarColor: opaque.current().topbarColor,
+          statusBarColor: opaque.current().topbarColor,
           // Status bar brightness (optional)
           statusBarIconBrightness: opaque.current().mode == mode_light ? Brightness.dark : Brightness.light, // For Android (dark icons)
           statusBarBrightness: opaque.current().mode == mode_light ? Brightness.dark : Brightness.light, // For iOS (dark icons)

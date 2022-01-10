@@ -55,6 +55,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
   Widget build(BuildContext context) {
     var fromMe = Provider.of<MessageMetadata>(context).senderHandle == Provider.of<ProfileInfoState>(context).onion;
     var isContact = Provider.of<ProfileInfoState>(context).contactList.findContact(Provider.of<MessageMetadata>(context).senderHandle) != null;
+    var isGroup = Provider.of<ProfileInfoState>(context).contactList.getContact(Provider.of<MessageMetadata>(context, listen: false).conversationIdentifier)!.isGroup;
     var isBlocked = isContact ? Provider.of<ProfileInfoState>(context).contactList.findContact(Provider.of<MessageMetadata>(context).senderHandle)!.isBlocked : false;
     var actualMessage = Flexible(flex: Platform.isAndroid ? 10 : 3, fit: FlexFit.loose, child: widget.child);
 
@@ -148,17 +149,24 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
     } else {
       var contact = Provider.of<ContactInfoState>(context);
       Widget wdgPortrait = GestureDetector(
-          onTap: isContact ? _btnGoto : _btnAdd,
+          onTap: !isGroup
+              ? null
+              : isContact
+                  ? _btnGoto
+                  : _btnAdd,
           child: Padding(
               padding: EdgeInsets.all(4.0),
               child: ProfileImage(
                 diameter: 48.0,
                 imagePath: Provider.of<MessageMetadata>(context).senderImage ?? contact.imagePath,
-                //maskOut: contact.status != "Authenticated",
                 border: contact.status == "Authenticated" ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor : Provider.of<Settings>(context).theme.portraitOfflineBorderColor,
                 badgeTextColor: Colors.red,
                 badgeColor: Colors.red,
-                tooltip: isContact ? AppLocalizations.of(context)!.contactGoto.replaceFirst("%1", senderDisplayStr) : AppLocalizations.of(context)!.addContact,
+                tooltip: !isGroup
+                    ? ""
+                    : isContact
+                        ? AppLocalizations.of(context)!.contactGoto.replaceFirst("%1", senderDisplayStr)
+                        : AppLocalizations.of(context)!.addContact,
               )));
 
       widgetRow = <Widget>[

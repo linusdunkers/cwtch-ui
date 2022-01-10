@@ -26,10 +26,7 @@ class ChatMessage {
       };
 }
 
-enum ModalState {
-  none,
-  storageMigration
-}
+enum ModalState { none, storageMigration }
 
 class AppState extends ChangeNotifier {
   bool cwtchInit = false;
@@ -633,7 +630,7 @@ class ContactInfoState extends ChangeNotifier {
 
   set accepted(bool newVal) {
     this._accepted = newVal;
-        notifyListeners();
+    notifyListeners();
   }
 
   set blocked(bool newVal) {

@@ -87,7 +87,9 @@ class _MessageViewState extends State<MessageView> {
         appBarButtons.add(IconButton(
           icon: Icon(Icons.attach_file, size: 24),
           tooltip: AppLocalizations.of(context)!.tooltipSendFile,
-          onPressed: (){_showFilePicker(context);},
+          onPressed: () {
+            _showFilePicker(context);
+          },
         ));
       }
       appBarButtons.add(IconButton(
@@ -154,8 +156,7 @@ class _MessageViewState extends State<MessageView> {
       builder: (BuildContext bcontext) {
         if (Provider.of<ContactInfoState>(context, listen: false).isGroup == true) {
           return MultiProvider(
-            providers: [ChangeNotifierProvider.value(value: Provider.of<ContactInfoState>(context)),
-              ChangeNotifierProvider.value(value: Provider.of<ProfileInfoState>(context))],
+            providers: [ChangeNotifierProvider.value(value: Provider.of<ContactInfoState>(context)), ChangeNotifierProvider.value(value: Provider.of<ProfileInfoState>(context))],
             child: GroupSettingsView(),
           );
         } else {
@@ -423,19 +424,27 @@ class _MessageViewState extends State<MessageView> {
                         SizedBox(
                           height: 20,
                         ),
-                        Visibility(visible: showPreview, child: showPreview ? Image.file(
-                          imagePreview!,
-                          cacheHeight: 150, // limit the amount of space the image can decode too, we keep this high-ish to allow quality previews...
-                          filterQuality: FilterQuality.medium,
-                          fit: BoxFit.fill,
-                          alignment: Alignment.center,
-                          height: 150,
-                          isAntiAlias: false,
-                          errorBuilder: (context, error, stackTrace) {
-                            return MalformedBubble();
-                          },
-                        ) : Container()),
-                        Visibility(visible: showPreview, child: SizedBox(height: 10,)),
+                        Visibility(
+                            visible: showPreview,
+                            child: showPreview
+                                ? Image.file(
+                                    imagePreview!,
+                                    cacheHeight: 150, // limit the amount of space the image can decode too, we keep this high-ish to allow quality previews...
+                                    filterQuality: FilterQuality.medium,
+                                    fit: BoxFit.fill,
+                                    alignment: Alignment.center,
+                                    height: 150,
+                                    isAntiAlias: false,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return MalformedBubble();
+                                    },
+                                  )
+                                : Container()),
+                        Visibility(
+                            visible: showPreview,
+                            child: SizedBox(
+                              height: 10,
+                            )),
                         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                           ElevatedButton(
                             child: Text(AppLocalizations.of(context)!.cancel, semanticsLabel: AppLocalizations.of(context)!.cancel),
@@ -443,7 +452,9 @@ class _MessageViewState extends State<MessageView> {
                               Navigator.pop(bcontext);
                             },
                           ),
-                          SizedBox(width: 20,),
+                          SizedBox(
+                            width: 20,
+                          ),
                           ElevatedButton(
                             child: Text(AppLocalizations.of(context)!.btnSendFile, semanticsLabel: AppLocalizations.of(context)!.btnSendFile),
                             onPressed: () {

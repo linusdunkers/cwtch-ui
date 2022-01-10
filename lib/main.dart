@@ -108,7 +108,7 @@ class FlwtchState extends State<Flwtch> {
             supportedLocales: AppLocalizations.supportedLocales,
             title: 'Cwtch',
             theme: mkThemeData(settings),
-            home: (!appState.cwtchInit || appState.modalState != ModalState.none) ?  SplashView() : ProfileMgrView(),
+            home: (!appState.cwtchInit || appState.modalState != ModalState.none) ? SplashView() : ProfileMgrView(),
           ),
         );
       },
