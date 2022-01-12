@@ -106,14 +106,10 @@ class _TorStatusView extends State<TorStatusView> {
                                             if (port > 0 && port < 65536) {
                                               return null;
                                             } else {
-                                              return AppLocalizations.of(
-                                                  context)!
-                                                  .torSettingsErrorSettingPort;
+                                              return AppLocalizations.of(context)!.torSettingsErrorSettingPort;
                                             }
-                                          }catch (e) {
-                                            return AppLocalizations.of(
-                                                context)!
-                                                .torSettingsErrorSettingPort;
+                                          } catch (e) {
+                                            return AppLocalizations.of(context)!.torSettingsErrorSettingPort;
                                           }
                                         },
                                         onChanged: (String socksPort) {
@@ -141,22 +137,17 @@ class _TorStatusView extends State<TorStatusView> {
                                             if (port > 0 && port < 65536) {
                                               return null;
                                             } else {
-                                              return AppLocalizations.of(
-                                                  context)!
-                                                  .torSettingsErrorSettingPort;
+                                              return AppLocalizations.of(context)!.torSettingsErrorSettingPort;
                                             }
-                                          }catch (e) {
-                                            return AppLocalizations.of(
-                                                context)!
-                                                .torSettingsErrorSettingPort;
+                                          } catch (e) {
+                                            return AppLocalizations.of(context)!.torSettingsErrorSettingPort;
                                           }
                                         },
                                         onChanged: (String controlPort) {
                                           try {
                                             var port = int.parse(controlPort);
                                             if (port > 0 && port < 65536) {
-                                              settings.controlPort =
-                                                  int.parse(controlPort);
+                                              settings.controlPort = int.parse(controlPort);
                                               saveSettings(context);
                                             }
                                           } catch (e) {}

@@ -51,9 +51,7 @@ class _CwtchTextFieldState extends State<CwtchTextField> {
             : widget.number
                 ? TextInputType.number
                 : TextInputType.text,
-        inputFormatters: widget.number ? <TextInputFormatter>[
-          FilteringTextInputFormatter.digitsOnly
-        ] : null,
+        inputFormatters: widget.number ? <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly] : null,
         maxLines: widget.multiLine ? null : 1,
         scrollController: _scrollController,
         enableIMEPersonalizedLearning: false,
@@ -66,11 +64,7 @@ class _CwtchTextFieldState extends State<CwtchTextField> {
             focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), borderSide: BorderSide(color: theme.current().textfieldBorderColor, width: 3.0)),
             focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), borderSide: BorderSide(color: theme.current().textfieldErrorColor, width: 3.0)),
             errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), borderSide: BorderSide(color: theme.current().textfieldErrorColor, width: 3.0)),
-            errorStyle: TextStyle(
-              color: theme.current().textfieldErrorColor,
-              fontWeight: FontWeight.bold,
-              overflow: TextOverflow.visible
-            ),
+            errorStyle: TextStyle(color: theme.current().textfieldErrorColor, fontWeight: FontWeight.bold, overflow: TextOverflow.visible),
             fillColor: theme.current().textfieldBackgroundColor,
             contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
             enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), borderSide: BorderSide(color: theme.current().textfieldBorderColor, width: 3.0))),
