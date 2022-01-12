@@ -44,17 +44,22 @@ class _CwtchTextFieldState extends State<CwtchTextField> {
         validator: widget.validator,
         onChanged: widget.onChanged,
         autofocus: widget.autofocus,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         textAlign: widget.number ? TextAlign.end : TextAlign.start,
         keyboardType: widget.multiLine
             ? TextInputType.multiline
             : widget.number
                 ? TextInputType.number
                 : TextInputType.text,
+        inputFormatters: widget.number ? <TextInputFormatter>[
+          FilteringTextInputFormatter.digitsOnly
+        ] : null,
         maxLines: widget.multiLine ? null : 1,
         scrollController: _scrollController,
         enableIMEPersonalizedLearning: false,
         focusNode: _focusNode,
         decoration: InputDecoration(
+            errorMaxLines: 2,
             hintText: widget.hintText,
             floatingLabelBehavior: FloatingLabelBehavior.never,
             filled: true,
@@ -64,6 +69,7 @@ class _CwtchTextFieldState extends State<CwtchTextField> {
             errorStyle: TextStyle(
               color: theme.current().textfieldErrorColor,
               fontWeight: FontWeight.bold,
+              overflow: TextOverflow.visible
             ),
             fillColor: theme.current().textfieldBackgroundColor,
             contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),

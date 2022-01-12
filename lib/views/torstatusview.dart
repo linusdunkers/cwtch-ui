@@ -96,13 +96,33 @@ class _TorStatusView extends State<TorStatusView> {
                                   subtitle: Text(AppLocalizations.of(context)!.torSettingsCustomSocksPortDescription),
                                   leading: Icon(CwtchIcons.swap_horiz_24px, color: settings.current().mainTextColor),
                                   trailing: Container(
-                                      width: 100,
+                                      width: 300,
                                       child: CwtchTextField(
+                                        number: true,
                                         controller: torSocksPortController,
+                                        validator: (value) {
+                                          try {
+                                            var port = int.parse(value);
+                                            if (port > 0 && port < 65536) {
+                                              return null;
+                                            } else {
+                                              return AppLocalizations.of(
+                                                  context)!
+                                                  .torSettingsErrorSettingPort;
+                                            }
+                                          }catch (e) {
+                                            return AppLocalizations.of(
+                                                context)!
+                                                .torSettingsErrorSettingPort;
+                                          }
+                                        },
                                         onChanged: (String socksPort) {
                                           try {
-                                            settings.socksPort = int.parse(socksPort);
-                                            saveSettings(context);
+                                            var port = int.parse(socksPort);
+                                            if (port > 0 && port < 65536) {
+                                              settings.socksPort = int.parse(socksPort);
+                                              saveSettings(context);
+                                            }
                                           } catch (e) {}
                                         },
                                       ))),
@@ -111,13 +131,34 @@ class _TorStatusView extends State<TorStatusView> {
                                   subtitle: Text(AppLocalizations.of(context)!.torSettingsCustomControlPortDescription),
                                   leading: Icon(CwtchIcons.swap_horiz_24px, color: settings.current().mainTextColor),
                                   trailing: Container(
-                                      width: 100,
+                                      width: 300,
                                       child: CwtchTextField(
+                                        number: true,
                                         controller: torControlPortController,
+                                        validator: (value) {
+                                          try {
+                                            var port = int.parse(value);
+                                            if (port > 0 && port < 65536) {
+                                              return null;
+                                            } else {
+                                              return AppLocalizations.of(
+                                                  context)!
+                                                  .torSettingsErrorSettingPort;
+                                            }
+                                          }catch (e) {
+                                            return AppLocalizations.of(
+                                                context)!
+                                                .torSettingsErrorSettingPort;
+                                          }
+                                        },
                                         onChanged: (String controlPort) {
                                           try {
-                                            settings.controlPort = int.parse(controlPort);
-                                            saveSettings(context);
+                                            var port = int.parse(controlPort);
+                                            if (port > 0 && port < 65536) {
+                                              settings.controlPort =
+                                                  int.parse(controlPort);
+                                              saveSettings(context);
+                                            }
                                           } catch (e) {}
                                         },
                                       ))),

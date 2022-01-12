@@ -1,6 +1,7 @@
 {
     "@@locale": "en",
-    "@@last_modified": "2022-01-12T22:53:15+01:00",
+    "@@last_modified": "2022-01-12T23:54:51+01:00",
+    "torSettingsErrorSettingPort": "Port Number must be between 1 and 65535",
     "settingTheme": "Use Light Themes",
     "torSettingsUseCustomTorServiceConfiguration": "Use a Custom Tor Service Configuration (torrc)",
     "torSettingsUseCustomTorServiceConfigurastionDescription": "Override the default tor configuration. Warning: This could be dangerous. Only turn this on if you know what you are doing.",
