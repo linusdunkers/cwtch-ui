@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../settings.dart';
 
@@ -7,12 +8,14 @@ doNothing(String x) {}
 // Provides a styled Text Field for use in Form Widgets.
 // Callers must provide a text controller, label helper text and a validator.
 class CwtchTextField extends StatefulWidget {
-  CwtchTextField({required this.controller, required this.hintText, this.validator, this.autofocus = false, this.onChanged = doNothing});
+  CwtchTextField({required this.controller, this.hintText = "", this.validator, this.autofocus = false, this.onChanged = doNothing, this.number = false, this.multiLine = false});
   final TextEditingController controller;
   final String hintText;
   final FormFieldValidator? validator;
   final Function(String) onChanged;
   final bool autofocus;
+  final bool multiLine;
+  final bool number;
 
   @override
   _CwtchTextFieldState createState() => _CwtchTextFieldState();
@@ -20,9 +23,11 @@ class CwtchTextField extends StatefulWidget {
 
 class _CwtchTextFieldState extends State<CwtchTextField> {
   late final FocusNode _focusNode;
-
+  late final ScrollController _scrollController;
   @override
   void initState() {
+    _scrollController = ScrollController();
+
     _focusNode = FocusNode();
     _focusNode.addListener(() {
       // Select all...
@@ -39,6 +44,14 @@ class _CwtchTextFieldState extends State<CwtchTextField> {
         validator: widget.validator,
         onChanged: widget.onChanged,
         autofocus: widget.autofocus,
+        textAlign: widget.number ? TextAlign.end : TextAlign.start,
+        keyboardType: widget.multiLine
+            ? TextInputType.multiline
+            : widget.number
+                ? TextInputType.number
+                : TextInputType.text,
+        maxLines: widget.multiLine ? null : 1,
+        scrollController: _scrollController,
         enableIMEPersonalizedLearning: false,
         focusNode: _focusNode,
         decoration: InputDecoration(

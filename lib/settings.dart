@@ -39,6 +39,13 @@ class Settings extends ChangeNotifier {
   bool streamerMode = false;
   String _downloadPath = "";
 
+  bool _allowAdvancedTorConfig = false;
+  bool _useCustomTorConfig = false;
+  String _customTorConfig = "";
+  int _socksPort = -1;
+  int _controlPort = -1;
+  String _customTorAuth = "";
+
   void setTheme(String themeId, String mode) {
     theme = getTheme(themeId, mode);
     notifyListeners();
@@ -85,6 +92,13 @@ class Settings extends ChangeNotifier {
 
     // auto-download folder
     _downloadPath = settings["DownloadPath"] ?? "";
+
+    // allow a custom tor config
+    _allowAdvancedTorConfig = settings["AllowAdvancedTorConfig"] ?? false;
+    _useCustomTorConfig = settings["UseCustomTorrc"] ?? false;
+    _customTorConfig = settings["CustomTorrc"] ?? "";
+    _socksPort = settings["CustomSocksPort"] ?? -1;
+    _controlPort = settings["CustomControlPort"] ?? -1;
 
     // Push the experimental settings to Consumers of Settings
     notifyListeners();
@@ -232,6 +246,38 @@ class Settings extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool get allowAdvancedTorConfig => _allowAdvancedTorConfig;
+  set allowAdvancedTorConfig(bool torConfig) {
+    _allowAdvancedTorConfig = torConfig;
+    notifyListeners();
+  }
+
+  // Settings / Gettings for setting the custom tor config..
+  String get torConfig => _customTorConfig;
+  set torConfig(String torConfig) {
+    _customTorConfig = torConfig;
+    notifyListeners();
+  }
+
+  int get socksPort => _socksPort;
+  set socksPort(int newSocksPort) {
+    _socksPort = newSocksPort;
+    notifyListeners();
+  }
+
+  int get controlPort => _controlPort;
+  set controlPort(int controlPort) {
+    _controlPort = controlPort;
+    notifyListeners();
+  }
+
+  // Setters / Getters for toggling whether the app should use a custom tor config
+  bool get useCustomTorConfig => _useCustomTorConfig;
+  set useCustomTorConfig(bool useCustomTorConfig) {
+    _useCustomTorConfig = useCustomTorConfig;
+    notifyListeners();
+  }
+
   /// Construct a default settings object.
   Settings(this.locale, this.theme);
 
@@ -252,6 +298,12 @@ class Settings extends ChangeNotifier {
       "UIColumnModePortrait": uiColumnModePortrait.toString(),
       "UIColumnModeLandscape": uiColumnModeLandscape.toString(),
       "DownloadPath": _downloadPath,
+      "AllowAdvancedTorConfig": _allowAdvancedTorConfig,
+      "CustomTorRc": _customTorConfig,
+      "UseCustomTorrc": _useCustomTorConfig,
+      "CustomSocksPort": _socksPort,
+      "CustomControlPort": _controlPort,
+      "CustomAuth": _customTorAuth,
     };
   }
 }
