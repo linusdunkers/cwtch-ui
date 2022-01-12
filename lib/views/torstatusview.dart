@@ -133,16 +133,18 @@ class _TorStatusView extends State<TorStatusView> {
                                 inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
                                 secondary: Icon(CwtchIcons.enable_experiments, color: settings.current().mainTextColor),
                               ),
-                              Visibility(visible: settings.useCustomTorConfig, child: Padding(
-                                  padding: EdgeInsets.all(5),
-                                  child: CwtchTextField(
-                                    controller: torConfigController,
-                                    multiLine: true,
-                                    onChanged: (torConfig) {
-                                      settings.torConfig = torConfig;
-                                      saveSettings(context);
-                                    },
-                                  )))
+                              Visibility(
+                                  visible: settings.useCustomTorConfig,
+                                  child: Padding(
+                                      padding: EdgeInsets.all(5),
+                                      child: CwtchTextField(
+                                        controller: torConfigController,
+                                        multiLine: true,
+                                        onChanged: (torConfig) {
+                                          settings.torConfig = torConfig;
+                                          saveSettings(context);
+                                        },
+                                      )))
                             ]))
                       ]))));
         });
