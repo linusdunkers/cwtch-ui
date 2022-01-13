@@ -565,6 +565,8 @@ class ContactInfoState extends ChangeNotifier {
   String? _server;
   late bool _archived;
 
+  String? _acnCircuit;
+
   ContactInfoState(this.profileOnion, this.identifier, this.onion,
       {nickname = "",
       isGroup = false,
@@ -597,6 +599,11 @@ class ContactInfoState extends ChangeNotifier {
   String get nickname => this._nickname;
 
   String get savePeerHistory => this._savePeerHistory;
+
+  String? get acnCircuit => this._acnCircuit;
+  set acnCircuit(String? acnCircuit) {
+    this._acnCircuit = acnCircuit;
+  }
 
   // Indicated whether the conversation is archived, in which case it will
   // be moved to the very bottom of the active conversations list until
