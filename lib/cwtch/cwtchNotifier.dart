@@ -351,6 +351,10 @@ class CwtchNotifier {
       case "DoneStorageMigration":
         appState.SetModalState(ModalState.none);
         break;
+      case "ACNInfo":
+        var handle = data["Handle"];
+        profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(handle)?.acnCircuit = data["Data"];
+        break;
       default:
         EnvironmentConfig.debugLog("unhandled event: $type");
     }
