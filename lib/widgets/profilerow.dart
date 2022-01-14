@@ -59,6 +59,7 @@ class _ProfileRowState extends State<ProfileRow> {
               )),
               IconButton(
                 enableFeedback: true,
+                splashRadius: Material.defaultSplashRadius / 2,
                 tooltip: AppLocalizations.of(context)!.editProfile + " " + profile.nickname,
                 icon: Icon(Icons.create, color: Provider.of<Settings>(context).current().mainTextColor),
                 onPressed: () {
