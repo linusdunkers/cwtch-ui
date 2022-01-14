@@ -85,6 +85,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
             maintainInteractivity: false,
             child: IconButton(
                 tooltip: AppLocalizations.of(context)!.tooltipReplyToThisMessage,
+                splashRadius: Material.defaultSplashRadius / 2,
                 onPressed: () {
                   Provider.of<AppState>(context, listen: false).selectedIndex = Provider.of<MessageMetadata>(context, listen: false).messageID;
                 },

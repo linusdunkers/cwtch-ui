@@ -280,31 +280,35 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                     child: CwtchFolderPicker(
                                       label: AppLocalizations.of(context)!.settingDownloadFolder,
                                       initialValue: settings.downloadPath,
+                                      description: AppLocalizations.of(context)!.fileSharingSettingsDownloadFolderDescription,
+                                      tooltip: AppLocalizations.of(context)!.fileSharingSettingsDownloadFolderTooltip,
                                       onSave: (newVal) {
                                         settings.downloadPath = newVal;
                                         saveSettings(context);
                                       },
                                     ),
                                   ),
-                                  SwitchListTile(
-                                    title: Text(AppLocalizations.of(context)!.enableExperimentClickableLinks, style: TextStyle(color: settings.current().mainTextColor)),
-                                    subtitle: Text(AppLocalizations.of(context)!.experimentClickableLinksDescription),
-                                    value: settings.isExperimentEnabled(ClickableLinksExperiment),
-                                    onChanged: (bool value) {
-                                      if (value) {
-                                        settings.enableExperiment(ClickableLinksExperiment);
-                                      } else {
-                                        settings.disableExperiment(ClickableLinksExperiment);
-                                      }
-                                      saveSettings(context);
-                                    },
-                                    activeTrackColor: settings.theme.defaultButtonActiveColor,
-                                    inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
-                                    secondary: Icon(Icons.link, color: settings.current().mainTextColor),
-                                  ),
                                 ]),
                               ),
                             ],
+                          )),
+                      Visibility(
+                          visible: settings.experimentsEnabled,
+                          child: SwitchListTile(
+                            title: Text(AppLocalizations.of(context)!.enableExperimentClickableLinks, style: TextStyle(color: settings.current().mainTextColor)),
+                            subtitle: Text(AppLocalizations.of(context)!.experimentClickableLinksDescription),
+                            value: settings.isExperimentEnabled(ClickableLinksExperiment),
+                            onChanged: (bool value) {
+                              if (value) {
+                                settings.enableExperiment(ClickableLinksExperiment);
+                              } else {
+                                settings.disableExperiment(ClickableLinksExperiment);
+                              }
+                              saveSettings(context);
+                            },
+                            activeTrackColor: settings.theme.defaultButtonActiveColor,
+                            inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
+                            secondary: Icon(Icons.link, color: settings.current().mainTextColor),
                           )),
                       AboutListTile(
                           icon: appIcon,
