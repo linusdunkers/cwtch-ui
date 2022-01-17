@@ -603,6 +603,7 @@ class ContactInfoState extends ChangeNotifier {
   String? get acnCircuit => this._acnCircuit;
   set acnCircuit(String? acnCircuit) {
     this._acnCircuit = acnCircuit;
+    notifyListeners()
   }
 
   // Indicated whether the conversation is archived, in which case it will

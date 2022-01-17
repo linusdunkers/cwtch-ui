@@ -67,7 +67,7 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
                       children: [TextSpan(text: " ($ip)", style: TextStyle(fontSize: 8, fontWeight: FontWeight.normal))]));
             }).toList(growable: true);
 
-            paths.add(RichText(text: TextSpan(text: "Tor Network", style: TextStyle(fontWeight: FontWeight.normal, fontSize: 8, fontFamily: "monospace"))));
+            paths.add(RichText(text: TextSpan(text: AppLocalizations.of(context)!.labelTorNetwork, style: TextStyle(fontWeight: FontWeight.normal, fontSize: 8, fontFamily: "monospace"))));
 
             path = Column(
               children: paths,
@@ -135,8 +135,8 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
                             ListTile(
                               leading: Icon(CwtchIcons.onion_on, color: settings.current().mainTextColor),
                               isThreeLine: true,
-                              title: Text("ACN Circuit Info"),
-                              subtitle: Text("In depth information about the path that the anonymous communication network is using to connect to this conversation"),
+                              title: Text(AppLocalizations.of(context)!.labelACNCircuitInfo),
+                              subtitle: Text(AppLocalizations.of(context)!.descriptionACNCircuitInfo),
                               trailing: path,
                             ),
                             SizedBox(

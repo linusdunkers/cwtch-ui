@@ -63,7 +63,7 @@ class _CwtchFolderPickerState extends State<CwtchFolderPicker> {
                 }
               },
               icon: Icon(Icons.folder),
-              tooltip: widget.tooltip, //todo: l18n
+              tooltip: widget.tooltip,
             )));
   }
 }
