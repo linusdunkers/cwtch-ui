@@ -62,7 +62,7 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
               return RichText(
                   textAlign: TextAlign.left,
                   text: TextSpan(
-                      text: "$country",
+                      text: country,
                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10, fontFamily: "monospace"),
                       children: [TextSpan(text: " ($ip)", style: TextStyle(fontSize: 8, fontWeight: FontWeight.normal))]));
             }).toList(growable: true);
