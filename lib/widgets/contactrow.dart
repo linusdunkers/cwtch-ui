@@ -78,6 +78,7 @@ class _ContactRowState extends State<ContactRow> {
                   ? Wrap(direction: Axis.vertical, children: <Widget>[
                       IconButton(
                         padding: EdgeInsets.zero,
+                        splashRadius: Material.defaultSplashRadius / 2,
                         iconSize: 16,
                         icon: Icon(
                           Icons.favorite,
@@ -88,6 +89,7 @@ class _ContactRowState extends State<ContactRow> {
                       ),
                       IconButton(
                         padding: EdgeInsets.zero,
+                        splashRadius: Material.defaultSplashRadius / 2,
                         iconSize: 16,
                         icon: Icon(Icons.delete, color: Provider.of<Settings>(context).theme.mainTextColor),
                         tooltip: AppLocalizations.of(context)!.tooltipRejectContactRequest,
@@ -97,6 +99,7 @@ class _ContactRowState extends State<ContactRow> {
                   : (contact.isBlocked != null && contact.isBlocked
                       ? IconButton(
                           padding: EdgeInsets.zero,
+                          splashRadius: Material.defaultSplashRadius / 2,
                           iconSize: 16,
                           icon: Icon(Icons.block, color: Provider.of<Settings>(context).theme.mainTextColor),
                           onPressed: () {},

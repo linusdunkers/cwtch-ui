@@ -85,6 +85,7 @@ class _MessageViewState extends State<MessageView> {
     if (Provider.of<ContactInfoState>(context).isOnline()) {
       if (showFileSharing) {
         appBarButtons.add(IconButton(
+          splashRadius: Material.defaultSplashRadius / 2,
           icon: Icon(Icons.attach_file, size: 24),
           tooltip: AppLocalizations.of(context)!.tooltipSendFile,
           onPressed: () {
@@ -93,6 +94,7 @@ class _MessageViewState extends State<MessageView> {
         ));
       }
       appBarButtons.add(IconButton(
+          splashRadius: Material.defaultSplashRadius / 2,
           icon: Icon(CwtchIcons.send_invite, size: 24),
           tooltip: AppLocalizations.of(context)!.sendInvite,
           onPressed: () {
@@ -100,6 +102,7 @@ class _MessageViewState extends State<MessageView> {
           }));
     }
     appBarButtons.add(IconButton(
+        splashRadius: Material.defaultSplashRadius / 2,
         icon: Provider.of<ContactInfoState>(context, listen: false).isGroup == true ? Icon(CwtchIcons.group_settings_24px) : Icon(CwtchIcons.peer_settings_24px),
         tooltip: AppLocalizations.of(context)!.conversationSettings,
         onPressed: _pushContactSettings));
@@ -263,6 +266,7 @@ class _MessageViewState extends State<MessageView> {
                                 focusedBorder: InputBorder.none,
                                 enabled: true,
                                 suffixIcon: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(padding: EdgeInsets.all(0.0), shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(45.0))),
                                   child: Icon(CwtchIcons.send_24px, size: 24, color: Provider.of<Settings>(context).theme.defaultButtonTextColor),
                                   onPressed: isOffline ? null : _sendMessage,
                                 ))),
@@ -291,6 +295,7 @@ class _MessageViewState extends State<MessageView> {
                         alignment: Alignment.topRight,
                         child: IconButton(
                           icon: Icon(Icons.highlight_remove),
+                          splashRadius: Material.defaultSplashRadius / 2,
                           tooltip: AppLocalizations.of(context)!.tooltipRemoveThisQuotedMessage,
                           onPressed: () {
                             Provider.of<AppState>(context, listen: false).selectedIndex = null;

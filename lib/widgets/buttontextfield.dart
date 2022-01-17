@@ -45,6 +45,7 @@ class _CwtchButtonTextFieldState extends State<CwtchButtonTextField> {
             suffixIcon: IconButton(
               onPressed: widget.onPressed,
               icon: widget.icon,
+              splashRadius: Material.defaultSplashRadius / 2,
               padding: EdgeInsets.fromLTRB(0.0, 4.0, 2.0, 2.0),
               tooltip: widget.tooltip,
               enableFeedback: true,
@@ -56,15 +57,15 @@ class _CwtchButtonTextFieldState extends State<CwtchButtonTextField> {
             floatingLabelBehavior: FloatingLabelBehavior.never,
             filled: true,
             fillColor: theme.current().textfieldBackgroundColor,
-            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), borderSide: BorderSide(color: theme.current().textfieldBorderColor, width: 3.0)),
-            focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), borderSide: BorderSide(color: theme.current().textfieldErrorColor, width: 3.0)),
-            errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), borderSide: BorderSide(color: theme.current().textfieldErrorColor, width: 3.0)),
+            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(6.0), borderSide: BorderSide(color: theme.current().textfieldBorderColor, width: 1.0)),
+            focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(6.0), borderSide: BorderSide(color: theme.current().textfieldErrorColor, width: 1.0)),
+            errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(6.0), borderSide: BorderSide(color: theme.current().textfieldErrorColor, width: 1.0)),
             errorStyle: TextStyle(
               color: theme.current().textfieldErrorColor,
               fontWeight: FontWeight.bold,
             ),
             contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), borderSide: BorderSide(color: theme.current().textfieldBorderColor, width: 3.0))),
+            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(6.0), borderSide: BorderSide(color: theme.current().textfieldBorderColor, width: 1.0))),
       );
     });
   }

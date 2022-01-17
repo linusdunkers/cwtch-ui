@@ -109,6 +109,7 @@ class _ContactsViewState extends State<ContactsView> {
     actions.add(IconButton(
         icon: Icon(CwtchIcons.address_copy_2),
         tooltip: AppLocalizations.of(context)!.copyAddress,
+        splashRadius: Material.defaultSplashRadius / 2,
         onPressed: () {
           Clipboard.setData(new ClipboardData(text: Provider.of<ProfileInfoState>(context, listen: false).onion));
         }));
@@ -118,6 +119,7 @@ class _ContactsViewState extends State<ContactsView> {
       actions.add(IconButton(
           icon: Icon(CwtchIcons.dns_24px),
           tooltip: AppLocalizations.of(context)!.manageKnownServersButton,
+          splashRadius: Material.defaultSplashRadius / 2,
           onPressed: () {
             _pushServers();
           }));
@@ -127,6 +129,7 @@ class _ContactsViewState extends State<ContactsView> {
     actions.add(IconButton(
         // need both conditions for displaying initial empty textfield and also allowing filters to be cleared if this widget gets lost/reset
         icon: Icon(showSearchBar || Provider.of<ContactListState>(context).isFiltered ? Icons.search_off : Icons.search),
+        splashRadius: Material.defaultSplashRadius / 2,
         onPressed: () {
           Provider.of<ContactListState>(context, listen: false).filter = "";
           setState(() {

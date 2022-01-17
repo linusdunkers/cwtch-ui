@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ui';
 import 'package:cwtch/cwtch_icons_icons.dart';
 import 'package:flutter/services.dart';
 import 'package:cwtch/model.dart';
@@ -47,6 +48,33 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
   Widget _buildSettingsList() {
     return Consumer<Settings>(builder: (context, settings, child) {
       return LayoutBuilder(builder: (BuildContext context, BoxConstraints viewportConstraints) {
+        String? acnCircuit = Provider.of<ContactInfoState>(context).acnCircuit;
+
+        Widget path = Text(Provider.of<ContactInfoState>(context, listen: false).status);
+
+        if (acnCircuit != null) {
+          var hops = acnCircuit.split(",");
+          if (hops.length == 3) {
+            List<Widget> paths = hops.map((String countryCodeAndIp) {
+              var parts = countryCodeAndIp.split(":");
+              var country = parts[0];
+              var ip = parts[1];
+              return RichText(
+                  textAlign: TextAlign.left,
+                  text: TextSpan(
+                      text: country,
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10, fontFamily: "monospace"),
+                      children: [TextSpan(text: " ($ip)", style: TextStyle(fontSize: 8, fontWeight: FontWeight.normal))]));
+            }).toList(growable: true);
+
+            paths.add(RichText(text: TextSpan(text: AppLocalizations.of(context)!.labelTorNetwork, style: TextStyle(fontWeight: FontWeight.normal, fontSize: 8, fontFamily: "monospace"))));
+
+            path = Column(
+              children: paths,
+            );
+          }
+        }
+
         return Scrollbar(
             isAlwaysShown: true,
             child: SingleChildScrollView(
@@ -101,6 +129,16 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
                               height: 20,
                             ),
                             CwtchLabel(label: AppLocalizations.of(context)!.conversationSettings),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            ListTile(
+                              leading: Icon(CwtchIcons.onion_on, color: settings.current().mainTextColor),
+                              isThreeLine: true,
+                              title: Text(AppLocalizations.of(context)!.labelACNCircuitInfo),
+                              subtitle: Text(AppLocalizations.of(context)!.descriptionACNCircuitInfo),
+                              trailing: path,
+                            ),
                             SizedBox(
                               height: 20,
                             ),

@@ -1,6 +1,11 @@
 {
     "@@locale": "es",
-    "@@last_modified": "2022-01-12T23:54:51+01:00",
+    "@@last_modified": "2022-01-17T21:20:54+01:00",
+    "labelTorNetwork": "Tor Network",
+    "descriptionACNCircuitInfo": "In depth information about the path that the anonymous communication network is using to connect to this conversation.",
+    "labelACNCircuitInfo": "ACN Circuit Info",
+    "fileSharingSettingsDownloadFolderTooltip": "Browse to select a different default folder for downloaded files.",
+    "fileSharingSettingsDownloadFolderDescription": "When files are downloaded automatically (e.g. image files, when image previews are enabled) a default location to download the files to is needed.",
     "torSettingsErrorSettingPort": "Port Number must be between 1 and 65535",
     "torSettingsUseCustomTorServiceConfigurastionDescription": "Override the default tor configuration. Warning: This could be dangerous. Only turn this on if you know what you are doing.",
     "torSettingsUseCustomTorServiceConfiguration": "Use a Custom Tor Service Configuration (torrc)",
