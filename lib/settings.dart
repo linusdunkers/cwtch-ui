@@ -45,6 +45,10 @@ class Settings extends ChangeNotifier {
   int _socksPort = -1;
   int _controlPort = -1;
   String _customTorAuth = "";
+  bool _useTorCache = false;
+  String _torCacheDir = "";
+
+  String get torCacheDir => _torCacheDir;
 
   void setTheme(String themeId, String mode) {
     theme = getTheme(themeId, mode);
@@ -99,6 +103,8 @@ class Settings extends ChangeNotifier {
     _customTorConfig = settings["CustomTorrc"] ?? "";
     _socksPort = settings["CustomSocksPort"] ?? -1;
     _controlPort = settings["CustomControlPort"] ?? -1;
+    _useTorCache = settings["UseTorCache"] ?? false;
+    _torCacheDir = settings["TorCacheDir"] ?? "";
 
     // Push the experimental settings to Consumers of Settings
     notifyListeners();
@@ -252,6 +258,12 @@ class Settings extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool get useTorCache => _useTorCache;
+  set useTorCache(bool useTorCache) {
+    _useTorCache = useTorCache;
+    notifyListeners();
+  }
+
   // Settings / Gettings for setting the custom tor config..
   String get torConfig => _customTorConfig;
   set torConfig(String torConfig) {
@@ -304,6 +316,8 @@ class Settings extends ChangeNotifier {
       "CustomSocksPort": _socksPort,
       "CustomControlPort": _controlPort,
       "CustomAuth": _customTorAuth,
+      "UseTorCache": _useTorCache,
+      "TorCacheDir": _torCacheDir
     };
   }
 }
