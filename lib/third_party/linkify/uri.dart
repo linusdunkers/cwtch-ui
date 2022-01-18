@@ -78,7 +78,7 @@ class UrlLinkifier extends Linkifier {
             // If protocol has not been specified then append a protocol
             // to the start of the URL so that it can be opened...
             if (!url.startsWith("https://") && !url.startsWith("http://")) {
-              url = "https://"+url;
+              url = "https://" + url;
             }
 
             list.add(UrlElement(url, originalUrl));

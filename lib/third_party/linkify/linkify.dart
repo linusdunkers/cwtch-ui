@@ -23,10 +23,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-
 import 'uri.dart';
 export 'uri.dart' show UrlLinkifier, UrlElement;
-
 
 abstract class LinkifyElement {
   final String text;

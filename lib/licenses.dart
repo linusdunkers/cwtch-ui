@@ -117,8 +117,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''');
 
   yield LicenseEntryWithLineBreaks(["flaticons"], "Icons made by Freepik (https://www.freepik.com) from Flaticon (www.flaticon.com)");
 
-  yield LicenseEntryWithLineBreaks(["flutter_linkify", "linkify"],
-  '''MIT License
+  yield LicenseEntryWithLineBreaks(["flutter_linkify", "linkify"], '''MIT License
 
 Copyright (c) 2019/2020 Charles-William Crete
 
