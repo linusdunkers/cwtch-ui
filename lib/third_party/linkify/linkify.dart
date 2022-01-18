@@ -1,4 +1,4 @@
-// Originally from linkify https://github.com/Cretezy/linkify/blob/master/lib/linkify.dart
+// Originally from linkify https://github.com/Cretezy/linkify/blob/ba536fa85e7e3a16e580f153616f399458986183/lib/linkify.dart
 // Removed options `removeWWW` and `humanize`
 //
 // MIT License

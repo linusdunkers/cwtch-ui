@@ -1,4 +1,4 @@
-// Originally from linkify: https://github.com/Cretezy/linkify/blob/master/lib/src/url.dart
+// Originally from linkify: https://github.com/Cretezy/linkify/blob/dfb3e43b0e56452bad584ddb0bf9b73d8db0589f/lib/src/url.dart
 //
 // Removed handling of `removeWWW` and `humanize`.
 // Removed auto-appending of `http(s)://` to the readable url

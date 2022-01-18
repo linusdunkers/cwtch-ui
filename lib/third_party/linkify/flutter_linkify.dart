@@ -1,4 +1,4 @@
-// Code Originally taken from https://github.com/Cretezy/flutter_linkify/
+// Code Originally taken from https://github.com/Cretezy/flutter_linkify/blob/201e147e0b07b7ca5c543da8167d712d81760753/lib/flutter_linkify.dart
 //
 // Now uses local `linkify`
 //
