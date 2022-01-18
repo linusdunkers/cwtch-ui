@@ -77,6 +77,18 @@ class _TorStatusView extends State<TorStatusView> {
                           leading: Icon(CwtchIcons.info_24px, color: settings.current().mainTextColor),
                         ),
                         SwitchListTile(
+                          title: Text(AppLocalizations.of(context)!.torSettingsEnableCache),
+                          subtitle: Text(AppLocalizations.of(context)!.torSettingsEnabledCacheDescription),
+                          value: settings.useTorCache,
+                          onChanged: (bool value) {
+                            settings.useTorCache = value;
+                            saveSettings(context);
+                          },
+                          activeTrackColor: settings.theme.defaultButtonColor,
+                          inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
+                          secondary: Icon(Icons.cached, color: settings.current().mainTextColor),
+                        ),
+                        SwitchListTile(
                           title: Text(AppLocalizations.of(context)!.torSettingsEnabledAdvanced),
                           subtitle: Text(AppLocalizations.of(context)!.torSettingsEnabledAdvancedDescription),
                           value: settings.allowAdvancedTorConfig,
