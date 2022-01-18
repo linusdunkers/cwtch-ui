@@ -4,12 +4,12 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 import '../main.dart';
-import '../model.dart';
 import 'messages/filemessage.dart';
 import 'messages/invitemessage.dart';
 import 'messages/malformedmessage.dart';
 import 'messages/quotedmessage.dart';
 import 'messages/textmessage.dart';
+import 'profile.dart';
 
 // Define the overlays
 const TextMessageOverlay = 1;

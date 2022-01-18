@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cwtch/cwtch_icons_icons.dart';
+import 'package:cwtch/models/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cwtch/errorHandler.dart';
@@ -13,7 +14,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 import '../main.dart';
-import '../model.dart';
 
 /// Add Contact View is the one-stop shop for adding public keys to a Profiles contact list.
 /// We support both Peers and Groups (experiment-pending).

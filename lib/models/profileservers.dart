@@ -1,5 +1,6 @@
-import 'package:cwtch/model.dart';
 import 'package:flutter/material.dart';
+
+import 'contact.dart';
 
 class ProfileServerListState extends ChangeNotifier {
   List<RemoteServerInfoState> _servers = [];

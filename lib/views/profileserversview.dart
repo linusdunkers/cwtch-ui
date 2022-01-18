@@ -1,3 +1,4 @@
+import 'package:cwtch/models/profile.dart';
 import 'package:cwtch/models/profileservers.dart';
 import 'package:cwtch/models/servers.dart';
 import 'package:cwtch/widgets/remoteserverrow.dart';
@@ -7,7 +8,6 @@ import 'package:provider/provider.dart';
 
 import '../cwtch_icons_icons.dart';
 import '../main.dart';
-import '../model.dart';
 import '../settings.dart';
 
 class ProfileServersView extends StatefulWidget {

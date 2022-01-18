@@ -1,4 +1,5 @@
 import 'package:cwtch/main.dart';
+import 'package:cwtch/models/profile.dart';
 import 'package:cwtch/models/profileservers.dart';
 import 'package:cwtch/models/servers.dart';
 import 'package:cwtch/views/addeditservers.dart';
@@ -11,7 +12,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../cwtch_icons_icons.dart';
 import '../errorHandler.dart';
-import '../model.dart';
 import '../settings.dart';
 
 class RemoteServerRow extends StatefulWidget {

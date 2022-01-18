@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'dart:ui';
 import 'package:cwtch/cwtch_icons_icons.dart';
+import 'package:cwtch/models/appstate.dart';
+import 'package:cwtch/models/contact.dart';
 import 'package:flutter/services.dart';
-import 'package:cwtch/model.dart';
 import 'package:cwtch/widgets/buttontextfield.dart';
 import 'package:cwtch/widgets/cwtchlabel.dart';
 import 'package:flutter/material.dart';

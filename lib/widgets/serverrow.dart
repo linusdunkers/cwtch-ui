@@ -9,7 +9,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../cwtch_icons_icons.dart';
 import '../errorHandler.dart';
-import '../model.dart';
 import '../settings.dart';
 
 class ServerRow extends StatefulWidget {
