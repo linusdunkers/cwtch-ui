@@ -23,7 +23,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import 'package:cwtch/third_party/linkify/uri.dart';
+
+import 'uri.dart';
+export 'uri.dart' show UrlLinkifier, UrlElement;
+
 
 abstract class LinkifyElement {
   final String text;

@@ -30,7 +30,7 @@ import 'package:flutter/rendering.dart';
 
 import 'linkify.dart';
 
-export 'linkify.dart' show LinkifyElement, LinkifyOptions, LinkableElement, TextElement, Linkifier;
+export 'linkify.dart' show LinkifyElement, LinkifyOptions, LinkableElement, TextElement, Linkifier, UrlElement, UrlLinkifier;
 
 /// Callback clicked link
 typedef LinkCallback = void Function(LinkableElement link);

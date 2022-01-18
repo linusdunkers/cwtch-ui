@@ -25,7 +25,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import 'package:cwtch/third_party/linkify/linkify.dart';
+import 'linkify.dart';
 
 final _urlRegex = RegExp(
   r'^(.*?)((?:https?:\/\/|www\.)[^\s/$.?#].[^\s]*)',
@@ -75,7 +75,13 @@ class UrlLinkifier extends Linkifier {
 
             var url = originalUrl;
 
-            list.add(UrlElement(originalUrl, url));
+            // If protocol has not been specified then append a protocol
+            // to the start of the URL so that it can be opened...
+            if (!url.startsWith("https://") && !url.startsWith("http://")) {
+              url = "https://"+url;
+            }
+
+            list.add(UrlElement(url, originalUrl));
 
             if (end != null) {
               list.add(TextElement(end));
