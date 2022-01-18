@@ -353,20 +353,24 @@ TextSpan buildTextSpan(
       (element) {
         if (element is LinkableElement) {
           if (useMouseRegion) {
-            return LinkableSpan(
-              mouseCursor: SystemMouseCursors.click,
-              inlineSpan: TextSpan(
-                text: element.text,
-                style: linkStyle,
-                recognizer: onOpen != null ? (TapGestureRecognizer()..onTap = () => onOpen(element)) : null,
-              ),
-            );
+            return TooltipSpan(
+                message: element.url,
+                inlineSpan: LinkableSpan(
+                  mouseCursor: SystemMouseCursors.click,
+                  inlineSpan: TextSpan(
+                    text: element.text,
+                    style: linkStyle,
+                    recognizer: onOpen != null ? (TapGestureRecognizer()..onTap = () => onOpen(element)) : null,
+                  ),
+                ));
           } else {
-            return TextSpan(
-              text: element.text,
-              style: linkStyle,
-              recognizer: onOpen != null ? (TapGestureRecognizer()..onTap = () => onOpen(element)) : null,
-            );
+            return TooltipSpan(
+                message: element.url,
+                inlineSpan: TextSpan(
+                  text: element.text,
+                  style: linkStyle,
+                  recognizer: onOpen != null ? (TapGestureRecognizer()..onTap = () => onOpen(element)) : null,
+                ));
           }
         } else {
           return TextSpan(
@@ -377,4 +381,19 @@ TextSpan buildTextSpan(
       },
     ).toList(),
   );
+}
+
+// Show a tooltip over an inlined element in a Rich Text widget.
+class TooltipSpan extends WidgetSpan {
+  TooltipSpan({
+    required String message,
+    required InlineSpan inlineSpan,
+  }) : super(
+          child: Tooltip(
+            message: message,
+            child: Text.rich(
+              inlineSpan,
+            ),
+          ),
+        );
 }
