@@ -19,7 +19,6 @@ class ContactInfoState extends ChangeNotifier {
   late int _totalMessages = 0;
   late DateTime _lastMessageTime;
   late Map<String, GlobalKey<MessageRowState>> keys;
-  late List<MessageCache?> messageCache;
   int _newMarker = 0;
   DateTime _newMarkerClearAt = DateTime.now();
 
@@ -198,7 +197,7 @@ class ContactInfoState extends ChangeNotifier {
   }
 
   void updateMessageCache(int conversation, int messageID, DateTime timestamp, String senderHandle, String senderImage, bool isAuto, String data) {
-    this.messageCache.insert(0, MessageCache(MessageMetadata(profileOnion, conversation, messageID, timestamp, senderHandle, senderImage, "", {}, false, false, isAuto), data));
+    this.messageCache.insert(0, MessageInfo(MessageMetadata(profileOnion, conversation, messageID, timestamp, senderHandle, senderImage, "", {}, false, false, isAuto), data));
     this.totalMessages += 1;
   }
 
