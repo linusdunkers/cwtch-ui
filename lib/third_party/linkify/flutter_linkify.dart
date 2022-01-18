@@ -1,6 +1,7 @@
+// Code Originally taken from https://github.com/Cretezy/flutter_linkify/
 //
-// Code Originally taken from https://github.com/Cretezy/flutter_linkify/ and
-// subsequently modified...
+// Now uses local `linkify`
+//
 // Original License for this code:
 // MIT License
 //     Copyright (c) 2020 Charles-William Crete
@@ -23,14 +24,13 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //     SOFTWARE.
 
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 import 'linkify.dart';
 
-
+export 'linkify.dart' show LinkifyElement, LinkifyOptions, LinkableElement, TextElement, Linkifier;
 
 /// Callback clicked link
 typedef LinkCallback = void Function(LinkableElement link);
@@ -131,9 +131,9 @@ class Linkify extends StatelessWidget {
             .bodyText2
             ?.merge(style)
             .copyWith(
-          color: Colors.blueAccent,
-          decoration: TextDecoration.underline,
-        )
+              color: Colors.blueAccent,
+              decoration: TextDecoration.underline,
+            )
             .merge(linkStyle),
       ),
       textAlign: textAlign,
@@ -295,9 +295,9 @@ class SelectableLinkify extends StatelessWidget {
             .bodyText2
             ?.merge(style)
             .copyWith(
-          color: Colors.blueAccent,
-          decoration: TextDecoration.underline,
-        )
+              color: Colors.blueAccent,
+              decoration: TextDecoration.underline,
+            )
             .merge(linkStyle),
       ),
       textAlign: textAlign,
@@ -331,26 +331,26 @@ class LinkableSpan extends WidgetSpan {
     required MouseCursor mouseCursor,
     required InlineSpan inlineSpan,
   }) : super(
-    child: MouseRegion(
-      cursor: mouseCursor,
-      child: Text.rich(
-        inlineSpan,
-      ),
-    ),
-  );
+          child: MouseRegion(
+            cursor: mouseCursor,
+            child: Text.rich(
+              inlineSpan,
+            ),
+          ),
+        );
 }
 
 /// Raw TextSpan builder for more control on the RichText
 TextSpan buildTextSpan(
-    List<LinkifyElement> elements, {
-      TextStyle? style,
-      TextStyle? linkStyle,
-      LinkCallback? onOpen,
-      bool useMouseRegion = false,
-    }) {
+  List<LinkifyElement> elements, {
+  TextStyle? style,
+  TextStyle? linkStyle,
+  LinkCallback? onOpen,
+  bool useMouseRegion = false,
+}) {
   return TextSpan(
     children: elements.map<InlineSpan>(
-          (element) {
+      (element) {
         if (element is LinkableElement) {
           if (useMouseRegion) {
             return LinkableSpan(

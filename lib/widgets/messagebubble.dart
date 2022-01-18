@@ -2,8 +2,6 @@ import 'dart:io';
 
 import 'package:cwtch/models/message.dart';
 import 'package:cwtch/third_party/linkify/flutter_linkify.dart';
-import 'package:cwtch/third_party/linkify/linkify.dart';
-import 'package:cwtch/third_party/linkify/uri.dart';
 import 'package:cwtch/widgets/malformedbubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -69,7 +67,7 @@ class MessageBubbleState extends State<MessageBubble> {
       wdgMessage = SelectableLinkify(
         text: widget.content + '\u202F',
         // TODO: onOpen breaks the "selectable" functionality. Maybe something to do with gesture handler?
-        options: LinkifyOptions(humanize: false, removeWww: false, looseUrl: true, defaultToHttps: true),
+        options: LinkifyOptions(looseUrl: true, defaultToHttps: true),
         linkifiers: [UrlLinkifier()],
         onOpen: (link) {
           _modalOpenLink(context, link);

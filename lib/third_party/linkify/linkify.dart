@@ -1,4 +1,6 @@
-// Originally from linkify
+// Originally from linkify https://github.com/Cretezy/linkify/blob/master/lib/linkify.dart
+// Removed options `removeWWW` and `humanize`
+//
 // MIT License
 //
 // Copyright (c) 2019 Charles-William Crete
@@ -43,8 +45,7 @@ class LinkableElement extends LinkifyElement {
   bool operator ==(other) => equals(other);
 
   @override
-  bool equals(other) =>
-      other is LinkableElement && super.equals(other) && other.url == url;
+  bool equals(other) => other is LinkableElement && super.equals(other) && other.url == url;
 }
 
 /// Represents an element containing text
@@ -66,17 +67,10 @@ class TextElement extends LinkifyElement {
 abstract class Linkifier {
   const Linkifier();
 
-  List<LinkifyElement> parse(
-      List<LinkifyElement> elements, LinkifyOptions options);
+  List<LinkifyElement> parse(List<LinkifyElement> elements, LinkifyOptions options);
 }
 
 class LinkifyOptions {
-  /// Removes http/https from shown URLs.
-  final bool humanize;
-
-  /// Removes www. from shown URLs.
-  final bool removeWww;
-
   /// Enables loose URL parsing (any string with "." is a URL).
   final bool looseUrl;
 
@@ -87,8 +81,6 @@ class LinkifyOptions {
   final bool excludeLastPeriod;
 
   const LinkifyOptions({
-    this.humanize = true,
-    this.removeWww = false,
     this.looseUrl = false,
     this.defaultToHttps = false,
     this.excludeLastPeriod = true,
@@ -106,10 +98,10 @@ const defaultLinkifiers = [_urlLinkifier];
 /// Uses [linkTypes] to enable some types of links (URL, email).
 /// Will default to all (if `null`).
 List<LinkifyElement> linkify(
-    String text, {
-      LinkifyOptions options = const LinkifyOptions(),
-      List<Linkifier> linkifiers = defaultLinkifiers,
-    }) {
+  String text, {
+  LinkifyOptions options = const LinkifyOptions(),
+  List<Linkifier> linkifiers = defaultLinkifiers,
+}) {
   var list = <LinkifyElement>[TextElement(text)];
 
   if (text.isEmpty) {

@@ -321,5 +321,3 @@ class Settings extends ChangeNotifier {
     };
   }
 }
-
-

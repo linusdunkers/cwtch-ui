@@ -1,4 +1,8 @@
-// Originally from linkify
+// Originally from linkify: https://github.com/Cretezy/linkify/blob/master/lib/src/url.dart
+//
+// Removed handling of `removeWWW` and `humanize`.
+// Removed auto-appending of `http(s)://` to the readable url
+//
 // MIT License
 //
 // Copyright (c) 2019 Charles-William Crete
@@ -49,9 +53,7 @@ class UrlLinkifier extends Linkifier {
 
     elements.forEach((element) {
       if (element is TextElement) {
-        var match = options.looseUrl
-            ? _looseUrlRegex.firstMatch(element.text)
-            : _urlRegex.firstMatch(element.text);
+        var match = options.looseUrl ? _looseUrlRegex.firstMatch(element.text) : _urlRegex.firstMatch(element.text);
 
         if (match == null) {
           list.add(element);
@@ -66,31 +68,14 @@ class UrlLinkifier extends Linkifier {
             var originalUrl = match.group(2)!;
             String? end;
 
-            if ((options.excludeLastPeriod) &&
-                originalUrl[originalUrl.length - 1] == ".") {
+            if ((options.excludeLastPeriod) && originalUrl[originalUrl.length - 1] == ".") {
               end = ".";
               originalUrl = originalUrl.substring(0, originalUrl.length - 1);
             }
 
             var url = originalUrl;
 
-            // We do not, ever, change the original text of a message.
-            if (options.defaultToHttps) {
-              url = url.replaceFirst('http://', 'https://');
-            }
-
-            // These options are intended for the human-readable portion of
-            // the URI
-            if (options.humanize) {
-              originalUrl = originalUrl.replaceFirst(RegExp(r'https?://'), '');
-            }
-
-            if (options.removeWww) {
-              originalUrl = originalUrl.replaceFirst(RegExp(r'www\.'), '');
-            }
-
             list.add(UrlElement(originalUrl, url));
-
 
             if (end != null) {
               list.add(TextElement(end));
