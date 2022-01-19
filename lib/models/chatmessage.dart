@@ -9,7 +9,7 @@ class ChatMessage {
         d = json['d'];
 
   Map<String, dynamic> toJson() => {
-    'o': o,
-    'd': d,
-  };
+        'o': o,
+        'd': d,
+      };
 }

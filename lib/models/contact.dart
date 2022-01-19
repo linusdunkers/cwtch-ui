@@ -32,17 +32,17 @@ class ContactInfoState extends ChangeNotifier {
 
   ContactInfoState(this.profileOnion, this.identifier, this.onion,
       {nickname = "",
-        isGroup = false,
-        accepted = false,
-        blocked = false,
-        status = "",
-        imagePath = "",
-        savePeerHistory = "DeleteHistoryConfirmed",
-        numMessages = 0,
-        numUnread = 0,
-        lastMessageTime,
-        server,
-        archived = false}) {
+      isGroup = false,
+      accepted = false,
+      blocked = false,
+      status = "",
+      imagePath = "",
+      savePeerHistory = "DeleteHistoryConfirmed",
+      numMessages = 0,
+      numUnread = 0,
+      lastMessageTime,
+      server,
+      archived = false}) {
     this._nickname = nickname;
     this._isGroup = isGroup;
     this._accepted = accepted;
