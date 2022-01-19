@@ -37,7 +37,7 @@ class _CwtchFolderPickerState extends State<CwtchFolderPicker> {
         title: Text(widget.label),
         subtitle: Text(widget.description),
         trailing: Container(
-            width: 200,
+            width: MediaQuery.of(context).size.width / 4,
             child: CwtchButtonTextField(
               controller: ctrlrVal,
               readonly: Platform.isAndroid,
