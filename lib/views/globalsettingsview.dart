@@ -133,7 +133,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                           ),
                           leading: Icon(Icons.table_chart, color: settings.current().mainTextColor),
                           trailing: Container(
-                              width: 200.0,
+                              width: MediaQuery.of(context).size.width / 4,
                               child: DropdownButton(
                                   isExpanded: true,
                                   value: settings.uiColumnModeLandscape.toString(),

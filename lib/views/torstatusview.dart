@@ -108,7 +108,7 @@ class _TorStatusView extends State<TorStatusView> {
                                   subtitle: Text(AppLocalizations.of(context)!.torSettingsCustomSocksPortDescription),
                                   leading: Icon(CwtchIcons.swap_horiz_24px, color: settings.current().mainTextColor),
                                   trailing: Container(
-                                      width: 300,
+                                      width: MediaQuery.of(context).size.width / 4,
                                       child: CwtchTextField(
                                         number: true,
                                         controller: torSocksPortController,
@@ -139,7 +139,7 @@ class _TorStatusView extends State<TorStatusView> {
                                   subtitle: Text(AppLocalizations.of(context)!.torSettingsCustomControlPortDescription),
                                   leading: Icon(CwtchIcons.swap_horiz_24px, color: settings.current().mainTextColor),
                                   trailing: Container(
-                                      width: 300,
+                                      width: MediaQuery.of(context).size.width / 4,
                                       child: CwtchTextField(
                                         number: true,
                                         controller: torControlPortController,
