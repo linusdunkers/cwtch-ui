@@ -8,7 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 import '../../main.dart';
-import '../../model.dart';
+import '../profile.dart';
 
 class FileMessage extends Message {
   final MessageMetadata metadata;

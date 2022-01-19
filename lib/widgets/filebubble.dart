@@ -1,14 +1,16 @@
 import 'dart:io';
 
 import 'package:cwtch/config.dart';
+import 'package:cwtch/models/contact.dart';
+import 'package:cwtch/models/filedownloadprogress.dart';
 import 'package:cwtch/models/message.dart';
+import 'package:cwtch/models/profile.dart';
 import 'package:cwtch/widgets/malformedbubble.dart';
 import 'package:file_picker_desktop/file_picker_desktop.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../main.dart';
-import '../model.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

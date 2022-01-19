@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'package:cwtch/main.dart';
+import 'package:cwtch/models/appstate.dart';
+import 'package:cwtch/models/contact.dart';
 import 'package:cwtch/models/message.dart';
+import 'package:cwtch/models/profilelist.dart';
 import 'package:cwtch/models/profileservers.dart';
 import 'package:cwtch/models/servers.dart';
 import 'package:cwtch/notification_manager.dart';
@@ -10,7 +13,6 @@ import 'package:cwtch/torstatus.dart';
 
 import '../config.dart';
 import '../errorHandler.dart';
-import '../model.dart';
 import '../settings.dart';
 
 // Class that handles libcwtch-go events (received either via ffi with an isolate or gomobile over a method channel from kotlin)

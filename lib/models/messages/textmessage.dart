@@ -8,8 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-import '../../model.dart';
-
 class TextMessage extends Message {
   final MessageMetadata metadata;
   final String content;

@@ -9,7 +9,6 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 import '../../main.dart';
-import '../../model.dart';
 
 class QuotedMessageStructure {
   final String quotedHash;

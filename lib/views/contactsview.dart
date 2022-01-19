@@ -1,7 +1,10 @@
 import 'package:cwtch/cwtch_icons_icons.dart';
+import 'package:cwtch/models/appstate.dart';
+import 'package:cwtch/models/contact.dart';
+import 'package:cwtch/models/contactlist.dart';
+import 'package:cwtch/models/profile.dart';
 import 'package:cwtch/views/profileserversview.dart';
 import 'package:flutter/material.dart';
-import 'package:cwtch/views/torstatusview.dart';
 import 'package:cwtch/widgets/contactrow.dart';
 import 'package:cwtch/widgets/profileimage.dart';
 import 'package:cwtch/widgets/textfield.dart';
@@ -10,7 +13,6 @@ import 'package:provider/provider.dart';
 import '../main.dart';
 import '../settings.dart';
 import 'addcontactview.dart';
-import '../model.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'messageview.dart';

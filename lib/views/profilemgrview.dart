@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cwtch/cwtch_icons_icons.dart';
+import 'package:cwtch/models/appstate.dart';
+import 'package:cwtch/models/profile.dart';
+import 'package:cwtch/models/profilelist.dart';
 import 'package:flutter/material.dart';
 import 'package:cwtch/settings.dart';
 import 'package:cwtch/views/torstatusview.dart';
@@ -13,7 +16,6 @@ import 'package:cwtch/widgets/profilerow.dart';
 import 'package:provider/provider.dart';
 import '../config.dart';
 import '../main.dart';
-import '../model.dart';
 import '../torstatus.dart';
 import 'addeditprofileview.dart';
 import 'globalsettingsview.dart';

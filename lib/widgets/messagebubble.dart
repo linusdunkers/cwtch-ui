@@ -1,13 +1,14 @@
 import 'dart:io';
 
+import 'package:cwtch/models/contact.dart';
 import 'package:cwtch/models/message.dart';
 import 'package:cwtch/third_party/linkify/flutter_linkify.dart';
+import 'package:cwtch/models/profile.dart';
 import 'package:cwtch/widgets/malformedbubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import '../model.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
