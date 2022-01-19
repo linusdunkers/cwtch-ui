@@ -152,21 +152,21 @@ class ProfileInfoState extends ChangeNotifier {
           profileContact.lastMessageTime = DateTime.fromMillisecondsSinceEpoch(1000 * int.parse(contact["lastMsgTime"]));
         } else {
           this._contacts.add(ContactInfoState(
-            this.onion,
-            contact["identifier"],
-            contact["onion"],
-            nickname: contact["name"],
-            status: contact["status"],
-            imagePath: contact["picture"],
-            accepted: contact["accepted"],
-            blocked: contact["blocked"],
-            savePeerHistory: contact["saveConversationHistory"],
-            numMessages: contact["numMessages"],
-            numUnread: contact["numUnread"],
-            isGroup: contact["isGroup"],
-            server: contact["groupServer"],
-            lastMessageTime: DateTime.fromMillisecondsSinceEpoch(1000 * int.parse(contact["lastMsgTime"])),
-          ));
+                this.onion,
+                contact["identifier"],
+                contact["onion"],
+                nickname: contact["name"],
+                status: contact["status"],
+                imagePath: contact["picture"],
+                accepted: contact["accepted"],
+                blocked: contact["blocked"],
+                savePeerHistory: contact["saveConversationHistory"],
+                numMessages: contact["numMessages"],
+                numUnread: contact["numUnread"],
+                isGroup: contact["isGroup"],
+                server: contact["groupServer"],
+                lastMessageTime: DateTime.fromMillisecondsSinceEpoch(1000 * int.parse(contact["lastMsgTime"])),
+              ));
         }
       });
     }

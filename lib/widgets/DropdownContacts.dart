@@ -3,7 +3,6 @@ import 'package:cwtch/models/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-
 bool noFilter(ContactInfoState peer) {
   return true;
 }
