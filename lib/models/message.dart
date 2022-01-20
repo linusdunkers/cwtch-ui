@@ -1,9 +1,12 @@
 import 'dart:convert';
 import 'package:cwtch/config.dart';
+import 'package:cwtch/cwtch/cwtch.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 import '../main.dart';
+import 'messagecache.dart';
 import 'messages/filemessage.dart';
 import 'messages/invitemessage.dart';
 import 'messages/malformedmessage.dart';
@@ -28,7 +31,9 @@ const GroupConversationHandleLength = 32;
 
 abstract class Message {
   MessageMetadata getMetadata();
+
   Widget getWidget(BuildContext context, Key key);
+
   Widget getPreviewWidget(BuildContext context);
 }
 
@@ -57,29 +62,110 @@ Message compileOverlay(MessageMetadata metadata, String messageData) {
   }
 }
 
-Future<Message> messageHandler(BuildContext context, String profileOnion, int conversationIdentifier, int index, {bool byID = false}) {
+abstract class CacheHandler {
+  MessageInfo? lookup(MessageCache cache);
+  Future<dynamic> fetch(Cwtch cwtch, String profileOnion, int conversationIdentifier);
+  void add(MessageCache cache, MessageInfo messageInfo, String contenthash);
+}
+
+class ByIndex implements CacheHandler {
+  int index;
+
+  ByIndex(this.index);
+
+  MessageInfo? lookup(MessageCache cache) {
+    return cache.getByIndex(index);
+  }
+
+  Future<dynamic> fetch(Cwtch cwtch, String profileOnion, int conversationIdentifier) {
+    return cwtch.GetMessage(profileOnion, conversationIdentifier, index);
+  }
+
+  void add(MessageCache cache, MessageInfo messageInfo, String contenthash) {
+    cache.add(messageInfo, index, contenthash);
+  }
+}
+
+class ById implements CacheHandler {
+  int id;
+
+  ById(this.id);
+
+  MessageInfo? lookup(MessageCache cache) {
+    return cache.getById(id);
+  }
+
+  Future<dynamic> fetch(Cwtch cwtch, String profileOnion, int conversationIdentifier) {
+    return cwtch.GetMessageByID(profileOnion, conversationIdentifier, id);
+  }
+
+  void add(MessageCache cache, MessageInfo messageInfo, String contenthash) {
+    cache.addUnindexed(messageInfo, contenthash);
+  }
+}
+
+class ByContentHash implements CacheHandler {
+  String hash;
+
+  ByContentHash(this.hash);
+
+  MessageInfo? lookup(MessageCache cache) {
+    return cache.getByContentHash(hash);
+  }
+
+  Future<dynamic> fetch(Cwtch cwtch, String profileOnion, int conversationIdentifier) {
+    return cwtch.GetMessageByContentHash(profileOnion, conversationIdentifier, hash);
+  }
+
+  void add(MessageCache cache, MessageInfo messageInfo, String contenthash) {
+    cache.addUnindexed(messageInfo, contenthash);
+  }
+}
+
+Future<Message> messageHandler(BuildContext context, String profileOnion, int conversationIdentifier, CacheHandler cacheHandler) {
+  var malformedMetadata = MessageMetadata(profileOnion, conversationIdentifier, 0, DateTime.now(), "", "", "", <String, String>{}, false, true, false);
+  // Hit cache
+  MessageInfo? messageInfo = getMessageInfoFromCache(context, profileOnion, conversationIdentifier, cacheHandler);
+  if (messageInfo != null) {
+    return Future.value(compileOverlay(messageInfo.metadata, messageInfo.wrapper));
+  }
+
+  // Fetch and Cache
+  var messageInfoFuture = fetchAndCacheMessageInfo(context, profileOnion, conversationIdentifier, cacheHandler);
+  return messageInfoFuture.then((MessageInfo? messageInfo) {
+    if (messageInfo != null) {
+      return compileOverlay(messageInfo.metadata, messageInfo.wrapper);
+    } else {
+      return MalformedMessage(malformedMetadata);
+    }
+  });
+}
+
+MessageInfo? getMessageInfoFromCache(BuildContext context, String profileOnion, int conversationIdentifier, CacheHandler cacheHandler) {
+  // Hit cache
   try {
     var cache = Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(conversationIdentifier)?.messageCache;
-    if (cache != null && cache.length > index) {
-      if (cache[index] != null) {
-        return Future.value(compileOverlay(cache[index]!.metadata, cache[index]!.wrapper));
+    if (cache != null) {
+      MessageInfo? messageInfo = cacheHandler.lookup(cache);
+      if (messageInfo != null) {
+        return messageInfo;
       }
     }
   } catch (e) {
+    EnvironmentConfig.debugLog("message handler exception on get from cache: $e");
     // provider check failed...make an expensive call...
   }
+  return null;
+}
 
+Future<MessageInfo?> fetchAndCacheMessageInfo(BuildContext context, String profileOnion, int conversationIdentifier, CacheHandler cacheHandler) {
+// Load and cache
   try {
     Future<dynamic> rawMessageEnvelopeFuture;
 
-    if (byID) {
-      rawMessageEnvelopeFuture = Provider.of<FlwtchState>(context, listen: false).cwtch.GetMessageByID(profileOnion, conversationIdentifier, index);
-    } else {
-      rawMessageEnvelopeFuture = Provider.of<FlwtchState>(context, listen: false).cwtch.GetMessage(profileOnion, conversationIdentifier, index);
-    }
+    rawMessageEnvelopeFuture = cacheHandler.fetch(Provider.of<FlwtchState>(context, listen: false).cwtch, profileOnion, conversationIdentifier);
 
     return rawMessageEnvelopeFuture.then((dynamic rawMessageEnvelope) {
-      var metadata = MessageMetadata(profileOnion, conversationIdentifier, index, DateTime.now(), "", "", "", <String, String>{}, false, true, false);
       try {
         dynamic messageWrapper = jsonDecode(rawMessageEnvelope);
         // There are 2 conditions in which this error condition can be met:
@@ -94,7 +180,7 @@ Future<Message> messageHandler(BuildContext context, String profileOnion, int co
         if (messageWrapper['Message'] == null || messageWrapper['Message'] == '' || messageWrapper['Message'] == '{}') {
           return Future.delayed(Duration(seconds: 2), () {
             print("Tail recursive call to messageHandler called. This should be a rare event. If you see multiples of this log over a short period of time please log it as a bug.");
-            return messageHandler(context, profileOnion, conversationIdentifier, -1, byID: byID).then((value) => value);
+            return fetchAndCacheMessageInfo(context, profileOnion, conversationIdentifier, cacheHandler);
           });
         }
 
@@ -107,16 +193,25 @@ Future<Message> messageHandler(BuildContext context, String profileOnion, int co
         var ackd = messageWrapper['Acknowledged'];
         var error = messageWrapper['Error'] != null;
         var signature = messageWrapper['Signature'];
-        metadata = MessageMetadata(profileOnion, conversationIdentifier, messageID, timestamp, senderHandle, senderImage, signature, attributes, ackd, error, false);
+        var contenthash = messageWrapper['ContentHash'];
+        var localIndex = messageWrapper['LocalIndex'];
+        var metadata = MessageMetadata(profileOnion, conversationIdentifier, messageID, timestamp, senderHandle, senderImage, signature, attributes, ackd, error, false);
+        var messageInfo = new MessageInfo(metadata, messageWrapper['Message']);
 
-        return compileOverlay(metadata, messageWrapper['Message']);
+        var cache = Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(conversationIdentifier)?.messageCache;
+        if (cache != null) {
+          cacheHandler.add(cache, messageInfo, contenthash);
+        }
+
+        return messageInfo;
       } catch (e) {
-        EnvironmentConfig.debugLog("an error! " + e.toString());
-        return MalformedMessage(metadata);
+        EnvironmentConfig.debugLog("message handler exception on parse message and cache: " + e.toString());
+        return null;
       }
     });
   } catch (e) {
-    return Future.value(MalformedMessage(MessageMetadata(profileOnion, conversationIdentifier, -1, DateTime.now(), "", "", "", <String, String>{}, false, true, false)));
+    EnvironmentConfig.debugLog("message handler exeption on get message: $e");
+    return Future.value(null);
   }
 }
 
@@ -139,12 +234,14 @@ class MessageMetadata extends ChangeNotifier {
   dynamic get attributes => this._attributes;
 
   bool get ackd => this._ackd;
+
   set ackd(bool newVal) {
     this._ackd = newVal;
     notifyListeners();
   }
 
   bool get error => this._error;
+
   set error(bool newVal) {
     this._error = newVal;
     notifyListeners();

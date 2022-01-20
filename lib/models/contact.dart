@@ -19,9 +19,9 @@ class ContactInfoState extends ChangeNotifier {
   late int _totalMessages = 0;
   late DateTime _lastMessageTime;
   late Map<String, GlobalKey<MessageRowState>> keys;
-  late List<MessageCache?> messageCache;
   int _newMarker = 0;
   DateTime _newMarkerClearAt = DateTime.now();
+  late MessageCache messageCache;
 
   // todo: a nicer way to model contacts, groups and other "entities"
   late bool _isGroup;
@@ -55,7 +55,7 @@ class ContactInfoState extends ChangeNotifier {
     this._lastMessageTime = lastMessageTime == null ? DateTime.fromMillisecondsSinceEpoch(0) : lastMessageTime;
     this._server = server;
     this._archived = archived;
-    this.messageCache = List.empty(growable: true);
+    this.messageCache = new MessageCache();
     keys = Map<String, GlobalKey<MessageRowState>>();
   }
 
@@ -64,6 +64,7 @@ class ContactInfoState extends ChangeNotifier {
   String get savePeerHistory => this._savePeerHistory;
 
   String? get acnCircuit => this._acnCircuit;
+
   set acnCircuit(String? acnCircuit) {
     this._acnCircuit = acnCircuit;
     notifyListeners();
@@ -90,6 +91,7 @@ class ContactInfoState extends ChangeNotifier {
   }
 
   bool get isGroup => this._isGroup;
+
   set isGroup(bool newVal) {
     this._isGroup = newVal;
     notifyListeners();
@@ -110,12 +112,14 @@ class ContactInfoState extends ChangeNotifier {
   }
 
   String get status => this._status;
+
   set status(String newVal) {
     this._status = newVal;
     notifyListeners();
   }
 
   int get unreadMessages => this._unreadMessages;
+
   set unreadMessages(int newVal) {
     // don't reset newMarker position when unreadMessages is being cleared
     if (newVal > 0) {
@@ -149,18 +153,21 @@ class ContactInfoState extends ChangeNotifier {
   }
 
   int get totalMessages => this._totalMessages;
+
   set totalMessages(int newVal) {
     this._totalMessages = newVal;
     notifyListeners();
   }
 
   String get imagePath => this._imagePath;
+
   set imagePath(String newVal) {
     this._imagePath = newVal;
     notifyListeners();
   }
 
   DateTime get lastMessageTime => this._lastMessageTime;
+
   set lastMessageTime(DateTime newVal) {
     this._lastMessageTime = newVal;
     notifyListeners();
@@ -197,18 +204,27 @@ class ContactInfoState extends ChangeNotifier {
     return ret;
   }
 
-  void updateMessageCache(int conversation, int messageID, DateTime timestamp, String senderHandle, String senderImage, bool isAuto, String data) {
-    this.messageCache.insert(0, MessageCache(MessageMetadata(profileOnion, conversation, messageID, timestamp, senderHandle, senderImage, "", {}, false, false, isAuto), data));
-    this.totalMessages += 1;
-  }
+  void newMessage(int identifier, int messageID, DateTime timestamp, String senderHandle, String senderImage, bool isAuto, String data, String? contenthash, bool selectedConversation) {
+    if (!selectedConversation) {
+      unreadMessages++;
+    } else {
+      newMarker++;
+    }
 
-  void bumpMessageCache() {
-    this.messageCache.insert(0, null);
+    this.messageCache.addNew(profileOnion, identifier, messageID, timestamp, senderHandle, senderImage, isAuto, data, contenthash);
     this.totalMessages += 1;
+
+    // We only ever see messages from authenticated peers.
+    // If the contact is marked as offline then override this - can happen when the contact is removed from the front
+    // end during syncing.
+    if (isOnline() == false) {
+      status = "Authenticated";
+    }
+    notifyListeners();
   }
 
   void ackCache(int messageID) {
-    this.messageCache.firstWhere((element) => element?.metadata.messageID == messageID)?.metadata.ackd = true;
+    this.messageCache.ackCache(messageID);
     notifyListeners();
   }
 }

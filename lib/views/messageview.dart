@@ -225,8 +225,11 @@ class _MessageViewState extends State<MessageView> {
     ctrlrCompose.clear();
     focusNode.requestFocus();
     Future.delayed(const Duration(milliseconds: 80), () {
-      Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(Provider.of<ContactInfoState>(context, listen: false).identifier)?.bumpMessageCache();
+      var profile = Provider.of<ContactInfoState>(context, listen: false).profileOnion;
+      var identifier = Provider.of<ContactInfoState>(context, listen: false).identifier;
+      fetchAndCacheMessageInfo(context, profile, identifier, ByIndex(0));
       Provider.of<ContactInfoState>(context, listen: false).newMarker++;
+      Provider.of<ContactInfoState>(context, listen: false).totalMessages += 1;
       // Resort the contact list...
       Provider.of<ProfileInfoState>(context, listen: false).contactList.updateLastMessageTime(Provider.of<ContactInfoState>(context, listen: false).identifier, DateTime.now());
     });
@@ -281,8 +284,7 @@ class _MessageViewState extends State<MessageView> {
     var children;
     if (Provider.of<AppState>(context).selectedConversation != null && Provider.of<AppState>(context).selectedIndex != null) {
       var quoted = FutureBuilder(
-        future:
-            messageHandler(context, Provider.of<AppState>(context).selectedProfile!, Provider.of<AppState>(context).selectedConversation!, Provider.of<AppState>(context).selectedIndex!, byID: true),
+        future: messageHandler(context, Provider.of<AppState>(context).selectedProfile!, Provider.of<AppState>(context).selectedConversation!, ById(Provider.of<AppState>(context).selectedIndex!)),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             var message = snapshot.data! as Message;

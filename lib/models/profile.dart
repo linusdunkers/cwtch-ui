@@ -132,7 +132,6 @@ class ProfileInfoState extends ChangeNotifier {
   @override
   void dispose() {
     super.dispose();
-    print("profileinfostate.dispose()");
   }
 
   void updateFrom(String onion, String name, String picture, String contactsJson, String serverJson, bool online) {
