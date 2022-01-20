@@ -143,25 +143,10 @@ class CwtchNotifier {
         var senderHandle = data['RemotePeer'];
         var senderImage = data['Picture'];
         var isAuto = data['Auto'] == "true";
+        String? contenthash = data['ContentHash'];
+        var selectedConversation = appState.selectedProfile == data["ProfileOnion"] && appState.selectedConversation == identifier;
 
-        // We might not have received a contact created for this contact yet...
-        // In that case the **next** event we receive will actually update these values...
-        if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier) != null) {
-          if (appState.selectedProfile != data["ProfileOnion"] || appState.selectedConversation != identifier) {
-            profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.unreadMessages++;
-          } else {
-            profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.newMarker++;
-          }
-          profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(identifier, DateTime.now());
-          profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.updateMessageCache(identifier, messageID, timestamp, senderHandle, senderImage, isAuto, data["Data"]);
-
-          // We only ever see messages from authenticated peers.
-          // If the contact is marked as offline then override this - can happen when the contact is removed from the front
-          // end during syncing.
-          if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.isOnline() == false) {
-            profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.status = "Authenticated";
-          }
-        }
+        profileCN.getProfile(data["ProfileOnion"])?.contactList.newMessage(identifier, messageID, timestamp, senderHandle, senderImage, isAuto, data["Data"], contenthash, selectedConversation, );
 
         break;
       case "PeerAcknowledgement":
@@ -200,18 +185,12 @@ class CwtchNotifier {
           var timestampSent = DateTime.tryParse(data['TimestampSent'])!;
           var currentTotal = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.totalMessages;
           var isAuto = data['Auto'] == "true";
+          String? contenthash = data['ContentHash'];
+          var selectedConversation = appState.selectedProfile == data["ProfileOnion"] && appState.selectedConversation == identifier;
+
 
           // Only bother to do anything if we know about the group and the provided index is greater than our current total...
           if (currentTotal != null && idx >= currentTotal) {
-            profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.updateMessageCache(identifier, idx, timestampSent, senderHandle, senderImage, isAuto, data["Data"]);
-
-            //if not currently open
-            if (appState.selectedProfile != data["ProfileOnion"] || appState.selectedConversation != identifier) {
-              profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.unreadMessages++;
-            } else {
-              profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.newMarker++;
-            }
-
             // TODO: There are 2 timestamps associated with a new group message - time sent and time received.
             // Sent refers to the time a profile alleges they sent a message
             // Received refers to the time we actually saw the message from the server
@@ -222,7 +201,8 @@ class CwtchNotifier {
             // For now we perform some minimal checks on the sent timestamp to use to provide a useful ordering for honest contacts
             // and ensure that malicious contacts in groups can only set this timestamp to a value within the range of `last seen message time`
             // and `local now`.
-            profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(identifier, timestampSent.toLocal());
+            profileCN.getProfile(data["ProfileOnion"])?.contactList.newMessage(identifier, idx, timestampSent, senderHandle, senderImage, isAuto, data["Data"], contenthash, selectedConversation);
+
             notificationManager.notify("New Message From Group!");
           }
         } else {

@@ -9,6 +9,8 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 import '../../main.dart';
+import '../messagecache.dart';
+import '../profile.dart';
 
 class QuotedMessageStructure {
   final String quotedHash;
@@ -18,22 +20,6 @@ class QuotedMessageStructure {
   Map<String, dynamic> toJson() => {
         'quotedHash': quotedHash,
         'body': body,
-      };
-}
-
-class LocallyIndexedMessage {
-  final dynamic message;
-  final int index;
-
-  LocallyIndexedMessage(this.message, this.index);
-
-  LocallyIndexedMessage.fromJson(Map<String, dynamic> json)
-      : message = json['Message'],
-        index = json['LocalIndex'];
-
-  Map<String, dynamic> toJson() => {
-        'Message': message,
-        'LocalIndex': index,
       };
 }
 
@@ -70,34 +56,11 @@ class QuotedMessage extends Message {
         return MalformedBubble();
       }
 
-      var quotedMessagePotentials = Provider.of<FlwtchState>(context).cwtch.GetMessageByContentHash(metadata.profileOnion, metadata.conversationIdentifier, message["quotedHash"]);
-      Future<LocallyIndexedMessage?> quotedMessage = quotedMessagePotentials.then((matchingMessages) {
-        if (matchingMessages == "[]") {
-          return null;
-        }
-        // reverse order the messages from newest to oldest and return the
-        // first matching message where it's index is less than the index of this
-        // message
-        try {
-          var list = (jsonDecode(matchingMessages) as List<dynamic>).map((data) => LocallyIndexedMessage.fromJson(data)).toList();
-          LocallyIndexedMessage candidate = list.reversed.first;
-          return candidate;
-        } catch (e) {
-          // Malformed Message will be returned...
-          return null;
-        }
-      });
-
       return ChangeNotifierProvider.value(
           value: this.metadata,
           builder: (bcontext, child) {
             return MessageRow(
-                QuotedMessageBubble(message["body"], quotedMessage.then((LocallyIndexedMessage? localIndex) {
-                  if (localIndex != null) {
-                    return messageHandler(bcontext, metadata.profileOnion, metadata.conversationIdentifier, localIndex.index);
-                  }
-                  return MalformedMessage(this.metadata);
-                })),
+                QuotedMessageBubble(message["body"], messageHandler(bcontext, metadata.profileOnion, metadata.conversationIdentifier, byHash: true, hash: message["quotedHash"])),
                 key: key);
           });
     } catch (e) {

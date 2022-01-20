@@ -21,6 +21,8 @@ class ContactInfoState extends ChangeNotifier {
   late Map<String, GlobalKey<MessageRowState>> keys;
   int _newMarker = 0;
   DateTime _newMarkerClearAt = DateTime.now();
+  //late List<MessageInfo?> messageCache;
+  late MessageCache messageCache;
 
   // todo: a nicer way to model contacts, groups and other "entities"
   late bool _isGroup;
@@ -54,7 +56,8 @@ class ContactInfoState extends ChangeNotifier {
     this._lastMessageTime = lastMessageTime == null ? DateTime.fromMillisecondsSinceEpoch(0) : lastMessageTime;
     this._server = server;
     this._archived = archived;
-    this.messageCache = List.empty(growable: true);
+    //this.messageCache = List.empty(growable: true);
+    this.messageCache = new MessageCache();
     keys = Map<String, GlobalKey<MessageRowState>>();
   }
 
@@ -196,18 +199,31 @@ class ContactInfoState extends ChangeNotifier {
     return ret;
   }
 
-  void updateMessageCache(int conversation, int messageID, DateTime timestamp, String senderHandle, String senderImage, bool isAuto, String data) {
-    this.messageCache.insert(0, MessageInfo(MessageMetadata(profileOnion, conversation, messageID, timestamp, senderHandle, senderImage, "", {}, false, false, isAuto), data));
+  void newMessage(int identifier, int messageID, DateTime timestamp, String senderHandle, String senderImage, bool isAuto, String data, String? contenthash, bool selectedConversation) {
+    if (!selectedConversation) {
+      unreadMessages++;
+    } else {
+      newMarker++;
+    }
+
+    this.messageCache.addNew(profileOnion, identifier, messageID, timestamp, senderHandle, senderImage, isAuto, data, contenthash);
     this.totalMessages += 1;
+
+    // We only ever see messages from authenticated peers.
+    // If the contact is marked as offline then override this - can happen when the contact is removed from the front
+    // end during syncing.
+    if (isOnline() == false) {
+      status = "Authenticated";
+    }
   }
 
   void bumpMessageCache() {
-    this.messageCache.insert(0, null);
+    this.messageCache.bumpMessageCache();
     this.totalMessages += 1;
   }
 
   void ackCache(int messageID) {
-    this.messageCache.firstWhere((element) => element?.metadata.messageID == messageID)?.metadata.ackd = true;
+    this.messageCache.ackCache(messageID);
     notifyListeners();
   }
 }

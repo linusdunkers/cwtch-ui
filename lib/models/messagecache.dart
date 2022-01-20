@@ -9,21 +9,51 @@ class MessageInfo {
 class MessageCache {
   late Map<int, MessageInfo> cache;
   late List<int?> cacheByIndex;
+  late Map<String, int> cacheByHash;
 
   MessageCache() {
-    this.cache = {};
-    this.cacheByIndex = List.empty(growable: true);
+    cache = {};
+    cacheByIndex = List.empty(growable: true);
+    cacheByHash = {};
   }
 
+  int get indexedLength => cacheByIndex.length;
 
-  void addNew(int conversation, int messageID, DateTime timestamp, String senderHandle, String senderImage, bool isAuto, String data) {
+  MessageInfo? getById(int id) => cache[id];
+  MessageInfo? getByIndex(int index) {
+    if (index >= cacheByIndex.length) {
+      return null;
+    }
+    return cache[cacheByIndex[index]];
+  }
+  MessageInfo? getByContentHash(String contenthash) => cache[cacheByHash[contenthash]];
+
+  void addNew(String profileOnion, int conversation, int messageID, DateTime timestamp, String senderHandle, String senderImage, bool isAuto, String data, String? contenthash) {
     this.cache[messageID] = MessageInfo(MessageMetadata(profileOnion, conversation, messageID, timestamp, senderHandle, senderImage, "", {}, false, false, isAuto), data);
     this.cacheByIndex.insert(0, messageID);
+    if (contenthash != null && contenthash != "") {
+      this.cacheByHash[contenthash] = messageID;
+    }
   }
 
+  void add(MessageInfo messageInfo, int index, String? contenthash) {
+    this.cache[messageInfo.metadata.messageID] = messageInfo;
+    this.cacheByIndex.insert(index, messageInfo.metadata.messageID);
+    if (contenthash != null && contenthash != "") {
+      this.cacheByHash[contenthash] = messageInfo.metadata.messageID;
+    }
+  }
+
+  void addUnindexed(MessageInfo messageInfo, String? contenthash) {
+    this.cache[messageInfo.metadata.messageID] = messageInfo;
+    if (contenthash != null && contenthash != "") {
+      this.cacheByHash[contenthash] = messageInfo.metadata.messageID;
+    }
+  }
+
+  // TODO inserting nulls travel down list causing fails for all
   void bumpMessageCache() {
-    this.messageCache.insert(0, null);
-    this.totalMessages += 1;
+    this.cacheByIndex.insert(0, null);
   }
 
   void ackCache(int messageID) {
