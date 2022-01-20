@@ -253,7 +253,8 @@ class ProfileInfoState extends ChangeNotifier {
     }
   }
 
-  void downloadSetPathDangerous(String fileKey, String path) {
+  // set the download path for the sender
+  void downloadSetPathForSender(String fileKey, String path) {
     this._downloads[fileKey] = FileDownloadProgress(1, DateTime.now());
     this._downloads[fileKey]!.timeEnd = DateTime.now();
     this._downloads[fileKey]!.chunksDownloaded = 1;
@@ -264,7 +265,6 @@ class ProfileInfoState extends ChangeNotifier {
   }
 
   String? downloadFinalPath(String fileKey) {
-    var path = this._downloads[fileKey];
     return this._downloads.containsKey(fileKey) ? this._downloads[fileKey]!.downloadedTo : null;
   }
 

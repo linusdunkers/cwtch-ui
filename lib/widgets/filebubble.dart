@@ -62,12 +62,9 @@ class FileBubbleState extends State<FileBubble> {
     if (downloadComplete && path == null && metadata.attributes["filepath"] != null) {
       path = metadata.attributes["filepath"];
     } else if (downloadComplete && path != null && metadata.attributes["filepath"] == null) {
-      if (metadata.attributes["filepath"] == null) {
-        Provider.of<FlwtchState>(context).cwtch.SetMessageAttribute(metadata.profileOnion, metadata.conversationIdentifier, 0, metadata.messageID, "filepath", path);
-      }
+      Provider.of<FlwtchState>(context).cwtch.SetMessageAttribute(metadata.profileOnion, metadata.conversationIdentifier, 0, metadata.messageID, "filepath", path);
     }
 
-    var fileKey = widget.fileKey();
     if (downloadComplete && path != null) {
       var lpath = path.toLowerCase();
       if (lpath.endsWith(".jpg") || lpath.endsWith(".jpeg") || lpath.endsWith(".png") || lpath.endsWith(".gif") || lpath.endsWith(".webp") || lpath.endsWith(".bmp")) {
@@ -93,8 +90,6 @@ class FileBubbleState extends State<FileBubble> {
       } else {
         senderDisplayStr = Provider.of<MessageMetadata>(context).senderHandle;
       }
-    } else {
-      senderIsContact = true;
     }
     return LayoutBuilder(builder: (bcontext, constraints) {
       var wdgSender = Visibility(

@@ -98,10 +98,8 @@ class CwtchNotifier {
         }
         if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(int.parse(data["ConversationID"])) == null) {
           profileCN.getProfile(data["ProfileOnion"])?.contactList.add(ContactInfoState(data["ProfileOnion"], int.parse(data["ConversationID"]), data["GroupID"],
-              blocked: false,
-              // we created
-              accepted: true,
-              // we created
+              blocked: false, // we created
+              accepted: true, // we created
               imagePath: data["PicturePath"],
               nickname: data["GroupName"],
               status: status,
@@ -246,11 +244,13 @@ class CwtchNotifier {
       case "UpdatedProfileAttribute":
         if (data["Key"] == "public.profile.name") {
           profileCN.getProfile(data["ProfileOnion"])?.nickname = data["Data"];
-        } else if (data["Key"].toString().endsWith(".path")) {
+        } else if (data["Key"].toString().startsWith("local.filesharing.") && data["Key"].toString().endsWith(".path")) {
           // local.conversation.filekey.path
           List<String> keyparts = data["Key"].toString().split(".");
-          String filekey = keyparts[2] + "." + keyparts[3];
-          profileCN.getProfile(data["ProfileOnion"])?.downloadSetPathDangerous(filekey, data["Data"]);
+          if (keyparts.length == 5) {
+            String filekey = keyparts[2] + "." + keyparts[3];
+            profileCN.getProfile(data["ProfileOnion"])?.downloadSetPathForSender(filekey, data["Data"]);
+          }
         } else {
           EnvironmentConfig.debugLog("unhandled set attribute event: ${data['Key']}");
         }
