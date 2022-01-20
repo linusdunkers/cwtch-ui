@@ -141,15 +141,15 @@ Future<MessageInfo?> fetchAndCacheMessageInfo(BuildContext context, String profi
     return rawMessageEnvelopeFuture.then((dynamic rawMessageEnvelope) {
       try {
         dynamic messageWrapper = jsonDecode(rawMessageEnvelope);
-// There are 2 conditions in which this error condition can be met:
-// 1. The application == nil, in which case this instance of the UI is already
-// broken beyond repair, and will either be replaced by a new version, or requires a complete
-// restart.
-// 2. This index was incremented and we happened to fetch the timeline prior to the messages inclusion.
-// This should be rare as Timeline addition/fetching is mutex protected and Dart itself will pipeline the
-// calls to libCwtch-go - however because we use goroutines on the backend there is always a chance that one
-// will find itself delayed.
-// The second case is recoverable by tail-recursing this future.
+        // There are 2 conditions in which this error condition can be met:
+        // 1. The application == nil, in which case this instance of the UI is already
+        // broken beyond repair, and will either be replaced by a new version, or requires a complete
+        // restart.
+        // 2. This index was incremented and we happened to fetch the timeline prior to the messages inclusion.
+        // This should be rare as Timeline addition/fetching is mutex protected and Dart itself will pipeline the
+        // calls to libCwtch-go - however because we use goroutines on the backend there is always a chance that one
+        // will find itself delayed.
+        // The second case is recoverable by tail-recursing this future.
         if (messageWrapper['Message'] == null || messageWrapper['Message'] == '' || messageWrapper['Message'] == '{}') {
           return Future.delayed(Duration(seconds: 2), () {
             print("Tail recursive call to messageHandler called. This should be a rare event. If you see multiples of this log over a short period of time please log it as a bug.");

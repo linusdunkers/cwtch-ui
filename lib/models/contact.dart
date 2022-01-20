@@ -21,7 +21,6 @@ class ContactInfoState extends ChangeNotifier {
   late Map<String, GlobalKey<MessageRowState>> keys;
   int _newMarker = 0;
   DateTime _newMarkerClearAt = DateTime.now();
-  //late List<MessageInfo?> messageCache;
   late MessageCache messageCache;
 
   // todo: a nicer way to model contacts, groups and other "entities"
@@ -56,7 +55,6 @@ class ContactInfoState extends ChangeNotifier {
     this._lastMessageTime = lastMessageTime == null ? DateTime.fromMillisecondsSinceEpoch(0) : lastMessageTime;
     this._server = server;
     this._archived = archived;
-    //this.messageCache = List.empty(growable: true);
     this.messageCache = new MessageCache();
     keys = Map<String, GlobalKey<MessageRowState>>();
   }
@@ -66,6 +64,7 @@ class ContactInfoState extends ChangeNotifier {
   String get savePeerHistory => this._savePeerHistory;
 
   String? get acnCircuit => this._acnCircuit;
+
   set acnCircuit(String? acnCircuit) {
     this._acnCircuit = acnCircuit;
     notifyListeners();
@@ -92,6 +91,7 @@ class ContactInfoState extends ChangeNotifier {
   }
 
   bool get isGroup => this._isGroup;
+
   set isGroup(bool newVal) {
     this._isGroup = newVal;
     notifyListeners();
@@ -112,12 +112,14 @@ class ContactInfoState extends ChangeNotifier {
   }
 
   String get status => this._status;
+
   set status(String newVal) {
     this._status = newVal;
     notifyListeners();
   }
 
   int get unreadMessages => this._unreadMessages;
+
   set unreadMessages(int newVal) {
     // don't reset newMarker position when unreadMessages is being cleared
     if (newVal > 0) {
@@ -151,18 +153,21 @@ class ContactInfoState extends ChangeNotifier {
   }
 
   int get totalMessages => this._totalMessages;
+
   set totalMessages(int newVal) {
     this._totalMessages = newVal;
     notifyListeners();
   }
 
   String get imagePath => this._imagePath;
+
   set imagePath(String newVal) {
     this._imagePath = newVal;
     notifyListeners();
   }
 
   DateTime get lastMessageTime => this._lastMessageTime;
+
   set lastMessageTime(DateTime newVal) {
     this._lastMessageTime = newVal;
     notifyListeners();
@@ -215,11 +220,6 @@ class ContactInfoState extends ChangeNotifier {
     if (isOnline() == false) {
       status = "Authenticated";
     }
-  }
-
-  void bumpMessageCache() {
-    this.messageCache.bumpMessageCache();
-    this.totalMessages += 1;
   }
 
   void ackCache(int messageID) {

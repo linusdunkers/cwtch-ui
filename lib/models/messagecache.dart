@@ -51,11 +51,6 @@ class MessageCache {
     }
   }
 
-  // TODO inserting nulls travel down list causing fails for all
-  void bumpMessageCache() {
-    this.cacheByIndex.insert(0, null);
-  }
-
   void ackCache(int messageID) {
     cache[messageID]?.metadata.ackd = true;
   }
