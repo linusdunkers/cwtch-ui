@@ -194,7 +194,7 @@ class FileBubbleState extends State<FileBubble> {
                 crossAxisAlignment: fromMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                 mainAxisAlignment: fromMe ? MainAxisAlignment.end : MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
-                children: fromMe ? [wdgMessage, Visibility(visible: widget.interactive, child: wdgDecorations)] : [wdgSender, isPreview ? Container() : wdgMessage, wdgDecorations]),
+                children: [wdgSender, isPreview ? Container() : wdgMessage, wdgDecorations]),
           ));
     });
   }
