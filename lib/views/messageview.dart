@@ -227,7 +227,7 @@ class _MessageViewState extends State<MessageView> {
     Future.delayed(const Duration(milliseconds: 80), () {
       var profile = Provider.of<ContactInfoState>(context, listen: false).profileOnion;
       var identifier = Provider.of<ContactInfoState>(context, listen: false).identifier;
-      fetchAndCacheMessageInfo(context, profile, identifier, byIndex: true, index: 0);
+      fetchAndCacheMessageInfo(context, profile, identifier, ByIndex(0));
       Provider.of<ContactInfoState>(context, listen: false).newMarker++;
       Provider.of<ContactInfoState>(context, listen: false).totalMessages += 1;
       // Resort the contact list...
@@ -284,8 +284,7 @@ class _MessageViewState extends State<MessageView> {
     var children;
     if (Provider.of<AppState>(context).selectedConversation != null && Provider.of<AppState>(context).selectedIndex != null) {
       var quoted = FutureBuilder(
-        future: messageHandler(context, Provider.of<AppState>(context).selectedProfile!, Provider.of<AppState>(context).selectedConversation!,
-            id: Provider.of<AppState>(context).selectedIndex!, byID: true),
+        future: messageHandler(context, Provider.of<AppState>(context).selectedProfile!, Provider.of<AppState>(context).selectedConversation!, ById(Provider.of<AppState>(context).selectedIndex!)),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             var message = snapshot.data! as Message;

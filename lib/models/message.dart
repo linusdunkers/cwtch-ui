@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:cwtch/config.dart';
+import 'package:cwtch/cwtch/cwtch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -61,26 +62,76 @@ Message compileOverlay(MessageMetadata metadata, String messageData) {
   }
 }
 
-Future<Message> messageHandler(BuildContext context, String profileOnion, int conversationIdentifier,
-    {bool byIndex = false, int? index, bool byID = false, int? id, bool byHash = false, String? hash}) {
-  var malformedMetadata = MessageMetadata(profileOnion, conversationIdentifier, 0, DateTime.now(), "", "", "", <String, String>{}, false, true, false);
-  if (!byIndex && !byID && !byHash) {
-    EnvironmentConfig.debugLog("Error calling messageHandler: one of byIndex, byID, byHash must be set");
-    return Future.value(MalformedMessage(malformedMetadata));
-  }
-  if ((byID && id == null) || (byIndex && index == null) || (byHash && hash == null)) {
-    EnvironmentConfig.debugLog("Error calling messageHandler: byType needs corresponding value and it was not set");
-    return Future.value(MalformedMessage(malformedMetadata));
+abstract class CacheHandler {
+  MessageInfo? lookup(MessageCache cache);
+  Future<dynamic> fetch(Cwtch cwtch, String profileOnion, int conversationIdentifier);
+  void add(MessageCache cache, MessageInfo messageInfo, String contenthash);
+}
+
+class ByIndex implements CacheHandler {
+  int index;
+
+  ByIndex(this.index);
+
+  MessageInfo? lookup(MessageCache cache) {
+    return cache.getByIndex(index);
   }
 
+  Future<dynamic> fetch(Cwtch cwtch, String profileOnion, int conversationIdentifier) {
+    return cwtch.GetMessage(profileOnion, conversationIdentifier, index);
+  }
+
+  void add(MessageCache cache, MessageInfo messageInfo, String contenthash) {
+    cache.add(messageInfo, index, contenthash);
+  }
+}
+
+class ById implements CacheHandler {
+  int id;
+
+  ById(this.id);
+
+  MessageInfo? lookup(MessageCache cache) {
+    return cache.getById(id);
+  }
+
+  Future<dynamic> fetch(Cwtch cwtch, String profileOnion, int conversationIdentifier) {
+    return cwtch.GetMessageByID(profileOnion, conversationIdentifier, id);
+  }
+
+  void add(MessageCache cache, MessageInfo messageInfo, String contenthash) {
+    cache.addUnindexed(messageInfo, contenthash);
+  }
+}
+
+class ByContentHash implements CacheHandler {
+  String hash;
+
+  ByContentHash(this.hash);
+
+  MessageInfo? lookup(MessageCache cache) {
+    return cache.getByContentHash(hash);
+  }
+
+  Future<dynamic> fetch(Cwtch cwtch, String profileOnion, int conversationIdentifier) {
+    return cwtch.GetMessageByContentHash(profileOnion, conversationIdentifier, hash);
+  }
+
+  void add(MessageCache cache, MessageInfo messageInfo, String contenthash) {
+    cache.addUnindexed(messageInfo, contenthash);
+  }
+}
+
+Future<Message> messageHandler(BuildContext context, String profileOnion, int conversationIdentifier, CacheHandler cacheHandler) {
+  var malformedMetadata = MessageMetadata(profileOnion, conversationIdentifier, 0, DateTime.now(), "", "", "", <String, String>{}, false, true, false);
   // Hit cache
-  MessageInfo? messageInfo = getMessageInfoFromCache(context, profileOnion, conversationIdentifier, byIndex: byIndex, index: index, byID: byID, id: id, byHash: byHash, hash: hash);
+  MessageInfo? messageInfo = getMessageInfoFromCache(context, profileOnion, conversationIdentifier, cacheHandler);
   if (messageInfo != null) {
     return Future.value(compileOverlay(messageInfo.metadata, messageInfo.wrapper));
   }
 
   // Fetch and Cache
-  var messageInfoFuture = fetchAndCacheMessageInfo(context, profileOnion, conversationIdentifier, byIndex: byIndex, index: index, byID: byID, id: id, byHash: byHash, hash: hash);
+  var messageInfoFuture = fetchAndCacheMessageInfo(context, profileOnion, conversationIdentifier, cacheHandler);
   return messageInfoFuture.then((MessageInfo? messageInfo) {
     if (messageInfo != null) {
       return compileOverlay(messageInfo.metadata, messageInfo.wrapper);
@@ -90,20 +141,12 @@ Future<Message> messageHandler(BuildContext context, String profileOnion, int co
   });
 }
 
-MessageInfo? getMessageInfoFromCache(BuildContext context, String profileOnion, int conversationIdentifier,
-    {bool byIndex = false, int? index, bool byID = false, int? id, bool byHash = false, String? hash}) {
+MessageInfo? getMessageInfoFromCache(BuildContext context, String profileOnion, int conversationIdentifier, CacheHandler cacheHandler) {
   // Hit cache
   try {
     var cache = Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(conversationIdentifier)?.messageCache;
     if (cache != null) {
-      MessageInfo? messageInfo = null;
-      if (byID) {
-        messageInfo = cache.getById(id!);
-      } else if (byHash) {
-        messageInfo = cache.getByContentHash(hash!);
-      } else {
-        messageInfo = cache.getByIndex(index!);
-      }
+      MessageInfo? messageInfo = cacheHandler.lookup(cache);
       if (messageInfo != null) {
         return messageInfo;
       }
@@ -115,19 +158,12 @@ MessageInfo? getMessageInfoFromCache(BuildContext context, String profileOnion, 
   return null;
 }
 
-Future<MessageInfo?> fetchAndCacheMessageInfo(BuildContext context, String profileOnion, int conversationIdentifier,
-    {bool byIndex = false, int? index, bool byID = false, int? id, bool byHash = false, String? hash}) {
+Future<MessageInfo?> fetchAndCacheMessageInfo(BuildContext context, String profileOnion, int conversationIdentifier, CacheHandler cacheHandler) {
 // Load and cache
   try {
     Future<dynamic> rawMessageEnvelopeFuture;
 
-    if (byID) {
-      rawMessageEnvelopeFuture = Provider.of<FlwtchState>(context, listen: false).cwtch.GetMessageByID(profileOnion, conversationIdentifier, id!);
-    } else if (byHash) {
-      rawMessageEnvelopeFuture = Provider.of<FlwtchState>(context, listen: false).cwtch.GetMessageByContentHash(profileOnion, conversationIdentifier, hash!);
-    } else {
-      rawMessageEnvelopeFuture = Provider.of<FlwtchState>(context, listen: false).cwtch.GetMessage(profileOnion, conversationIdentifier, index!);
-    }
+    rawMessageEnvelopeFuture = cacheHandler.fetch(Provider.of<FlwtchState>(context, listen: false).cwtch, profileOnion, conversationIdentifier);
 
     return rawMessageEnvelopeFuture.then((dynamic rawMessageEnvelope) {
       try {
@@ -144,11 +180,11 @@ Future<MessageInfo?> fetchAndCacheMessageInfo(BuildContext context, String profi
         if (messageWrapper['Message'] == null || messageWrapper['Message'] == '' || messageWrapper['Message'] == '{}') {
           return Future.delayed(Duration(seconds: 2), () {
             print("Tail recursive call to messageHandler called. This should be a rare event. If you see multiples of this log over a short period of time please log it as a bug.");
-            return fetchAndCacheMessageInfo(context, profileOnion, conversationIdentifier, byIndex: byIndex, index: index, byID: byID, id: id, byHash: byHash, hash: hash).then((value) => value);
+            return fetchAndCacheMessageInfo(context, profileOnion, conversationIdentifier, cacheHandler);
           });
         }
 
-// Construct the initial metadata
+        // Construct the initial metadata
         var messageID = messageWrapper['ID'];
         var timestamp = DateTime.tryParse(messageWrapper['Timestamp'])!;
         var senderHandle = messageWrapper['PeerID'];
@@ -163,15 +199,8 @@ Future<MessageInfo?> fetchAndCacheMessageInfo(BuildContext context, String profi
         var messageInfo = new MessageInfo(metadata, messageWrapper['Message']);
 
         var cache = Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(conversationIdentifier)?.messageCache;
-
         if (cache != null) {
-          if (byID) {
-            cache.addUnindexed(messageInfo, contenthash);
-          } else if (byHash) {
-            cache.addUnindexed(messageInfo, contenthash);
-          } else {
-            cache.add(messageInfo, index!, contenthash);
-          }
+          cacheHandler.add(cache, messageInfo, contenthash);
         }
 
         return messageInfo;

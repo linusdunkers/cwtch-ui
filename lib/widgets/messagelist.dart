@@ -83,7 +83,7 @@ class _MessageListState extends State<MessageList> {
                                 var messageIndex = index;
 
                                 return FutureBuilder(
-                                  future: messageHandler(outerContext, profileOnion, contactHandle, byIndex: true, index: messageIndex),
+                                  future: messageHandler(outerContext, profileOnion, contactHandle, ByIndex(messageIndex)),
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
                                       var message = snapshot.data as Message;
