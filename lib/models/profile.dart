@@ -253,7 +253,18 @@ class ProfileInfoState extends ChangeNotifier {
     }
   }
 
+  void downloadSetPathDangerous(String fileKey, String path) {
+    this._downloads[fileKey] = FileDownloadProgress(1, DateTime.now());
+    this._downloads[fileKey]!.timeEnd = DateTime.now();
+    this._downloads[fileKey]!.chunksDownloaded = 1;
+    this._downloads[fileKey]!.gotManifest = true;
+    this._downloads[fileKey]!.complete = true;
+    this._downloads[fileKey]!.downloadedTo = path;
+    notifyListeners();
+  }
+
   String? downloadFinalPath(String fileKey) {
+    var path = this._downloads[fileKey];
     return this._downloads.containsKey(fileKey) ? this._downloads[fileKey]!.downloadedTo : null;
   }
 
