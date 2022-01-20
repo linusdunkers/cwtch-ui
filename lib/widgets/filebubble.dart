@@ -52,16 +52,25 @@ class FileBubbleState extends State<FileBubble> {
     var borderRadiousEh = 15.0;
     var showFileSharing = Provider.of<Settings>(context, listen: false).isExperimentEnabled(FileSharingExperiment);
     var prettyDate = DateFormat.yMd(Platform.localeName).add_jm().format(Provider.of<MessageMetadata>(context).timestamp);
-    var downloadComplete = Provider.of<ProfileInfoState>(context).downloadComplete(widget.fileKey());
+    var metadata = Provider.of<MessageMetadata>(context);
+    var downloadComplete = metadata.attributes["filepath"] != null || Provider.of<ProfileInfoState>(context).downloadComplete(widget.fileKey());
     var downloadInterrupted = Provider.of<ProfileInfoState>(context).downloadInterrupted(widget.fileKey());
 
     var path = Provider.of<ProfileInfoState>(context).downloadFinalPath(widget.fileKey());
-    if (downloadComplete) {
-      var lpath = path!.toLowerCase();
+
+    // If we haven't stored the filepath in message attributes then save it
+    if (downloadComplete && path == null && metadata.attributes["filepath"] != null) {
+      path = metadata.attributes["filepath"];
+    } else if (downloadComplete && path != null && metadata.attributes["filepath"] == null) {
+      Provider.of<FlwtchState>(context).cwtch.SetMessageAttribute(metadata.profileOnion, metadata.conversationIdentifier, 0, metadata.messageID, "filepath", path);
+    }
+
+    if (downloadComplete && path != null) {
+      var lpath = path.toLowerCase();
       if (lpath.endsWith(".jpg") || lpath.endsWith(".jpeg") || lpath.endsWith(".png") || lpath.endsWith(".gif") || lpath.endsWith(".webp") || lpath.endsWith(".bmp")) {
         if (myFile == null) {
           setState(() {
-            myFile = new File(path);
+            myFile = new File(path!);
           });
         }
       }
@@ -98,13 +107,9 @@ class FileBubbleState extends State<FileBubble> {
 
       if (!showFileSharing) {
         wdgDecorations = Text('\u202F');
-      } else if (fromMe) {
-        wdgDecorations = Visibility(
-            visible: widget.interactive,
-            child: MessageBubbleDecoration(ackd: Provider.of<MessageMetadata>(context).ackd, errored: Provider.of<MessageMetadata>(context).error, fromMe: fromMe, prettyDate: prettyDate));
-      } else if (downloadComplete) {
+      } else if (downloadComplete && path != null) {
         // in this case, whatever marked download.complete would have also set the path
-        if (Provider.of<Settings>(context).shouldPreview(path!)) {
+        if (Provider.of<Settings>(context).shouldPreview(path)) {
           isPreview = true;
           wdgDecorations = Center(
               child: MouseRegion(

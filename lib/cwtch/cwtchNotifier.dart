@@ -244,6 +244,13 @@ class CwtchNotifier {
       case "UpdatedProfileAttribute":
         if (data["Key"] == "public.profile.name") {
           profileCN.getProfile(data["ProfileOnion"])?.nickname = data["Data"];
+        } else if (data["Key"].toString().startsWith("local.filesharing.") && data["Key"].toString().endsWith(".path")) {
+          // local.conversation.filekey.path
+          List<String> keyparts = data["Key"].toString().split(".");
+          if (keyparts.length == 5) {
+            String filekey = keyparts[2] + "." + keyparts[3];
+            profileCN.getProfile(data["ProfileOnion"])?.downloadSetPathForSender(filekey, data["Data"]);
+          }
         } else {
           EnvironmentConfig.debugLog("unhandled set attribute event: ${data['Key']}");
         }
