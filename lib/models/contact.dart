@@ -220,6 +220,7 @@ class ContactInfoState extends ChangeNotifier {
     if (isOnline() == false) {
       status = "Authenticated";
     }
+    notifyListeners();
   }
 
   void ackCache(int messageID) {

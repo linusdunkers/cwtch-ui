@@ -74,14 +74,14 @@ Future<Message> messageHandler(BuildContext context, String profileOnion, int co
   }
 
   // Hit cache
-  MessageInfo? messageInfo = getMessageInfoFromCache(context, profileOnion, conversationIdentifier, byIndex: byIndex, index: index, byID: byID, id: id, byHash: byHash, hash:  hash);
+  MessageInfo? messageInfo = getMessageInfoFromCache(context, profileOnion, conversationIdentifier, byIndex: byIndex, index: index, byID: byID, id: id, byHash: byHash, hash: hash);
   if (messageInfo != null) {
     return Future.value(compileOverlay(messageInfo.metadata, messageInfo.wrapper));
   }
 
   // Fetch and Cache
-  var messageInfoFuture = fetchAndCacheMessageInfo(context, profileOnion, conversationIdentifier, byIndex: byIndex, index: index, byID: byID, id: id, byHash: byHash, hash:  hash);
-  return messageInfoFuture.then( (MessageInfo? messageInfo) {
+  var messageInfoFuture = fetchAndCacheMessageInfo(context, profileOnion, conversationIdentifier, byIndex: byIndex, index: index, byID: byID, id: id, byHash: byHash, hash: hash);
+  return messageInfoFuture.then((MessageInfo? messageInfo) {
     if (messageInfo != null) {
       return compileOverlay(messageInfo.metadata, messageInfo.wrapper);
     } else {
@@ -91,7 +91,7 @@ Future<Message> messageHandler(BuildContext context, String profileOnion, int co
 }
 
 MessageInfo? getMessageInfoFromCache(BuildContext context, String profileOnion, int conversationIdentifier,
-{bool byIndex = false, int? index, bool byID = false, int? id, bool byHash = false, String? hash}) {
+    {bool byIndex = false, int? index, bool byID = false, int? id, bool byHash = false, String? hash}) {
   // Hit cache
   try {
     var cache = Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(conversationIdentifier)?.messageCache;
@@ -116,26 +116,17 @@ MessageInfo? getMessageInfoFromCache(BuildContext context, String profileOnion, 
 }
 
 Future<MessageInfo?> fetchAndCacheMessageInfo(BuildContext context, String profileOnion, int conversationIdentifier,
-{bool byIndex = false, int? index, bool byID = false, int? id, bool byHash = false, String? hash}) {
+    {bool byIndex = false, int? index, bool byID = false, int? id, bool byHash = false, String? hash}) {
 // Load and cache
   try {
     Future<dynamic> rawMessageEnvelopeFuture;
 
     if (byID) {
-      rawMessageEnvelopeFuture = Provider
-          .of<FlwtchState>(context, listen: false)
-          .cwtch
-          .GetMessageByID(profileOnion, conversationIdentifier, id!);
+      rawMessageEnvelopeFuture = Provider.of<FlwtchState>(context, listen: false).cwtch.GetMessageByID(profileOnion, conversationIdentifier, id!);
     } else if (byHash) {
-      rawMessageEnvelopeFuture = Provider
-          .of<FlwtchState>(context, listen: false)
-          .cwtch
-          .GetMessageByContentHash(profileOnion, conversationIdentifier, hash!);
+      rawMessageEnvelopeFuture = Provider.of<FlwtchState>(context, listen: false).cwtch.GetMessageByContentHash(profileOnion, conversationIdentifier, hash!);
     } else {
-      rawMessageEnvelopeFuture = Provider
-          .of<FlwtchState>(context, listen: false)
-          .cwtch
-          .GetMessage(profileOnion, conversationIdentifier, index!);
+      rawMessageEnvelopeFuture = Provider.of<FlwtchState>(context, listen: false).cwtch.GetMessage(profileOnion, conversationIdentifier, index!);
     }
 
     return rawMessageEnvelopeFuture.then((dynamic rawMessageEnvelope) {
@@ -153,12 +144,7 @@ Future<MessageInfo?> fetchAndCacheMessageInfo(BuildContext context, String profi
         if (messageWrapper['Message'] == null || messageWrapper['Message'] == '' || messageWrapper['Message'] == '{}') {
           return Future.delayed(Duration(seconds: 2), () {
             print("Tail recursive call to messageHandler called. This should be a rare event. If you see multiples of this log over a short period of time please log it as a bug.");
-            return fetchAndCacheMessageInfo(context, profileOnion, conversationIdentifier, byIndex: byIndex,
-                index: index,
-                byID: byID,
-                id: id,
-                byHash: byHash,
-                hash: hash).then((value) => value);
+            return fetchAndCacheMessageInfo(context, profileOnion, conversationIdentifier, byIndex: byIndex, index: index, byID: byID, id: id, byHash: byHash, hash: hash).then((value) => value);
           });
         }
 
@@ -173,25 +159,10 @@ Future<MessageInfo?> fetchAndCacheMessageInfo(BuildContext context, String profi
         var signature = messageWrapper['Signature'];
         var contenthash = messageWrapper['ContentHash'];
         var localIndex = messageWrapper['LocalIndex'];
-        var metadata = MessageMetadata(
-            profileOnion,
-            conversationIdentifier,
-            messageID,
-            timestamp,
-            senderHandle,
-            senderImage,
-            signature,
-            attributes,
-            ackd,
-            error,
-            false);
+        var metadata = MessageMetadata(profileOnion, conversationIdentifier, messageID, timestamp, senderHandle, senderImage, signature, attributes, ackd, error, false);
         var messageInfo = new MessageInfo(metadata, messageWrapper['Message']);
 
-        var cache = Provider
-            .of<ProfileInfoState>(context, listen: false)
-            .contactList
-            .getContact(conversationIdentifier)
-            ?.messageCache;
+        var cache = Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(conversationIdentifier)?.messageCache;
 
         if (cache != null) {
           if (byID) {

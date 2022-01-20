@@ -26,6 +26,7 @@ class MessageCache {
     }
     return cache[cacheByIndex[index]];
   }
+
   MessageInfo? getByContentHash(String contenthash) => cache[cacheByHash[contenthash]];
 
   void addNew(String profileOnion, int conversation, int messageID, DateTime timestamp, String senderHandle, String senderImage, bool isAuto, String data, String? contenthash) {

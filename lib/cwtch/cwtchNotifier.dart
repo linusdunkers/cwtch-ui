@@ -146,7 +146,17 @@ class CwtchNotifier {
         String? contenthash = data['ContentHash'];
         var selectedConversation = appState.selectedProfile == data["ProfileOnion"] && appState.selectedConversation == identifier;
 
-        profileCN.getProfile(data["ProfileOnion"])?.contactList.newMessage(identifier, messageID, timestamp, senderHandle, senderImage, isAuto, data["Data"], contenthash, selectedConversation, );
+        profileCN.getProfile(data["ProfileOnion"])?.contactList.newMessage(
+              identifier,
+              messageID,
+              timestamp,
+              senderHandle,
+              senderImage,
+              isAuto,
+              data["Data"],
+              contenthash,
+              selectedConversation,
+            );
 
         break;
       case "PeerAcknowledgement":
@@ -187,7 +197,6 @@ class CwtchNotifier {
           var isAuto = data['Auto'] == "true";
           String? contenthash = data['ContentHash'];
           var selectedConversation = appState.selectedProfile == data["ProfileOnion"] && appState.selectedConversation == identifier;
-
 
           // Only bother to do anything if we know about the group and the provided index is greater than our current total...
           if (currentTotal != null && idx >= currentTotal) {
