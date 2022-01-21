@@ -252,6 +252,7 @@ class ProfileInfoState extends ChangeNotifier {
   void downloadSetPath(String fileKey, String path) {
     if (this._downloads.containsKey(fileKey)) {
       this._downloads[fileKey]!.downloadedTo = path;
+      notifyListeners();
     }
   }
 
@@ -265,6 +266,7 @@ class ProfileInfoState extends ChangeNotifier {
       this._downloads[fileKey] = FileDownloadProgress(1, DateTime.now());
     }
     this._downloads[fileKey]!.downloadedTo = path;
+    notifyListeners();
   }
 
   String? downloadFinalPath(String fileKey) {
