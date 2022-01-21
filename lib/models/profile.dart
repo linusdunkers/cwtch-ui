@@ -255,16 +255,14 @@ class ProfileInfoState extends ChangeNotifier {
 
   // set the download path for the sender
   void downloadSetPathForSender(String fileKey, String path) {
-    // only allow this override if we are the sender...
+    // we may trigger this event for auto-downloaded receivers too,
+    // as such we don't assume anything else about the file...other than that
+    // it exists.
     if (this._downloads.containsKey(fileKey) == false) {
+      // this will be overwritten by download update if the file is being downloaded
       this._downloads[fileKey] = FileDownloadProgress(1, DateTime.now());
-      this._downloads[fileKey]!.timeEnd = DateTime.now();
-      this._downloads[fileKey]!.chunksDownloaded = 1;
-      this._downloads[fileKey]!.gotManifest = true;
-      this._downloads[fileKey]!.complete = true;
-      this._downloads[fileKey]!.downloadedTo = path;
-      notifyListeners();
     }
+    this._downloads[fileKey]!.downloadedTo = path;
   }
 
   String? downloadFinalPath(String fileKey) {
