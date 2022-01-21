@@ -4,9 +4,9 @@ wget https://git.openprivacy.ca/openprivacy/buildfiles/raw/branch/master/tor/tor
 chmod a+x linux/tor
 
 mkdir -p android/app/src/main/jniLibs/arm64-v8a
-wget https://git.openprivacy.ca/openprivacy/buildfiles/raw/branch/master/tor/tor-0.4.4.9-arm64_pie -O android/app/src/main/jniLibs/arm64-v8a/libtor.so
+wget https://git.openprivacy.ca/openprivacy/buildfiles/raw/branch/master/tor/tor-0.4.6.9-arm64 -O android/app/src/main/jniLibs/arm64-v8a/libtor.so
 chmod a+x android/app/src/main/jniLibs/arm64-v8a/libtor.so
 
 mkdir -p android/app/src/main/jniLibs/armeabi-v7a
-wget https://git.openprivacy.ca/openprivacy/buildfiles/raw/branch/master/tor/tor-0.4.4.9-arm_pie -O android/app/src/main/jniLibs/armeabi-v7a/libtor.so
+wget https://git.openprivacy.ca/openprivacy/buildfiles/raw/branch/master/tor/tor-0.4.6.9-arm7 -O android/app/src/main/jniLibs/armeabi-v7a/libtor.so
 chmod a+x android/app/src/main/jniLibs/armeabi-v7a/libtor.so
