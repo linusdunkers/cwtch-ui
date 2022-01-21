@@ -13,6 +13,7 @@ class AppState extends ChangeNotifier {
   int _hoveredIndex = -1;
   int? _selectedIndex;
   bool _unreadMessagesBelow = false;
+  bool _disableFilePicker = false;
 
   void SetCwtchInit() {
     cwtchInit = true;
@@ -44,6 +45,12 @@ class AppState extends ChangeNotifier {
   int? get selectedIndex => _selectedIndex;
   set selectedIndex(int? newVal) {
     this._selectedIndex = newVal;
+    notifyListeners();
+  }
+
+  bool get disableFilePicker => _disableFilePicker;
+  set disableFilePicker(bool newVal) {
+    this._disableFilePicker = newVal;
     notifyListeners();
   }
 
