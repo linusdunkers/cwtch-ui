@@ -174,6 +174,7 @@ class ProfileInfoState extends ChangeNotifier {
 
   void downloadInit(String fileKey, int numChunks) {
     this._downloads[fileKey] = FileDownloadProgress(numChunks, DateTime.now());
+    notifyListeners();
   }
 
   void downloadUpdate(String fileKey, int progress, int numChunks) {
@@ -239,6 +240,7 @@ class ProfileInfoState extends ChangeNotifier {
   void downloadMarkResumed(String fileKey) {
     if (this._downloads.containsKey(fileKey)) {
       this._downloads[fileKey]!.interrupted = false;
+      notifyListeners();
     }
   }
 
@@ -258,7 +260,7 @@ class ProfileInfoState extends ChangeNotifier {
     // we may trigger this event for auto-downloaded receivers too,
     // as such we don't assume anything else about the file...other than that
     // it exists.
-    if (this._downloads.containsKey(fileKey) == false) {
+    if (!this._downloads.containsKey(fileKey)) {
       // this will be overwritten by download update if the file is being downloaded
       this._downloads[fileKey] = FileDownloadProgress(1, DateTime.now());
     }
