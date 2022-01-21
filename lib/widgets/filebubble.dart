@@ -53,17 +53,18 @@ class FileBubbleState extends State<FileBubble> {
     var showFileSharing = Provider.of<Settings>(context, listen: false).isExperimentEnabled(FileSharingExperiment);
     var prettyDate = DateFormat.yMd(Platform.localeName).add_jm().format(Provider.of<MessageMetadata>(context).timestamp);
     var metadata = Provider.of<MessageMetadata>(context);
-    var downloadComplete = metadata.attributes["filepath"] != null || Provider.of<ProfileInfoState>(context).downloadComplete(widget.fileKey());
-    var downloadInterrupted = Provider.of<ProfileInfoState>(context).downloadInterrupted(widget.fileKey());
-
     var path = Provider.of<ProfileInfoState>(context).downloadFinalPath(widget.fileKey());
 
     // If we haven't stored the filepath in message attributes then save it
-    if (downloadComplete && path == null && metadata.attributes["filepath"] != null) {
+    if (metadata.attributes["filepath"] != null) {
       path = metadata.attributes["filepath"];
-    } else if (downloadComplete && path != null && metadata.attributes["filepath"] == null) {
+    } else if (path != null && metadata.attributes["filepath"] == null) {
       Provider.of<FlwtchState>(context).cwtch.SetMessageAttribute(metadata.profileOnion, metadata.conversationIdentifier, 0, metadata.messageID, "filepath", path);
     }
+
+    // the file is downloaded when it is from the sender AND the path is known OR when we get an explicit downloadComplete
+    var downloadComplete = (fromMe && path != null) || Provider.of<ProfileInfoState>(context).downloadComplete(widget.fileKey());
+    var downloadInterrupted = Provider.of<ProfileInfoState>(context).downloadInterrupted(widget.fileKey());
 
     if (downloadComplete && path != null) {
       var lpath = path.toLowerCase();
@@ -209,7 +210,6 @@ class FileBubbleState extends State<FileBubble> {
     if (Platform.isAndroid) {
       Provider.of<ProfileInfoState>(context, listen: false).downloadInit(widget.fileKey(), (widget.fileSize / 4096).ceil());
       Provider.of<FlwtchState>(context, listen: false).cwtch.SetMessageAttribute(profileOnion, conversation, 0, idx, "file-downloaded", "true");
-      //Provider.of<MessageMetadata>(context, listen: false).attributes |= 0x02;
       ContactInfoState? contact = Provider.of<ProfileInfoState>(context).contactList.findContact(Provider.of<MessageMetadata>(context).senderHandle);
       if (contact != null) {
         Provider.of<FlwtchState>(context, listen: false).cwtch.CreateDownloadableFile(profileOnion, contact.identifier, widget.nameSuggestion, widget.fileKey());
@@ -225,7 +225,6 @@ class FileBubbleState extends State<FileBubble> {
           var manifestPath = file.path + ".manifest";
           Provider.of<ProfileInfoState>(context, listen: false).downloadInit(widget.fileKey(), (widget.fileSize / 4096).ceil());
           Provider.of<FlwtchState>(context, listen: false).cwtch.SetMessageAttribute(profileOnion, conversation, 0, idx, "file-downloaded", "true");
-          //Provider.of<MessageMetadata>(context, listen: false).flags |= 0x02;
           ContactInfoState? contact = Provider.of<ProfileInfoState>(context, listen: false).contactList.findContact(Provider.of<MessageMetadata>(context).senderHandle);
           if (contact != null) {
             Provider.of<FlwtchState>(context, listen: false).cwtch.DownloadFile(profileOnion, contact.identifier, file.path, manifestPath, widget.fileKey());
