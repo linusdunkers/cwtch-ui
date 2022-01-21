@@ -400,10 +400,11 @@ class _MessageViewState extends State<MessageView> {
     // while awaiting for pickFiles.
     var appstate = Provider.of<AppState>(ctx, listen: false);
     appstate.disableFilePicker = true;
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    // currently lockParentWindow only works on Windows...
+    FilePickerResult? result = await FilePicker.platform.pickFiles(lockParentWindow: true);
     appstate.disableFilePicker = false;
-    if (result != null) {
-      File file = File(result.files.first.path);
+    if (result != null && result.files.first.path != null) {
+      File file = File(result.files.first.path!);
       // We have a maximum number of bytes we can represent in terms of
       // a manifest (see : https://git.openprivacy.ca/cwtch.im/cwtch/src/branch/master/protocol/files/manifest.go#L25)
       if (file.lengthSync() <= 10737418240) {
