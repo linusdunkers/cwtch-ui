@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:crypto/crypto.dart';
-import 'package:cwtch/config.dart';
 import 'package:cwtch/cwtch_icons_icons.dart';
 import 'package:cwtch/models/appstate.dart';
 import 'package:cwtch/models/chatmessage.dart';
@@ -23,7 +22,6 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:path/path.dart' show basename;
 
 import '../main.dart';
 import '../settings.dart';
@@ -89,11 +87,13 @@ class _MessageViewState extends State<MessageView> {
       if (showFileSharing) {
         appBarButtons.add(IconButton(
           splashRadius: Material.defaultSplashRadius / 2,
-          icon: Icon(Icons.attach_file, size: 24),
+          icon: Icon(Icons.attach_file, size: 24, color: Provider.of<Settings>(context).theme.mainTextColor),
           tooltip: AppLocalizations.of(context)!.tooltipSendFile,
-          onPressed: () {
-            _showFilePicker(context);
-          },
+          onPressed: Provider.of<AppState>(context).disableFilePicker
+              ? null
+              : () {
+                  _showFilePicker(context);
+                },
         ));
       }
       appBarButtons.add(IconButton(
@@ -392,9 +392,19 @@ class _MessageViewState extends State<MessageView> {
 
   void _showFilePicker(BuildContext ctx) async {
     imagePreview = null;
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
-    if (result != null) {
-      File file = File(result.files.first.path);
+
+    // only allow one file picker at a time
+    // note: ideally we would destroy file picker when leaving a conversation
+    // but we don't currently have that option.
+    // we need to store AppState in a variable because ctx might be destroyed
+    // while awaiting for pickFiles.
+    var appstate = Provider.of<AppState>(ctx, listen: false);
+    appstate.disableFilePicker = true;
+    // currently lockParentWindow only works on Windows...
+    FilePickerResult? result = await FilePicker.platform.pickFiles(lockParentWindow: true);
+    appstate.disableFilePicker = false;
+    if (result != null && result.files.first.path != null) {
+      File file = File(result.files.first.path!);
       // We have a maximum number of bytes we can represent in terms of
       // a manifest (see : https://git.openprivacy.ca/cwtch.im/cwtch/src/branch/master/protocol/files/manifest.go#L25)
       if (file.lengthSync() <= 10737418240) {
