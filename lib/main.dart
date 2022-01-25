@@ -70,7 +70,7 @@ class FlwtchState extends State<Flwtch> {
       var cwtchNotifier = new CwtchNotifier(profs, globalSettings, globalErrorHandler, globalTorStatus, newDesktopNotificationsManager(), globalAppState, globalServersList);
       cwtch = CwtchFfi(cwtchNotifier);
     } else {
-      var cwtchNotifier = new CwtchNotifier(profs, globalSettings, globalErrorHandler, globalTorStatus, NullNotificationsManager(), globalAppState, globalServersList);
+      var cwtchNotifier = new CwtchNotifier(profs, globalSettings, globalErrorHandler, globalTorStatus, newDesktopNotificationsManager(), globalAppState, globalServersList);
       cwtch = CwtchFfi(cwtchNotifier);
     }
     print("initState: invoking cwtch.Start()");

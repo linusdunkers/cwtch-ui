@@ -1,5 +1,10 @@
+import 'dart:io';
+
+import 'package:desktoasts/desktoasts.dart';
 import 'package:desktop_notifications/desktop_notifications.dart';
 import 'package:path/path.dart' as path;
+
+import 'config.dart';
 
 // NotificationsManager provides a wrapper around platform specific notifications logic.
 abstract class NotificationsManager {
@@ -26,15 +31,47 @@ class LinuxNotificationsManager implements NotificationsManager {
   }
 }
 
+// Windows Notification Manager uses https://pub.dev/packages/desktoasts to implement
+// windows notifications
+class WindowsNotificationManager implements NotificationsManager {
+  late ToastService service;
+
+  WindowsNotificationManager() {
+    service = new ToastService(
+      appName: 'Cwtch',
+      companyName: 'Open Privacy Research Society',
+      productName: 'Cwtch',
+    );
+  }
+
+  Future<void> notify(String message) async {
+    Toast toast = new Toast(
+      type: ToastType.text01,
+      title: 'Cwtch',
+      subtitle: message,
+    );
+    service.show(toast);
+  }
+}
+
 NotificationsManager newDesktopNotificationsManager() {
-  try {
-    // Test that we can actually access DBUS. Otherwise return a null
-    // notifications manager...
-    NotificationsClient client = NotificationsClient();
-    client.getCapabilities();
-    return LinuxNotificationsManager(client);
-  } catch (e) {
-    print("Attempted to access DBUS for notifications but failed. Switching off notifications.");
+  if (Platform.isLinux) {
+    try {
+      // Test that we can actually access DBUS. Otherwise return a null
+      // notifications manager...
+      NotificationsClient client = NotificationsClient();
+      client.getCapabilities();
+      return LinuxNotificationsManager(client);
+    } catch (e) {
+      EnvironmentConfig.debugLog(
+          "Attempted to access DBUS for notifications but failed. Switching off notifications.");
+    }
+  } else if (Platform.isWindows) {
+    try {
+      return WindowsNotificationManager();
+    } catch (e) {
+      EnvironmentConfig.debugLog("Failed to create Windows desktoasts notification manager");
+    }
   }
   return NullNotificationsManager();
 }
