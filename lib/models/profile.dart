@@ -173,6 +173,24 @@ class ProfileInfoState extends ChangeNotifier {
     this._contacts.resort();
   }
 
+  void newMessage(int identifier, int messageID, DateTime timestamp, String senderHandle, String senderImage, bool isAuto, String data, String? contenthash, bool selectedProfile, bool selectedConversation) {
+    if (!selectedProfile) {
+      unreadMessages++;
+      notifyListeners();
+    }
+
+    contactList.newMessage(
+        identifier,
+        messageID,
+        timestamp,
+        senderHandle,
+        senderImage,
+        isAuto,
+        data,
+        contenthash,
+        selectedConversation);
+  }
+
   void downloadInit(String fileKey, int numChunks) {
     this._downloads[fileKey] = FileDownloadProgress(numChunks, DateTime.now());
     notifyListeners();

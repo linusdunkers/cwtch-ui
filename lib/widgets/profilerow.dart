@@ -33,7 +33,7 @@ class _ProfileRowState extends State<ProfileRow> {
               Padding(
                   padding: const EdgeInsets.all(6.0), //border size
                   child: ProfileImage(
-                      badgeCount: 0,
+                      badgeCount: profile.unreadMessages,
                       badgeColor: Provider.of<Settings>(context).theme.portraitProfileBadgeColor,
                       badgeTextColor: Provider.of<Settings>(context).theme.portraitProfileBadgeTextColor,
                       diameter: 64.0,
@@ -83,6 +83,7 @@ class _ProfileRowState extends State<ProfileRow> {
   }
 
   void _pushContactList(ProfileInfoState profile, bool isLandscape) {
+    Provider.of<ProfileInfoState>(context, listen: false).unreadMessages = 0;
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         settings: RouteSettings(name: "conversations"),
