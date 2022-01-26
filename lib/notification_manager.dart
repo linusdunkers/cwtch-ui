@@ -48,16 +48,16 @@ class WindowsNotificationManager implements NotificationsManager {
     );
 
     service.stream.listen((event) {
+      // the user closed the notification of the OS timed it out
       if (event is ToastDismissed) {
-        print('Toast was dismissed.');
         active = false;
       }
+      // clicked
       if (event is ToastActivated) {
-        print('Toast was clicked.');
-        active = false;
+          active = false;
       }
+      // if a supplied action was clicked
       if (event is ToastInteracted) {
-        print('${event.action} action in the toast was clicked.');
         active = false;
       }
     });
@@ -66,6 +66,8 @@ class WindowsNotificationManager implements NotificationsManager {
   Future<void> notify(String message) async {
     if (!globalAppState.focus) {
       if (!active) {
+        // One string of bold text on the first line (title),
+        // one string (subtitle) of regular text wrapped across the second and third lines.
         Toast toast = new Toast(
           type: ToastType.text02,
           title: 'Cwtch',
