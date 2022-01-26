@@ -12,6 +12,7 @@ import 'package:cwtch/settings.dart';
 import 'package:cwtch/torstatus.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:window_manager/window_manager.dart';
 import 'cwtch/cwtch.dart';
 import 'cwtch/cwtchNotifier.dart';
 import 'licenses.dart';
@@ -45,7 +46,7 @@ class Flwtch extends StatefulWidget {
   FlwtchState createState() => FlwtchState();
 }
 
-class FlwtchState extends State<Flwtch> {
+class FlwtchState extends State<Flwtch> with WindowListener {
   final TextStyle biggerFont = const TextStyle(fontSize: 18);
   late Cwtch cwtch;
   late ProfileListState profs;
@@ -56,6 +57,7 @@ class FlwtchState extends State<Flwtch> {
   @override
   initState() {
     print("initState: running...");
+    windowManager.addListener(this);
     super.initState();
 
     print("initState: registering notification, shutdown handlers...");
@@ -203,8 +205,21 @@ class FlwtchState extends State<Flwtch> {
     }
   }
 
+  // using windowManager flutter plugin until proper lifecycle management lands in desktop
+
+  @override
+  void onWindowFocus() {
+    globalAppState.focus = true;
+  }
+
+  @override
+  void onWindowBlur() {
+    globalAppState.focus = false;
+  }
+
   @override
   void dispose() {
+    windowManager.removeListener(this);
     cwtch.dispose();
     super.dispose();
   }
