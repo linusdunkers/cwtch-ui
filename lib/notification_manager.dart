@@ -89,8 +89,7 @@ NotificationsManager newDesktopNotificationsManager() {
       client.getCapabilities();
       return LinuxNotificationsManager(client);
     } catch (e) {
-      EnvironmentConfig.debugLog(
-          "Attempted to access DBUS for notifications but failed. Switching off notifications.");
+      EnvironmentConfig.debugLog("Attempted to access DBUS for notifications but failed. Switching off notifications.");
     }
   } else if (Platform.isWindows) {
     try {
