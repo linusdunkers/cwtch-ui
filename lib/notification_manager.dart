@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cwtch/main.dart';
 import 'package:desktoasts/desktoasts.dart';
 import 'package:desktop_notifications/desktop_notifications.dart';
 import 'package:path/path.dart' as path;
@@ -22,9 +23,11 @@ class NullNotificationsManager implements NotificationsManager {
 class LinuxNotificationsManager implements NotificationsManager {
   int previous_id = 0;
   late NotificationsClient client;
+
   LinuxNotificationsManager(NotificationsClient client) {
     this.client = client;
   }
+
   Future<void> notify(String message) async {
     var iconPath = Uri.file(path.join(path.current, "cwtch.png"));
     client.notify(message, appName: "cwtch", appIcon: iconPath.toString(), replacesId: this.previous_id).then((Notification value) => previous_id = value.id);
@@ -35,22 +38,43 @@ class LinuxNotificationsManager implements NotificationsManager {
 // windows notifications
 class WindowsNotificationManager implements NotificationsManager {
   late ToastService service;
+  bool active = false;
 
   WindowsNotificationManager() {
     service = new ToastService(
-      appName: 'Cwtch',
+      appName: 'cwtch',
       companyName: 'Open Privacy Research Society',
       productName: 'Cwtch',
     );
+
+    service.stream.listen((event) {
+      if (event is ToastDismissed) {
+        print('Toast was dismissed.');
+        active = false;
+      }
+      if (event is ToastActivated) {
+        print('Toast was clicked.');
+        active = false;
+      }
+      if (event is ToastInteracted) {
+        print('${event.action} action in the toast was clicked.');
+        active = false;
+      }
+    });
   }
 
   Future<void> notify(String message) async {
-    Toast toast = new Toast(
-      type: ToastType.text01,
-      title: 'Cwtch',
-      subtitle: message,
-    );
-    service.show(toast);
+    if (!globalAppState.focus) {
+      if (!active) {
+        Toast toast = new Toast(
+          type: ToastType.text02,
+          title: 'Cwtch',
+          subtitle: message,
+        );
+        service.show(toast);
+        active = true;
+      }
+    }
   }
 }
 

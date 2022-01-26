@@ -14,6 +14,7 @@ class AppState extends ChangeNotifier {
   int? _selectedIndex;
   bool _unreadMessagesBelow = false;
   bool _disableFilePicker = false;
+  bool _focus = true;
 
   void SetCwtchInit() {
     cwtchInit = true;
@@ -71,6 +72,12 @@ class AppState extends ChangeNotifier {
   int get initialScrollIndex => _initialScrollIndex;
   set initialScrollIndex(int newVal) {
     this._initialScrollIndex = newVal;
+    notifyListeners();
+  }
+
+  bool get focus => _focus;
+  set focus(bool newVal) {
+    _focus = newVal;
     notifyListeners();
   }
 
