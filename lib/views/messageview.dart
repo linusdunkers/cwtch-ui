@@ -175,8 +175,19 @@ class _MessageViewState extends State<MessageView> {
     ));
   }
 
+  // todo: legacy groups currently have restricted message
+  // size because of the additional wrapping end encoding
+  // hybrid groups should allow these numbers to be the same.
+  static const P2PMessageLengthMax = 7000;
+  static const GroupMessageLengthMax = 1800;
+
   void _sendMessage([String? ignoredParam]) {
-    if (ctrlrCompose.value.text.isNotEmpty) {
+    var isGroup = Provider.of<ProfileInfoState>(context).contactList.getContact(Provider.of<AppState>(context, listen: false).selectedConversation!)!.isGroup;
+
+    // peers and groups currently have different length constraints (servers can store less)...
+    var lengthOk = (isGroup && ctrlrCompose.value.text.length < GroupMessageLengthMax) || ctrlrCompose.value.text.length <= P2PMessageLengthMax;
+
+    if (ctrlrCompose.value.text.isNotEmpty && lengthOk) {
       if (Provider.of<AppState>(context, listen: false).selectedConversation != null && Provider.of<AppState>(context, listen: false).selectedIndex != null) {
         Provider.of<FlwtchState>(context, listen: false)
             .cwtch
@@ -237,6 +248,7 @@ class _MessageViewState extends State<MessageView> {
 
   Widget _buildComposeBox() {
     bool isOffline = Provider.of<ContactInfoState>(context).isOnline() == false;
+    bool isGroup = Provider.of<ContactInfoState>(context).isGroup;
 
     var composeBox = Container(
       color: Provider.of<Settings>(context).theme.backgroundMainColor,
@@ -262,6 +274,8 @@ class _MessageViewState extends State<MessageView> {
                             keyboardType: TextInputType.multiline,
                             enableIMEPersonalizedLearning: false,
                             minLines: 1,
+                            maxLength: isGroup ? GroupMessageLengthMax : P2PMessageLengthMax,
+                            maxLengthEnforcement: MaxLengthEnforcement.enforced,
                             maxLines: null,
                             onFieldSubmitted: _sendMessage,
                             enabled: !isOffline,
