@@ -46,6 +46,7 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
             return Provider.of<AppState>(context, listen: false).cwtchIsClosing;
           },
           child: Scaffold(
+            key: Key("ProfileManagerView"),
             backgroundColor: settings.theme.backgroundMainColor,
             appBar: AppBar(
               title: Row(children: [
@@ -88,8 +89,6 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
           : (Provider.of<TorStatus>(context).progress == 0 ? AppLocalizations.of(context)!.networkStatusDisconnected : AppLocalizations.of(context)!.networkStatusAttemptingTor),
     ));
 
-    // Only show debug button on development builds
-
     // Unlock Profiles
     actions.add(IconButton(
       icon: Icon(CwtchIcons.lock_open_24px),
@@ -104,7 +103,7 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
     }
 
     // Global Settings
-    actions.add(IconButton(icon: Icon(Icons.settings), tooltip: AppLocalizations.of(context)!.tooltipOpenSettings, onPressed: _pushGlobalSettings));
+    actions.add(IconButton(key: Key("OpenSettingsView"), icon: Icon(Icons.settings), tooltip: AppLocalizations.of(context)!.tooltipOpenSettings, onPressed: _pushGlobalSettings));
 
     // shutdown cwtch
     actions.add(IconButton(icon: Icon(Icons.close), tooltip: AppLocalizations.of(context)!.shutdownCwtchTooltip, onPressed: _modalShutdown));

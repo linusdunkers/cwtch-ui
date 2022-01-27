@@ -19,7 +19,7 @@ import 'model.dart';
 import 'models/servers.dart';
 import 'views/profilemgrview.dart';
 import 'views/splashView.dart';
-import 'dart:io' show Platform, exit;
+import 'dart:io' show Platform, exit, sleep;
 import 'themes/opaque.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -29,12 +29,13 @@ var globalTorStatus = TorStatus();
 var globalAppState = AppState();
 var globalServersList = ServerListState();
 
-void main() {
+Future<void> main() async {
   print("Cwtch version: ${EnvironmentConfig.BUILD_VER} built on: ${EnvironmentConfig.BUILD_DATE}");
   LicenseRegistry.addLicense(() => licenses());
   WidgetsFlutterBinding.ensureInitialized();
   print("runApp()");
   runApp(Flwtch());
+  sleep(Duration(seconds:1));
 }
 
 class Flwtch extends StatefulWidget {
@@ -42,6 +43,10 @@ class Flwtch extends StatefulWidget {
 
   @override
   FlwtchState createState() => FlwtchState();
+
+  String yay() {
+    return "yay!";
+  }
 }
 
 class FlwtchState extends State<Flwtch> {
@@ -204,6 +209,7 @@ class FlwtchState extends State<Flwtch> {
 
   @override
   void dispose() {
+    cwtch.Shutdown();
     cwtch.dispose();
     super.dispose();
   }

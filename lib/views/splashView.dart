@@ -16,6 +16,7 @@ class _SplashViewState extends State<SplashView> {
   Widget build(BuildContext context) {
     return Consumer<AppState>(
         builder: (context, appState, child) => Scaffold(
+              key: Key("SplashView"),
               body: Center(
                   child: Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
                 Image(

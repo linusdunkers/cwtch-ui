@@ -45,6 +45,10 @@ class CwtchNotifier {
         appState.SetAppError(data["Error"]);
         break;
       case "NewPeer":
+        // empty events can be caused by the testing framework
+        if (data["Online"] == null) {
+          break;
+        }
         EnvironmentConfig.debugLog("NewPeer $data");
         // if tag != v1-defaultPassword then it is either encrypted OR it is an unencrypted account created during pre-beta...
         profileCN.add(data["Identity"], data["name"], data["picture"], data["ContactsJson"], data["ServerList"], data["Online"] == "true", data["tag"] != "v1-defaultPassword");
