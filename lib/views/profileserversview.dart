@@ -1,5 +1,6 @@
 import 'package:cwtch/models/profile.dart';
 import 'package:cwtch/models/profileservers.dart';
+import 'package:cwtch/models/remoteserver.dart';
 import 'package:cwtch/models/servers.dart';
 import 'package:cwtch/widgets/remoteserverrow.dart';
 import 'package:flutter/material.dart';

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cwtch/models/remoteserver.dart';
 import 'package:flutter/widgets.dart';
 
 import 'contact.dart';
@@ -72,7 +73,7 @@ class ProfileInfoState extends ChangeNotifier {
       List<dynamic> servers = jsonDecode(serversJson);
       this._servers.replace(servers.map((server) {
         // TODO Keys...
-        return RemoteServerInfoState(onion: server["onion"], identifier: server["identifier"], description: server["description"], status: server["status"]);
+        return RemoteServerInfoState(server["onion"], server["identifier"], server["description"], server["status"]);
       }));
 
       this._contacts.contacts.forEach((contact) {
