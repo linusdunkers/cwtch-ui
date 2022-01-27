@@ -1,11 +1,13 @@
+import 'package:cwtch/models/appstate.dart';
+import 'package:cwtch/models/contact.dart';
 import 'package:cwtch/models/message.dart';
+import 'package:cwtch/models/profile.dart';
 import 'package:cwtch/widgets/messageloadingbubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../model.dart';
 import '../settings.dart';
 
 class MessageList extends StatefulWidget {
@@ -81,7 +83,7 @@ class _MessageListState extends State<MessageList> {
                                 var messageIndex = index;
 
                                 return FutureBuilder(
-                                  future: messageHandler(outerContext, profileOnion, contactHandle, messageIndex),
+                                  future: messageHandler(outerContext, profileOnion, contactHandle, ByIndex(messageIndex)),
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
                                       var message = snapshot.data as Message;

@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cwtch/cwtch_icons_icons.dart';
+import 'package:cwtch/models/appstate.dart';
+import 'package:cwtch/models/profile.dart';
+import 'package:cwtch/models/profilelist.dart';
 import 'package:flutter/material.dart';
 import 'package:cwtch/settings.dart';
 import 'package:cwtch/views/torstatusview.dart';
@@ -13,7 +16,6 @@ import 'package:cwtch/widgets/profilerow.dart';
 import 'package:provider/provider.dart';
 import '../config.dart';
 import '../main.dart';
-import '../model.dart';
 import '../torstatus.dart';
 import 'addeditprofileview.dart';
 import 'globalsettingsview.dart';
@@ -84,6 +86,7 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
     actions.add(IconButton(
       icon: TorIcon(),
       onPressed: _pushTorStatus,
+      splashRadius: Material.defaultSplashRadius / 2,
       tooltip: Provider.of<TorStatus>(context).progress == 100
           ? AppLocalizations.of(context)!.networkStatusOnline
           : (Provider.of<TorStatus>(context).progress == 0 ? AppLocalizations.of(context)!.networkStatusDisconnected : AppLocalizations.of(context)!.networkStatusAttemptingTor),
@@ -92,6 +95,7 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
     // Unlock Profiles
     actions.add(IconButton(
       icon: Icon(CwtchIcons.lock_open_24px),
+      splashRadius: Material.defaultSplashRadius / 2,
       color: Provider.of<ProfileListState>(context).profiles.isEmpty ? Provider.of<Settings>(context).theme.defaultButtonColor : Provider.of<Settings>(context).theme.mainTextColor,
       tooltip: AppLocalizations.of(context)!.tooltipUnlockProfiles,
       onPressed: _modalUnlockProfiles,
@@ -99,14 +103,15 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
 
     // Servers
     if (Provider.of<Settings>(context).isExperimentEnabled(ServerManagementExperiment) && !Platform.isAndroid && !Platform.isIOS) {
-      actions.add(IconButton(icon: Icon(CwtchIcons.dns_black_24dp), tooltip: AppLocalizations.of(context)!.serversManagerTitleShort, onPressed: _pushServers));
+      actions.add(
+          IconButton(icon: Icon(CwtchIcons.dns_black_24dp), splashRadius: Material.defaultSplashRadius / 2, tooltip: AppLocalizations.of(context)!.serversManagerTitleShort, onPressed: _pushServers));
     }
 
     // Global Settings
-    actions.add(IconButton(key: Key("OpenSettingsView"), icon: Icon(Icons.settings), tooltip: AppLocalizations.of(context)!.tooltipOpenSettings, onPressed: _pushGlobalSettings));
+    actions.add(IconButton(key: Key("OpenSettingsView"), icon: Icon(Icons.settings), tooltip: AppLocalizations.of(context)!.tooltipOpenSettings, splashRadius: Material.defaultSplashRadius / 2, onPressed: _pushGlobalSettings));
 
     // shutdown cwtch
-    actions.add(IconButton(icon: Icon(Icons.close), tooltip: AppLocalizations.of(context)!.shutdownCwtchTooltip, onPressed: _modalShutdown));
+    actions.add(IconButton(icon: Icon(Icons.close), tooltip: AppLocalizations.of(context)!.shutdownCwtchTooltip, splashRadius: Material.defaultSplashRadius / 2, onPressed: _modalShutdown));
 
     return actions;
   }

@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'package:cwtch/main.dart';
+import 'package:cwtch/models/appstate.dart';
+import 'package:cwtch/models/contact.dart';
 import 'package:cwtch/models/message.dart';
+import 'package:cwtch/models/profilelist.dart';
 import 'package:cwtch/models/profileservers.dart';
 import 'package:cwtch/models/servers.dart';
 import 'package:cwtch/notification_manager.dart';
@@ -10,7 +13,6 @@ import 'package:cwtch/torstatus.dart';
 
 import '../config.dart';
 import '../errorHandler.dart';
-import '../model.dart';
 import '../settings.dart';
 
 // Class that handles libcwtch-go events (received either via ffi with an isolate or gomobile over a method channel from kotlin)
@@ -145,25 +147,20 @@ class CwtchNotifier {
         var senderHandle = data['RemotePeer'];
         var senderImage = data['Picture'];
         var isAuto = data['Auto'] == "true";
+        String? contenthash = data['ContentHash'];
+        var selectedConversation = appState.selectedProfile == data["ProfileOnion"] && appState.selectedConversation == identifier;
 
-        // We might not have received a contact created for this contact yet...
-        // In that case the **next** event we receive will actually update these values...
-        if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier) != null) {
-          if (appState.selectedProfile != data["ProfileOnion"] || appState.selectedConversation != identifier) {
-            profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.unreadMessages++;
-          } else {
-            profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.newMarker++;
-          }
-          profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(identifier, DateTime.now());
-          profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.updateMessageCache(identifier, messageID, timestamp, senderHandle, senderImage, isAuto, data["Data"]);
-
-          // We only ever see messages from authenticated peers.
-          // If the contact is marked as offline then override this - can happen when the contact is removed from the front
-          // end during syncing.
-          if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.isOnline() == false) {
-            profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.status = "Authenticated";
-          }
-        }
+        profileCN.getProfile(data["ProfileOnion"])?.contactList.newMessage(
+              identifier,
+              messageID,
+              timestamp,
+              senderHandle,
+              senderImage,
+              isAuto,
+              data["Data"],
+              contenthash,
+              selectedConversation,
+            );
 
         break;
       case "PeerAcknowledgement":
@@ -202,18 +199,11 @@ class CwtchNotifier {
           var timestampSent = DateTime.tryParse(data['TimestampSent'])!;
           var currentTotal = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.totalMessages;
           var isAuto = data['Auto'] == "true";
+          String? contenthash = data['ContentHash'];
+          var selectedConversation = appState.selectedProfile == data["ProfileOnion"] && appState.selectedConversation == identifier;
 
           // Only bother to do anything if we know about the group and the provided index is greater than our current total...
           if (currentTotal != null && idx >= currentTotal) {
-            profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.updateMessageCache(identifier, idx, timestampSent, senderHandle, senderImage, isAuto, data["Data"]);
-
-            //if not currently open
-            if (appState.selectedProfile != data["ProfileOnion"] || appState.selectedConversation != identifier) {
-              profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.unreadMessages++;
-            } else {
-              profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.newMarker++;
-            }
-
             // TODO: There are 2 timestamps associated with a new group message - time sent and time received.
             // Sent refers to the time a profile alleges they sent a message
             // Received refers to the time we actually saw the message from the server
@@ -224,7 +214,8 @@ class CwtchNotifier {
             // For now we perform some minimal checks on the sent timestamp to use to provide a useful ordering for honest contacts
             // and ensure that malicious contacts in groups can only set this timestamp to a value within the range of `last seen message time`
             // and `local now`.
-            profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(identifier, timestampSent.toLocal());
+            profileCN.getProfile(data["ProfileOnion"])?.contactList.newMessage(identifier, idx, timestampSent, senderHandle, senderImage, isAuto, data["Data"], contenthash, selectedConversation);
+
             notificationManager.notify("New Message From Group!");
           }
         } else {
@@ -257,6 +248,13 @@ class CwtchNotifier {
       case "UpdatedProfileAttribute":
         if (data["Key"] == "public.profile.name") {
           profileCN.getProfile(data["ProfileOnion"])?.nickname = data["Data"];
+        } else if (data["Key"].toString().startsWith("local.filesharing.") && data["Key"].toString().endsWith(".path")) {
+          // local.conversation.filekey.path
+          List<String> keyparts = data["Key"].toString().split(".");
+          if (keyparts.length == 5) {
+            String filekey = keyparts[2] + "." + keyparts[3];
+            profileCN.getProfile(data["ProfileOnion"])?.downloadSetPathForSender(filekey, data["Data"]);
+          }
         } else {
           EnvironmentConfig.debugLog("unhandled set attribute event: ${data['Key']}");
         }
@@ -354,6 +352,13 @@ class CwtchNotifier {
         break;
       case "DoneStorageMigration":
         appState.SetModalState(ModalState.none);
+        break;
+      case "ACNInfo":
+        var key = data["Key"];
+        var handle = data["Handle"];
+        if (key == "circuit") {
+          profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(handle)?.acnCircuit = data["Data"];
+        }
         break;
       default:
         EnvironmentConfig.debugLog("unhandled event: $type");

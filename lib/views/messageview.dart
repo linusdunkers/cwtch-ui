@@ -1,10 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:crypto/crypto.dart';
-import 'package:cwtch/config.dart';
 import 'package:cwtch/cwtch_icons_icons.dart';
+import 'package:cwtch/models/appstate.dart';
+import 'package:cwtch/models/chatmessage.dart';
+import 'package:cwtch/models/contact.dart';
 import 'package:cwtch/models/message.dart';
 import 'package:cwtch/models/messages/quotedmessage.dart';
+import 'package:cwtch/models/profile.dart';
 import 'package:cwtch/widgets/malformedbubble.dart';
 import 'package:cwtch/widgets/messageloadingbubble.dart';
 import 'package:cwtch/widgets/profileimage.dart';
@@ -19,10 +22,8 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:path/path.dart' show basename;
 
 import '../main.dart';
-import '../model.dart';
 import '../settings.dart';
 import '../widgets/messagelist.dart';
 import 'groupsettingsview.dart';
@@ -85,14 +86,18 @@ class _MessageViewState extends State<MessageView> {
     if (Provider.of<ContactInfoState>(context).isOnline()) {
       if (showFileSharing) {
         appBarButtons.add(IconButton(
-          icon: Icon(Icons.attach_file, size: 24),
+          splashRadius: Material.defaultSplashRadius / 2,
+          icon: Icon(Icons.attach_file, size: 24, color: Provider.of<Settings>(context).theme.mainTextColor),
           tooltip: AppLocalizations.of(context)!.tooltipSendFile,
-          onPressed: () {
-            _showFilePicker(context);
-          },
+          onPressed: Provider.of<AppState>(context).disableFilePicker
+              ? null
+              : () {
+                  _showFilePicker(context);
+                },
         ));
       }
       appBarButtons.add(IconButton(
+          splashRadius: Material.defaultSplashRadius / 2,
           icon: Icon(CwtchIcons.send_invite, size: 24),
           tooltip: AppLocalizations.of(context)!.sendInvite,
           onPressed: () {
@@ -100,6 +105,7 @@ class _MessageViewState extends State<MessageView> {
           }));
     }
     appBarButtons.add(IconButton(
+        splashRadius: Material.defaultSplashRadius / 2,
         icon: Provider.of<ContactInfoState>(context, listen: false).isGroup == true ? Icon(CwtchIcons.group_settings_24px) : Icon(CwtchIcons.peer_settings_24px),
         tooltip: AppLocalizations.of(context)!.conversationSettings,
         onPressed: _pushContactSettings));
@@ -169,8 +175,19 @@ class _MessageViewState extends State<MessageView> {
     ));
   }
 
+  // todo: legacy groups currently have restricted message
+  // size because of the additional wrapping end encoding
+  // hybrid groups should allow these numbers to be the same.
+  static const P2PMessageLengthMax = 7000;
+  static const GroupMessageLengthMax = 1800;
+
   void _sendMessage([String? ignoredParam]) {
-    if (ctrlrCompose.value.text.isNotEmpty) {
+    var isGroup = Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(Provider.of<AppState>(context, listen: false).selectedConversation!)!.isGroup;
+
+    // peers and groups currently have different length constraints (servers can store less)...
+    var lengthOk = (isGroup && ctrlrCompose.value.text.length < GroupMessageLengthMax) || ctrlrCompose.value.text.length <= P2PMessageLengthMax;
+
+    if (ctrlrCompose.value.text.isNotEmpty && lengthOk) {
       if (Provider.of<AppState>(context, listen: false).selectedConversation != null && Provider.of<AppState>(context, listen: false).selectedIndex != null) {
         Provider.of<FlwtchState>(context, listen: false)
             .cwtch
@@ -219,8 +236,11 @@ class _MessageViewState extends State<MessageView> {
     ctrlrCompose.clear();
     focusNode.requestFocus();
     Future.delayed(const Duration(milliseconds: 80), () {
-      Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(Provider.of<ContactInfoState>(context, listen: false).identifier)?.bumpMessageCache();
+      var profile = Provider.of<ContactInfoState>(context, listen: false).profileOnion;
+      var identifier = Provider.of<ContactInfoState>(context, listen: false).identifier;
+      fetchAndCacheMessageInfo(context, profile, identifier, ByIndex(0));
       Provider.of<ContactInfoState>(context, listen: false).newMarker++;
+      Provider.of<ContactInfoState>(context, listen: false).totalMessages += 1;
       // Resort the contact list...
       Provider.of<ProfileInfoState>(context, listen: false).contactList.updateLastMessageTime(Provider.of<ContactInfoState>(context, listen: false).identifier, DateTime.now());
     });
@@ -228,6 +248,7 @@ class _MessageViewState extends State<MessageView> {
 
   Widget _buildComposeBox() {
     bool isOffline = Provider.of<ContactInfoState>(context).isOnline() == false;
+    bool isGroup = Provider.of<ContactInfoState>(context).isGroup;
 
     var composeBox = Container(
       color: Provider.of<Settings>(context).theme.backgroundMainColor,
@@ -253,6 +274,8 @@ class _MessageViewState extends State<MessageView> {
                             keyboardType: TextInputType.multiline,
                             enableIMEPersonalizedLearning: false,
                             minLines: 1,
+                            maxLength: isGroup ? GroupMessageLengthMax : P2PMessageLengthMax,
+                            maxLengthEnforcement: MaxLengthEnforcement.enforced,
                             maxLines: null,
                             onFieldSubmitted: _sendMessage,
                             enabled: !isOffline,
@@ -263,6 +286,7 @@ class _MessageViewState extends State<MessageView> {
                                 focusedBorder: InputBorder.none,
                                 enabled: true,
                                 suffixIcon: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(padding: EdgeInsets.all(0.0), shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(45.0))),
                                   child: Icon(CwtchIcons.send_24px, size: 24, color: Provider.of<Settings>(context).theme.defaultButtonTextColor),
                                   onPressed: isOffline ? null : _sendMessage,
                                 ))),
@@ -274,8 +298,7 @@ class _MessageViewState extends State<MessageView> {
     var children;
     if (Provider.of<AppState>(context).selectedConversation != null && Provider.of<AppState>(context).selectedIndex != null) {
       var quoted = FutureBuilder(
-        future:
-            messageHandler(context, Provider.of<AppState>(context).selectedProfile!, Provider.of<AppState>(context).selectedConversation!, Provider.of<AppState>(context).selectedIndex!, byID: true),
+        future: messageHandler(context, Provider.of<AppState>(context).selectedProfile!, Provider.of<AppState>(context).selectedConversation!, ById(Provider.of<AppState>(context).selectedIndex!)),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             var message = snapshot.data! as Message;
@@ -291,6 +314,7 @@ class _MessageViewState extends State<MessageView> {
                         alignment: Alignment.topRight,
                         child: IconButton(
                           icon: Icon(Icons.highlight_remove),
+                          splashRadius: Material.defaultSplashRadius / 2,
                           tooltip: AppLocalizations.of(context)!.tooltipRemoveThisQuotedMessage,
                           onPressed: () {
                             Provider.of<AppState>(context, listen: false).selectedIndex = null;
@@ -382,9 +406,19 @@ class _MessageViewState extends State<MessageView> {
 
   void _showFilePicker(BuildContext ctx) async {
     imagePreview = null;
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
-    if (result != null) {
-      File file = File(result.files.first.path);
+
+    // only allow one file picker at a time
+    // note: ideally we would destroy file picker when leaving a conversation
+    // but we don't currently have that option.
+    // we need to store AppState in a variable because ctx might be destroyed
+    // while awaiting for pickFiles.
+    var appstate = Provider.of<AppState>(ctx, listen: false);
+    appstate.disableFilePicker = true;
+    // currently lockParentWindow only works on Windows...
+    FilePickerResult? result = await FilePicker.platform.pickFiles(lockParentWindow: true);
+    appstate.disableFilePicker = false;
+    if (result != null && result.files.first.path != null) {
+      File file = File(result.files.first.path!);
       // We have a maximum number of bytes we can represent in terms of
       // a manifest (see : https://git.openprivacy.ca/cwtch.im/cwtch/src/branch/master/protocol/files/manifest.go#L25)
       if (file.lengthSync() <= 10737418240) {

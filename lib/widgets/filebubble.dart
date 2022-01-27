@@ -1,14 +1,16 @@
 import 'dart:io';
 
 import 'package:cwtch/config.dart';
+import 'package:cwtch/models/contact.dart';
+import 'package:cwtch/models/filedownloadprogress.dart';
 import 'package:cwtch/models/message.dart';
+import 'package:cwtch/models/profile.dart';
 import 'package:cwtch/widgets/malformedbubble.dart';
 import 'package:file_picker_desktop/file_picker_desktop.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../main.dart';
-import '../model.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -50,16 +52,26 @@ class FileBubbleState extends State<FileBubble> {
     var borderRadiousEh = 15.0;
     var showFileSharing = Provider.of<Settings>(context, listen: false).isExperimentEnabled(FileSharingExperiment);
     var prettyDate = DateFormat.yMd(Platform.localeName).add_jm().format(Provider.of<MessageMetadata>(context).timestamp);
-    var downloadComplete = Provider.of<ProfileInfoState>(context).downloadComplete(widget.fileKey());
+    var metadata = Provider.of<MessageMetadata>(context);
+    var path = Provider.of<ProfileInfoState>(context).downloadFinalPath(widget.fileKey());
+
+    // If we haven't stored the filepath in message attributes then save it
+    if (metadata.attributes["filepath"] != null) {
+      path = metadata.attributes["filepath"];
+    } else if (path != null && metadata.attributes["filepath"] == null) {
+      Provider.of<FlwtchState>(context).cwtch.SetMessageAttribute(metadata.profileOnion, metadata.conversationIdentifier, 0, metadata.messageID, "filepath", path);
+    }
+
+    // the file is downloaded when it is from the sender AND the path is known OR when we get an explicit downloadComplete
+    var downloadComplete = (fromMe && path != null) || Provider.of<ProfileInfoState>(context).downloadComplete(widget.fileKey());
     var downloadInterrupted = Provider.of<ProfileInfoState>(context).downloadInterrupted(widget.fileKey());
 
-    var path = Provider.of<ProfileInfoState>(context).downloadFinalPath(widget.fileKey());
-    if (downloadComplete) {
-      var lpath = path!.toLowerCase();
+    if (downloadComplete && path != null) {
+      var lpath = path.toLowerCase();
       if (lpath.endsWith(".jpg") || lpath.endsWith(".jpeg") || lpath.endsWith(".png") || lpath.endsWith(".gif") || lpath.endsWith(".webp") || lpath.endsWith(".bmp")) {
         if (myFile == null) {
           setState(() {
-            myFile = new File(path);
+            myFile = new File(path!);
           });
         }
       }
@@ -96,13 +108,9 @@ class FileBubbleState extends State<FileBubble> {
 
       if (!showFileSharing) {
         wdgDecorations = Text('\u202F');
-      } else if (fromMe) {
-        wdgDecorations = Visibility(
-            visible: widget.interactive,
-            child: MessageBubbleDecoration(ackd: Provider.of<MessageMetadata>(context).ackd, errored: Provider.of<MessageMetadata>(context).error, fromMe: fromMe, prettyDate: prettyDate));
-      } else if (downloadComplete) {
+      } else if (downloadComplete && path != null) {
         // in this case, whatever marked download.complete would have also set the path
-        if (Provider.of<Settings>(context).shouldPreview(path!)) {
+        if (Provider.of<Settings>(context).shouldPreview(path)) {
           isPreview = true;
           wdgDecorations = Center(
               child: MouseRegion(
@@ -187,7 +195,7 @@ class FileBubbleState extends State<FileBubble> {
                 crossAxisAlignment: fromMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                 mainAxisAlignment: fromMe ? MainAxisAlignment.end : MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
-                children: fromMe ? [wdgMessage, Visibility(visible: widget.interactive, child: wdgDecorations)] : [wdgSender, isPreview ? Container() : wdgMessage, wdgDecorations]),
+                children: [wdgSender, isPreview ? Container() : wdgMessage, wdgDecorations]),
           ));
     });
   }
@@ -202,7 +210,6 @@ class FileBubbleState extends State<FileBubble> {
     if (Platform.isAndroid) {
       Provider.of<ProfileInfoState>(context, listen: false).downloadInit(widget.fileKey(), (widget.fileSize / 4096).ceil());
       Provider.of<FlwtchState>(context, listen: false).cwtch.SetMessageAttribute(profileOnion, conversation, 0, idx, "file-downloaded", "true");
-      //Provider.of<MessageMetadata>(context, listen: false).attributes |= 0x02;
       ContactInfoState? contact = Provider.of<ProfileInfoState>(context).contactList.findContact(Provider.of<MessageMetadata>(context).senderHandle);
       if (contact != null) {
         Provider.of<FlwtchState>(context, listen: false).cwtch.CreateDownloadableFile(profileOnion, contact.identifier, widget.nameSuggestion, widget.fileKey());
@@ -218,7 +225,6 @@ class FileBubbleState extends State<FileBubble> {
           var manifestPath = file.path + ".manifest";
           Provider.of<ProfileInfoState>(context, listen: false).downloadInit(widget.fileKey(), (widget.fileSize / 4096).ceil());
           Provider.of<FlwtchState>(context, listen: false).cwtch.SetMessageAttribute(profileOnion, conversation, 0, idx, "file-downloaded", "true");
-          //Provider.of<MessageMetadata>(context, listen: false).flags |= 0x02;
           ContactInfoState? contact = Provider.of<ProfileInfoState>(context, listen: false).contactList.findContact(Provider.of<MessageMetadata>(context).senderHandle);
           if (contact != null) {
             Provider.of<FlwtchState>(context, listen: false).cwtch.DownloadFile(profileOnion, contact.identifier, file.path, manifestPath, widget.fileKey());

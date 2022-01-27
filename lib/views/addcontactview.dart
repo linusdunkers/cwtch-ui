@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cwtch/cwtch_icons_icons.dart';
+import 'package:cwtch/models/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cwtch/errorHandler.dart';
@@ -13,7 +14,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 import '../main.dart';
-import '../model.dart';
 
 /// Add Contact View is the one-stop shop for adding public keys to a Profiles contact list.
 /// We support both Peers and Groups (experiment-pending).
@@ -52,26 +52,22 @@ class _AddContactViewState extends State<AddContactView> {
 
     /// We display a different number of tabs depending on the experiment setup
     bool groupsEnabled = Provider.of<Settings>(context).isExperimentEnabled(TapirGroupsExperiment);
-    return Scrollbar(
-        isAlwaysShown: true,
-        child: SingleChildScrollView(
-            clipBehavior: Clip.antiAlias,
-            child: Consumer<ErrorHandler>(builder: (context, globalErrorHandler, child) {
-              return DefaultTabController(
-                  length: groupsEnabled ? 2 : 1,
-                  child: Column(children: [
-                    (groupsEnabled ? getTabBarWithGroups() : getTabBarWithAddPeerOnly()),
-                    Expanded(
-                        child: TabBarView(
-                      children: (groupsEnabled
-                          ? [
-                              addPeerTab(),
-                              addGroupTab(),
-                            ]
-                          : [addPeerTab()]),
-                    )),
-                  ]));
-            })));
+    return Consumer<ErrorHandler>(builder: (context, globalErrorHandler, child) {
+      return DefaultTabController(
+          length: groupsEnabled ? 2 : 1,
+          child: Column(children: [
+            (groupsEnabled ? getTabBarWithGroups() : getTabBarWithAddPeerOnly()),
+            Expanded(
+                child: TabBarView(
+              children: (groupsEnabled
+                  ? [
+                      addPeerTab(),
+                      addGroupTab(),
+                    ]
+                  : [addPeerTab()]),
+            )),
+          ]));
+    });
   }
 
   void _copyOnion() {
@@ -109,67 +105,70 @@ class _AddContactViewState extends State<AddContactView> {
   /// The Add Peer Tab allows a peer to add a specific non-group peer to their contact lists
   /// We also provide a convenient way to copy their onion.
   Widget addPeerTab() {
-    return Container(
-        margin: EdgeInsets.all(30),
-        padding: EdgeInsets.all(20),
-        child: Form(
-            autovalidateMode: AutovalidateMode.always,
-            key: _formKey,
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              CwtchLabel(label: AppLocalizations.of(context)!.profileOnionLabel),
-              SizedBox(
-                height: 20,
-              ),
-              CwtchButtonTextField(
-                controller: ctrlrOnion,
-                onPressed: _copyOnion,
-                readonly: true,
-                icon: Icon(
-                  CwtchIcons.address_copy_2,
-                  size: 32,
-                ),
-                tooltip: AppLocalizations.of(context)!.copyBtn,
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              CwtchLabel(label: AppLocalizations.of(context)!.pasteAddressToAddContact),
-              SizedBox(
-                height: 20,
-              ),
-              CwtchTextField(
-                controller: ctrlrContact,
-                validator: (value) {
-                  if (value == "") {
-                    return null;
-                  }
-                  if (globalErrorHandler.invalidImportStringError) {
-                    return AppLocalizations.of(context)!.invalidImportString;
-                  } else if (globalErrorHandler.contactAlreadyExistsError) {
-                    return AppLocalizations.of(context)!.contactAlreadyExists;
-                  } else if (globalErrorHandler.explicitAddContactSuccess) {}
-                  return null;
-                },
-                onChanged: (String importBundle) async {
-                  var profileOnion = Provider.of<ProfileInfoState>(context, listen: false).onion;
-                  Provider.of<FlwtchState>(context, listen: false).cwtch.ImportBundle(profileOnion, importBundle);
+    return Scrollbar(
+        child: SingleChildScrollView(
+            clipBehavior: Clip.antiAlias,
+            child: Container(
+                margin: EdgeInsets.all(30),
+                padding: EdgeInsets.all(20),
+                child: Form(
+                    autovalidateMode: AutovalidateMode.always,
+                    key: _formKey,
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      CwtchLabel(label: AppLocalizations.of(context)!.profileOnionLabel),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      CwtchButtonTextField(
+                        controller: ctrlrOnion,
+                        onPressed: _copyOnion,
+                        readonly: true,
+                        icon: Icon(
+                          CwtchIcons.address_copy_2,
+                          size: 32,
+                        ),
+                        tooltip: AppLocalizations.of(context)!.copyBtn,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      CwtchLabel(label: AppLocalizations.of(context)!.pasteAddressToAddContact),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      CwtchTextField(
+                        controller: ctrlrContact,
+                        validator: (value) {
+                          if (value == "") {
+                            return null;
+                          }
+                          if (globalErrorHandler.invalidImportStringError) {
+                            return AppLocalizations.of(context)!.invalidImportString;
+                          } else if (globalErrorHandler.contactAlreadyExistsError) {
+                            return AppLocalizations.of(context)!.contactAlreadyExists;
+                          } else if (globalErrorHandler.explicitAddContactSuccess) {}
+                          return null;
+                        },
+                        onChanged: (String importBundle) async {
+                          var profileOnion = Provider.of<ProfileInfoState>(context, listen: false).onion;
+                          Provider.of<FlwtchState>(context, listen: false).cwtch.ImportBundle(profileOnion, importBundle);
 
-                  Future.delayed(const Duration(milliseconds: 500), () {
-                    if (globalErrorHandler.importBundleSuccess) {
-                      // TODO: This isn't ideal, but because onChange can be fired during this future check
-                      // and because the context can change after being popped we have this kind of double assertion...
-                      // There is probably a better pattern to handle this...
-                      if (AppLocalizations.of(context) != null) {
-                        final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.successfullAddedContact + importBundle));
-                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                        Navigator.popUntil(context, (route) => route.settings.name == "conversations");
-                      }
-                    }
-                  });
-                },
-                hintText: '',
-              )
-            ])));
+                          Future.delayed(const Duration(milliseconds: 500), () {
+                            if (globalErrorHandler.importBundleSuccess) {
+                              // TODO: This isn't ideal, but because onChange can be fired during this future check
+                              // and because the context can change after being popped we have this kind of double assertion...
+                              // There is probably a better pattern to handle this...
+                              if (AppLocalizations.of(context) != null) {
+                                final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.successfullAddedContact + importBundle));
+                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                Navigator.popUntil(context, (route) => route.settings.name == "conversations");
+                              }
+                            }
+                          });
+                        },
+                        hintText: '',
+                      )
+                    ])))));
   }
 
   /// TODO Add Group Pane
@@ -179,71 +178,74 @@ class _AddContactViewState extends State<AddContactView> {
       return Text(AppLocalizations.of(context)!.addServerFirst);
     }
 
-    return Container(
-        margin: EdgeInsets.all(30),
-        padding: EdgeInsets.all(20),
-        child: Form(
-            autovalidateMode: AutovalidateMode.always,
-            key: _createGroupFormKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CwtchLabel(label: AppLocalizations.of(context)!.server),
-                SizedBox(
-                  height: 20,
-                ),
-                DropdownButton(
-                    onChanged: (String? newServer) {
-                      setState(() {
-                        server = newServer!;
-                      });
-                    },
-                    isExpanded: true, // magic property
-                    value: server,
-                    items: Provider.of<ProfileInfoState>(context)
-                        .serverList
-                        .servers
-                        .where((serverInfo) => serverInfo.status == "Synced")
-                        .map<DropdownMenuItem<String>>((RemoteServerInfoState serverInfo) {
-                      return DropdownMenuItem<String>(
-                        value: serverInfo.onion,
-                        child: Text(
-                          serverInfo.description.isNotEmpty ? serverInfo.description : serverInfo.onion,
-                          overflow: TextOverflow.ellipsis,
+    return Scrollbar(
+        child: SingleChildScrollView(
+            clipBehavior: Clip.antiAlias,
+            child: Container(
+                margin: EdgeInsets.all(30),
+                padding: EdgeInsets.all(20),
+                child: Form(
+                    autovalidateMode: AutovalidateMode.always,
+                    key: _createGroupFormKey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CwtchLabel(label: AppLocalizations.of(context)!.server),
+                        SizedBox(
+                          height: 20,
                         ),
-                      );
-                    }).toList()),
-                SizedBox(
-                  height: 20,
-                ),
-                CwtchLabel(label: AppLocalizations.of(context)!.groupName),
-                SizedBox(
-                  height: 20,
-                ),
-                CwtchTextField(
-                  controller: ctrlrGroupName,
-                  hintText: AppLocalizations.of(context)!.groupNameLabel,
-                  onChanged: (newValue) {},
-                  validator: (value) {},
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    var profileOnion = Provider.of<ProfileInfoState>(context, listen: false).onion;
-                    Provider.of<FlwtchState>(context, listen: false).cwtch.CreateGroup(profileOnion, server, ctrlrGroupName.text);
-                    Future.delayed(const Duration(milliseconds: 500), () {
-                      final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.successfullAddedContact + " " + ctrlrGroupName.text));
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                      Navigator.pop(context);
-                    });
-                  },
-                  child: Text(AppLocalizations.of(context)!.createGroupBtn),
-                ),
-              ],
-            )));
+                        DropdownButton(
+                            onChanged: (String? newServer) {
+                              setState(() {
+                                server = newServer!;
+                              });
+                            },
+                            isExpanded: true, // magic property
+                            value: server,
+                            items: Provider.of<ProfileInfoState>(context)
+                                .serverList
+                                .servers
+                                .where((serverInfo) => serverInfo.status == "Synced")
+                                .map<DropdownMenuItem<String>>((RemoteServerInfoState serverInfo) {
+                              return DropdownMenuItem<String>(
+                                value: serverInfo.onion,
+                                child: Text(
+                                  serverInfo.description.isNotEmpty ? serverInfo.description : serverInfo.onion,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              );
+                            }).toList()),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        CwtchLabel(label: AppLocalizations.of(context)!.groupName),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        CwtchTextField(
+                          controller: ctrlrGroupName,
+                          hintText: AppLocalizations.of(context)!.groupNameLabel,
+                          onChanged: (newValue) {},
+                          validator: (value) {},
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            var profileOnion = Provider.of<ProfileInfoState>(context, listen: false).onion;
+                            Provider.of<FlwtchState>(context, listen: false).cwtch.CreateGroup(profileOnion, server, ctrlrGroupName.text);
+                            Future.delayed(const Duration(milliseconds: 500), () {
+                              final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.successfullAddedContact + " " + ctrlrGroupName.text));
+                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                              Navigator.pop(context);
+                            });
+                          },
+                          child: Text(AppLocalizations.of(context)!.createGroupBtn),
+                        ),
+                      ],
+                    )))));
   }
 
   /// TODO Manage Servers Tab

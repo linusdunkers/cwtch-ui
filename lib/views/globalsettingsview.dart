@@ -136,7 +136,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                           ),
                           leading: Icon(Icons.table_chart, color: settings.current().mainTextColor),
                           trailing: Container(
-                              width: 200.0,
+                              width: MediaQuery.of(context).size.width / 4,
                               child: DropdownButton(
                                   isExpanded: true,
                                   value: settings.uiColumnModeLandscape.toString(),
@@ -284,31 +284,35 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                       testKey: Key("DownloadFolderPicker"),
                                       label: AppLocalizations.of(context)!.settingDownloadFolder,
                                       initialValue: settings.downloadPath,
+                                      description: AppLocalizations.of(context)!.fileSharingSettingsDownloadFolderDescription,
+                                      tooltip: AppLocalizations.of(context)!.fileSharingSettingsDownloadFolderTooltip,
                                       onSave: (newVal) {
                                         settings.downloadPath = newVal;
                                         saveSettings(context);
                                       },
                                     ),
                                   ),
-                                  SwitchListTile(
-                                    title: Text(AppLocalizations.of(context)!.enableExperimentClickableLinks, style: TextStyle(color: settings.current().mainTextColor)),
-                                    subtitle: Text(AppLocalizations.of(context)!.experimentClickableLinksDescription),
-                                    value: settings.isExperimentEnabled(ClickableLinksExperiment),
-                                    onChanged: (bool value) {
-                                      if (value) {
-                                        settings.enableExperiment(ClickableLinksExperiment);
-                                      } else {
-                                        settings.disableExperiment(ClickableLinksExperiment);
-                                      }
-                                      saveSettings(context);
-                                    },
-                                    activeTrackColor: settings.theme.defaultButtonActiveColor,
-                                    inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
-                                    secondary: Icon(Icons.link, color: settings.current().mainTextColor),
-                                  ),
                                 ]),
                               ),
                             ],
+                          )),
+                      Visibility(
+                          visible: settings.experimentsEnabled,
+                          child: SwitchListTile(
+                            title: Text(AppLocalizations.of(context)!.enableExperimentClickableLinks, style: TextStyle(color: settings.current().mainTextColor)),
+                            subtitle: Text(AppLocalizations.of(context)!.experimentClickableLinksDescription),
+                            value: settings.isExperimentEnabled(ClickableLinksExperiment),
+                            onChanged: (bool value) {
+                              if (value) {
+                                settings.enableExperiment(ClickableLinksExperiment);
+                              } else {
+                                settings.disableExperiment(ClickableLinksExperiment);
+                              }
+                              saveSettings(context);
+                            },
+                            activeTrackColor: settings.theme.defaultButtonActiveColor,
+                            inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
+                            secondary: Icon(Icons.link, color: settings.current().mainTextColor),
                           )),
                       AboutListTile(
                           icon: appIcon,

@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:cwtch/cwtch/cwtch.dart';
 import 'package:cwtch/cwtch_icons_icons.dart';
+import 'package:cwtch/models/contact.dart';
+import 'package:cwtch/models/profile.dart';
 import 'package:cwtch/models/profileservers.dart';
 import 'package:cwtch/models/servers.dart';
 import 'package:cwtch/widgets/buttontextfield.dart';
@@ -17,7 +19,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../errorHandler.dart';
 import '../main.dart';
 import '../config.dart';
-import '../model.dart';
 
 /// Pane to add or edit a server
 class RemoteServerView extends StatefulWidget {

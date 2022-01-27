@@ -12,10 +12,12 @@ import 'package:cwtch/settings.dart';
 import 'package:cwtch/torstatus.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:window_manager/window_manager.dart';
 import 'cwtch/cwtch.dart';
 import 'cwtch/cwtchNotifier.dart';
 import 'licenses.dart';
-import 'model.dart';
+import 'models/appstate.dart';
+import 'models/profilelist.dart';
 import 'models/servers.dart';
 import 'views/profilemgrview.dart';
 import 'views/splashView.dart';
@@ -49,7 +51,7 @@ class Flwtch extends StatefulWidget {
   }
 }
 
-class FlwtchState extends State<Flwtch> {
+class FlwtchState extends State<Flwtch> with WindowListener {
   final TextStyle biggerFont = const TextStyle(fontSize: 18);
   late Cwtch cwtch;
   late ProfileListState profs;
@@ -60,6 +62,7 @@ class FlwtchState extends State<Flwtch> {
   @override
   initState() {
     print("initState: running...");
+    windowManager.addListener(this);
     super.initState();
 
     print("initState: registering notification, shutdown handlers...");
@@ -74,7 +77,7 @@ class FlwtchState extends State<Flwtch> {
       var cwtchNotifier = new CwtchNotifier(profs, globalSettings, globalErrorHandler, globalTorStatus, newDesktopNotificationsManager(), globalAppState, globalServersList);
       cwtch = CwtchFfi(cwtchNotifier);
     } else {
-      var cwtchNotifier = new CwtchNotifier(profs, globalSettings, globalErrorHandler, globalTorStatus, NullNotificationsManager(), globalAppState, globalServersList);
+      var cwtchNotifier = new CwtchNotifier(profs, globalSettings, globalErrorHandler, globalTorStatus, newDesktopNotificationsManager(), globalAppState, globalServersList);
       cwtch = CwtchFfi(cwtchNotifier);
     }
     print("initState: invoking cwtch.Start()");
@@ -207,9 +210,22 @@ class FlwtchState extends State<Flwtch> {
     }
   }
 
+  // using windowManager flutter plugin until proper lifecycle management lands in desktop
+
+  @override
+  void onWindowFocus() {
+    globalAppState.focus = true;
+  }
+
+  @override
+  void onWindowBlur() {
+    globalAppState.focus = false;
+  }
+
   @override
   void dispose() {
     cwtch.Shutdown();
+    windowManager.removeListener(this);
     cwtch.dispose();
     super.dispose();
   }

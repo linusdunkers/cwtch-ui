@@ -9,7 +9,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../cwtch_icons_icons.dart';
 import '../errorHandler.dart';
-import '../model.dart';
 import '../settings.dart';
 
 class ServerRow extends StatefulWidget {
@@ -57,6 +56,7 @@ class _ServerRowState extends State<ServerRow> {
               // Copy server button
               IconButton(
                 enableFeedback: true,
+                splashRadius: Material.defaultSplashRadius / 2,
                 tooltip: AppLocalizations.of(context)!.copyServerKeys,
                 icon: Icon(CwtchIcons.address_copy_2, color: Provider.of<Settings>(context).current().mainTextColor),
                 onPressed: () {
@@ -67,6 +67,7 @@ class _ServerRowState extends State<ServerRow> {
               // Edit button
               IconButton(
                 enableFeedback: true,
+                splashRadius: Material.defaultSplashRadius / 2,
                 tooltip: AppLocalizations.of(context)!.editServerTitle,
                 icon: Icon(Icons.create, color: Provider.of<Settings>(context).current().mainTextColor),
                 onPressed: () {

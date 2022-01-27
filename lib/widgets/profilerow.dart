@@ -1,3 +1,6 @@
+import 'package:cwtch/models/appstate.dart';
+import 'package:cwtch/models/contactlist.dart';
+import 'package:cwtch/models/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:cwtch/views/addeditprofileview.dart';
@@ -9,7 +12,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../errorHandler.dart';
 import '../main.dart';
-import '../model.dart';
 import '../settings.dart';
 
 class ProfileRow extends StatefulWidget {
@@ -59,6 +61,7 @@ class _ProfileRowState extends State<ProfileRow> {
               )),
               IconButton(
                 enableFeedback: true,
+                splashRadius: Material.defaultSplashRadius / 2,
                 tooltip: AppLocalizations.of(context)!.editProfile + " " + profile.nickname,
                 icon: Icon(Icons.create, color: Provider.of<Settings>(context).current().mainTextColor),
                 onPressed: () {

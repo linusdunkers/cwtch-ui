@@ -4,9 +4,9 @@ import 'dart:math';
 
 import 'package:cwtch/config.dart';
 import 'package:cwtch/cwtch/cwtch.dart';
+import 'package:cwtch/models/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:cwtch/model.dart';
 import 'package:cwtch/widgets/buttontextfield.dart';
 import 'package:cwtch/widgets/cwtchlabel.dart';
 import 'package:cwtch/widgets/passwordfield.dart';

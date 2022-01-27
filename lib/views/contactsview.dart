@@ -1,7 +1,10 @@
 import 'package:cwtch/cwtch_icons_icons.dart';
+import 'package:cwtch/models/appstate.dart';
+import 'package:cwtch/models/contact.dart';
+import 'package:cwtch/models/contactlist.dart';
+import 'package:cwtch/models/profile.dart';
 import 'package:cwtch/views/profileserversview.dart';
 import 'package:flutter/material.dart';
-import 'package:cwtch/views/torstatusview.dart';
 import 'package:cwtch/widgets/contactrow.dart';
 import 'package:cwtch/widgets/profileimage.dart';
 import 'package:cwtch/widgets/textfield.dart';
@@ -10,7 +13,6 @@ import 'package:provider/provider.dart';
 import '../main.dart';
 import '../settings.dart';
 import 'addcontactview.dart';
-import '../model.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'messageview.dart';
@@ -109,6 +111,7 @@ class _ContactsViewState extends State<ContactsView> {
     actions.add(IconButton(
         icon: Icon(CwtchIcons.address_copy_2),
         tooltip: AppLocalizations.of(context)!.copyAddress,
+        splashRadius: Material.defaultSplashRadius / 2,
         onPressed: () {
           Clipboard.setData(new ClipboardData(text: Provider.of<ProfileInfoState>(context, listen: false).onion));
         }));
@@ -118,6 +121,7 @@ class _ContactsViewState extends State<ContactsView> {
       actions.add(IconButton(
           icon: Icon(CwtchIcons.dns_24px),
           tooltip: AppLocalizations.of(context)!.manageKnownServersButton,
+          splashRadius: Material.defaultSplashRadius / 2,
           onPressed: () {
             _pushServers();
           }));
@@ -127,6 +131,7 @@ class _ContactsViewState extends State<ContactsView> {
     actions.add(IconButton(
         // need both conditions for displaying initial empty textfield and also allowing filters to be cleared if this widget gets lost/reset
         icon: Icon(showSearchBar || Provider.of<ContactListState>(context).isFiltered ? Icons.search_off : Icons.search),
+        splashRadius: Material.defaultSplashRadius / 2,
         onPressed: () {
           Provider.of<ContactListState>(context, listen: false).filter = "";
           setState(() {

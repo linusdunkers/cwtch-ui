@@ -39,6 +39,8 @@ class MidnightDark extends CwtchDark {
   get messageFromMeTextColor => font; //whiteishPurple;
   get messageFromOtherBackgroundColor => peerBubble; //deepPurple;
   get messageFromOtherTextColor => font; //whiteishPurple;
+  get textfieldBackgroundColor => peerBubble;
+  get textfieldBorderColor => userBubble;
 }
 
 class MidnightLight extends CwtchLight {
@@ -66,4 +68,5 @@ class MidnightLight extends CwtchLight {
   get messageFromMeTextColor => font; //mainTextColor;
   get messageFromOtherBackgroundColor => peerBubble; //purple;
   get messageFromOtherTextColor => font; //darkPurple;
+  get textfieldBackgroundColor => userBubble;
 }

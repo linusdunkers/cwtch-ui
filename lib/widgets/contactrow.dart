@@ -1,5 +1,8 @@
 import 'dart:io';
 
+import 'package:cwtch/models/appstate.dart';
+import 'package:cwtch/models/contact.dart';
+import 'package:cwtch/models/profile.dart';
 import 'package:cwtch/views/contactsview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -8,7 +11,6 @@ import 'package:cwtch/widgets/profileimage.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../main.dart';
-import '../model.dart';
 import '../settings.dart';
 import 'package:intl/intl.dart';
 
@@ -78,6 +80,7 @@ class _ContactRowState extends State<ContactRow> {
                   ? Wrap(direction: Axis.vertical, children: <Widget>[
                       IconButton(
                         padding: EdgeInsets.zero,
+                        splashRadius: Material.defaultSplashRadius / 2,
                         iconSize: 16,
                         icon: Icon(
                           Icons.favorite,
@@ -88,6 +91,7 @@ class _ContactRowState extends State<ContactRow> {
                       ),
                       IconButton(
                         padding: EdgeInsets.zero,
+                        splashRadius: Material.defaultSplashRadius / 2,
                         iconSize: 16,
                         icon: Icon(Icons.delete, color: Provider.of<Settings>(context).theme.mainTextColor),
                         tooltip: AppLocalizations.of(context)!.tooltipRejectContactRequest,
@@ -97,6 +101,7 @@ class _ContactRowState extends State<ContactRow> {
                   : (contact.isBlocked != null && contact.isBlocked
                       ? IconButton(
                           padding: EdgeInsets.zero,
+                          splashRadius: Material.defaultSplashRadius / 2,
                           iconSize: 16,
                           icon: Icon(Icons.block, color: Provider.of<Settings>(context).theme.mainTextColor),
                           onPressed: () {},

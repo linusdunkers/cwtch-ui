@@ -176,7 +176,7 @@ ThemeData mkThemeData(Settings opaque) {
         splashFactory: InkRipple.splashFactory,
         padding: MaterialStateProperty.all(EdgeInsets.all(20)),
         shape: MaterialStateProperty.all(RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18.0),
+          borderRadius: BorderRadius.circular(6.0),
         )),
       ),
     ),

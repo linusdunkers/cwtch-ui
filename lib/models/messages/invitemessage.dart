@@ -7,7 +7,7 @@ import 'package:cwtch/widgets/messagerow.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-import '../../model.dart';
+import '../profile.dart';
 
 class InviteMessage extends Message {
   final MessageMetadata metadata;

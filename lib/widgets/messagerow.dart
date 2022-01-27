@@ -1,7 +1,10 @@
 import 'dart:io';
 
 import 'package:cwtch/cwtch_icons_icons.dart';
+import 'package:cwtch/models/appstate.dart';
+import 'package:cwtch/models/contact.dart';
 import 'package:cwtch/models/message.dart';
+import 'package:cwtch/models/profile.dart';
 import 'package:cwtch/views/contactsview.dart';
 import 'package:flutter/material.dart';
 import 'package:cwtch/widgets/profileimage.dart';
@@ -10,7 +13,6 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../main.dart';
-import '../model.dart';
 import '../settings.dart';
 
 class MessageRow extends StatefulWidget {
@@ -85,6 +87,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
             maintainInteractivity: false,
             child: IconButton(
                 tooltip: AppLocalizations.of(context)!.tooltipReplyToThisMessage,
+                splashRadius: Material.defaultSplashRadius / 2,
                 onPressed: () {
                   Provider.of<AppState>(context, listen: false).selectedIndex = Provider.of<MessageMetadata>(context, listen: false).messageID;
                 },
@@ -217,8 +220,8 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
                     )))));
     var mark = Provider.of<ContactInfoState>(context).newMarker;
     if (mark > 0 &&
-        Provider.of<ContactInfoState>(context).messageCache.length > mark &&
-        Provider.of<ContactInfoState>(context).messageCache[mark - 1]?.metadata.messageID == Provider.of<MessageMetadata>(context).messageID) {
+        Provider.of<ContactInfoState>(context).messageCache.indexedLength > mark &&
+        Provider.of<ContactInfoState>(context).messageCache.getByIndex(mark - 1)?.metadata.messageID == Provider.of<MessageMetadata>(context).messageID) {
       return Column(crossAxisAlignment: fromMe ? CrossAxisAlignment.end : CrossAxisAlignment.start, children: [Align(alignment: Alignment.center, child: _bubbleNew()), mr]);
     } else {
       return mr;
