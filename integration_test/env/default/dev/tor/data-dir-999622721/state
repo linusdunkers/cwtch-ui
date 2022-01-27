@@ -1,0 +1,46 @@
+# Tor state file last generated on 2022-01-13 14:28:41 local time
+# Other times below are in UTC
+# You *do not* need to edit this file.
+
+CircuitBuildTimeBin 425 10
+CircuitBuildTimeBin 475 23
+CircuitBuildTimeBin 525 16
+CircuitBuildTimeBin 575 14
+CircuitBuildTimeBin 625 5
+CircuitBuildTimeBin 675 7
+CircuitBuildTimeBin 725 8
+CircuitBuildTimeBin 775 9
+CircuitBuildTimeBin 825 3
+CircuitBuildTimeBin 875 2
+CircuitBuildTimeBin 925 2
+CircuitBuildTimeBin 975 1
+CircuitBuildTimeBin 1025 1
+CircuitBuildTimeBin 1075 1
+CircuitBuildTimeBin 7875 1
+CircuitBuildTimeBin 16625 1
+CircuitBuildTimeBin 18225 1
+Dormant 0
+Guard in=default rsa_id=E46979A3053D43ADF187463A6E4856C875BC8C89 nickname=teller sampled_on=2022-01-11T04:35:03 sampled_idx=0 sampled_by=0.4.5.9 listed=1 confirmed_on=2022-01-05T06:17:56 confirmed_idx=2 pb_circ_attempts=112.000000 pb_circ_successes=105.000000 pb_successful_circuits_closed=104.000000 pb_collapsed_circuits=1.000000 pb_timeouts=8.000000
+Guard in=default rsa_id=DD0C8EEC5CA402A9FA4478F10C31A440F71F6885 nickname=chaosDelroth sampled_on=2022-01-03T16:48:48 sampled_idx=1 sampled_by=0.4.5.9 listed=1 confirmed_on=2022-01-01T05:12:43 confirmed_idx=0
+Guard in=default rsa_id=073B88295910B8C5867F28223D97D2EBF007E2C2 nickname=artikel10ber64 sampled_on=2022-01-11T13:12:46 sampled_idx=2 sampled_by=0.4.5.9 listed=1 confirmed_on=2022-01-06T15:30:35 confirmed_idx=1
+Guard in=default rsa_id=4A996B01736D1646E72A6001BAD08F2607CC2494 nickname=Sasageyo sampled_on=2022-01-04T01:57:48 sampled_idx=3 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=3D5D6178C44537E3692853B344385F6572A55767 nickname=TorZabehlice sampled_on=2022-01-05T21:54:59 sampled_idx=4 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=4AD9C116A1942D58A714433CA24F087F18036A7E nickname=relayon sampled_on=2022-01-08T09:39:15 sampled_idx=5 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=38B715F758E4F6429907EB352DB6F15419601526 nickname=captains2 sampled_on=2022-01-04T05:47:07 sampled_idx=6 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=3BAB9F03DC2F32A6AA1C6AA0E9592C19A059F153 nickname=thebest1 sampled_on=2022-01-12T05:33:03 sampled_idx=7 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=6ACAB4394A94BBFFF391497143E3B49C84798672 nickname=de0akatala sampled_on=2022-01-10T19:43:15 sampled_idx=8 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=C3DFB7BD40B072EB6D46578F1BE021FDD9D60713 nickname=imherefortheparty sampled_on=2022-01-04T09:00:16 sampled_idx=9 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=EF92C948FDB83896DDBDF7596F827D77F893E36F nickname=madonion2 sampled_on=2022-01-09T14:19:01 sampled_idx=10 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=8421AEB2D6F570F155BCF595070DC6C4657BD033 nickname=bauruine sampled_on=2022-01-05T00:38:25 sampled_idx=11 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=EAAD9C22F0DDB6CCEA51913B449D510B536134EB nickname=SWCChampion2021 sampled_on=2022-01-06T08:14:36 sampled_idx=12 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=2C7C9294CFA7AAFB3D25B72DEAED242E96927F03 nickname=ChomelesDEnetcup sampled_on=2022-01-03T16:39:36 sampled_idx=13 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=E21336A5D5B02839C63E1F68DC1CE03B067BACC8 nickname=MetalRelay sampled_on=2022-01-01T14:29:59 sampled_idx=14 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=41E041EC676622FFEE59F56BC75B99CD0D47F653 nickname=hyperion sampled_on=2022-01-02T04:43:31 sampled_idx=15 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=37C1D66559D0C7884E3D21F7DEB58C75D79B98A8 nickname=hsjeufh24h7 sampled_on=2022-01-02T13:05:59 sampled_idx=16 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=77A56CB237740E24AEA2D61C8C8936232AFC1BD8 nickname=TheEpTicZeus sampled_on=2022-01-08T08:41:07 sampled_idx=17 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=2A5ECEBEDACF0F2DCA57683056C86BB70D1A6ECE nickname=HDRelay sampled_on=2022-01-06T12:13:07 sampled_idx=18 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=A22B1C2EF2255987F8AB8AA0B1A8E23F5023EEB8 nickname=Init6TorRelay sampled_on=2022-01-05T01:41:54 sampled_idx=19 sampled_by=0.4.5.9 listed=1
+LastWritten 2022-01-13 22:28:41
+MinutesSinceUserActivity 1350
+TorVersion Tor 0.4.5.9 (git-d0ed04d50e80fe1c)
+TotalBuildTimes 105

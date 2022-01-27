@@ -1,0 +1,49 @@
+# Tor state file last generated on 2022-01-13 14:28:41 local time
+# Other times below are in UTC
+# You *do not* need to edit this file.
+
+CircuitBuildTimeBin 575 4
+CircuitBuildTimeBin 625 12
+CircuitBuildTimeBin 675 6
+CircuitBuildTimeBin 725 9
+CircuitBuildTimeBin 775 7
+CircuitBuildTimeBin 825 11
+CircuitBuildTimeBin 875 9
+CircuitBuildTimeBin 925 9
+CircuitBuildTimeBin 975 7
+CircuitBuildTimeBin 1025 6
+CircuitBuildTimeBin 1075 7
+CircuitBuildTimeBin 1125 4
+CircuitBuildTimeBin 1175 4
+CircuitBuildTimeBin 1275 3
+CircuitBuildTimeBin 1375 3
+CircuitBuildTimeBin 1475 1
+CircuitBuildTimeBin 1675 1
+CircuitBuildTimeBin 1825 1
+CircuitBuildTimeBin 4175 1
+CircuitBuildTimeBin 4725 1
+Dormant 0
+Guard in=default rsa_id=63C6AB74A5C288C2159DDC783BB00F88AB44427C nickname=TangeNLV sampled_on=2022-01-04T05:56:17 sampled_idx=0 sampled_by=0.4.5.9 listed=1 confirmed_on=2022-01-02T21:05:38 confirmed_idx=1 pb_circ_attempts=107.000000 pb_circ_successes=106.000000 pb_successful_circuits_closed=106.000000
+Guard in=default rsa_id=5F6D81870EC498A48E93F5E36C3BC61060F88C50 nickname=ax02 sampled_on=2022-01-12T14:49:00 sampled_idx=1 sampled_by=0.4.5.9 listed=1 confirmed_on=2022-01-05T20:30:32 confirmed_idx=2
+Guard in=default rsa_id=67F55733B91B85F578C2A962D0E0BA0900CBB185 nickname=gbtUSicebeer01b sampled_on=2022-01-09T21:12:36 sampled_idx=2 sampled_by=0.4.5.9 listed=1 confirmed_on=2022-01-10T19:39:06 confirmed_idx=0
+Guard in=default rsa_id=8B4ECB759D13BF6778ACAA52D666EB2A3E7D2EED nickname=Spellunking sampled_on=2022-01-06T20:46:44 sampled_idx=3 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=AB5B00284029235164A9F9D78CFEC9579DB7D0FF nickname=freerelay sampled_on=2022-01-12T16:46:00 sampled_idx=4 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=FEDE31337E4E19E06B97D282F08B0A0E8B9C5526 nickname=csUniHB sampled_on=2022-01-04T22:00:31 sampled_idx=5 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=D8DF9660261B158A9DF6C3D7D63DD92B0FD5B9F7 nickname=Unnamed sampled_on=2022-01-05T05:27:57 sampled_idx=6 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=66BD39FE805AED414ADE400CAAD862C9CC3AC34E nickname=Hilda sampled_on=2022-01-10T06:44:33 sampled_idx=7 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=BD1C8CA61A53826A7C33885A7586F9FA13CE7944 nickname=qwertz2 sampled_on=2022-01-08T20:30:44 sampled_idx=8 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=0D298E24CF681372006F757962DB33165DA342B7 nickname=LopayneVPS1337 sampled_on=2022-01-07T18:32:55 sampled_idx=9 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=E4A8BC82E660528D5B0B8D36C08AB44B77351736 nickname=Shebangs sampled_on=2022-01-12T02:53:04 sampled_idx=10 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=1669E51A8F1D7D7255683F5536D3BE643EB11664 nickname=boats sampled_on=2022-01-13T07:26:45 sampled_idx=11 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=0BCB2B8ED4B3388DF9EF90E1623AD6DA9801A6F1 nickname=sa2TRicebeer05b sampled_on=2022-01-05T13:26:51 sampled_idx=12 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=3D1FE155A089C761F216947E9798C1A46D4E5B65 nickname=Paumation sampled_on=2022-01-08T17:15:35 sampled_idx=13 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=2C13A54E3E8A6AFB18E0DE5890E5B08AAF5B0F36 nickname=history sampled_on=2022-01-03T18:53:53 sampled_idx=14 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=5ABC7AAFA86CA890242DE79582125B18C3B0E541 nickname=XTOMLON sampled_on=2022-01-06T06:53:06 sampled_idx=15 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=11ABDB4D0B944F186A898560CB82C70439957DCA nickname=jonasBebe2 sampled_on=2022-01-05T17:42:55 sampled_idx=16 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=C48F7051E1FCA459C982F52F629844431384B028 nickname=lmtor4 sampled_on=2022-01-10T11:17:35 sampled_idx=17 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=9CAFF57F921A2F0DE602B89E56A838A1E3F52868 nickname=bumnak sampled_on=2022-01-07T04:40:03 sampled_idx=18 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=751EDB5D969C72479270D223823A8ED4E578C070 nickname=Tepig sampled_on=2022-01-06T18:10:05 sampled_idx=19 sampled_by=0.4.5.9 listed=1
+LastWritten 2022-01-13 22:28:41
+MinutesSinceUserActivity 48
+TorVersion Tor 0.4.5.9 (git-d0ed04d50e80fe1c)
+TotalBuildTimes 106

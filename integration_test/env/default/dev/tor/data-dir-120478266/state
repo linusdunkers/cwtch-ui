@@ -1,0 +1,39 @@
+# Tor state file last generated on 2022-01-13 14:28:41 local time
+# Other times below are in UTC
+# You *do not* need to edit this file.
+
+CircuitBuildTimeBin 575 1
+CircuitBuildTimeBin 825 1
+CircuitBuildTimeBin 975 1
+CircuitBuildTimeBin 1225 1
+CircuitBuildTimeBin 1325 1
+CircuitBuildTimeBin 1475 1
+CircuitBuildTimeBin 1575 1
+CircuitBuildTimeBin 2275 1
+CircuitBuildTimeBin 2425 1
+CircuitBuildTimeBin 2775 1
+Dormant 0
+Guard in=default rsa_id=758CA9651D8E9C508E6EDED59636560B8A9C7F1C nickname=fusion sampled_on=2022-01-13T18:22:45 sampled_idx=0 sampled_by=0.4.5.9 listed=1 confirmed_on=2022-01-04T01:21:06 confirmed_idx=0 pb_circ_attempts=10.000000 pb_circ_successes=10.000000 pb_successful_circuits_closed=10.000000
+Guard in=default rsa_id=1F953ACBFB9F44CE38543B7E9C0E0BE1BDC7E941 nickname=bauruine sampled_on=2022-01-05T20:19:07 sampled_idx=1 sampled_by=0.4.5.9 listed=1 confirmed_on=2022-01-06T07:31:14 confirmed_idx=2
+Guard in=default rsa_id=198F12E2DEFBE6BEEBC38B2FEDD615AECB38DA7A nickname=MakeTorGreatAgain sampled_on=2022-01-10T23:29:40 sampled_idx=2 sampled_by=0.4.5.9 listed=1 confirmed_on=2022-01-06T02:19:49 confirmed_idx=1
+Guard in=default rsa_id=03910F285A33F365838EC66EF2C2EF754D046760 nickname=operator sampled_on=2022-01-07T11:14:09 sampled_idx=3 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=F1A800765664CA7D983897D133C825945C288745 nickname=bbkfry sampled_on=2022-01-07T12:44:58 sampled_idx=4 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=0C8D394DBA4F305C844B506E7772DE48EE9E4D22 nickname=UnredactedEFF sampled_on=2022-01-02T08:05:13 sampled_idx=5 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=3E04505D362AA324E6E4E1C8516CCD9EF4D41B9C nickname=mephisto sampled_on=2022-01-13T08:35:10 sampled_idx=6 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=B24E3BB3F5E5FCEB909054E681016093E6051475 nickname=qwertz3 sampled_on=2022-01-10T09:57:24 sampled_idx=7 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=5CFC486780CBD4446B764E51608D6574003B350D nickname=helena sampled_on=2022-01-13T07:19:51 sampled_idx=8 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=410118E874D2263F1CDCD567F81875A8E38B2B3C nickname=W0LFF sampled_on=2022-01-02T13:37:26 sampled_idx=9 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=BD2A34ADE4E603A272FAAD23AEF389801BB223BB nickname=ForPrivacyNET sampled_on=2022-01-08T11:00:14 sampled_idx=10 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=D0B39840CF57939606B9AAC273D09070842736D4 nickname=elites1 sampled_on=2022-01-06T15:20:49 sampled_idx=11 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=99D5C9A5A7238986D1EA1D7771CF81B4A192C4D0 nickname=arbitraryKenzie0 sampled_on=2022-01-08T11:33:58 sampled_idx=12 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=81B89439E34EE10A4F94C2C17235F9CE67C43450 nickname=Unnamed sampled_on=2022-01-03T04:29:49 sampled_idx=13 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=1872F829FCE05B8A464E8F1DDB70AB526359675A nickname=localhxst sampled_on=2022-01-13T01:51:12 sampled_idx=14 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=A4E47F08B8D56428DF76B17EDD6738BCBC3F5EFB nickname=straDEicebeer06 sampled_on=2022-01-07T02:51:05 sampled_idx=15 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=1E64DACE137A4A6223E7A4A73060A22ECA46D7B3 nickname=Doedelkiste16 sampled_on=2022-01-03T14:18:57 sampled_idx=16 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=B143D439B72D239A419F8DCE07B8A8EB1B486FA7 nickname=wardsback sampled_on=2022-01-10T12:20:41 sampled_idx=17 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=A1B7C1F83E5DA4376FD2E1DBA7AC28A71AB332AD nickname=arnall sampled_on=2022-01-03T22:20:16 sampled_idx=18 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=8FFAE8E674BBABBD6DC03B2CFA53897612014987 nickname=h4x0rs sampled_on=2022-01-09T14:33:52 sampled_idx=19 sampled_by=0.4.5.9 listed=1
+LastWritten 2022-01-13 22:28:41
+MinutesSinceUserActivity 2
+TorVersion Tor 0.4.5.9 (git-d0ed04d50e80fe1c)
+TotalBuildTimes 10

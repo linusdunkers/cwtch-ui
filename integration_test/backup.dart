@@ -1,0 +1,49 @@
+//import 'package:flutter_gherkin/flutter_gherkin_integration_test.dart'; // notice new import name
+import 'package:flutter_gherkin/flutter_gherkin.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:gherkin/gherkin.dart';
+
+// The application under test.
+import 'package:cwtch/main.dart' as app;
+import 'package:glob/glob.dart';
+
+import 'hooks/env.dart';
+import 'steps/form_elements.dart';
+
+part 'gherkin_suite_test.g.dart';
+const REPLACED_BY_SCRIPT = <String>['integration_test/features/**.feature'];
+
+@GherkinTestSuite(executionOrder: ExecutionOrder.alphabetical, featurePaths: REPLACED_BY_SCRIPT)
+void main() {
+  executeTestSuite(
+    FlutterTestConfiguration.DEFAULT([])
+      ..reporters = [
+        StdoutReporter(MessageLevel.error)
+          ..setWriteLineFn(print)
+          ..setWriteFn(print),
+        ProgressReporter()
+          ..setWriteLineFn(print)
+          ..setWriteFn(print),
+        TestRunSummaryReporter()
+          ..setWriteLineFn(print)
+          ..setWriteFn(print),
+        JsonReporter(
+          writeReport: (_, __) => Future<void>.value(),
+        ),
+      ]
+      ..customStepParameterDefinitions = [
+        SwitchStateParameter(),
+      ]
+      ..stepDefinitions = [
+        CheckSwitchState(),
+        CheckSwitchStateWithText(),
+        DropdownChoose(),
+        TakeScreenshot(),
+      ]
+      ..hooks = [
+        ResetCwtchEnvironment(),
+        AttachScreenshotOnFailedStepHook(),
+      ],
+      (World world) => app.main(),
+  );
+}

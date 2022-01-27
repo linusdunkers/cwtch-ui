@@ -1,0 +1,59 @@
+# Tor state file last generated on 2022-01-13 14:28:41 local time
+# Other times below are in UTC
+# You *do not* need to edit this file.
+
+CircuitBuildTimeBin 625 1
+CircuitBuildTimeBin 675 2
+CircuitBuildTimeBin 725 5
+CircuitBuildTimeBin 775 8
+CircuitBuildTimeBin 825 6
+CircuitBuildTimeBin 875 5
+CircuitBuildTimeBin 925 17
+CircuitBuildTimeBin 975 10
+CircuitBuildTimeBin 1025 8
+CircuitBuildTimeBin 1075 7
+CircuitBuildTimeBin 1125 4
+CircuitBuildTimeBin 1175 2
+CircuitBuildTimeBin 1225 6
+CircuitBuildTimeBin 1275 3
+CircuitBuildTimeBin 1325 3
+CircuitBuildTimeBin 1425 1
+CircuitBuildTimeBin 1525 1
+CircuitBuildTimeBin 1675 1
+CircuitBuildTimeBin 1725 1
+CircuitBuildTimeBin 2525 1
+CircuitBuildTimeBin 4275 1
+CircuitBuildTimeBin 4325 1
+CircuitBuildTimeBin 4475 1
+CircuitBuildTimeBin 4725 1
+CircuitBuildTimeBin 4775 3
+CircuitBuildTimeBin 4825 2
+CircuitBuildTimeBin 4875 1
+CircuitBuildTimeBin 5275 1
+CircuitBuildTimeBin 5675 2
+CircuitBuildTimeBin 5925 1
+Dormant 0
+Guard in=default rsa_id=2BAF092E8667C00CA3D9686C76D8EC3CC6BC7C5B nickname=finTor sampled_on=2022-01-05T08:19:31 sampled_idx=0 sampled_by=0.4.5.9 listed=1 confirmed_on=2022-01-11T07:47:33 confirmed_idx=1 pb_circ_attempts=106.000000 pb_circ_successes=104.000000 pb_successful_circuits_closed=104.000000 pb_timeouts=3.000000
+Guard in=default rsa_id=D8DF9660261B158A9DF6C3D7D63DD92B0FD5B9F7 nickname=Unnamed sampled_on=2022-01-05T16:25:11 sampled_idx=1 sampled_by=0.4.5.9 listed=1 confirmed_on=2022-01-07T12:32:08 confirmed_idx=0 pb_circ_attempts=2.000000 pb_circ_successes=2.000000 pb_successful_circuits_closed=2.000000
+Guard in=default rsa_id=1513902716C4B0130E8221012506B7B062AB4F51 nickname=gammad261w sampled_on=2022-01-07T04:31:50 sampled_idx=2 sampled_by=0.4.5.9 listed=1 confirmed_on=2022-01-08T20:55:32 confirmed_idx=2
+Guard in=default rsa_id=D1985D7A513E3F1AFEA961862280B70FE3413971 nickname=DTFNODE42 sampled_on=2022-01-05T22:54:53 sampled_idx=3 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=A5E42F1A3AFA948A7F2FDB1954A4CF6C6489D418 nickname=bauruine sampled_on=2022-01-07T03:06:36 sampled_idx=4 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=3736948A88A665DDEF4FBBB6F2E37BC073625F8E nickname=TimeDilation92 sampled_on=2022-01-07T14:54:09 sampled_idx=5 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=7751E37017F7666883DAF2503B3014182828536A nickname=presidents1 sampled_on=2022-01-01T01:20:23 sampled_idx=6 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=10A5EFCCD2FB9C1A4AC20FB779A5DB11B58957A7 nickname=eridanus sampled_on=2022-01-02T20:03:30 sampled_idx=7 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=37C1D66559D0C7884E3D21F7DEB58C75D79B98A8 nickname=hsjeufh24h7 sampled_on=2022-01-11T03:56:13 sampled_idx=8 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=0C3D5E19E3C75B505C8ACD26F89DCA2DF970553E nickname=HORUS1 sampled_on=2022-01-05T23:46:05 sampled_idx=9 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=F15A2A08BF91017DCFB6042171635661E13A8256 nickname=WitchNode sampled_on=2022-01-05T01:53:59 sampled_idx=10 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=5DB9AE27A44EB7B476CC04A66C67A71C97A001E6 nickname=Chenjesu sampled_on=2022-01-10T23:12:30 sampled_idx=11 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=B127DE4BDC3CCE8564C84AD6B7A4B6449B90A4A4 nickname=Doedelkiste51 sampled_on=2022-01-03T16:47:47 sampled_idx=12 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=BD2E0B5B6935664DFFE8307CE1FF269F2ABFA8EC nickname=myNiceRelay654399 sampled_on=2022-01-02T10:51:12 sampled_idx=13 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=EFEACD781604EB80FBC025EDEDEA2D523AEAAA2F nickname=Aerodynamik02 sampled_on=2022-01-03T10:41:47 sampled_idx=14 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=ED9A731373456FA071C12A3E63E2C8BEF0A6E721 nickname=StayStrongRelay01 sampled_on=2022-01-11T04:12:00 sampled_idx=15 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=DCC0AFEEDC0FD7F5802E209CF6D45B2C3F849420 nickname=DTFNODE49 sampled_on=2022-01-09T08:18:16 sampled_idx=16 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=2062C6FE40ED6329F02EAC8FB8DE3B682F9910EC nickname=EpicTor4 sampled_on=2022-01-10T22:31:15 sampled_idx=17 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=2CE9BE1FC88B9D0FA03F387C9E4F000B5D4B2AE9 nickname=ridin sampled_on=2022-01-08T09:59:55 sampled_idx=18 sampled_by=0.4.5.9 listed=1
+Guard in=default rsa_id=6DCED82B701D323120811DF58D350DD26BF9CB25 nickname=Chenjesu2 sampled_on=2022-01-12T16:21:52 sampled_idx=19 sampled_by=0.4.5.9 listed=1
+LastWritten 2022-01-13 22:28:41
+MinutesSinceUserActivity 1413
+TorVersion Tor 0.4.5.9 (git-d0ed04d50e80fe1c)
+TotalBuildTimes 106
