@@ -91,7 +91,7 @@ class _ProfileRowState extends State<ProfileRow> {
             return MultiProvider(
                 providers: [
                   ChangeNotifierProvider<ProfileInfoState>.value(value: profile),
-                  ChangeNotifierProvider<ContactListState>.value(value: profile.contactList),
+                  ChangeNotifierProvider<ContactListState>.value(value: profile.contactList)
                 ],
                 builder: (innercontext, widget) {
                   var appState = Provider.of<AppState>(context);

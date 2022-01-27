@@ -26,7 +26,6 @@ class ContactInfoState extends ChangeNotifier {
   // todo: a nicer way to model contacts, groups and other "entities"
   late bool _isGroup;
   String? _server;
-  double _serverSyncProgress = 0.0;
   late bool _archived;
 
   String? _acnCircuit;
@@ -176,12 +175,6 @@ class ContactInfoState extends ChangeNotifier {
 
   // we only allow callers to fetch the server
   get server => this._server;
-
-  double get serverSyncProgress => this._serverSyncProgress;
-  set serverSyncProgress(double newProgress) {
-    _serverSyncProgress = newProgress;
-    notifyListeners();
-  }
 
   bool isOnline() {
     if (this.isGroup == true) {

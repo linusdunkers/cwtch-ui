@@ -67,7 +67,7 @@ class _ContactRowState extends State<ContactRow> {
                             visible: contact.isGroup && contact.status == "Authenticated",
                             child: LinearProgressIndicator(
                               color: Provider.of<Settings>(context).theme.defaultButtonActiveColor,
-                              value: contact.serverSyncProgress,
+                              value: Provider.of<ProfileInfoState>(context).serverList.getServer(contact.server)?.syncProgress,
                             )),
                         Visibility(
                           visible: !Provider.of<Settings>(context).streamerMode,
