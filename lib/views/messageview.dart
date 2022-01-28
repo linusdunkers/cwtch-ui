@@ -286,6 +286,7 @@ class _MessageViewState extends State<MessageView> {
                                 focusedBorder: InputBorder.none,
                                 enabled: true,
                                 suffixIcon: ElevatedButton(
+                                  key: Key("btnSend"),
                                   style: ElevatedButton.styleFrom(padding: EdgeInsets.all(0.0), shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(45.0))),
                                   child: Icon(CwtchIcons.send_24px, size: 24, color: Provider.of<Settings>(context).theme.defaultButtonTextColor),
                                   onPressed: isOffline ? null : _sendMessage,

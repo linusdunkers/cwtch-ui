@@ -1,5 +1,6 @@
 #!/bin/bash
 
+pkill tor
 paths=$(find . -wholename "./integration_test/features/05*/*.feature" | sort | sed -z "s/\\n/','/g;s/,'$//;s/^/'/")
 sed "s|featurePaths: REPLACED_BY_SCRIPT|featurePaths: <String>[$paths]|" integration_test/gherkin_suite_test.editable.dart > integration_test/gherkin_suite_test.dart
 flutter pub run build_runner clean

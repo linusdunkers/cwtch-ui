@@ -8,6 +8,7 @@ import 'package:cwtch/main.dart' as app;
 import 'package:glob/glob.dart';
 
 import 'hooks/env.dart';
+import 'steps/chat.dart';
 import 'steps/files.dart';
 import 'steps/form_elements.dart';
 import 'steps/overrides.dart';
@@ -39,6 +40,8 @@ void main() {
         SwitchStateParameter(),
       ]
       ..stepDefinitions = [
+        // chat elements
+        ExpectReply(),
         // form elements
         CheckSwitchState(),
         CheckSwitchStateWithText(),
@@ -50,6 +53,9 @@ void main() {
         TapFirstWidget(),
         WaitUntilTypeExists(),
         ExpectTextToBePresent(),
+        ExpectWidgetWithTextWithin(),
+        WaitUntilTextExists(),
+        SwipeOnType(),
         // text
         TorVersionPresent(),
         TooltipTap(),

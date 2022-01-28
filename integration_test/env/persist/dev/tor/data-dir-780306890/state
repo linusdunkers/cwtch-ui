@@ -1,4 +1,4 @@
-# Tor state file last generated on 2022-01-13 15:48:59 local time
+# Tor state file last generated on 2022-01-27 22:13:58 local time
 # Other times below are in UTC
 # You *do not* need to edit this file.
 
@@ -29,7 +29,7 @@ CircuitBuildTimeBin 2225 1
 CircuitBuildTimeBin 2275 1
 CircuitBuildTimeBin 4525 1
 CircuitBuildAbandonedCount 1
-Dormant 0
+Dormant 1
 Guard in=default rsa_id=37EB4C9361D2F80F279B949CB3CB41DA2F46A2FA nickname=ChuckyHorror sampled_on=2022-01-09T18:40:11 sampled_idx=0 sampled_by=0.4.5.9 listed=1 confirmed_on=2022-01-08T22:43:00 confirmed_idx=0 pb_circ_attempts=109.000000 pb_circ_successes=107.000000 pb_successful_circuits_closed=107.000000 pb_timeouts=1.000000
 Guard in=default rsa_id=F50CF02A0E6A9D9B25F7EB220FC26F7BD1B74999 nickname=flowjob02 sampled_on=2022-01-03T07:14:36 sampled_idx=1 sampled_by=0.4.5.9 listed=1 confirmed_on=2022-01-13T03:50:27 confirmed_idx=1 pb_circ_attempts=1.000000 pb_circ_successes=1.000000 pb_successful_circuits_closed=1.000000
 Guard in=default rsa_id=AAC9F9AD5CE7E065C4EE5FA7ACF511F6389FCFA3 nickname=zitar sampled_on=2022-01-05T03:23:13 sampled_idx=2 sampled_by=0.4.5.9 listed=1 confirmed_on=2022-01-07T18:17:24 confirmed_idx=2
@@ -50,7 +50,6 @@ Guard in=default rsa_id=E0023AC14180112A2FFF00A84C6049862BB3E6C3 nickname=Derric
 Guard in=default rsa_id=119D68829651D16928A37C5501D76640D1F202CD nickname=oppressionSucks sampled_on=2022-01-05T06:20:46 sampled_idx=17 sampled_by=0.4.5.9 listed=1
 Guard in=default rsa_id=929BF37C657D4F69C76324E5FEA760A62483813B nickname=Ichotolot65 sampled_on=2022-01-04T23:32:22 sampled_idx=18 sampled_by=0.4.5.9 listed=1
 Guard in=default rsa_id=99EC64FE9EF0E0ECEC3E125A2327C2779C1E7947 nickname=masterchief sampled_on=2022-01-12T23:00:18 sampled_idx=19 sampled_by=0.4.5.9 listed=1
-LastWritten 2022-01-13 23:48:59
-MinutesSinceUserActivity 44
+LastWritten 2022-01-28 06:13:58
 TorVersion Tor 0.4.5.9 (git-d0ed04d50e80fe1c)
 TotalBuildTimes 109
