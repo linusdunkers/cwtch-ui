@@ -104,6 +104,7 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                   height: 20,
                                 ),
                                 CwtchTextField(
+                                  key: Key("displayNameFormElement"),
                                   controller: ctrlrNick,
                                   autofocus: false,
                                   hintText: AppLocalizations.of(context)!.yourDisplayName,
@@ -146,6 +147,7 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                   visible: Provider.of<ProfileInfoState>(context).onion.isEmpty,
                                   child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
                                     Checkbox(
+                                      key: Key("passwordCheckBox"),
                                       value: usePassword,
                                       fillColor: MaterialStateProperty.all(theme.current().defaultButtonColor),
                                       activeColor: theme.current().defaultButtonActiveColor,
@@ -179,6 +181,7 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                           height: 20,
                                         ),
                                         CwtchPasswordField(
+                                          key: Key("currentPasswordFormElement"),
                                           controller: ctrlrOldPass,
                                           autoFillHints: [AutofillHints.newPassword],
                                           validator: (value) {
@@ -204,6 +207,7 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                     height: 20,
                                   ),
                                   CwtchPasswordField(
+                                    key: Key("passwordFormElement"),
                                     controller: ctrlrPass,
                                     validator: (value) {
                                       // Password field can be empty when just updating the profile, not on creation
@@ -224,6 +228,7 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                     height: 20,
                                   ),
                                   CwtchPasswordField(
+                                      key: Key("confirmPasswordFormElement"),
                                       controller: ctrlrPass2,
                                       validator: (value) {
                                         // Password field can be empty when just updating the profile, not on creation

@@ -179,13 +179,14 @@ class _MessageViewState extends State<MessageView> {
   // size because of the additional wrapping end encoding
   // hybrid groups should allow these numbers to be the same.
   static const P2PMessageLengthMax = 7000;
-  static const GroupMessageLengthMax = 1800;
+  static const GroupMessageLengthMax = 1600;
 
   void _sendMessage([String? ignoredParam]) {
     var isGroup = Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(Provider.of<AppState>(context, listen: false).selectedConversation!)!.isGroup;
 
     // peers and groups currently have different length constraints (servers can store less)...
-    var lengthOk = (isGroup && ctrlrCompose.value.text.length < GroupMessageLengthMax) || ctrlrCompose.value.text.length <= P2PMessageLengthMax;
+    var actualMessageLength = ctrlrCompose.value.text.length;
+    var lengthOk = (isGroup && actualMessageLength < GroupMessageLengthMax) || actualMessageLength <= P2PMessageLengthMax;
 
     if (ctrlrCompose.value.text.isNotEmpty && lengthOk) {
       if (Provider.of<AppState>(context, listen: false).selectedConversation != null && Provider.of<AppState>(context, listen: false).selectedIndex != null) {
@@ -250,6 +251,10 @@ class _MessageViewState extends State<MessageView> {
     bool isOffline = Provider.of<ContactInfoState>(context).isOnline() == false;
     bool isGroup = Provider.of<ContactInfoState>(context).isGroup;
 
+    var charLength = ctrlrCompose.value.text.characters.length;
+    var expectedLength = ctrlrCompose.value.text.length;
+    var numberOfBytesMoreThanChar = (expectedLength - charLength);
+
     var composeBox = Container(
       color: Provider.of<Settings>(context).theme.backgroundMainColor,
       padding: EdgeInsets.all(2),
@@ -274,11 +279,16 @@ class _MessageViewState extends State<MessageView> {
                             keyboardType: TextInputType.multiline,
                             enableIMEPersonalizedLearning: false,
                             minLines: 1,
-                            maxLength: isGroup ? GroupMessageLengthMax : P2PMessageLengthMax,
+                            maxLength: (isGroup ? GroupMessageLengthMax : P2PMessageLengthMax) - numberOfBytesMoreThanChar,
                             maxLengthEnforcement: MaxLengthEnforcement.enforced,
                             maxLines: null,
                             onFieldSubmitted: _sendMessage,
                             enabled: !isOffline,
+                            onChanged: (String x) {
+                              setState(() {
+                                // we need to force a rerender here to update the max length count
+                              });
+                            },
                             decoration: InputDecoration(
                                 hintText: isOffline ? "" : AppLocalizations.of(context)!.placeholderEnterMessage,
                                 hintStyle: TextStyle(color: Provider.of<Settings>(context).theme.sendHintTextColor),

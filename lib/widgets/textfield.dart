@@ -8,7 +8,7 @@ doNothing(String x) {}
 // Provides a styled Text Field for use in Form Widgets.
 // Callers must provide a text controller, label helper text and a validator.
 class CwtchTextField extends StatefulWidget {
-  CwtchTextField({required this.controller, this.hintText = "", this.validator, this.autofocus = false, this.onChanged = doNothing, this.number = false, this.multiLine = false});
+  CwtchTextField({required this.controller, this.hintText = "", this.validator, this.autofocus = false, this.onChanged = doNothing, this.number = false, this.multiLine = false, this.key});
   final TextEditingController controller;
   final String hintText;
   final FormFieldValidator? validator;
@@ -16,6 +16,7 @@ class CwtchTextField extends StatefulWidget {
   final bool autofocus;
   final bool multiLine;
   final bool number;
+  final Key? key;
 
   @override
   _CwtchTextFieldState createState() => _CwtchTextFieldState();

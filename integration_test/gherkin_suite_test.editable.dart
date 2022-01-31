@@ -50,7 +50,9 @@ void main() {
         TakeScreenshot(),
         // overrides
         TapWidgetWithType(),
-        TapFirstWidget(),
+        TapWidgetWithLabel(),
+        ExpectWidgetWithText(),
+        TapButtonWithText(),
         WaitUntilTypeExists(),
         ExpectTextToBePresent(),
         ExpectWidgetWithTextWithin(),
