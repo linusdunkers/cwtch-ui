@@ -3,6 +3,8 @@ import 'package:flutter_gherkin/flutter_gherkin.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gherkin/gherkin.dart';
 
+import 'dart:io';
+
 // The application under test.
 import 'package:cwtch/main.dart' as app;
 import 'package:glob/glob.dart';
@@ -20,6 +22,51 @@ const REPLACED_BY_SCRIPT = <String>['integration_test/features/**.feature'];
 
 @GherkinTestSuite(executionOrder: ExecutionOrder.alphabetical, featurePaths: REPLACED_BY_SCRIPT)
 void main() {
+  final params = [
+    SwitchStateParameter(),
+  ];
+
+  final steps = [
+    // chat elements
+    ExpectReply(),
+    // form elements
+    CheckSwitchState(),
+    CheckSwitchStateWithText(),
+    DropdownChoose(),
+    // utils
+    TakeScreenshot(),
+    // overrides
+    TapWidgetWithType(),
+    TapFirstWidget(),
+    WaitUntilTypeExists(),
+    ExpectTextToBePresent(),
+    ExpectWidgetWithTextWithin(),
+    WaitUntilTextExists(),
+    SwipeOnType(),
+    // text
+    TorVersionPresent(),
+    TooltipTap(),
+    // files
+    FolderExists(),
+    FileExists(),
+  ];
+
+  var sb = StringBuffer();
+  sb..writeln("## Custom Parameters\n")
+  ..writeln("| name | pattern |")
+  ..writeln("| --- | --- |");
+  for (var i in params) {
+    sb..write("| ")..write(i.identifier)..write(" | ")..write(i.pattern.toString().replaceFirst("RegExp: pattern=","").replaceFirst(" flags=i",""))..writeln(" |");
+  }
+  sb..writeln("\n## Custom steps\n")
+  ..writeln("| pattern |")
+  ..writeln("| --- |");
+  for (var i in steps) {
+    sb.writeln(i.pattern.toString().replaceFirst("RegExp: pattern=", "| ").replaceFirst(" flags=", " |"));
+  }
+  var f = File("integration_test/CustomSteps.md");
+  f.writeAsString(sb.toString());
+
   executeTestSuite(
     FlutterTestConfiguration.DEFAULT([])
       ..reporters = [
@@ -39,30 +86,7 @@ void main() {
       ..customStepParameterDefinitions = [
         SwitchStateParameter(),
       ]
-      ..stepDefinitions = [
-        // chat elements
-        ExpectReply(),
-        // form elements
-        CheckSwitchState(),
-        CheckSwitchStateWithText(),
-        DropdownChoose(),
-        // utils
-        TakeScreenshot(),
-        // overrides
-        TapWidgetWithType(),
-        TapFirstWidget(),
-        WaitUntilTypeExists(),
-        ExpectTextToBePresent(),
-        ExpectWidgetWithTextWithin(),
-        WaitUntilTextExists(),
-        SwipeOnType(),
-        // text
-        TorVersionPresent(),
-        TooltipTap(),
-        // files
-        FolderExists(),
-        FileExists(),
-      ]
+      ..stepDefinitions = steps
       ..hooks = [
         ResetCwtchEnvironment(),
         AttachScreenshotOnFailedStepHook(),
