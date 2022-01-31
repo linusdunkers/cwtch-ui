@@ -21,6 +21,8 @@ struct _MyApplication {
   char** dart_entrypoint_arguments;
 };
 
+ FlMethodChannel* channel;
+
 // Redefining from flutter/engine::shell/platform/linux/fl_dart_project.cc
 // struct def required here to enable compiler to allow access to variables
 struct _FlDartProject {
@@ -34,6 +36,19 @@ struct _FlDartProject {
 };
 
 G_DEFINE_TYPE(MyApplication, my_application, GTK_TYPE_APPLICATION)
+
+#include <dlfcn.h>
+
+
+
+gboolean
+on_shutdown(GtkWidget *widget, GdkEvent *event, gpointer data)
+{
+     fl_method_channel_invoke_method(channel, "onWindowClose",
+                                      nullptr, nullptr, nullptr, nullptr);
+    return TRUE;
+}
+
 
 // Implements GApplication::activate.
 static void my_application_activate(GApplication* application) {
@@ -71,6 +86,9 @@ static void my_application_activate(GApplication* application) {
 
   gtk_window_set_default_size(window, 1280, 720);
   gtk_widget_show(GTK_WIDGET(window));
+
+    g_signal_connect(G_OBJECT(window),
+        "destroy", G_CALLBACK(on_shutdown), NULL);
 
   g_autoptr(FlDartProject) project = fl_dart_project_new();
 
@@ -113,10 +131,21 @@ static void my_application_activate(GApplication* application) {
   gtk_widget_show(GTK_WIDGET(view));
   gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(view));
 
-  fl_register_plugins(FL_PLUGIN_REGISTRY(view));
+
+  // Create a specific channel for shutting down cwtch when the close button is triggered
+  // We have registered the "destroy" handle above for this reason
+  FlEngine *engine = fl_view_get_engine(view);
+    g_autoptr(FlStandardMethodCodec) codec = fl_standard_method_codec_new();
+     g_autoptr(FlBinaryMessenger) messenger = fl_engine_get_binary_messenger(engine);
+   channel =
+      fl_method_channel_new(messenger,
+                            "im.cwtch.linux.shutdown", FL_METHOD_CODEC(codec));
+
 
   gtk_widget_grab_focus(GTK_WIDGET(view));
 }
+
+
 
 // Implements GApplication::local_command_line.
 static gboolean my_application_local_command_line(GApplication* application, gchar ***arguments, int *exit_status) {
