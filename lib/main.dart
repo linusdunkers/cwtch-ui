@@ -51,13 +51,14 @@ class Flwtch extends StatefulWidget {
   }
 }
 
-class FlwtchState extends State<Flwtch> with WindowListener, WidgetsBindingObserver  {
+class FlwtchState extends State<Flwtch> with WindowListener {
   final TextStyle biggerFont = const TextStyle(fontSize: 18);
   late Cwtch cwtch;
   late ProfileListState profs;
   final MethodChannel notificationClickChannel = MethodChannel('im.cwtch.flwtch/notificationClickHandler');
   final MethodChannel shutdownMethodChannel = MethodChannel('im.cwtch.flwtch/shutdownClickHandler');
   final MethodChannel shutdownLinuxMethodChannel = MethodChannel('im.cwtch.linux.shutdown');
+
   final GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
 
   Future<dynamic> shutdownDirect(MethodCall call) {
@@ -186,7 +187,6 @@ class FlwtchState extends State<Flwtch> with WindowListener, WidgetsBindingObser
   // coder beware: args["RemotePeer"] is actually a handle, and could be eg a groupID
   Future<void> _externalNotificationClicked(MethodCall call) async {
     var args = jsonDecode(call.arguments);
-
     var profile = profs.getProfile(args["ProfileOnion"])!;
     var convo = profile.contactList.getContact(args["Handle"])!;
     Provider.of<AppState>(navKey.currentContext!, listen: false).initialScrollIndex = convo.unreadMessages;
@@ -230,7 +230,6 @@ class FlwtchState extends State<Flwtch> with WindowListener, WidgetsBindingObser
   void onWindowBlur() {
     globalAppState.focus = false;
   }
-
 
   @override
   void dispose() {
