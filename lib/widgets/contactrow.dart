@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cwtch/models/appstate.dart';
 import 'package:cwtch/models/contact.dart';
 import 'package:cwtch/models/profile.dart';
+import 'package:cwtch/models/profileservers.dart';
 import 'package:cwtch/views/contactsview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -66,6 +67,7 @@ class _ContactRowState extends State<ContactRow> {
                             visible: contact.isGroup && contact.status == "Authenticated",
                             child: LinearProgressIndicator(
                               color: Provider.of<Settings>(context).theme.defaultButtonActiveColor,
+                              value: Provider.of<ProfileInfoState>(context).serverList.getServer(contact.server)?.syncProgress,
                             )),
                         Visibility(
                           visible: !Provider.of<Settings>(context).streamerMode,
