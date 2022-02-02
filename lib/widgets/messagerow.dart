@@ -80,7 +80,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
     Widget wdgIcons = Platform.isAndroid
         ? SizedBox.shrink()
         : Visibility(
-            visible: true,//Provider.of<AppState>(context).hoveredIndex == Provider.of<MessageMetadata>(context).messageID,
+            visible: true, //Provider.of<AppState>(context).hoveredIndex == Provider.of<MessageMetadata>(context).messageID,
             maintainSize: true,
             maintainAnimation: true,
             maintainState: true,

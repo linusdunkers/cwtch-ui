@@ -183,7 +183,11 @@ ThemeData mkThemeData(Settings opaque) {
     scrollbarTheme: ScrollbarThemeData(isAlwaysShown: false, thumbColor: MaterialStateProperty.all(opaque.current().scrollbarDefaultColor)),
     tabBarTheme: TabBarTheme(indicator: UnderlineTabIndicator(borderSide: BorderSide(color: opaque.current().defaultButtonActiveColor))),
     dialogTheme: DialogTheme(
-        backgroundColor: opaque.current().backgroundPaneColor, titleTextStyle: TextStyle(color: opaque.current().mainTextColor), contentTextStyle: TextStyle(color: opaque.current().mainTextColor, )),
+        backgroundColor: opaque.current().backgroundPaneColor,
+        titleTextStyle: TextStyle(color: opaque.current().mainTextColor),
+        contentTextStyle: TextStyle(
+          color: opaque.current().mainTextColor,
+        )),
     textTheme: TextTheme(
         headline1: TextStyle(color: opaque.current().mainTextColor),
         headline2: TextStyle(color: opaque.current().mainTextColor),

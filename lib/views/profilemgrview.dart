@@ -108,7 +108,12 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
     }
 
     // Global Settings
-    actions.add(IconButton(key: Key("OpenSettingsView"), icon: Icon(Icons.settings), tooltip: AppLocalizations.of(context)!.tooltipOpenSettings, splashRadius: Material.defaultSplashRadius / 2, onPressed: _pushGlobalSettings));
+    actions.add(IconButton(
+        key: Key("OpenSettingsView"),
+        icon: Icon(Icons.settings),
+        tooltip: AppLocalizations.of(context)!.tooltipOpenSettings,
+        splashRadius: Material.defaultSplashRadius / 2,
+        onPressed: _pushGlobalSettings));
 
     // shutdown cwtch
     actions.add(IconButton(icon: Icon(Icons.close), tooltip: AppLocalizations.of(context)!.shutdownCwtchTooltip, splashRadius: Material.defaultSplashRadius / 2, onPressed: _modalShutdown));

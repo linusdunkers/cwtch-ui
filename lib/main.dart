@@ -37,7 +37,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   print("runApp()");
   runApp(Flwtch());
-  sleep(Duration(seconds:1));
+  sleep(Duration(seconds: 1));
 }
 
 class Flwtch extends StatefulWidget {
