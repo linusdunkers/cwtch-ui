@@ -4,6 +4,7 @@ import 'package:cwtch/cwtch_icons_icons.dart';
 import 'package:cwtch/models/contact.dart';
 import 'package:cwtch/models/profile.dart';
 import 'package:cwtch/models/profileservers.dart';
+import 'package:cwtch/models/remoteserver.dart';
 import 'package:cwtch/models/servers.dart';
 import 'package:cwtch/widgets/buttontextfield.dart';
 import 'package:cwtch/widgets/contactrow.dart';

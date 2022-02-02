@@ -3,6 +3,7 @@ import 'package:cwtch/models/appstate.dart';
 import 'package:cwtch/models/contact.dart';
 import 'package:cwtch/models/contactlist.dart';
 import 'package:cwtch/models/profile.dart';
+import 'package:cwtch/models/profilelist.dart';
 import 'package:cwtch/views/profileserversview.dart';
 import 'package:flutter/material.dart';
 import 'package:cwtch/widgets/contactrow.dart';
@@ -154,8 +155,15 @@ class _ContactsViewState extends State<ContactsView> {
 
   Widget _buildContactList() {
     final tiles = Provider.of<ContactListState>(context).filteredList().map((ContactInfoState contact) {
-      return ChangeNotifierProvider<ContactInfoState>.value(key: ValueKey(contact.profileOnion + "" + contact.onion), value: contact, builder: (_, __) => RepaintBoundary(child: ContactRow()));
+      return MultiProvider(
+        providers: [
+          ChangeNotifierProvider.value(value: contact),
+          ChangeNotifierProvider.value(value: Provider.of<ProfileInfoState>(context).serverList),
+        ],
+        builder: (context, child) => RepaintBoundary(child: ContactRow()),
+      );
     });
+
     final divided = ListTile.divideTiles(
       context: context,
       tiles: tiles,

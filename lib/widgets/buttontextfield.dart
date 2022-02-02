@@ -5,7 +5,16 @@ import 'package:provider/provider.dart';
 // Provides a styled Text Field for use in Form Widgets.
 // Callers must provide a text controller, label helper text and a validator.
 class CwtchButtonTextField extends StatefulWidget {
-  CwtchButtonTextField({required this.controller, required this.onPressed, required this.icon, required this.tooltip, this.readonly = true, this.labelText, this.testKey, this.onChanged,});
+  CwtchButtonTextField({
+    required this.controller,
+    required this.onPressed,
+    required this.icon,
+    required this.tooltip,
+    this.readonly = true,
+    this.labelText,
+    this.testKey,
+    this.onChanged,
+  });
   final TextEditingController controller;
   final Function()? onPressed;
   final Function(String)? onChanged;

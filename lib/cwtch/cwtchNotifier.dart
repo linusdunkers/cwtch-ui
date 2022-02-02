@@ -5,6 +5,7 @@ import 'package:cwtch/models/contact.dart';
 import 'package:cwtch/models/message.dart';
 import 'package:cwtch/models/profilelist.dart';
 import 'package:cwtch/models/profileservers.dart';
+import 'package:cwtch/models/remoteserver.dart';
 import 'package:cwtch/models/servers.dart';
 import 'package:cwtch/notification_manager.dart';
 import 'package:provider/provider.dart';
@@ -197,7 +198,8 @@ class CwtchNotifier {
           var senderHandle = data['RemotePeer'];
           var senderImage = data['Picture'];
           var timestampSent = DateTime.tryParse(data['TimestampSent'])!;
-          var currentTotal = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)!.totalMessages;
+          var contact = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier);
+          var currentTotal = contact!.totalMessages;
           var isAuto = data['Auto'] == "true";
           String? contenthash = data['ContentHash'];
           var selectedConversation = appState.selectedProfile == data["ProfileOnion"] && appState.selectedConversation == identifier;
@@ -218,6 +220,8 @@ class CwtchNotifier {
 
             notificationManager.notify("New Message From Group!");
           }
+          RemoteServerInfoState? server = profileCN.getProfile(data["ProfileOnion"])?.serverList.getServer(contact.server);
+          server?.updateSyncProgressFor(timestampSent);
         } else {
           // This is dealt with by IndexedAcknowledgment
           EnvironmentConfig.debugLog("new message from group from yourself - this should not happen");

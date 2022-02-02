@@ -38,7 +38,9 @@ void main() {
     // overrides
     TapWidgetWithType(),
     TapWidgetWithLabel(),
+    TapWidgetWithTooltip(),
     ExpectWidgetWithText(),
+    AbsentWidgetWithText(),
     WaitUntilTypeExists(),
     ExpectTextToBePresent(),
     ExpectWidgetWithTextWithin(),

@@ -132,14 +132,15 @@ static void my_application_activate(GApplication* application) {
   gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(view));
 
 
+  fl_register_plugins(FL_PLUGIN_REGISTRY(view));
+
   // Create a specific channel for shutting down cwtch when the close button is triggered
   // We have registered the "destroy" handle above for this reason
   FlEngine *engine = fl_view_get_engine(view);
     g_autoptr(FlStandardMethodCodec) codec = fl_standard_method_codec_new();
      g_autoptr(FlBinaryMessenger) messenger = fl_engine_get_binary_messenger(engine);
-   channel =
-      fl_method_channel_new(messenger,
-                            "im.cwtch.linux.shutdown", FL_METHOD_CODEC(codec));
+   channel =      fl_method_channel_new(messenger, "im.cwtch.linux.shutdown", FL_METHOD_CODEC(codec));
+
 
 
   gtk_widget_grab_focus(GTK_WIDGET(view));

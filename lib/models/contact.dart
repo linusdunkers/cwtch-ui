@@ -211,6 +211,7 @@ class ContactInfoState extends ChangeNotifier {
       newMarker++;
     }
 
+    this._lastMessageTime = timestamp;
     this.messageCache.addNew(profileOnion, identifier, messageID, timestamp, senderHandle, senderImage, isAuto, data, contenthash);
     this.totalMessages += 1;
 

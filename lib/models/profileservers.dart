@@ -1,3 +1,4 @@
+import 'package:cwtch/models/remoteserver.dart';
 import 'package:flutter/material.dart';
 
 import 'contact.dart';
@@ -33,10 +34,15 @@ class ProfileServerListState extends ChangeNotifier {
       // return -1 = a first in list
       // return 1 = b first in list
 
-      // online v offline
+      // online v syncing v offline
       if (a.status == "Synced" && b.status != "Synced") {
         return -1;
       } else if (a.status != "Synced" && b.status == "Synced") {
+        return 1;
+      }
+      if (a.status == "Authenticated" && b.status != "Authenticated") {
+        return -1;
+      } else if (a.status != "Authenticated" && b.status == "Authenticated") {
         return 1;
       }
 
@@ -63,32 +69,5 @@ class ProfileServerListState extends ChangeNotifier {
   }
 
   List<RemoteServerInfoState> get servers => _servers.sublist(0); //todo: copy?? dont want caller able to bypass changenotifier
-
-}
-
-class RemoteServerInfoState extends ChangeNotifier {
-  final String onion;
-  final int identifier;
-  String status;
-  String description;
-  List<ContactInfoState> _groups = [];
-
-  RemoteServerInfoState({required this.onion, required this.identifier, required this.description, required this.status});
-
-  void updateDescription(String newDescription) {
-    this.description = newDescription;
-    notifyListeners();
-  }
-
-  void clearGroups() {
-    _groups = [];
-  }
-
-  void addGroup(ContactInfoState group) {
-    _groups.add(group);
-    notifyListeners();
-  }
-
-  List<ContactInfoState> get groups => _groups.sublist(0); //todo: copy?? dont want caller able to bypass changenotifier
 
 }
