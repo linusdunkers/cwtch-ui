@@ -1,6 +1,7 @@
 import 'package:cwtch/main.dart';
 import 'package:cwtch/models/profile.dart';
 import 'package:cwtch/models/profileservers.dart';
+import 'package:cwtch/models/remoteserver.dart';
 import 'package:cwtch/models/servers.dart';
 import 'package:cwtch/views/addeditservers.dart';
 import 'package:cwtch/views/remoteserverview.dart';
@@ -55,7 +56,13 @@ class _RemoteServerRowState extends State<RemoteServerRow> {
                           softWrap: true,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(color: running ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor : Provider.of<Settings>(context).theme.portraitOfflineBorderColor),
-                        )))
+                        ))),
+                    Visibility(
+                        visible: server.status == "Authenticated",
+                        child: LinearProgressIndicator(
+                          color: Provider.of<Settings>(context).theme.defaultButtonActiveColor,
+                          value: server.syncProgress,
+                        )),
                   ],
                 )),
               ]),

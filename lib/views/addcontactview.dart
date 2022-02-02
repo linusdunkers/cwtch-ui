@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:cwtch/cwtch_icons_icons.dart';
 import 'package:cwtch/models/profile.dart';
+import 'package:cwtch/models/remoteserver.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cwtch/errorHandler.dart';
