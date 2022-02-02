@@ -191,6 +191,7 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
                               height: 20,
                             ),
                             CwtchPasswordField(
+                              key: Key("unlockPasswordProfileElement"),
                               autofocus: true,
                               controller: ctrlrPassword,
                               action: unlock,

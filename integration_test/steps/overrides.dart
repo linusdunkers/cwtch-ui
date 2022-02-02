@@ -37,6 +37,22 @@ StepDefinitionGeneric TapWidgetWithLabel() {
         firstMatchOnly: true);
       //Text wdg = await context.world.appDriver.widget(finder, ExpectedWidgetResultType.first);
       //print(wdg.debugDescribeChildren().first.)
+      await context.world.appDriver.scrollIntoView(finder);
+      await context.world.appDriver.tap(finder);
+      await context.world.appDriver.waitForAppToSettle();
+    },
+  );
+}
+
+StepDefinitionGeneric TapWidgetWithTooltip() {
+  return given2<String, String, FlutterWorld>(
+    RegExp(r'I tap the {string} widget with tooltip {string}$'),
+        (ofType, text, context) async {
+      final finder = context.world.appDriver.findByDescendant(
+          context.world.appDriver.findBy(widgetTypeByName(ofType), FindType.type),
+          context.world.appDriver.findBy(text, FindType.tooltip),
+          firstMatchOnly: true);
+      await context.world.appDriver.scrollIntoView(finder);
       await context.world.appDriver.tap(finder);
       await context.world.appDriver.waitForAppToSettle();
     },
@@ -59,6 +75,23 @@ StepDefinitionGeneric ExpectWidgetWithText() {
   );
 }
 
+StepDefinitionGeneric AbsentWidgetWithText() {
+  return given2<String, String, FlutterWorld>(
+    RegExp(r'I expect a {string} widget with text {string} to be absent$'),
+        (ofType, text, context) async {
+      final finder = context.world.appDriver.findByDescendant(
+          context.world.appDriver.findBy(widgetTypeByName(ofType), FindType.type),
+          context.world.appDriver.findBy(text, FindType.text),
+          firstMatchOnly: true);
+      //Text wdg = await context.world.appDriver.widget(finder, ExpectedWidgetResultType.first);
+      //print(wdg.debugDescribeChildren().first.)
+      await context.world.appDriver.isAbsent(finder);
+      await context.world.appDriver.waitForAppToSettle();
+    },
+  );
+}
+
+
 StepDefinitionGeneric TapButtonWithText() {
   return given1<String, FlutterWorld>(
     RegExp(r'I tap the {string} (?:button|element|label|icon|field|text|widget)$'),
@@ -67,8 +100,7 @@ StepDefinitionGeneric TapButtonWithText() {
           context.world.appDriver.findBy(Flwtch, FindType.type),
           context.world.appDriver.findBy(input1, FindType.key),
           firstMatchOnly: true);
-      //Text wdg = await context.world.appDriver.widget(finder, ExpectedWidgetResultType.first);
-      //print(wdg.debugDescribeChildren().first.)
+      await context.world.appDriver.scrollIntoView(finder);
       await context.world.appDriver.tap(finder);
       await context.world.appDriver.waitForAppToSettle();
     },
@@ -229,6 +261,8 @@ Type widgetTypeByName(String input1) {
       return TorIcon;
     case "button":
         return ElevatedButton;
+    case "IconButton":
+      return IconButton;
     case "ProfileRow":
         return ProfileRow;
     default:
