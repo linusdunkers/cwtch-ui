@@ -57,13 +57,13 @@ void main() {
   ..writeln("| name | pattern |")
   ..writeln("| --- | --- |");
   for (var i in params) {
-    sb..write("| ")..write(i.identifier)..write(" | ")..write(i.pattern.toString().replaceFirst("RegExp: pattern=","").replaceFirst(" flags=i",""))..writeln(" |");
+    sb..write("| ")..write(i.identifier)..write(" | ")..write(i.pattern.toString().replaceFirst("RegExp: pattern=","").replaceFirst(" flags=i","").replaceAll("|", "&#124;"))..writeln(" |");
   }
   sb..writeln("\n## Custom steps\n")
   ..writeln("| pattern |")
   ..writeln("| --- |");
   for (var i in steps) {
-    sb.writeln(i.pattern.toString().replaceFirst("RegExp: pattern=", "| ").replaceFirst(" flags=", " |"));
+    sb.writeln(i.pattern.toString().replaceFirst("RegExp: pattern=", "| ").replaceFirst(" flags=", " |").replaceAll("|", "&#124;"));
   }
   var f = File("integration_test/CustomSteps.md");
   f.writeAsString(sb.toString());
