@@ -54,7 +54,7 @@ class WindowsNotificationManager implements NotificationsManager {
       }
       // clicked
       if (event is ToastActivated) {
-          active = false;
+        active = false;
       }
       // if a supplied action was clicked
       if (event is ToastInteracted) {
