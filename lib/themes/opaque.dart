@@ -123,7 +123,6 @@ abstract class OpaqueThemeType {
 
 ThemeData mkThemeData(Settings opaque) {
   return ThemeData(
-    fontFamily: "OpenSans",
     visualDensity: VisualDensity.adaptivePlatformDensity,
     primarySwatch: Colors.red,
     primaryIconTheme: IconThemeData(
@@ -150,7 +149,6 @@ ThemeData mkThemeData(Settings opaque) {
           color: opaque.current().mainTextColor,
         ),
         titleTextStyle: TextStyle(
-          fontFamily: "OpenSans",
           color: opaque.current().mainTextColor,
         ),
         actionsIconTheme: IconThemeData(
@@ -185,7 +183,7 @@ ThemeData mkThemeData(Settings opaque) {
     scrollbarTheme: ScrollbarThemeData(isAlwaysShown: false, thumbColor: MaterialStateProperty.all(opaque.current().scrollbarDefaultColor)),
     tabBarTheme: TabBarTheme(indicator: UnderlineTabIndicator(borderSide: BorderSide(color: opaque.current().defaultButtonActiveColor))),
     dialogTheme: DialogTheme(
-        backgroundColor: opaque.current().backgroundPaneColor, titleTextStyle: TextStyle(          fontFamily: "OpenSans", color: opaque.current().mainTextColor), contentTextStyle: TextStyle(color: opaque.current().mainTextColor,           fontFamily: "OpenSans",)),
+        backgroundColor: opaque.current().backgroundPaneColor, titleTextStyle: TextStyle(color: opaque.current().mainTextColor), contentTextStyle: TextStyle(color: opaque.current().mainTextColor, )),
     textTheme: TextTheme(
         headline1: TextStyle(color: opaque.current().mainTextColor),
         headline2: TextStyle(color: opaque.current().mainTextColor),
