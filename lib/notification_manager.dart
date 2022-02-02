@@ -1,7 +1,8 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:cwtch/main.dart';
-import 'package:desktoasts/desktoasts.dart';
+import 'package:win_toast/win_toast.dart';
 import 'package:desktop_notifications/desktop_notifications.dart';
 import 'package:path/path.dart' as path;
 
@@ -30,51 +31,43 @@ class LinuxNotificationsManager implements NotificationsManager {
 
   Future<void> notify(String message) async {
     var iconPath = Uri.file(path.join(path.current, "cwtch.png"));
-    client.notify(message, appName: "cwtch", appIcon: iconPath.toString(), replacesId: this.previous_id).then((Notification value) => previous_id = value.id);
+    client
+        .notify(message,
+            appName: "cwtch",
+            appIcon: iconPath.toString(),
+            replacesId: this.previous_id)
+        .then((Notification value) => previous_id = value.id);
   }
 }
 
 // Windows Notification Manager uses https://pub.dev/packages/desktoasts to implement
 // windows notifications
 class WindowsNotificationManager implements NotificationsManager {
-  late ToastService service;
   bool active = false;
+  bool initialized = false;
 
   WindowsNotificationManager() {
-    service = new ToastService(
-      appName: 'cwtch',
-      companyName: 'Open Privacy Research Society',
-      productName: 'Cwtch',
-    );
-
-    service.stream.listen((event) {
-      // the user closed the notification of the OS timed it out
-      if (event is ToastDismissed) {
-        active = false;
-      }
-      // clicked
-      if (event is ToastActivated) {
-        active = false;
-      }
-      // if a supplied action was clicked
-      if (event is ToastInteracted) {
-        active = false;
-      }
+    scheduleMicrotask(() async {
+      initialized = await WinToast.instance().initialize(
+          appName: 'cwtch',
+          productName: 'Cwtch',
+          companyName: 'Open Privacy Research Society');
     });
   }
 
   Future<void> notify(String message) async {
-    if (!globalAppState.focus) {
+    if (initialized && !globalAppState.focus) {
       if (!active) {
-        // One string of bold text on the first line (title),
-        // one string (subtitle) of regular text wrapped across the second and third lines.
-        Toast toast = new Toast(
-          type: ToastType.text02,
-          title: 'Cwtch',
-          subtitle: message,
-        );
-        service.show(toast);
+        WinToast.instance().clear();
+        final toast = await WinToast.instance()
+            .showToast(type: ToastType.text01, title: message);
         active = true;
+        toast?.eventStream.listen((event) {
+          if (event is ActivatedEvent) {
+            WinToast.instance().bringWindowToFront();
+          }
+          active = false;
+        });
       }
     }
   }
@@ -89,13 +82,15 @@ NotificationsManager newDesktopNotificationsManager() {
       client.getCapabilities();
       return LinuxNotificationsManager(client);
     } catch (e) {
-      EnvironmentConfig.debugLog("Attempted to access DBUS for notifications but failed. Switching off notifications.");
+      EnvironmentConfig.debugLog(
+          "Attempted to access DBUS for notifications but failed. Switching off notifications.");
     }
   } else if (Platform.isWindows) {
     try {
       return WindowsNotificationManager();
     } catch (e) {
-      EnvironmentConfig.debugLog("Failed to create Windows desktoasts notification manager");
+      EnvironmentConfig.debugLog(
+          "Failed to create Windows desktoasts notification manager");
     }
   }
   return NullNotificationsManager();
