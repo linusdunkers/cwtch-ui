@@ -122,8 +122,8 @@ class ProfileInfoState extends ChangeNotifier {
 
   // Remove a contact from a list. Currently only used when rejecting a group invitation.
   // Eventually will also be used for other removals.
-  void removeContact(String handle) {
-    this.contactList.removeContactByHandle(handle);
+  void removeContact(int handle) {
+    this.contactList.removeContact(handle);
     notifyListeners();
   }
 

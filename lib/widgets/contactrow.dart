@@ -136,7 +136,7 @@ class _ContactRowState extends State<ContactRow> {
     ContactInfoState contact = Provider.of<ContactInfoState>(context, listen: false);
     if (contact.isGroup == true) {
       // FIXME This flow is incorrect. Groups never just show up on the contact list anymore
-      Provider.of<ProfileInfoState>(context, listen: false).removeContact(contact.onion);
+      Provider.of<ProfileInfoState>(context, listen: false).removeContact(contact.identifier);
     } else {
       Provider.of<FlwtchState>(context, listen: false).cwtch.BlockContact(Provider.of<ContactInfoState>(context, listen: false).profileOnion, contact.identifier);
     }
