@@ -120,6 +120,10 @@ class ProfileInfoState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void recountUnread() {
+    this._unreadMessages = _contacts.contacts.fold(0, (i, c) => i + c.unreadMessages);
+  }
+
   // Remove a contact from a list. Currently only used when rejecting a group invitation.
   // Eventually will also be used for other removals.
   void removeContact(String handle) {
@@ -168,6 +172,7 @@ class ProfileInfoState extends ChangeNotifier {
                 lastMessageTime: DateTime.fromMillisecondsSinceEpoch(1000 * int.parse(contact["lastMsgTime"])),
               ));
         }
+        unreadMessages += int.parse(contact["numUnread"]);
       });
     }
     this._contacts.resort();

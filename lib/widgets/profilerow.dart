@@ -1,6 +1,7 @@
 import 'package:cwtch/models/appstate.dart';
 import 'package:cwtch/models/contactlist.dart';
 import 'package:cwtch/models/profile.dart';
+import 'package:cwtch/models/profilelist.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:cwtch/views/addeditprofileview.dart';
@@ -83,7 +84,6 @@ class _ProfileRowState extends State<ProfileRow> {
   }
 
   void _pushContactList(ProfileInfoState profile, bool isLandscape) {
-    Provider.of<ProfileInfoState>(context, listen: false).unreadMessages = 0;
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         settings: RouteSettings(name: "conversations"),

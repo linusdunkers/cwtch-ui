@@ -81,6 +81,7 @@ class _ContactsViewState extends State<ContactsView> {
               icon: Icon(Icons.arrow_back),
               tooltip: MaterialLocalizations.of(context).backButtonTooltip,
               onPressed: () {
+                Provider.of<ProfileInfoState>(context, listen: false).recountUnread();
                 Provider.of<AppState>(context, listen: false).selectedProfile = "";
                 Navigator.of(context).pop();
               },
