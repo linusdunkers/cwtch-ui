@@ -174,7 +174,7 @@ class ContactInfoState extends ChangeNotifier {
   }
 
   // we only allow callers to fetch the server
-  get server => this._server;
+  String? get server => this._server;
 
   bool isOnline() {
     if (this.isGroup == true) {

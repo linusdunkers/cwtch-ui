@@ -24,6 +24,18 @@ class _ContactRowState extends State<ContactRow> {
   @override
   Widget build(BuildContext context) {
     var contact = Provider.of<ContactInfoState>(context);
+
+    // Only groups have a sync status
+    Widget? syncStatus;
+    if (contact.isGroup) {
+      syncStatus = Visibility(
+          visible: contact.isGroup && contact.status == "Authenticated",
+          child: LinearProgressIndicator(
+            color: Provider.of<Settings>(context).theme.defaultButtonActiveColor,
+            value: Provider.of<ProfileInfoState>(context).serverList.getServer(contact.server ?? "")?.syncProgress,
+          ));
+    }
+
     return Card(
         clipBehavior: Clip.antiAlias,
         color: Provider.of<AppState>(context).selectedConversation == contact.identifier ? Provider.of<Settings>(context).theme.backgroundHilightElementColor : null,
@@ -63,12 +75,7 @@ class _ContactRowState extends State<ContactRow> {
                           softWrap: true,
                           overflow: TextOverflow.visible,
                         ),
-                        Visibility(
-                            visible: contact.isGroup && contact.status == "Authenticated",
-                            child: LinearProgressIndicator(
-                              color: Provider.of<Settings>(context).theme.defaultButtonActiveColor,
-                              value: Provider.of<ProfileInfoState>(context).serverList.getServer(contact.server)?.syncProgress,
-                            )),
+                        syncStatus ?? Container(),
                         Visibility(
                           visible: !Provider.of<Settings>(context).streamerMode,
                           child: Text(contact.onion,
@@ -128,7 +135,7 @@ class _ContactRowState extends State<ContactRow> {
     Provider.of<ContactInfoState>(context, listen: false).blocked = true;
     ContactInfoState contact = Provider.of<ContactInfoState>(context, listen: false);
     if (contact.isGroup == true) {
-      // FIXME This flow is incrorect. Groups never just show up on the contact list anymore
+      // FIXME This flow is incorrect. Groups never just show up on the contact list anymore
       Provider.of<ProfileInfoState>(context, listen: false).removeContact(contact.onion);
     } else {
       Provider.of<FlwtchState>(context, listen: false).cwtch.BlockContact(Provider.of<ContactInfoState>(context, listen: false).profileOnion, contact.identifier);
