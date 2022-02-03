@@ -71,9 +71,9 @@ class CwtchNotifier {
               savePeerHistory: data["saveConversationHistory"] == null ? "DeleteHistoryConfirmed" : data["saveConversationHistory"],
               numMessages: int.parse(data["numMessages"]),
               numUnread: int.parse(data["unread"]),
-              isGroup: data["isGroup"] == true,
-              server: data["groupServer"],
-              archived: data["isArchived"] == true,
+              isGroup: false, // by definition
+              server: null,
+              archived: false,
               lastMessageTime: DateTime.now(), //show at the top of the contact list even if no messages yet
             ));
         break;
@@ -220,7 +220,7 @@ class CwtchNotifier {
 
             notificationManager.notify("New Message From Group!");
           }
-          RemoteServerInfoState? server = profileCN.getProfile(data["ProfileOnion"])?.serverList.getServer(contact.server);
+          RemoteServerInfoState? server = profileCN.getProfile(data["ProfileOnion"])?.serverList.getServer(contact.server ?? "");
           server?.updateSyncProgressFor(timestampSent);
         } else {
           // This is dealt with by IndexedAcknowledgment
