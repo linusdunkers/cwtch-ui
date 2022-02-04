@@ -8,6 +8,7 @@ import 'package:cwtch/models/profileservers.dart';
 import 'package:cwtch/models/remoteserver.dart';
 import 'package:cwtch/models/servers.dart';
 import 'package:cwtch/notification_manager.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'package:cwtch/torstatus.dart';
@@ -145,9 +146,10 @@ class CwtchNotifier {
         var senderImage = data['Picture'];
         var isAuto = data['Auto'] == "true";
         String? contenthash = data['ContentHash'];
-        var selectedConversation = appState.selectedProfile == data["ProfileOnion"] && appState.selectedConversation == identifier;
+        var selectedProfile = appState.selectedProfile == data["ProfileOnion"];
+        var selectedConversation = selectedProfile && appState.selectedConversation == identifier;
 
-        profileCN.getProfile(data["ProfileOnion"])?.contactList.newMessage(
+        profileCN.getProfile(data["ProfileOnion"])?.newMessage(
               identifier,
               messageID,
               timestamp,
@@ -156,9 +158,10 @@ class CwtchNotifier {
               isAuto,
               data["Data"],
               contenthash,
+              selectedProfile,
               selectedConversation,
             );
-
+        appState.notifyProfileUnread();
         break;
       case "PeerAcknowledgement":
         // We don't use these anymore, IndexedAcknowledgement is more suited to the UI front end...
@@ -198,7 +201,8 @@ class CwtchNotifier {
           var currentTotal = contact!.totalMessages;
           var isAuto = data['Auto'] == "true";
           String? contenthash = data['ContentHash'];
-          var selectedConversation = appState.selectedProfile == data["ProfileOnion"] && appState.selectedConversation == identifier;
+          var selectedProfile = appState.selectedProfile == data["ProfileOnion"];
+          var selectedConversation = selectedProfile && appState.selectedConversation == identifier;
 
           // Only bother to do anything if we know about the group and the provided index is greater than our current total...
           if (currentTotal != null && idx >= currentTotal) {
@@ -212,9 +216,10 @@ class CwtchNotifier {
             // For now we perform some minimal checks on the sent timestamp to use to provide a useful ordering for honest contacts
             // and ensure that malicious contacts in groups can only set this timestamp to a value within the range of `last seen message time`
             // and `local now`.
-            profileCN.getProfile(data["ProfileOnion"])?.contactList.newMessage(identifier, idx, timestampSent, senderHandle, senderImage, isAuto, data["Data"], contenthash, selectedConversation);
+            profileCN.getProfile(data["ProfileOnion"])?.newMessage(identifier, idx, timestampSent, senderHandle, senderImage, isAuto, data["Data"], contenthash, selectedProfile, selectedConversation);
 
             notificationManager.notify("New Message From Group!");
+            appState.notifyProfileUnread();
           }
           RemoteServerInfoState? server = profileCN.getProfile(data["ProfileOnion"])?.serverList.getServer(contact.server);
           server?.updateSyncProgressFor(timestampSent);
