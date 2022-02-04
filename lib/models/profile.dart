@@ -63,7 +63,8 @@ class ProfileInfoState extends ChangeNotifier {
             isGroup: contact["isGroup"],
             server: contact["groupServer"],
             archived: contact["isArchived"] == true,
-            lastMessageTime: DateTime.fromMillisecondsSinceEpoch(1000 * int.parse(contact["lastMsgTime"])));
+            lastMessageTime: DateTime.fromMillisecondsSinceEpoch(1000 * int.parse(contact["lastMsgTime"])),
+            options: contact["options"]);
       }));
 
       // dummy set to invoke sort-on-load
@@ -183,6 +184,7 @@ class ProfileInfoState extends ChangeNotifier {
                 isGroup: contact["isGroup"],
                 server: contact["groupServer"],
                 lastMessageTime: DateTime.fromMillisecondsSinceEpoch(1000 * int.parse(contact["lastMsgTime"])),
+                options: contact["options"],
               ));
         }
         unreadMessages += int.parse(contact["numUnread"]);

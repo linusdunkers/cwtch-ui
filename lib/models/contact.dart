@@ -10,6 +10,9 @@ class ContactInfoState extends ChangeNotifier {
   final String onion;
   late String _nickname;
 
+  late bool _notificationsOptIn;
+  late bool _notificationsOptOut;
+
   late bool _accepted;
   late bool _blocked;
   late String _status;
@@ -44,7 +47,8 @@ class ContactInfoState extends ChangeNotifier {
       numUnread = 0,
       lastMessageTime,
       server,
-      archived = false}) {
+      archived = false,
+      options = const {} }) {
     this._nickname = nickname;
     this._isGroup = isGroup;
     this._accepted = accepted;
@@ -58,6 +62,9 @@ class ContactInfoState extends ChangeNotifier {
     this._lastMessageTime = lastMessageTime == null ? DateTime.fromMillisecondsSinceEpoch(0) : lastMessageTime;
     this._server = server;
     this._archived = archived;
+    print("Contact: $_nickname, Options: $options opt-in: ${options["notification-opt-in"]} opt-out: ${options["notification-opt-out"]} ");
+    this._notificationsOptIn = (options["notification-opt-in"] ?? "false") == "true";
+    this._notificationsOptOut = (options["notification-opt-out"] ?? "false") == "true";
     this.messageCache = new MessageCache();
     keys = Map<String, GlobalKey<MessageRowState>>();
   }
@@ -193,6 +200,18 @@ class ContactInfoState extends ChangeNotifier {
     } else {
       return this.status == "Authenticated";
     }
+  }
+
+  bool get notificationsOptIn => _notificationsOptIn;
+  set notificationsOptIn(bool newVal)  {
+    _notificationsOptIn =  newVal;
+    notifyListeners();
+  }
+
+  bool get notificationsOptOut => _notificationsOptOut;
+  set notificationsOptOut(bool newVal)  {
+    _notificationsOptOut =  newVal;
+    notifyListeners();
   }
 
   GlobalKey<MessageRowState> getMessageKey(int conversation, int message) {

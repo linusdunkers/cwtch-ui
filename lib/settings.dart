@@ -274,11 +274,11 @@ class Settings extends ChangeNotifier {
 
   static NotificationPolicy notificationPolicyFromString(String? np) {
     switch (np) {
-      case "None":
+      case "NotificationPolicy.None":
         return NotificationPolicy.None;
-      case "OptIn":
+      case "NotificationPolicy.OptIn":
         return NotificationPolicy.OptIn;
-      case "OptOut":
+      case "NotificationPolicy.OptOut":
         return NotificationPolicy.OptOut;
     }
     return NotificationPolicy.OptOut;
@@ -286,9 +286,9 @@ class Settings extends ChangeNotifier {
 
   static NotificationContent notificationContentFromString(String? nc) {
     switch (nc) {
-      case "SimpleEvent":
+      case "NotificationContent.SimpleEvent":
         return NotificationContent.SimpleEvent;
-      case "ContactInfo":
+      case "NotificationContent.ContactInfo":
         return NotificationContent.ContactInfo;
     }
     return NotificationContent.SimpleEvent;

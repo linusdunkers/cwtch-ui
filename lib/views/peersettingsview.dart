@@ -39,9 +39,13 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
 
   @override
   Widget build(BuildContext context) {
+    var handle = Provider.of<ContactInfoState>(context).nickname;
+    if (handle.isEmpty) {
+      handle = Provider.of<ContactInfoState>(context).onion;
+    }
     return Scaffold(
       appBar: AppBar(
-        title: Text(Provider.of<ContactInfoState>(context).onion),
+        title: Text(handle + " " + AppLocalizations.of(context)!.conversationSettings),
       ),
       body: _buildSettingsList(),
     );
@@ -197,6 +201,40 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
                                         child: Text(value),
                                       );
                                     }).toList())),
+                            Visibility(
+                              visible: Provider.of<Settings>(context, listen: false).notificationPolicy == NotificationPolicy.OptOut,
+                              child: SwitchListTile(
+                                title: Text(/*AppLocalizations.of(context)!.savePeerHistory*/"Notifications Opt Out", style: TextStyle(color: settings.current().mainTextColor)),
+                                subtitle: Text(/*AppLocalizations.of(context)!.savePeerHistoryDescription*/"The system blah blah..."),
+                                secondary: Icon(CwtchIcons.chat_bubble_empty_24px, color: settings.current().mainTextColor),
+                                value: Provider.of<ContactInfoState>(context).notificationsOptOut,
+                                onChanged: (bool optOut) {
+                                  Provider.of<ContactInfoState>(context, listen: false).notificationsOptOut = optOut;
+                                  var profileOnion = Provider.of<ContactInfoState>(context, listen: false).profileOnion;
+                                  var identifier = Provider.of<ContactInfoState>(context, listen: false).identifier;
+                                  const NotificationOptOutKey = "profile.notification-opt-out";
+                                  Provider.of<FlwtchState>(context, listen: false).cwtch.SetConversationAttribute(profileOnion, identifier, NotificationOptOutKey, optOut.toString());
+                                },
+                                activeTrackColor: settings.theme.defaultButtonColor,
+                                inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
+                              )),
+                            Visibility(
+                                visible: Provider.of<Settings>(context, listen: false).notificationPolicy == NotificationPolicy.OptIn,
+                                child: SwitchListTile(
+                                  title: Text(/*AppLocalizations.of(context)!.savePeerHistory*/"Notifications Opt In", style: TextStyle(color: settings.current().mainTextColor)),
+                                  subtitle: Text(/*AppLocalizations.of(context)!.savePeerHistoryDescription*/"The system blah blah..."),
+                                  secondary: Icon(CwtchIcons.chat_bubble_empty_24px, color: settings.current().mainTextColor),
+                                  value: Provider.of<ContactInfoState>(context).notificationsOptIn,
+                                  onChanged: (bool optIn) {
+                                    Provider.of<ContactInfoState>(context, listen: false).notificationsOptIn = optIn;
+                                    var profileOnion = Provider.of<ContactInfoState>(context, listen: false).profileOnion;
+                                    var identifier = Provider.of<ContactInfoState>(context, listen: false).identifier;
+                                    const NotificationOptInKey = "profile.notification-opt-in";
+                                    Provider.of<FlwtchState>(context, listen: false).cwtch.SetConversationAttribute(profileOnion, identifier, NotificationOptInKey, optIn.toString());
+                                  },
+                                  activeTrackColor: settings.theme.defaultButtonColor,
+                                  inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
+                                ))
                           ]),
                           Column(mainAxisAlignment: MainAxisAlignment.end, crossAxisAlignment: CrossAxisAlignment.end, children: [
                             SizedBox(

@@ -77,6 +77,7 @@ class CwtchNotifier {
               server: null,
               archived: false,
               lastMessageTime: DateTime.now(), //show at the top of the contact list even if no messages yet
+              options: data["options"]
             ));
         break;
       case "NewServer":
@@ -113,7 +114,8 @@ class CwtchNotifier {
               status: status,
               server: data["GroupServer"],
               isGroup: true,
-              lastMessageTime: DateTime.now()));
+              lastMessageTime: DateTime.now(),
+              options: data["options"]));
           profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(int.parse(data["ConversationID"]), DateTime.now());
         }
         break;
@@ -144,7 +146,7 @@ class CwtchNotifier {
         }
         break;
       case "NewMessageFromPeer":
-        notificationManager.notify("New Message From Peer!");
+
         var identifier = int.parse(data["ConversationID"]);
         var messageID = int.parse(data["Index"]);
         var timestamp = DateTime.tryParse(data['TimestampReceived'])!;
@@ -154,6 +156,14 @@ class CwtchNotifier {
         String? contenthash = data['ContentHash'];
         var selectedProfile = appState.selectedProfile == data["ProfileOnion"];
         var selectedConversation = selectedProfile && appState.selectedConversation == identifier;
+        var notification = data["notification"];
+
+        if (notification == "SimpleEvent") {
+          notificationManager.notify(/*TODO l10n */ "New Message");
+        } else if (notification == "ContactInfo") {
+          var contact = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier);
+          notificationManager.notify(/*TODO l10n */ "New Message from " + (contact?.nickname ?? senderHandle.toString()));
+        }
 
         profileCN.getProfile(data["ProfileOnion"])?.newMessage(
               identifier,
@@ -209,6 +219,7 @@ class CwtchNotifier {
           String? contenthash = data['ContentHash'];
           var selectedProfile = appState.selectedProfile == data["ProfileOnion"];
           var selectedConversation = selectedProfile && appState.selectedConversation == identifier;
+          var notification = data["notification"];
 
           // Only bother to do anything if we know about the group and the provided index is greater than our current total...
           if (currentTotal != null && idx >= currentTotal) {
@@ -224,7 +235,12 @@ class CwtchNotifier {
             // and `local now`.
             profileCN.getProfile(data["ProfileOnion"])?.newMessage(identifier, idx, timestampSent, senderHandle, senderImage, isAuto, data["Data"], contenthash, selectedProfile, selectedConversation);
 
-            notificationManager.notify("New Message From Group!");
+            if (notification == "SimpleEvent") {
+              notificationManager.notify(/*TODO l10n */ "New Message");
+            } else if (notification == "ContactInfo") {
+              var contact = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier);
+              notificationManager.notify(/*TODO l10n */ "New Message from " + (contact?.nickname ?? senderHandle.toString()));
+            }
             appState.notifyProfileUnread();
           }
           RemoteServerInfoState? server = profileCN.getProfile(data["ProfileOnion"])?.serverList.getServer(contact.server ?? "");
