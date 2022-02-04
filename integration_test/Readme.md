@@ -3,6 +3,7 @@
 Located in the `integration_test/env` folder and managed by the hooks in `integration_test/hooks/env.dart`. Specify the environment you want a feature to run in by tagging it.
 
 * `[no tag] (env/default)`: default environment to load if none is specified
+* `@env:aliceandbob1 (env/aliceandbob1)`: no-password Alice, Bob, and Carol profiles. Alice and Bob have already added each other, Carol has no contacts
 * `@env:persist (env/persist)`: changes made to this profile persist between features and scenarios (but NOT between runs)
 * `@env:clean`: runs the feature with no profile existing yet on disk
 
