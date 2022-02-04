@@ -9,6 +9,7 @@ class ResetCwtchEnvironment extends Hook {
   @override
   Future<void> onBeforeRun(TestConfiguration config) async {
     // initialize @env:persist
+    await Process.run("rm", ["-rf", "integration_test/env/temp-persist"]);
     await Process.run("cp", ["-R", "integration_test/env/persist", "integration_test/env/temp-persist"]);
 
     return super.onBeforeRun(config);

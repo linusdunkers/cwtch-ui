@@ -14,11 +14,11 @@ Located in the `integration_test/env` folder and managed by the hooks in `integr
   [~] tor status+reset
   [~] shutdown cwtch
 [ ] 2. global settings (verify functionality)
-  [ ] language
-  [ ] theme+color theme
+  [_] language # blocked by dropdown
+  [_] theme+color theme # blocked by dropdown
   [ ] column mode -> background? so all tests check both modes?
-  [ ] block unknown
-  [ ] streamer mode
+  [X] block unknown
+  [X] streamer mode
 [ ] 3. experiments (
   [ ] group chat -> needs many
   [ ] server hosting -> also many
@@ -26,14 +26,16 @@ Located in the `integration_test/env` folder and managed by the hooks in `integr
     [ ] image previews
   [ ] clickable links (how much to test?)
 [ ] 4. profile mgmt
-  [ ] create+delete
-  [ ] default+password load
+  [X] create+delete
+  [X] default+password load
+  [X] name change
   [ ] password change
   [ ] known server mgmt
 [ ] 5. p2p chat
   [ ] add, remove, block, archive
   [ ] invite accept+reject
-  [ ] send+receive inc acks
+  [X] send+receive
+    [ ] acks
   [ ] try to send a long message
   [ ] malformed messages, replies
   [ ] overlays (invite, file/image)

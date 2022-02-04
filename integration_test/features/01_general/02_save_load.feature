@@ -8,10 +8,10 @@ Feature: Settings pane opens and can save settings persistently
   Scenario: Change every setting (except Language)
     Given I tap the 'OpenSettingsView' button
     And I wait for 1 second
-    When I tap the widget that contains the text "Theme"
+    When I tap the widget that contains the text "Use Light Themes"
     #And I choose option 3 from the "DropdownTheme" dropdown
-    When I tap the "DropdownTheme" button
-    And I tap the first "ddi_mermaid" element
+    #When I tap the "DropdownTheme" button
+    #And I tap the first "ddi_mermaid" element
     #And I tap the element that contains the text "Mermaid"
     #And I tap the element that contains the text "Mermaid" within the "DropdownTheme"
     And I tap the widget that contains the text "Block Unknown Contacts"
@@ -23,7 +23,7 @@ Feature: Settings pane opens and can save settings persistently
     And I tap the widget that contains the text "Image Previews and Profile Pictures"
     And I fill the "DownloadFolderPicker" field with "/this/is/a/test"
     And I tap the widget that contains the text "Enable Clickable Links"
-    Then I expect the switch that contains the text "Theme" to be checked
+    Then I expect the switch that contains the text "Use Light Themes" to be checked
     And I expect the switch that contains the text "Block Unknown Contacts" to be checked
     And I expect the switch that contains the text "Streamer/Presentation Mode" to be checked
     And I expect the switch that contains the text "Enable Experiments" to be checked
@@ -37,7 +37,7 @@ Feature: Settings pane opens and can save settings persistently
   Scenario: When the app is reloaded, settings from the previous scenario have persisted
     Given I tap the 'OpenSettingsView' button
     And I wait for 1 second
-    Then I expect the switch that contains the text "Theme" to be checked
+    Then I expect the switch that contains the text "Use Light Themes" to be checked
     And I expect the switch that contains the text "Block Unknown Contacts" to be checked
     And I expect the switch that contains the text "Streamer/Presentation Mode" to be checked
     And I expect the switch that contains the text "Enable Experiments" to be checked

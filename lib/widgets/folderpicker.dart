@@ -64,6 +64,7 @@ class _CwtchFolderPickerState extends State<CwtchFolderPicker> {
                   print(e);
                 }
               },
+              onChanged: widget.onSave,
               icon: Icon(Icons.folder),
               tooltip: widget.tooltip,
             )));

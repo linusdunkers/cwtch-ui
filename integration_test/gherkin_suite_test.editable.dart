@@ -45,6 +45,7 @@ void main() {
     ExpectTextToBePresent(),
     ExpectWidgetWithTextWithin(),
     WaitUntilTextExists(),
+    WaitUntilTooltipExists(),
     SwipeOnType(),
     // text
     TorVersionPresent(),

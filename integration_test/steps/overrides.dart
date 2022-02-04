@@ -198,6 +198,30 @@ StepDefinitionGeneric WaitUntilTextExists() {
   );
 }
 
+StepDefinitionGeneric WaitUntilTooltipExists() {
+  return then2<String, Existence, FlutterWorld>(
+    'I wait until the tooltip {string} is {existence}',
+        (ofType, existence, context) async {
+      await context.world.appDriver.waitUntil(
+            () async {
+          await context.world.appDriver.waitForAppToSettle();
+
+          return existence == Existence.absent
+              ? context.world.appDriver.isAbsent(
+            context.world.appDriver.findBy(ofType, FindType.tooltip),
+          )
+              : context.world.appDriver.isPresent(
+            context.world.appDriver.findBy(ofType, FindType.tooltip),
+          );
+        },
+        timeout: Duration(seconds: 120),
+      );
+    },
+    configuration: StepDefinitionConfiguration()
+      ..timeout = const Duration(days: 1),
+  );
+}
+
 mixin _SwipeHelper
 on When4WithWorld<SwipeDirection, int, String, String, FlutterWorld> {
   Future<void> swipeOnFinder(
