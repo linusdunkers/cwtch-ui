@@ -3,8 +3,9 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  desktoasts
   url_launcher_windows
+  win_toast
+  window_manager
 )
 
 set(PLUGIN_BUNDLED_LIBRARIES)

@@ -1,6 +1,7 @@
 import 'package:cwtch/models/appstate.dart';
 import 'package:cwtch/models/contactlist.dart';
 import 'package:cwtch/models/profile.dart';
+import 'package:cwtch/models/profilelist.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:cwtch/views/addeditprofileview.dart';
@@ -33,7 +34,7 @@ class _ProfileRowState extends State<ProfileRow> {
               Padding(
                   padding: const EdgeInsets.all(6.0), //border size
                   child: ProfileImage(
-                      badgeCount: 0,
+                      badgeCount: profile.unreadMessages,
                       badgeColor: Provider.of<Settings>(context).theme.portraitProfileBadgeColor,
                       badgeTextColor: Provider.of<Settings>(context).theme.portraitProfileBadgeTextColor,
                       diameter: 64.0,

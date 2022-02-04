@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 
 enum ModalState { none, storageMigration }
@@ -15,6 +17,13 @@ class AppState extends ChangeNotifier {
   bool _unreadMessagesBelow = false;
   bool _disableFilePicker = false;
   bool _focus = true;
+
+  StreamController<bool> _profilesUnreadNotifyControler = StreamController<bool>();
+  late Stream<bool> profilesUnreadNotify;
+
+  AppState() {
+    profilesUnreadNotify = _profilesUnreadNotifyControler.stream.asBroadcastStream();
+  }
 
   void SetCwtchInit() {
     cwtchInit = true;
@@ -82,4 +91,12 @@ class AppState extends ChangeNotifier {
   }
 
   bool isLandscape(BuildContext c) => MediaQuery.of(c).size.width > MediaQuery.of(c).size.height;
+
+  void notifyProfileUnread() {
+    _profilesUnreadNotifyControler.add(true);
+  }
+
+  Stream<bool> getUnreadProfileNotifyStream() {
+    return profilesUnreadNotify;
+  }
 }
