@@ -182,7 +182,7 @@ class _MessageViewState extends State<MessageView> {
   static const GroupMessageLengthMax = 1600;
 
   void _sendMessage([String? ignoredParam]) {
-    var isGroup = Provider.of<ProfileInfoState>(context).contactList.getContact(Provider.of<AppState>(context, listen: false).selectedConversation!)!.isGroup;
+    var isGroup = Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(Provider.of<AppState>(context, listen: false).selectedConversation!)!.isGroup;
 
     // peers and groups currently have different length constraints (servers can store less)...
     var actualMessageLength = ctrlrCompose.value.text.length;
@@ -296,6 +296,7 @@ class _MessageViewState extends State<MessageView> {
                                 focusedBorder: InputBorder.none,
                                 enabled: true,
                                 suffixIcon: ElevatedButton(
+                                  key: Key("btnSend"),
                                   style: ElevatedButton.styleFrom(padding: EdgeInsets.all(0.0), shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(45.0))),
                                   child: Icon(CwtchIcons.send_24px, size: 24, color: Provider.of<Settings>(context).theme.defaultButtonTextColor),
                                   onPressed: isOffline ? null : _sendMessage,

@@ -104,6 +104,7 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                   height: 20,
                                 ),
                                 CwtchTextField(
+                                  key: Key("displayNameFormElement"),
                                   controller: ctrlrNick,
                                   autofocus: false,
                                   hintText: AppLocalizations.of(context)!.yourDisplayName,
@@ -146,6 +147,7 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                   visible: Provider.of<ProfileInfoState>(context).onion.isEmpty,
                                   child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
                                     Checkbox(
+                                      key: Key("passwordCheckBox"),
                                       value: usePassword,
                                       fillColor: MaterialStateProperty.all(theme.current().defaultButtonColor),
                                       activeColor: theme.current().defaultButtonActiveColor,
@@ -179,17 +181,18 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                           height: 20,
                                         ),
                                         CwtchPasswordField(
+                                          key: Key("currentPasswordFormElement"),
                                           controller: ctrlrOldPass,
                                           autoFillHints: [AutofillHints.newPassword],
                                           validator: (value) {
                                             // Password field can be empty when just updating the profile, not on creation
-                                            if (Provider.of<ProfileInfoState>(context).isEncrypted &&
+                                            if (Provider.of<ProfileInfoState>(context, listen: false).isEncrypted &&
                                                 Provider.of<ProfileInfoState>(context, listen: false).onion.isEmpty &&
                                                 value.isEmpty &&
                                                 usePassword) {
                                               return AppLocalizations.of(context)!.passwordErrorEmpty;
                                             }
-                                            if (Provider.of<ErrorHandler>(context).deleteProfileError == true) {
+                                            if (Provider.of<ErrorHandler>(context, listen: false).deleteProfileError == true) {
                                               return AppLocalizations.of(context)!.enterCurrentPasswordForDelete;
                                             }
                                             return null;
@@ -204,6 +207,7 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                     height: 20,
                                   ),
                                   CwtchPasswordField(
+                                    key: Key("passwordFormElement"),
                                     controller: ctrlrPass,
                                     validator: (value) {
                                       // Password field can be empty when just updating the profile, not on creation
@@ -224,6 +228,7 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                     height: 20,
                                   ),
                                   CwtchPasswordField(
+                                      key: Key("confirmPasswordFormElement"),
                                       controller: ctrlrPass2,
                                       validator: (value) {
                                         // Password field can be empty when just updating the profile, not on creation

@@ -21,7 +21,7 @@ import 'models/profilelist.dart';
 import 'models/servers.dart';
 import 'views/profilemgrview.dart';
 import 'views/splashView.dart';
-import 'dart:io' show Platform, exit;
+import 'dart:io' show Platform, exit, sleep;
 import 'themes/opaque.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -31,12 +31,13 @@ var globalTorStatus = TorStatus();
 var globalAppState = AppState();
 var globalServersList = ServerListState();
 
-void main() {
+Future<void> main() async {
   print("Cwtch version: ${EnvironmentConfig.BUILD_VER} built on: ${EnvironmentConfig.BUILD_DATE}");
   LicenseRegistry.addLicense(() => licenses());
   WidgetsFlutterBinding.ensureInitialized();
   print("runApp()");
   runApp(Flwtch());
+  sleep(Duration(seconds: 1));
 }
 
 class Flwtch extends StatefulWidget {
@@ -52,7 +53,15 @@ class FlwtchState extends State<Flwtch> with WindowListener {
   late ProfileListState profs;
   final MethodChannel notificationClickChannel = MethodChannel('im.cwtch.flwtch/notificationClickHandler');
   final MethodChannel shutdownMethodChannel = MethodChannel('im.cwtch.flwtch/shutdownClickHandler');
+  final MethodChannel shutdownLinuxMethodChannel = MethodChannel('im.cwtch.linux.shutdown');
+
   final GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
+
+  Future<dynamic> shutdownDirect(MethodCall call) {
+    print(call);
+    cwtch.Shutdown();
+    return Future.value({});
+  }
 
   @override
   initState() {
@@ -64,6 +73,7 @@ class FlwtchState extends State<Flwtch> with WindowListener {
     profs = ProfileListState();
     notificationClickChannel.setMethodCallHandler(_externalNotificationClicked);
     shutdownMethodChannel.setMethodCallHandler(modalShutdown);
+    shutdownLinuxMethodChannel.setMethodCallHandler(shutdownDirect);
     print("initState: creating cwtchnotifier, ffi");
     if (Platform.isAndroid) {
       var cwtchNotifier = new CwtchNotifier(profs, globalSettings, globalErrorHandler, globalTorStatus, NullNotificationsManager(), globalAppState, globalServersList);
@@ -219,6 +229,7 @@ class FlwtchState extends State<Flwtch> with WindowListener {
 
   @override
   void dispose() {
+    cwtch.Shutdown();
     windowManager.removeListener(this);
     cwtch.dispose();
     super.dispose();

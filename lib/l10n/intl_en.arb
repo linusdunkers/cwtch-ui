@@ -1,6 +1,7 @@
 {
     "@@locale": "en",
-    "@@last_modified": "2022-01-18T00:38:14+01:00",
+    "@@last_modified": "2022-01-28T19:57:41+01:00",
+    "editProfile": "Edit Profile",
     "torSettingsEnabledCacheDescription": "Cache the current downloaded Tor consensus to reuse next time Cwtch is opened. This will allow Tor to start faster. When disabled, Cwtch will purge cached data on start up.",
     "torSettingsEnableCache": "Cache Tor Consensus",
     "labelTorNetwork": "Tor Network",
@@ -239,7 +240,6 @@
     "radioNoPassword": "Unencrypted (No password)",
     "radioUsePassword": "Password",
     "copiedToClipboardNotification": "Copied to Clipboard",
-    "editProfile": "Edit Profille",
     "newProfile": "New Profile",
     "defaultProfileName": "Alice",
     "profileName": "Display name",

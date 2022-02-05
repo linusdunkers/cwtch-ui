@@ -90,10 +90,7 @@ class _ProfileRowState extends State<ProfileRow> {
         builder: (BuildContext buildcontext) {
           return OrientationBuilder(builder: (orientationBuilderContext, orientation) {
             return MultiProvider(
-                providers: [
-                  ChangeNotifierProvider<ProfileInfoState>.value(value: profile),
-                  ChangeNotifierProvider<ContactListState>.value(value: profile.contactList)
-                ],
+                providers: [ChangeNotifierProvider<ProfileInfoState>.value(value: profile), ChangeNotifierProvider<ContactListState>.value(value: profile.contactList)],
                 builder: (innercontext, widget) {
                   var appState = Provider.of<AppState>(context);
                   var settings = Provider.of<Settings>(context);

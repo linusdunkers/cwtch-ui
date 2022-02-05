@@ -49,6 +49,10 @@ class CwtchNotifier {
         appState.SetAppError(data["Error"]);
         break;
       case "NewPeer":
+        // empty events can be caused by the testing framework
+        if (data["Online"] == null) {
+          break;
+        }
         EnvironmentConfig.debugLog("NewPeer $data");
         // if tag != v1-defaultPassword then it is either encrypted OR it is an unencrypted account created during pre-beta...
         profileCN.add(data["Identity"], data["name"], data["picture"], data["ContactsJson"], data["ServerList"], data["Online"] == "true", data["tag"] != "v1-defaultPassword");
@@ -68,9 +72,9 @@ class CwtchNotifier {
               savePeerHistory: data["saveConversationHistory"] == null ? "DeleteHistoryConfirmed" : data["saveConversationHistory"],
               numMessages: int.parse(data["numMessages"]),
               numUnread: int.parse(data["unread"]),
-              isGroup: data["isGroup"] == true,
-              server: data["groupServer"],
-              archived: data["isArchived"] == true,
+              isGroup: false, // by definition
+              server: null,
+              archived: false,
               lastMessageTime: DateTime.now(), //show at the top of the contact list even if no messages yet
             ));
         break;
@@ -221,7 +225,7 @@ class CwtchNotifier {
             notificationManager.notify("New Message From Group!");
             appState.notifyProfileUnread();
           }
-          RemoteServerInfoState? server = profileCN.getProfile(data["ProfileOnion"])?.serverList.getServer(contact.server);
+          RemoteServerInfoState? server = profileCN.getProfile(data["ProfileOnion"])?.serverList.getServer(contact.server ?? "");
           server?.updateSyncProgressFor(timestampSent);
         } else {
           // This is dealt with by IndexedAcknowledgment

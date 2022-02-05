@@ -188,7 +188,7 @@ class _ContactsViewState extends State<ContactsView> {
         builder: (context, child) => RepaintBoundary(child: ContactRow()),
       );
     });
-    
+
     final divided = ListTile.divideTiles(
       context: context,
       tiles: tiles,

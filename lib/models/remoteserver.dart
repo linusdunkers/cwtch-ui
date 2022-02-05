@@ -34,7 +34,7 @@ class RemoteServerInfoState extends ChangeNotifier {
     if (status == "Authenticated") {
       // syncing, set lastPreSyncMessageTime
       _groups.forEach((g) {
-        if(g.lastMessageTime.isAfter(lastPreSyncMessagTime)) {
+        if (g.lastMessageTime.isAfter(lastPreSyncMessagTime)) {
           lastPreSyncMessagTime = g.lastMessageTime;
         }
       });

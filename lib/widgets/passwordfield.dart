@@ -9,19 +9,25 @@ const hints = [AutofillHints.password];
 // Provides a styled Password Input Field for use in Form Widgets.
 // Callers must provide a text controller, label helper text and a validator.
 class CwtchPasswordField extends StatefulWidget {
-  CwtchPasswordField({required this.controller, required this.validator, this.action, this.autofocus = false, this.autoFillHints = hints});
+  CwtchPasswordField({required this.controller, required this.validator, this.action, this.autofocus = false, this.autoFillHints = hints, this.key});
   final TextEditingController controller;
   final FormFieldValidator validator;
   final Function(String)? action;
   final bool autofocus;
   final Iterable<String> autoFillHints;
+  final Key? key;
 
   @override
-  _CwtchTextFieldState createState() => _CwtchTextFieldState();
+  _CwtchPasswordTextFieldState createState() => _CwtchPasswordTextFieldState();
 }
 
-class _CwtchTextFieldState extends State<CwtchPasswordField> {
+class _CwtchPasswordTextFieldState extends State<CwtchPasswordField> {
   bool obscureText = true;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +48,6 @@ class _CwtchTextFieldState extends State<CwtchPasswordField> {
         autofillHints: widget.autoFillHints,
         autovalidateMode: AutovalidateMode.always,
         onFieldSubmitted: widget.action,
-        textInputAction: TextInputAction.unspecified,
         enableSuggestions: false,
         autocorrect: false,
         decoration: InputDecoration(

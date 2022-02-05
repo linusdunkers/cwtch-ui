@@ -49,6 +49,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
       return LayoutBuilder(builder: (BuildContext context, BoxConstraints viewportConstraints) {
         var appIcon = Icon(Icons.info, color: settings.current().mainTextColor);
         return Scrollbar(
+            key: Key("SettingsView"),
             isAlwaysShown: true,
             child: SingleChildScrollView(
                 clipBehavior: Clip.antiAlias,
@@ -94,6 +95,8 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                       ListTile(
                         title: Text(AppLocalizations.of(context)!.themeColorLabel),
                         trailing: DropdownButton<String>(
+                            key: Key("DropdownTheme"),
+                            isDense: true,
                             value: Provider.of<Settings>(context).theme.theme,
                             onChanged: (String? newValue) {
                               setState(() {
@@ -104,7 +107,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                             items: themes.keys.map<DropdownMenuItem<String>>((String themeId) {
                               return DropdownMenuItem<String>(
                                 value: themeId,
-                                child: Text(getThemeName(context, themeId)),
+                                child: Text(getThemeName(context, themeId)), //"ddi_$themeId", key: Key("ddi_$themeId")),
                               );
                             }).toList()),
                         leading: Icon(CwtchIcons.change_theme, color: settings.current().mainTextColor),
@@ -278,6 +281,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                   Visibility(
                                     visible: settings.isExperimentEnabled(ImagePreviewsExperiment) && !Platform.isAndroid,
                                     child: CwtchFolderPicker(
+                                      testKey: Key("DownloadFolderPicker"),
                                       label: AppLocalizations.of(context)!.settingDownloadFolder,
                                       initialValue: settings.downloadPath,
                                       description: AppLocalizations.of(context)!.fileSharingSettingsDownloadFolderDescription,

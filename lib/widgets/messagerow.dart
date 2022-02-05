@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cwtch/config.dart';
 import 'package:cwtch/cwtch_icons_icons.dart';
 import 'package:cwtch/models/appstate.dart';
 import 'package:cwtch/models/contact.dart';
@@ -80,7 +81,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
     Widget wdgIcons = Platform.isAndroid
         ? SizedBox.shrink()
         : Visibility(
-            visible: Provider.of<AppState>(context).hoveredIndex == Provider.of<MessageMetadata>(context).messageID,
+            visible: EnvironmentConfig.TEST_MODE || Provider.of<AppState>(context).hoveredIndex == Provider.of<MessageMetadata>(context).messageID,
             maintainSize: true,
             maintainAnimation: true,
             maintainState: true,

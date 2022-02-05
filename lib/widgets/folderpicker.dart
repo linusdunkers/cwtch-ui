@@ -15,7 +15,8 @@ class CwtchFolderPicker extends StatefulWidget {
   final String tooltip;
   final String description;
   final Function(String)? onSave;
-  const CwtchFolderPicker({Key? key, this.label = "", this.tooltip = "", this.initialValue = "", this.onSave, this.description = ""}) : super(key: key);
+  final Key? testKey;
+  const CwtchFolderPicker({Key? key, this.testKey, this.label = "", this.tooltip = "", this.initialValue = "", this.onSave, this.description = ""}) : super(key: key);
 
   @override
   _CwtchFolderPickerState createState() => _CwtchFolderPickerState();
@@ -39,6 +40,7 @@ class _CwtchFolderPickerState extends State<CwtchFolderPicker> {
         trailing: Container(
             width: MediaQuery.of(context).size.width / 4,
             child: CwtchButtonTextField(
+              testKey: widget.testKey,
               controller: ctrlrVal,
               readonly: Platform.isAndroid,
               onPressed: () async {
@@ -62,6 +64,7 @@ class _CwtchFolderPickerState extends State<CwtchFolderPicker> {
                   print(e);
                 }
               },
+              onChanged: widget.onSave,
               icon: Icon(Icons.folder),
               tooltip: widget.tooltip,
             )));
