@@ -138,7 +138,6 @@ class _AddContactViewState extends State<AddContactView> {
                         height: 20,
                       ),
                       CwtchTextField(
-                        testKey: Key("txtAddP2P"),
                         controller: ctrlrContact,
                         validator: (value) {
                           if (value == "") {

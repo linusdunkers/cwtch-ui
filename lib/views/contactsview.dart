@@ -76,31 +76,6 @@ class _ContactsViewState extends State<ContactsView> {
         endDrawerEnableOpenDragGesture: false,
         drawerEnableOpenDragGesture: false,
         appBar: AppBar(
-          leading: Row(children: [
-            IconButton(
-              icon: Icon(Icons.arrow_back),
-              tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-              onPressed: () {
-                Provider.of<ProfileInfoState>(context, listen: false).recountUnread();
-                Provider.of<AppState>(context, listen: false).selectedProfile = "";
-                Navigator.of(context).pop();
-              },
-            ),
-
-            StreamBuilder<bool>(
-                stream: Provider.of<AppState>(context).getUnreadProfileNotifyStream(),
-                builder: (BuildContext context, AsyncSnapshot<bool> unreadCountSnapshot) {
-                  int unreadCount = Provider.of<ProfileListState>(context).generateUnreadCount(Provider.of<AppState>(context).selectedProfile ?? "") ;
-
-                  return Visibility(
-                      visible: unreadCount > 0,
-                      child: CircleAvatar(
-                        radius: 10.0,
-                        backgroundColor: Provider.of<Settings>(context).theme.portraitProfileBadgeColor,
-                        child: Text(unreadCount > 99 ? "99+" : unreadCount.toString(), style: TextStyle(color: Provider.of<Settings>(context).theme.portraitProfileBadgeTextColor, fontSize: 8.0)),
-                      ));
-                }),
-          ]),
           title: RepaintBoundary(
               child: Row(children: [
             ProfileImage(

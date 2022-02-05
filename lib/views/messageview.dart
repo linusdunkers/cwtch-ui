@@ -167,7 +167,7 @@ class _MessageViewState extends State<MessageView> {
           );
         } else {
           return MultiProvider(
-            providers: [ChangeNotifierProvider.value(value: Provider.of<ContactInfoState>(context))],
+            providers: [ChangeNotifierProvider.value(value: Provider.of<ContactInfoState>(context)), ChangeNotifierProvider.value(value: Provider.of<ProfileInfoState>(context))],
             child: PeerSettingsView(),
           );
         }

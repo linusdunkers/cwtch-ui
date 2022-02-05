@@ -120,14 +120,10 @@ class ProfileInfoState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void recountUnread() {
-    this._unreadMessages = _contacts.contacts.fold(0, (i, c) => i + c.unreadMessages);
-  }
-
   // Remove a contact from a list. Currently only used when rejecting a group invitation.
   // Eventually will also be used for other removals.
-  void removeContact(String handle) {
-    this.contactList.removeContactByHandle(handle);
+  void removeContact(int handle) {
+    this.contactList.removeContact(handle);
     notifyListeners();
   }
 
@@ -172,28 +168,9 @@ class ProfileInfoState extends ChangeNotifier {
                 lastMessageTime: DateTime.fromMillisecondsSinceEpoch(1000 * int.parse(contact["lastMsgTime"])),
               ));
         }
-        unreadMessages += int.parse(contact["numUnread"]);
       });
     }
     this._contacts.resort();
-  }
-
-  void newMessage(int identifier, int messageID, DateTime timestamp, String senderHandle, String senderImage, bool isAuto, String data, String? contenthash, bool selectedProfile, bool selectedConversation) {
-    if (!selectedProfile) {
-      unreadMessages++;
-      notifyListeners();
-    }
-
-    contactList.newMessage(
-        identifier,
-        messageID,
-        timestamp,
-        senderHandle,
-        senderImage,
-        isAuto,
-        data,
-        contenthash,
-        selectedConversation);
   }
 
   void downloadInit(String fileKey, int numChunks) {

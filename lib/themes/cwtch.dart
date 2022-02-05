@@ -68,8 +68,8 @@ class CwtchDark extends OpaqueThemeType {
   get portraitBlockedTextColor => lightGrey;
   get portraitContactBadgeColor => hotPink;
   get portraitContactBadgeTextColor => whiteishPurple;
-  get portraitProfileBadgeColor => hotPink;
-  get portraitProfileBadgeTextColor => whiteishPurple;
+  get portraitProfileBadgeColor => mauvePurple;
+  get portraitProfileBadgeTextColor => darkGreyPurple;
   get dropShadowColor => mauvePurple;
   get toolbarIconColor => settings; //whiteishPurple;
   get messageFromMeBackgroundColor => userBubble; //  mauvePurple;
@@ -112,7 +112,7 @@ class CwtchLight extends OpaqueThemeType {
   get portraitBlockedTextColor => softGrey;
   get portraitContactBadgeColor => accent;
   get portraitContactBadgeTextColor => whitePurple;
-  get portraitProfileBadgeColor => accent;
+  get portraitProfileBadgeColor => brightPurple;
   get portraitProfileBadgeTextColor => whitePurple;
   get dropShadowColor => purple;
   get toolbarIconColor => settings; //darkPurple;

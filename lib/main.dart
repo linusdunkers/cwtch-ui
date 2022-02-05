@@ -45,6 +45,10 @@ class Flwtch extends StatefulWidget {
 
   @override
   FlwtchState createState() => FlwtchState();
+
+  String yay() {
+    return "yay!";
+  }
 }
 
 class FlwtchState extends State<Flwtch> with WindowListener {

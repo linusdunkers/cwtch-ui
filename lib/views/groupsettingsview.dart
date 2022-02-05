@@ -151,7 +151,7 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
                                       Navigator.of(context).popUntil((route) => route.settings.name == "conversations"); // dismiss dialog
                                     });
                                   },
-                                  icon: Icon(CwtchIcons.leave_chat),
+                                  icon: Icon(Icons.archive),
                                   label: Text(AppLocalizations.of(context)!.archiveConversation),
                                 )),
                             SizedBox(
@@ -198,8 +198,6 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
       onPressed: () {
         var profileOnion = Provider.of<ContactInfoState>(context, listen: false).profileOnion;
         var identifier = Provider.of<ContactInfoState>(context, listen: false).identifier;
-        // locally update cache...
-        Provider.of<ContactInfoState>(context, listen: false).isArchived = true;
         Provider.of<ProfileInfoState>(context, listen: false).contactList.removeContact(identifier);
         Provider.of<FlwtchState>(context, listen: false).cwtch.DeleteContact(profileOnion, identifier);
         Future.delayed(Duration(milliseconds: 500), () {

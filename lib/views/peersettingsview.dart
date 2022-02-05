@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:cwtch/cwtch_icons_icons.dart';
 import 'package:cwtch/models/appstate.dart';
 import 'package:cwtch/models/contact.dart';
+import 'package:cwtch/models/profile.dart';
 import 'package:flutter/services.dart';
 import 'package:cwtch/widgets/buttontextfield.dart';
 import 'package:cwtch/widgets/cwtchlabel.dart';
@@ -197,30 +198,46 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
                                       );
                                     }).toList())),
                           ]),
-                          Column(mainAxisAlignment: MainAxisAlignment.end, crossAxisAlignment: CrossAxisAlignment.end, children: [
+                          Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.end, children: [
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Tooltip(
+                                message: AppLocalizations.of(context)!.archiveConversation,
+                                child: ElevatedButton.icon(
+                                  onPressed: () {
+                                    var profileOnion = Provider.of<ContactInfoState>(context, listen: false).profileOnion;
+                                    var handle = Provider.of<ContactInfoState>(context, listen: false).identifier;
+                                    // locally update cache...
+                                    Provider.of<ContactInfoState>(context, listen: false).isArchived = true;
+                                    Provider.of<FlwtchState>(context, listen: false).cwtch.ArchiveConversation(profileOnion, handle);
+                                    Future.delayed(Duration(milliseconds: 500), () {
+                                      Provider.of<AppState>(context, listen: false).selectedConversation = null;
+                                      Navigator.of(context).popUntil((route) => route.settings.name == "conversations"); // dismiss dialog
+                                    });
+                                  },
+                                  icon: Icon(Icons.archive),
+                                  label: Text(AppLocalizations.of(context)!.archiveConversation),
+                                )),
                             SizedBox(
                               height: 20,
                             ),
                             Row(crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.end, children: [
                               Tooltip(
-                                  message: AppLocalizations.of(context)!.archiveConversation,
-                                  child: ElevatedButton.icon(
+                                  message: AppLocalizations.of(context)!.leaveGroup,
+                                  child: TextButton.icon(
                                     onPressed: () {
-                                      var profileOnion = Provider.of<ContactInfoState>(context, listen: false).profileOnion;
-                                      var handle = Provider.of<ContactInfoState>(context, listen: false).identifier;
-                                      // locally update cache...
-                                      Provider.of<ContactInfoState>(context, listen: false).isArchived = true;
-                                      Provider.of<FlwtchState>(context, listen: false).cwtch.ArchiveConversation(profileOnion, handle);
-                                      Future.delayed(Duration(milliseconds: 500), () {
-                                        Provider.of<AppState>(context, listen: false).selectedConversation = null;
-                                        Navigator.of(context).popUntil((route) => route.settings.name == "conversations"); // dismiss dialog
-                                      });
+                                      showAlertDialog(context);
                                     },
-                                    icon: Icon(CwtchIcons.leave_chat),
-                                    label: Text(AppLocalizations.of(context)!.archiveConversation),
+                                    style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.transparent)),
+                                    icon: Icon(CwtchIcons.leave_group),
+                                    label: Text(
+                                      AppLocalizations.of(context)!.leaveGroup,
+                                      style: TextStyle(decoration: TextDecoration.underline),
+                                    ),
                                   ))
                             ])
-                          ]),
+                          ])
                         ])))));
       });
     });
@@ -247,8 +264,8 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
       onPressed: () {
         var profileOnion = Provider.of<ContactInfoState>(context, listen: false).profileOnion;
         var handle = Provider.of<ContactInfoState>(context, listen: false).identifier;
+        Provider.of<ProfileInfoState>(context).removeContact(handle);
         // locally update cache...
-        Provider.of<ContactInfoState>(context, listen: false).isArchived = true;
         Provider.of<FlwtchState>(context, listen: false).cwtch.DeleteContact(profileOnion, handle);
         Future.delayed(Duration(milliseconds: 500), () {
           Provider.of<AppState>(context, listen: false).selectedConversation = null;

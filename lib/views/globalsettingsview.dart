@@ -107,7 +107,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                             items: themes.keys.map<DropdownMenuItem<String>>((String themeId) {
                               return DropdownMenuItem<String>(
                                 value: themeId,
-                                child: Text(getThemeName(context, themeId)), //"ddi_$themeId", key: Key("ddi_$themeId")),
+                                child: Text("ddi_$themeId", key: Key("ddi_$themeId")), //getThemeName(context, themeId)),
                               );
                             }).toList()),
                         leading: Icon(CwtchIcons.change_theme, color: settings.current().mainTextColor),

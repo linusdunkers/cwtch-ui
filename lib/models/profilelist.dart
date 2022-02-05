@@ -27,8 +27,4 @@ class ProfileListState extends ChangeNotifier {
     _profiles.removeWhere((element) => element.onion == onion);
     notifyListeners();
   }
-
-  int generateUnreadCount(String selectedProfile) => _profiles.where( (p) => p.onion != selectedProfile ).fold(0, (i, p) => i + p.unreadMessages);
-
-
 }
