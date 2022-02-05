@@ -86,11 +86,10 @@ class _ContactsViewState extends State<ContactsView> {
                 Navigator.of(context).pop();
               },
             ),
-
             StreamBuilder<bool>(
                 stream: Provider.of<AppState>(context).getUnreadProfileNotifyStream(),
                 builder: (BuildContext context, AsyncSnapshot<bool> unreadCountSnapshot) {
-                  int unreadCount = Provider.of<ProfileListState>(context).generateUnreadCount(Provider.of<AppState>(context).selectedProfile ?? "") ;
+                  int unreadCount = Provider.of<ProfileListState>(context).generateUnreadCount(Provider.of<AppState>(context).selectedProfile ?? "");
 
                   return Visibility(
                       visible: unreadCount > 0,

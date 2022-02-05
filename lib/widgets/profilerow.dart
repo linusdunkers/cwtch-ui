@@ -105,11 +105,12 @@ class _ProfileRowState extends State<ProfileRow> {
   void _pushEditProfile({onion: "", displayName: "", profileImage: "", encrypted: true}) {
     Provider.of<ErrorHandler>(context, listen: false).reset();
     Navigator.of(context).push(MaterialPageRoute<void>(
-      builder: (BuildContext context) {
+      builder: (BuildContext bcontext) {
+        var profile = Provider.of<FlwtchState>(bcontext).profs.getProfile(onion)!;
         return MultiProvider(
           providers: [
-            ChangeNotifierProvider<ProfileInfoState>(
-              create: (_) => ProfileInfoState(onion: onion, nickname: displayName, imagePath: profileImage, encrypted: encrypted),
+            ChangeNotifierProvider<ProfileInfoState>.value(
+              value: profile,
             ),
           ],
           builder: (context, widget) => AddEditProfileView(),

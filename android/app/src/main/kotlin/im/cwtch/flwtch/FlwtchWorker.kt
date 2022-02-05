@@ -77,7 +77,7 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                                     }
 
                             val loader = FlutterInjector.instance().flutterLoader()
-                            val key = loader.getLookupKeyForAsset("assets/" + data.getString("Picture"))//"assets/profiles/001-centaur.png")
+                            val key = loader.getLookupKeyForAsset("assets/" + data.getString("picture"))//"assets/profiles/001-centaur.png")
                             val fh = applicationContext.assets.open(key)
 
 

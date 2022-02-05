@@ -106,7 +106,7 @@ class CwtchNotifier {
           profileCN.getProfile(data["ProfileOnion"])?.contactList.add(ContactInfoState(data["ProfileOnion"], int.parse(data["ConversationID"]), data["GroupID"],
               blocked: false, // we created
               accepted: true, // we created
-              imagePath: data["PicturePath"],
+              imagePath: data["picture"],
               nickname: data["GroupName"],
               status: status,
               server: data["GroupServer"],
@@ -147,7 +147,7 @@ class CwtchNotifier {
         var messageID = int.parse(data["Index"]);
         var timestamp = DateTime.tryParse(data['TimestampReceived'])!;
         var senderHandle = data['RemotePeer'];
-        var senderImage = data['Picture'];
+        var senderImage = data['picture'];
         var isAuto = data['Auto'] == "true";
         String? contenthash = data['ContentHash'];
         var selectedProfile = appState.selectedProfile == data["ProfileOnion"];
@@ -199,7 +199,7 @@ class CwtchNotifier {
         if (data["ProfileOnion"] != data["RemotePeer"]) {
           var idx = int.parse(data["Index"]);
           var senderHandle = data['RemotePeer'];
-          var senderImage = data['Picture'];
+          var senderImage = data['picture'];
           var timestampSent = DateTime.tryParse(data['TimestampSent'])!;
           var contact = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier);
           var currentTotal = contact!.totalMessages;
@@ -301,7 +301,7 @@ class CwtchNotifier {
             profileCN.getProfile(data["ProfileOnion"])?.contactList.add(ContactInfoState(data["ProfileOnion"], identifier, groupInvite["GroupID"],
                 blocked: false, // NewGroup only issued on accepting invite
                 accepted: true, // NewGroup only issued on accepting invite
-                imagePath: data["PicturePath"],
+                imagePath: data["picture"],
                 nickname: groupInvite["GroupName"],
                 server: groupInvite["ServerHost"],
                 status: status,
@@ -322,15 +322,28 @@ class CwtchNotifier {
         profileCN.getProfile(data["ProfileOnion"])?.contactList.resort();
         break;
       case "NewRetValMessageFromPeer":
-        if (data["Path"] == "profile.name") {
+        if (data["Path"] == "profile.name" && data["Exists"] == "true") {
           if (data["Data"].toString().trim().length > 0) {
             // Update locally on the UI...
             if (profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(data["RemotePeer"]) != null) {
               profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(data["RemotePeer"])!.nickname = data["Data"];
             }
           }
-        } else if (data['Path'] == "profile.picture") {
-          // Not yet..
+        } else if (data['Path'] == "profile.custom-profile-image" && data["Exists"] == "true") {
+          EnvironmentConfig.debugLog("received ret val of custom profile image: $data");
+          String fileKey = data['Data'];
+          String filePath = data['FilePath'];
+          bool downloaded = data['FileDownloadFinished'] == "true";
+          if (downloaded) {
+            if (profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(data["RemotePeer"]) != null) {
+              profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(data["RemotePeer"])!.imagePath = filePath;
+            }
+          } else {
+            var contact = profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(data["RemotePeer"]);
+            if (contact != null) {
+              profileCN.getProfile(data["ProfileOnion"])?.waitForDownloadComplete(contact.identifier, fileKey);
+            }
+          }
         } else {
           EnvironmentConfig.debugLog("unhandled ret val event: ${data['Path']}");
         }

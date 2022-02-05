@@ -17,6 +17,7 @@ class ProfileInfoState extends ChangeNotifier {
   int _unreadMessages = 0;
   bool _online = false;
   Map<String, FileDownloadProgress> _downloads = Map<String, FileDownloadProgress>();
+  Map<String, int> _downloadTriggers = Map<String, int>();
 
   // assume profiles are encrypted...this will be set to false
   // in the constructor if the profile is encrypted with the defacto password.
@@ -178,22 +179,14 @@ class ProfileInfoState extends ChangeNotifier {
     this._contacts.resort();
   }
 
-  void newMessage(int identifier, int messageID, DateTime timestamp, String senderHandle, String senderImage, bool isAuto, String data, String? contenthash, bool selectedProfile, bool selectedConversation) {
+  void newMessage(
+      int identifier, int messageID, DateTime timestamp, String senderHandle, String senderImage, bool isAuto, String data, String? contenthash, bool selectedProfile, bool selectedConversation) {
     if (!selectedProfile) {
       unreadMessages++;
       notifyListeners();
     }
 
-    contactList.newMessage(
-        identifier,
-        messageID,
-        timestamp,
-        senderHandle,
-        senderImage,
-        isAuto,
-        data,
-        contenthash,
-        selectedConversation);
+    contactList.newMessage(identifier, messageID, timestamp, senderHandle, senderImage, isAuto, data, contenthash, selectedConversation);
   }
 
   void downloadInit(String fileKey, int numChunks) {
@@ -232,6 +225,15 @@ class ProfileInfoState extends ChangeNotifier {
       // so setting numChunks correctly shouldn't matter
       this.downloadInit(fileKey, 1);
     }
+
+    // Update the contact with a custom profile image if we are
+    // waiting for one...
+    if (this._downloadTriggers.containsKey(fileKey)) {
+      int identifier = this._downloadTriggers[fileKey]!;
+      this.contactList.getContact(identifier)!.imagePath = finalPath;
+      notifyListeners();
+    }
+
     // only update if different
     if (!this._downloads[fileKey]!.complete) {
       this._downloads[fileKey]!.timeEnd = DateTime.now();
@@ -307,5 +309,10 @@ class ProfileInfoState extends ChangeNotifier {
       return "0 B/s";
     }
     return prettyBytes((bytes / seconds).round()) + "/s";
+  }
+
+  void waitForDownloadComplete(int identifier, String fileKey) {
+    _downloadTriggers[fileKey] = identifier;
+    notifyListeners();
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:cwtch/themes/opaque.dart';
 import 'package:provider/provider.dart';
@@ -23,8 +25,11 @@ class ProfileImage extends StatefulWidget {
 class _ProfileImageState extends State<ProfileImage> {
   @override
   Widget build(BuildContext context) {
-    var image = Image(
-      image: AssetImage("assets/" + widget.imagePath),
+    var file = new File(widget.imagePath);
+    var image = Image.file(
+      file,
+      cacheWidth: 512,
+      cacheHeight: 512,
       filterQuality: FilterQuality.medium,
       // We need some theme specific blending here...we might want to consider making this a theme level attribute
       colorBlendMode: !widget.maskOut
@@ -36,6 +41,21 @@ class _ProfileImageState extends State<ProfileImage> {
       isAntiAlias: true,
       width: widget.diameter,
       height: widget.diameter,
+      errorBuilder: (context, error, stackTrace) {
+        // on android the above will fail for asset images, in which case try to load them the original way
+        return Image.asset(widget.imagePath,
+            filterQuality: FilterQuality.medium,
+            // We need some theme specific blending here...we might want to consider making this a theme level attribute
+            colorBlendMode: !widget.maskOut
+                ? Provider.of<Settings>(context).theme.mode == mode_dark
+                    ? BlendMode.softLight
+                    : BlendMode.darken
+                : BlendMode.srcOut,
+            color: Provider.of<Settings>(context).theme.portraitBackgroundColor,
+            isAntiAlias: true,
+            width: widget.diameter,
+            height: widget.diameter);
+      },
     );
 
     return RepaintBoundary(
