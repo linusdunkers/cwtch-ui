@@ -159,7 +159,7 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
                             ),
                             Row(crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.end, children: [
                               Tooltip(
-                                  message: AppLocalizations.of(context)!.leaveGroup,
+                                  message: AppLocalizations.of(context)!.leaveConversation,
                                   child: TextButton.icon(
                                     onPressed: () {
                                       showAlertDialog(context);
@@ -167,7 +167,7 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
                                     style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.transparent)),
                                     icon: Icon(CwtchIcons.leave_group),
                                     label: Text(
-                                      AppLocalizations.of(context)!.leaveGroup,
+                                      AppLocalizations.of(context)!.leaveConversation,
                                       style: TextStyle(decoration: TextDecoration.underline),
                                     ),
                                   ))

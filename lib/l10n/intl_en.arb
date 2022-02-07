@@ -1,6 +1,7 @@
 {
     "@@locale": "en",
-    "@@last_modified": "2022-01-28T19:57:41+01:00",
+    "@@last_modified": "2022-02-07T21:17:01+01:00",
+    "tooltipSelectACustomProfileImage": "Select a Custom Profile Image",
     "editProfile": "Edit Profile",
     "torSettingsEnabledCacheDescription": "Cache the current downloaded Tor consensus to reuse next time Cwtch is opened. This will allow Tor to start faster. When disabled, Cwtch will purge cached data on start up.",
     "torSettingsEnableCache": "Cache Tor Consensus",
@@ -164,7 +165,7 @@
     "newPassword": "New Password",
     "yesLeave": "Yes, Leave This Conversation",
     "reallyLeaveThisGroupPrompt": "Are you sure you want to leave this conversation? All messages and attributes will be deleted.",
-    "leaveGroup": "Leave This Conversation",
+    "leaveConversation": "Leave This Conversation",
     "inviteToGroup": "You have been invited to join a group:",
     "pasteAddressToAddContact": "Paste a cwtch address, invitation or key bundle here to add a new conversation",
     "tooltipAddContact": "Add a new contact or conversation",

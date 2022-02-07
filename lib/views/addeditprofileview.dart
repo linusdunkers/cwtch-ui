@@ -91,9 +91,10 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                   visible: Provider.of<ProfileInfoState>(context).onion.isNotEmpty,
                                   child: Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
                                     MouseRegion(
-                                        cursor: SystemMouseCursors.click,
+                                        cursor: Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment) ? SystemMouseCursors.click : SystemMouseCursors.basic,
                                         child: GestureDetector(
-                                            onTap: Provider.of<AppState>(context).disableFilePicker
+                                            // don't allow setting of profile images if the image previews experiment is disabled.
+                                            onTap: Provider.of<AppState>(context).disableFilePicker || !Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment)
                                                 ? null
                                                 : () {
                                                     filesharing.showFilePicker(context, MaxImageFileSharingSize, (File file) {
@@ -113,6 +114,7 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                             child: ProfileImage(
                                               imagePath: Provider.of<ProfileInfoState>(context).imagePath,
                                               diameter: 120,
+                                              tooltip: Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment) ? AppLocalizations.of(context)!.tooltipSelectACustomProfileImage : "",
                                               maskOut: false,
                                               border: theme.theme.portraitOnlineBorderColor,
                                               badgeTextColor: Colors.red,

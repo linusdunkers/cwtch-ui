@@ -1,6 +1,7 @@
 {
     "@@locale": "ru",
-    "@@last_modified": "2022-01-28T19:57:41+01:00",
+    "@@last_modified": "2022-02-07T21:17:01+01:00",
+    "tooltipSelectACustomProfileImage": "Select a Custom Profile Image",
     "torSettingsEnabledCacheDescription": "Cache the current downloaded Tor consensus to reuse next time Cwtch is opened. This will allow Tor to start faster. When disabled, Cwtch will purge cached data on start up.",
     "torSettingsEnableCache": "Cache Tor Consensus",
     "labelTorNetwork": "Tor Network",
@@ -164,7 +165,7 @@
     "newPassword": "Новый пароль",
     "yesLeave": "Да, оставить этот чат",
     "reallyLeaveThisGroupPrompt": "Вы уверены, что хотите закончить этот разговор? Все сообщения будут удалены.",
-    "leaveGroup": "Да, оставить этот чат",
+    "leaveConversation": "Да, оставить этот чат",
     "inviteToGroup": "Вас пригласили присоединиться к группе:",
     "titleManageServers": "Управление серверами",
     "dateNever": "Никогда",

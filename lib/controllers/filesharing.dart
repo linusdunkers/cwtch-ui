@@ -4,7 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-void showFilePicker(BuildContext ctx, int maxBytes, Function(File) onSuccess, Function onCancel, Function onError) async {
+void showFilePicker(BuildContext ctx, int maxBytes, Function(File) onSuccess, Function onError, Function onCancel) async {
   // only allow one file picker at a time
   // note: ideally we would destroy file picker when leaving a conversation
   // but we don't currently have that option.
