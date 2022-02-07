@@ -94,7 +94,8 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                         cursor: Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment) ? SystemMouseCursors.click : SystemMouseCursors.basic,
                                         child: GestureDetector(
                                             // don't allow setting of profile images if the image previews experiment is disabled.
-                                            onTap: Provider.of<AppState>(context, listen: false).disableFilePicker || !Provider.of<Settings>(context, listen: false).isExperimentEnabled(ImagePreviewsExperiment)
+                                            onTap: Provider.of<AppState>(context, listen: false).disableFilePicker ||
+                                                    !Provider.of<Settings>(context, listen: false).isExperimentEnabled(ImagePreviewsExperiment)
                                                 ? null
                                                 : () {
                                                     filesharing.showFilePicker(context, MaxImageFileSharingSize, (File file) {
