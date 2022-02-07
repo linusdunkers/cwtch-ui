@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:cwtch/themes/opaque.dart';
@@ -8,7 +9,15 @@ import '../settings.dart';
 
 class ProfileImage extends StatefulWidget {
   ProfileImage(
-      {required this.imagePath, required this.diameter, required this.border, this.badgeCount = 0, required this.badgeColor, required this.badgeTextColor, this.maskOut = false, this.tooltip = ""});
+      {required this.imagePath,
+      required this.diameter,
+      required this.border,
+      this.badgeCount = 0,
+      required this.badgeColor,
+      required this.badgeTextColor,
+      this.maskOut = false,
+      this.tooltip = "",
+      this.badgeEdit = false});
   final double diameter;
   final String imagePath;
   final Color border;
@@ -16,6 +25,7 @@ class ProfileImage extends StatefulWidget {
   final Color badgeColor;
   final Color badgeTextColor;
   final bool maskOut;
+  final bool badgeEdit;
   final String tooltip;
 
   @override
@@ -70,14 +80,19 @@ class _ProfileImageState extends State<ProfileImage> {
                   padding: const EdgeInsets.all(2.0), //border size
                   child: ClipOval(clipBehavior: Clip.antiAlias, child: widget.tooltip == "" ? image : Tooltip(message: widget.tooltip, child: image))))),
       Visibility(
-          visible: widget.badgeCount > 0,
+          visible: widget.badgeEdit || widget.badgeCount > 0,
           child: Positioned(
             bottom: 0.0,
             right: 0.0,
             child: CircleAvatar(
-              radius: 10.0,
+              radius: max(10.0, widget.diameter / 6.0),
               backgroundColor: widget.badgeColor,
-              child: Text(widget.badgeCount > 99 ? "99+" : widget.badgeCount.toString(), style: TextStyle(color: widget.badgeTextColor, fontSize: 8.0)),
+              child: widget.badgeEdit
+                  ? Icon(
+                      Icons.edit,
+                      color: widget.badgeTextColor,
+                    )
+                  : Text(widget.badgeCount > 99 ? "99+" : widget.badgeCount.toString(), style: TextStyle(color: widget.badgeTextColor, fontSize: 8.0)),
             ),
           )),
     ]));

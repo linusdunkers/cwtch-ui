@@ -91,10 +91,10 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                   visible: Provider.of<ProfileInfoState>(context).onion.isNotEmpty,
                                   child: Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
                                     MouseRegion(
-                                        cursor: Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment) ? SystemMouseCursors.click : SystemMouseCursors.basic,
+                                        cursor: Provider.of<Settings>(context, listen: false).isExperimentEnabled(ImagePreviewsExperiment) ? SystemMouseCursors.click : SystemMouseCursors.basic,
                                         child: GestureDetector(
                                             // don't allow setting of profile images if the image previews experiment is disabled.
-                                            onTap: Provider.of<AppState>(context).disableFilePicker || !Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment)
+                                            onTap: Provider.of<AppState>(context).disableFilePicker || !Provider.of<Settings>(context, listen: false).isExperimentEnabled(ImagePreviewsExperiment)
                                                 ? null
                                                 : () {
                                                     filesharing.showFilePicker(context, MaxImageFileSharingSize, (File file) {
@@ -112,17 +112,17 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                                     }, () {});
                                                   },
                                             child: ProfileImage(
-                                              imagePath: Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment)
-                                                  ? Provider.of<ProfileInfoState>(context).imagePath
-                                                  : Provider.of<ProfileInfoState>(context).defaultImagePath,
-                                              diameter: 120,
-                                              tooltip:
-                                                  Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment) ? AppLocalizations.of(context)!.tooltipSelectACustomProfileImage : "",
-                                              maskOut: false,
-                                              border: theme.theme.portraitOnlineBorderColor,
-                                              badgeTextColor: Colors.red,
-                                              badgeColor: Colors.red,
-                                            )))
+                                                imagePath: Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment)
+                                                    ? Provider.of<ProfileInfoState>(context).imagePath
+                                                    : Provider.of<ProfileInfoState>(context).defaultImagePath,
+                                                diameter: 120,
+                                                tooltip:
+                                                    Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment) ? AppLocalizations.of(context)!.tooltipSelectACustomProfileImage : "",
+                                                maskOut: false,
+                                                border: theme.theme.portraitOnlineBorderColor,
+                                                badgeTextColor: theme.theme.portraitContactBadgeTextColor,
+                                                badgeColor: theme.theme.portraitContactBadgeColor,
+                                                badgeEdit: Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment))))
                                   ])),
                               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                                 CwtchLabel(label: AppLocalizations.of(context)!.displayNameLabel),
