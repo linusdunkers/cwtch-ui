@@ -251,6 +251,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                     settings.enableExperiment(FileSharingExperiment);
                                   } else {
                                     settings.disableExperiment(FileSharingExperiment);
+                                    settings.disableExperiment(ImagePreviewsExperiment);
                                   }
                                   saveSettings(context);
                                 },
