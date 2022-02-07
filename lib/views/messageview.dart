@@ -94,7 +94,7 @@ class _MessageViewState extends State<MessageView> {
               ? null
               : () {
                   imagePreview = null;
-                  filesharing.showFilePicker(context, MaxGeneralImageFileSharingSize, (File file) {
+                  filesharing.showFilePicker(context, MaxGeneralFileSharingSize, (File file) {
                     _confirmFileSend(context, file.path);
                   }, () {
                     final snackBar = SnackBar(
