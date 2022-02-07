@@ -1,10 +1,10 @@
-import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:cwtch/config.dart';
 import 'package:cwtch/cwtch/cwtch.dart';
+import 'package:cwtch/models/appstate.dart';
 import 'package:cwtch/models/profile.dart';
+import 'package:cwtch/controllers/filesharing.dart' as filesharing;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cwtch/widgets/buttontextfield.dart';
@@ -15,6 +15,7 @@ import 'package:cwtch/widgets/textfield.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../constants.dart';
 import '../cwtch_icons_icons.dart';
 import '../errorHandler.dart';
 import '../main.dart';
@@ -89,14 +90,39 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                               Visibility(
                                   visible: Provider.of<ProfileInfoState>(context).onion.isNotEmpty,
                                   child: Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-                                    ProfileImage(
-                                      imagePath: Provider.of<ProfileInfoState>(context).imagePath,
-                                      diameter: 120,
-                                      maskOut: false,
-                                      border: theme.theme.portraitOnlineBorderColor,
-                                      badgeTextColor: Colors.red,
-                                      badgeColor: Colors.red,
-                                    )
+                                    MouseRegion(
+                                        cursor: Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment) ? SystemMouseCursors.click : SystemMouseCursors.basic,
+                                        child: GestureDetector(
+                                            // don't allow setting of profile images if the image previews experiment is disabled.
+                                            onTap: Provider.of<AppState>(context, listen: false).disableFilePicker || !Provider.of<Settings>(context, listen: false).isExperimentEnabled(ImagePreviewsExperiment)
+                                                ? null
+                                                : () {
+                                                    filesharing.showFilePicker(context, MaxImageFileSharingSize, (File file) {
+                                                      var profile = Provider.of<ProfileInfoState>(context, listen: false).onion;
+                                                      // Share this image publicly (conversation handle == -1)
+                                                      Provider.of<FlwtchState>(context, listen: false).cwtch.ShareFile(profile, -1, file.path);
+                                                      // update the image cache locally
+                                                      Provider.of<ProfileInfoState>(context, listen: false).imagePath = file.path;
+                                                    }, () {
+                                                      final snackBar = SnackBar(
+                                                        content: Text(AppLocalizations.of(context)!.msgFileTooBig),
+                                                        duration: Duration(seconds: 4),
+                                                      );
+                                                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                                    }, () {});
+                                                  },
+                                            child: ProfileImage(
+                                                imagePath: Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment)
+                                                    ? Provider.of<ProfileInfoState>(context).imagePath
+                                                    : Provider.of<ProfileInfoState>(context).defaultImagePath,
+                                                diameter: 120,
+                                                tooltip:
+                                                    Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment) ? AppLocalizations.of(context)!.tooltipSelectACustomProfileImage : "",
+                                                maskOut: false,
+                                                border: theme.theme.portraitOnlineBorderColor,
+                                                badgeTextColor: theme.theme.portraitContactBadgeTextColor,
+                                                badgeColor: theme.theme.portraitContactBadgeColor,
+                                                badgeEdit: Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment))))
                                   ])),
                               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                                 CwtchLabel(label: AppLocalizations.of(context)!.displayNameLabel),

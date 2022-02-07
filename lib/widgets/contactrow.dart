@@ -50,7 +50,7 @@ class _ContactRowState extends State<ContactRow> {
                   badgeColor: Provider.of<Settings>(context).theme.portraitContactBadgeColor,
                   badgeTextColor: Provider.of<Settings>(context).theme.portraitContactBadgeTextColor,
                   diameter: 64.0,
-                  imagePath: contact.imagePath,
+                  imagePath: Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment) ? contact.imagePath : contact.defaultImagePath,
                   maskOut: !contact.isOnline(),
                   border: contact.isOnline()
                       ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor

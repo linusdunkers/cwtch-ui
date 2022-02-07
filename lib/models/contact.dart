@@ -14,6 +14,7 @@ class ContactInfoState extends ChangeNotifier {
   late bool _blocked;
   late String _status;
   late String _imagePath;
+  late String _defaultImagePath;
   late String _savePeerHistory;
   late int _unreadMessages = 0;
   late int _totalMessages = 0;
@@ -37,6 +38,7 @@ class ContactInfoState extends ChangeNotifier {
       blocked = false,
       status = "",
       imagePath = "",
+      defaultImagePath = "",
       savePeerHistory = "DeleteHistoryConfirmed",
       numMessages = 0,
       numUnread = 0,
@@ -49,6 +51,7 @@ class ContactInfoState extends ChangeNotifier {
     this._blocked = blocked;
     this._status = status;
     this._imagePath = imagePath;
+    this._defaultImagePath = defaultImagePath;
     this._totalMessages = numMessages;
     this._unreadMessages = numUnread;
     this._savePeerHistory = savePeerHistory;
@@ -163,6 +166,13 @@ class ContactInfoState extends ChangeNotifier {
 
   set imagePath(String newVal) {
     this._imagePath = newVal;
+    notifyListeners();
+  }
+
+  String get defaultImagePath => this._defaultImagePath;
+
+  set defaultImagePath(String newVal) {
+    this._defaultImagePath = newVal;
     notifyListeners();
   }
 

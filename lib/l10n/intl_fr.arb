@@ -1,6 +1,7 @@
 {
     "@@locale": "fr",
-    "@@last_modified": "2022-01-28T19:57:41+01:00",
+    "@@last_modified": "2022-02-07T21:17:01+01:00",
+    "tooltipSelectACustomProfileImage": "Select a Custom Profile Image",
     "editProfile": "Modifier le profil",
     "settingTheme": "Utilisez des thèmes clairs",
     "torSettingsUseCustomTorServiceConfiguration": "Utiliser une configuration personnalisée du service Tor (torrc)",
@@ -213,7 +214,7 @@
     "dateNever": "Jamais",
     "titleManageServers": "Gérer les serveurs",
     "inviteToGroup": "Vous avez été invité à rejoindre un groupe :",
-    "leaveGroup": "Quittez cette conversation",
+    "leaveConversation": "Quittez cette conversation",
     "reallyLeaveThisGroupPrompt": "Êtes-vous sûr de vouloir quitter cette conversation ? Tous les messages et attributs seront supprimés.",
     "yesLeave": "Oui, quittez cette conversation",
     "noPasswordWarning": "Ne pas utiliser de mot de passe sur ce compte signifie que toutes les données stockées localement ne seront pas chiffrées.",

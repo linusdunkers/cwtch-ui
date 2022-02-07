@@ -14,9 +14,11 @@ class ProfileInfoState extends ChangeNotifier {
   final String onion;
   String _nickname = "";
   String _imagePath = "";
+  String _defaultImagePath = "";
   int _unreadMessages = 0;
   bool _online = false;
   Map<String, FileDownloadProgress> _downloads = Map<String, FileDownloadProgress>();
+  Map<String, int> _downloadTriggers = Map<String, int>();
 
   // assume profiles are encrypted...this will be set to false
   // in the constructor if the profile is encrypted with the defacto password.
@@ -26,14 +28,17 @@ class ProfileInfoState extends ChangeNotifier {
     required this.onion,
     nickname = "",
     imagePath = "",
+    defaultImagePath = "",
     unreadMessages = 0,
     contactsJson = "",
     serversJson = "",
     online = false,
     encrypted = true,
+    String,
   }) {
     this._nickname = nickname;
     this._imagePath = imagePath;
+    this._defaultImagePath = defaultImagePath;
     this._unreadMessages = unreadMessages;
     this._online = online;
     this._encrypted = encrypted;
@@ -49,6 +54,7 @@ class ProfileInfoState extends ChangeNotifier {
             nickname: contact["name"],
             status: contact["status"],
             imagePath: contact["picture"],
+            defaultImagePath: contact["isGroup"] ? contact["picture"] : contact["defaultPicture"],
             accepted: contact["accepted"],
             blocked: contact["blocked"],
             savePeerHistory: contact["saveConversationHistory"],
@@ -114,6 +120,12 @@ class ProfileInfoState extends ChangeNotifier {
     notifyListeners();
   }
 
+  String get defaultImagePath => this._defaultImagePath;
+  set defaultImagePath(String newVal) {
+    this._defaultImagePath = newVal;
+    notifyListeners();
+  }
+
   int get unreadMessages => this._unreadMessages;
   set unreadMessages(int newVal) {
     this._unreadMessages = newVal;
@@ -160,6 +172,7 @@ class ProfileInfoState extends ChangeNotifier {
                 contact["identifier"],
                 contact["onion"],
                 nickname: contact["name"],
+                defaultImagePath: contact["defaultPicture"],
                 status: contact["status"],
                 imagePath: contact["picture"],
                 accepted: contact["accepted"],
@@ -178,22 +191,14 @@ class ProfileInfoState extends ChangeNotifier {
     this._contacts.resort();
   }
 
-  void newMessage(int identifier, int messageID, DateTime timestamp, String senderHandle, String senderImage, bool isAuto, String data, String? contenthash, bool selectedProfile, bool selectedConversation) {
+  void newMessage(
+      int identifier, int messageID, DateTime timestamp, String senderHandle, String senderImage, bool isAuto, String data, String? contenthash, bool selectedProfile, bool selectedConversation) {
     if (!selectedProfile) {
       unreadMessages++;
       notifyListeners();
     }
 
-    contactList.newMessage(
-        identifier,
-        messageID,
-        timestamp,
-        senderHandle,
-        senderImage,
-        isAuto,
-        data,
-        contenthash,
-        selectedConversation);
+    contactList.newMessage(identifier, messageID, timestamp, senderHandle, senderImage, isAuto, data, contenthash, selectedConversation);
   }
 
   void downloadInit(String fileKey, int numChunks) {
@@ -232,6 +237,15 @@ class ProfileInfoState extends ChangeNotifier {
       // so setting numChunks correctly shouldn't matter
       this.downloadInit(fileKey, 1);
     }
+
+    // Update the contact with a custom profile image if we are
+    // waiting for one...
+    if (this._downloadTriggers.containsKey(fileKey)) {
+      int identifier = this._downloadTriggers[fileKey]!;
+      this.contactList.getContact(identifier)!.imagePath = finalPath;
+      notifyListeners();
+    }
+
     // only update if different
     if (!this._downloads[fileKey]!.complete) {
       this._downloads[fileKey]!.timeEnd = DateTime.now();
@@ -307,5 +321,10 @@ class ProfileInfoState extends ChangeNotifier {
       return "0 B/s";
     }
     return prettyBytes((bytes / seconds).round()) + "/s";
+  }
+
+  void waitForDownloadComplete(int identifier, String fileKey) {
+    _downloadTriggers[fileKey] = identifier;
+    notifyListeners();
   }
 }

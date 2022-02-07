@@ -1,6 +1,7 @@
 {
     "@@locale": "de",
-    "@@last_modified": "2022-01-28T19:57:41+01:00",
+    "@@last_modified": "2022-02-07T21:17:01+01:00",
+    "tooltipSelectACustomProfileImage": "Select a Custom Profile Image",
     "torSettingsEnabledCacheDescription": "Cache the current downloaded Tor consensus to reuse next time Cwtch is opened. This will allow Tor to start faster. When disabled, Cwtch will purge cached data on start up.",
     "torSettingsEnableCache": "Cache Tor Consensus",
     "labelTorNetwork": "Tor Network",
@@ -162,7 +163,7 @@
     "newPassword": "Neues Passwort",
     "yesLeave": "Ja, diese Unterhaltung beenden",
     "reallyLeaveThisGroupPrompt": "Bist du sicher, dass du diese Unterhaltung beenden möchtest? Alle Nachrichten und Attribute werden gelöscht.",
-    "leaveGroup": "Unterhaltung beenden",
+    "leaveConversation": "Unterhaltung beenden",
     "inviteToGroup": "Du wurdest eingeladen einer Gruppe beizutreten:",
     "titleManageServers": "Server verwalten",
     "dateNever": "Nie",

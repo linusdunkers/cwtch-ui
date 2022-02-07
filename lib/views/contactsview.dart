@@ -86,11 +86,10 @@ class _ContactsViewState extends State<ContactsView> {
                 Navigator.of(context).pop();
               },
             ),
-
             StreamBuilder<bool>(
                 stream: Provider.of<AppState>(context).getUnreadProfileNotifyStream(),
                 builder: (BuildContext context, AsyncSnapshot<bool> unreadCountSnapshot) {
-                  int unreadCount = Provider.of<ProfileListState>(context).generateUnreadCount(Provider.of<AppState>(context).selectedProfile ?? "") ;
+                  int unreadCount = Provider.of<ProfileListState>(context).generateUnreadCount(Provider.of<AppState>(context).selectedProfile ?? "");
 
                   return Visibility(
                       visible: unreadCount > 0,
@@ -104,7 +103,9 @@ class _ContactsViewState extends State<ContactsView> {
           title: RepaintBoundary(
               child: Row(children: [
             ProfileImage(
-              imagePath: Provider.of<ProfileInfoState>(context).imagePath,
+              imagePath: Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment)
+                  ? Provider.of<ProfileInfoState>(context).imagePath
+                  : Provider.of<ProfileInfoState>(context).defaultImagePath,
               diameter: 42,
               border: Provider.of<Settings>(context).current().portraitOnlineBorderColor,
               badgeTextColor: Colors.red,

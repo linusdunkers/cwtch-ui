@@ -1,6 +1,7 @@
 {
     "@@locale": "pl",
-    "@@last_modified": "2022-01-28T19:57:41+01:00",
+    "@@last_modified": "2022-02-07T21:17:01+01:00",
+    "tooltipSelectACustomProfileImage": "Select a Custom Profile Image",
     "torSettingsEnabledCacheDescription": "Cache the current downloaded Tor consensus to reuse next time Cwtch is opened. This will allow Tor to start faster. When disabled, Cwtch will purge cached data on start up.",
     "torSettingsEnableCache": "Cache Tor Consensus",
     "labelTorNetwork": "Tor Network",
@@ -209,7 +210,7 @@
     "chatHistoryDefault": "Ta konwersacja zostanie usunięta gdy zamkniesz Cwtch! Możesz włączyć zapisywanie wiadomości dla każdej konwersacji osobno w menu w prawym górnym rogu.",
     "yesLeave": "Opuść",
     "reallyLeaveThisGroupPrompt": "Na pewno chcesz opuścić tę grupę? Wszystkie wiadomości i atrybuty zostaną usunięte.",
-    "leaveGroup": "Opuść grupę",
+    "leaveConversation": "Opuść grupę",
     "inviteToGroup": "Zaproszono Cię do grupy:",
     "dateNever": "Nigdy",
     "dateLastYear": "Rok temu",
