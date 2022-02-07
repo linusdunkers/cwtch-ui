@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:cwtch/cwtch_icons_icons.dart';
 import 'package:cwtch/models/appstate.dart';
 import 'package:cwtch/models/contact.dart';
+import 'package:cwtch/models/profile.dart';
 import 'package:flutter/services.dart';
 import 'package:cwtch/widgets/buttontextfield.dart';
 import 'package:cwtch/widgets/cwtchlabel.dart';
@@ -216,11 +217,29 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
                                         Navigator.of(context).popUntil((route) => route.settings.name == "conversations"); // dismiss dialog
                                       });
                                     },
-                                    icon: Icon(CwtchIcons.leave_chat),
+                                    icon: Icon(Icons.archive),
                                     label: Text(AppLocalizations.of(context)!.archiveConversation),
                                   ))
+                            ]),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Row(crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.end, children: [
+                              Tooltip(
+                                  message: AppLocalizations.of(context)!.leaveConversation,
+                                  child: TextButton.icon(
+                                    onPressed: () {
+                                      showAlertDialog(context);
+                                    },
+                                    style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.transparent)),
+                                    icon: Icon(CwtchIcons.leave_group),
+                                    label: Text(
+                                      AppLocalizations.of(context)!.leaveConversation,
+                                      style: TextStyle(decoration: TextDecoration.underline),
+                                    ),
+                                  ))
                             ])
-                          ]),
+                          ])
                         ])))));
       });
     });
@@ -246,10 +265,10 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
       child: Text(AppLocalizations.of(context)!.yesLeave),
       onPressed: () {
         var profileOnion = Provider.of<ContactInfoState>(context, listen: false).profileOnion;
-        var handle = Provider.of<ContactInfoState>(context, listen: false).identifier;
+        var identifier = Provider.of<ContactInfoState>(context, listen: false).identifier;
         // locally update cache...
-        Provider.of<ContactInfoState>(context, listen: false).isArchived = true;
-        Provider.of<FlwtchState>(context, listen: false).cwtch.DeleteContact(profileOnion, handle);
+        Provider.of<ProfileInfoState>(context, listen: false).contactList.removeContact(identifier);
+        Provider.of<FlwtchState>(context, listen: false).cwtch.DeleteContact(profileOnion, identifier);
         Future.delayed(Duration(milliseconds: 500), () {
           Provider.of<AppState>(context, listen: false).selectedConversation = null;
           Navigator.of(context).popUntil((route) => route.settings.name == "conversations"); // dismiss dialog

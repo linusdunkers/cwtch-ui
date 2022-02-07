@@ -156,8 +156,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
 
       String imagePath = Provider.of<MessageMetadata>(context).senderImage!;
       if (sender != null) {
-        imagePath =
-            Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment) ? sender.imagePath : sender.defaultImagePath;
+        imagePath = Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment) ? sender.imagePath : sender.defaultImagePath;
       }
       Widget wdgPortrait = GestureDetector(
           onTap: !isGroup
