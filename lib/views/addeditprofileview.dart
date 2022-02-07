@@ -1,12 +1,10 @@
-import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:cwtch/config.dart';
 import 'package:cwtch/cwtch/cwtch.dart';
 import 'package:cwtch/models/appstate.dart';
 import 'package:cwtch/models/profile.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:cwtch/controllers/filesharing.dart' as filesharing;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cwtch/widgets/buttontextfield.dart';
@@ -17,6 +15,7 @@ import 'package:cwtch/widgets/textfield.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../constants.dart';
 import '../cwtch_icons_icons.dart';
 import '../errorHandler.dart';
 import '../main.dart';
@@ -68,37 +67,6 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
     });
   }
 
-  void _showFilePicker(BuildContext ctx) async {
-    // only allow one file picker at a time
-    // note: ideally we would destroy file picker when leaving a conversation
-    // but we don't currently have that option.
-    // we need to store AppState in a variable because ctx might be destroyed
-    // while awaiting for pickFiles.
-    var appstate = Provider.of<AppState>(ctx, listen: false);
-    appstate.disableFilePicker = true;
-    // currently lockParentWindow only works on Windows...
-    FilePickerResult? result = await FilePicker.platform.pickFiles(lockParentWindow: true);
-    appstate.disableFilePicker = false;
-    if (result != null && result.files.first.path != null) {
-      File file = File(result.files.first.path!);
-      // We have a maximum number of bytes we can represent in terms of
-      // a manifest (see : https://git.openprivacy.ca/cwtch.im/cwtch/src/branch/master/protocol/files/manifest.go#L25)
-      if (file.lengthSync() <= 10737418240) {
-        var profile = Provider.of<ProfileInfoState>(context, listen: false).onion;
-        // Share this image publically (conversation handle == -1)
-        Provider.of<FlwtchState>(context, listen: false).cwtch.ShareFile(profile, -1, file.path);
-        // update the image cache locally
-        Provider.of<ProfileInfoState>(context, listen: false).imagePath = file.path;
-      } else {
-        final snackBar = SnackBar(
-          content: Text(AppLocalizations.of(context)!.msgFileTooBig),
-          duration: Duration(seconds: 4),
-        );
-        ScaffoldMessenger.of(ctx).showSnackBar(snackBar);
-      }
-    }
-  }
-
   //  A few implementation notes
   // We use Visibility to hide optional structures when they are not requested.
   // We used SizedBox for inter-widget height padding in columns, otherwise elements can render a little too close together.
@@ -125,9 +93,23 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                     MouseRegion(
                                         cursor: SystemMouseCursors.click,
                                         child: GestureDetector(
-                                            onTap: () {
-                                              _showFilePicker(context);
-                                            },
+                                            onTap: Provider.of<AppState>(context).disableFilePicker
+                                                ? null
+                                                : () {
+                                                    filesharing.showFilePicker(context, MaxImageFileSharingSize, (File file) {
+                                                      var profile = Provider.of<ProfileInfoState>(context, listen: false).onion;
+                                                      // Share this image publicly (conversation handle == -1)
+                                                      Provider.of<FlwtchState>(context, listen: false).cwtch.ShareFile(profile, -1, file.path);
+                                                      // update the image cache locally
+                                                      Provider.of<ProfileInfoState>(context, listen: false).imagePath = file.path;
+                                                    }, () {
+                                                      final snackBar = SnackBar(
+                                                        content: Text(AppLocalizations.of(context)!.msgFileTooBig),
+                                                        duration: Duration(seconds: 4),
+                                                      );
+                                                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                                    }, () {});
+                                                  },
                                             child: ProfileImage(
                                               imagePath: Provider.of<ProfileInfoState>(context).imagePath,
                                               diameter: 120,
