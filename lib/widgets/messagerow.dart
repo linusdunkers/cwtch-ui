@@ -153,6 +153,12 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
     } else {
       var contact = Provider.of<ContactInfoState>(context);
       ContactInfoState? sender = Provider.of<ProfileInfoState>(context).contactList.findContact(Provider.of<MessageMetadata>(context).senderHandle);
+
+      String imagePath = Provider.of<MessageMetadata>(context).senderImage!;
+      if (sender != null) {
+        imagePath =
+            Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment) ? sender.imagePath : sender.defaultImagePath;
+      }
       Widget wdgPortrait = GestureDetector(
           onTap: !isGroup
               ? null
@@ -164,7 +170,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
               child: ProfileImage(
                 diameter: 48.0,
                 // default to the contact image...otherwise use a derived sender image...
-                imagePath: sender?.imagePath ?? Provider.of<MessageMetadata>(context).senderImage!,
+                imagePath: imagePath,
                 border: contact.status == "Authenticated" ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor : Provider.of<Settings>(context).theme.portraitOfflineBorderColor,
                 badgeTextColor: Colors.red,
                 badgeColor: Colors.red,

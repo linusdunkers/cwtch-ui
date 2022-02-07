@@ -112,9 +112,12 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                                     }, () {});
                                                   },
                                             child: ProfileImage(
-                                              imagePath: Provider.of<ProfileInfoState>(context).imagePath,
+                                              imagePath: Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment)
+                                                  ? Provider.of<ProfileInfoState>(context).imagePath
+                                                  : Provider.of<ProfileInfoState>(context).defaultImagePath,
                                               diameter: 120,
-                                              tooltip: Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment) ? AppLocalizations.of(context)!.tooltipSelectACustomProfileImage : "",
+                                              tooltip:
+                                                  Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment) ? AppLocalizations.of(context)!.tooltipSelectACustomProfileImage : "",
                                               maskOut: false,
                                               border: theme.theme.portraitOnlineBorderColor,
                                               badgeTextColor: Colors.red,

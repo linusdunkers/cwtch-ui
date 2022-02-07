@@ -139,7 +139,9 @@ class _MessageViewState extends State<MessageView> {
             leading: Provider.of<Settings>(context).uiColumns(appState.isLandscape(context)).length > 1 ? Container() : null,
             title: Row(children: [
               ProfileImage(
-                imagePath: Provider.of<ContactInfoState>(context).imagePath,
+                imagePath: Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment)
+                    ? Provider.of<ContactInfoState>(context).imagePath
+                    : Provider.of<ContactInfoState>(context).defaultImagePath,
                 diameter: 42,
                 border: Provider.of<Settings>(context).current().portraitOnlineBorderColor,
                 badgeTextColor: Colors.red,

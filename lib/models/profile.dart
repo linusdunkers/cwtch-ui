@@ -14,6 +14,7 @@ class ProfileInfoState extends ChangeNotifier {
   final String onion;
   String _nickname = "";
   String _imagePath = "";
+  String _defaultImagePath = "";
   int _unreadMessages = 0;
   bool _online = false;
   Map<String, FileDownloadProgress> _downloads = Map<String, FileDownloadProgress>();
@@ -27,14 +28,17 @@ class ProfileInfoState extends ChangeNotifier {
     required this.onion,
     nickname = "",
     imagePath = "",
+    defaultImagePath = "",
     unreadMessages = 0,
     contactsJson = "",
     serversJson = "",
     online = false,
     encrypted = true,
+    String,
   }) {
     this._nickname = nickname;
     this._imagePath = imagePath;
+    this._defaultImagePath = defaultImagePath;
     this._unreadMessages = unreadMessages;
     this._online = online;
     this._encrypted = encrypted;
@@ -50,6 +54,7 @@ class ProfileInfoState extends ChangeNotifier {
             nickname: contact["name"],
             status: contact["status"],
             imagePath: contact["picture"],
+            defaultImagePath: contact["isGroup"] ? contact["picture"] : contact["defaultPicture"],
             accepted: contact["accepted"],
             blocked: contact["blocked"],
             savePeerHistory: contact["saveConversationHistory"],
@@ -115,6 +120,12 @@ class ProfileInfoState extends ChangeNotifier {
     notifyListeners();
   }
 
+  String get defaultImagePath => this._defaultImagePath;
+  set defaultImagePath(String newVal) {
+    this._defaultImagePath = newVal;
+    notifyListeners();
+  }
+
   int get unreadMessages => this._unreadMessages;
   set unreadMessages(int newVal) {
     this._unreadMessages = newVal;
@@ -161,6 +172,7 @@ class ProfileInfoState extends ChangeNotifier {
                 contact["identifier"],
                 contact["onion"],
                 nickname: contact["name"],
+                defaultImagePath: contact["defaultPicture"],
                 status: contact["status"],
                 imagePath: contact["picture"],
                 accepted: contact["accepted"],

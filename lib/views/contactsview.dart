@@ -103,7 +103,9 @@ class _ContactsViewState extends State<ContactsView> {
           title: RepaintBoundary(
               child: Row(children: [
             ProfileImage(
-              imagePath: Provider.of<ProfileInfoState>(context).imagePath,
+              imagePath: Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment)
+                  ? Provider.of<ProfileInfoState>(context).imagePath
+                  : Provider.of<ProfileInfoState>(context).defaultImagePath,
               diameter: 42,
               border: Provider.of<Settings>(context).current().portraitOnlineBorderColor,
               badgeTextColor: Colors.red,

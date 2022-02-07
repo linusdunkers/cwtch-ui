@@ -38,7 +38,7 @@ class _ProfileRowState extends State<ProfileRow> {
                       badgeColor: Provider.of<Settings>(context).theme.portraitProfileBadgeColor,
                       badgeTextColor: Provider.of<Settings>(context).theme.portraitProfileBadgeTextColor,
                       diameter: 64.0,
-                      imagePath: profile.imagePath,
+                      imagePath: Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment) ? profile.imagePath : profile.defaultImagePath,
                       border: profile.isOnline ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor : Provider.of<Settings>(context).theme.portraitOfflineBorderColor)),
               Expanded(
                   child: Column(

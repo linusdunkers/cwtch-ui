@@ -55,7 +55,7 @@ class CwtchNotifier {
         }
         EnvironmentConfig.debugLog("NewPeer $data");
         // if tag != v1-defaultPassword then it is either encrypted OR it is an unencrypted account created during pre-beta...
-        profileCN.add(data["Identity"], data["name"], data["picture"], data["ContactsJson"], data["ServerList"], data["Online"] == "true", data["tag"] != "v1-defaultPassword");
+        profileCN.add(data["Identity"], data["name"], data["picture"], data["defaultPicture"], data["ContactsJson"], data["ServerList"], data["Online"] == "true", data["tag"] != "v1-defaultPassword");
         break;
       case "ContactCreated":
         EnvironmentConfig.debugLog("ContactCreated $data");
@@ -67,6 +67,7 @@ class CwtchNotifier {
               nickname: data["nick"],
               status: data["status"],
               imagePath: data["picture"],
+              defaultImagePath: data["defaultPicture"],
               blocked: data["blocked"] == "true",
               accepted: data["accepted"] == "true",
               savePeerHistory: data["saveConversationHistory"] == null ? "DeleteHistoryConfirmed" : data["saveConversationHistory"],
@@ -107,6 +108,7 @@ class CwtchNotifier {
               blocked: false, // we created
               accepted: true, // we created
               imagePath: data["picture"],
+              defaultImagePath: data["picture"],
               nickname: data["GroupName"],
               status: status,
               server: data["GroupServer"],
