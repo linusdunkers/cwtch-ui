@@ -67,36 +67,53 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                         val data = JSONObject(evt.Data)
                         val handle = if (evt.EventType == "NewMessageFromPeer") data.getString("RemotePeer") else data.getString("GroupID");
                         if (data["RemotePeer"] != data["ProfileOnion"]) {
-                            val channelId =
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                        createMessageNotificationChannel(handle, handle)
-                                    } else {
-                                        // If earlier version channel ID is not used
-                                        // https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#NotificationCompat.Builder(android.content.Context)
-                                        ""
-                                    }
 
                             val loader = FlutterInjector.instance().flutterLoader()
                             val key = loader.getLookupKeyForAsset("assets/" + data.getString("picture"))//"assets/profiles/001-centaur.png")
                             val fh = applicationContext.assets.open(key)
 
+                            val notification = data["notification"]
 
-                            val clickIntent = Intent(applicationContext, MainActivity::class.java).also { intent ->
-                                intent.action = Intent.ACTION_RUN
-                                intent.putExtra("EventType", "NotificationClicked")
-                                intent.putExtra("ProfileOnion", data.getString("ProfileOnion"))
-                                intent.putExtra("Handle", handle)
+                            if (notification != "None") {
+
+                                if (notification == "SimpleEvent") {
+
+                                } else if (notification == "ContactInfo") {
+
+                                }
+
+
+                                val channelId =
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                            createMessageNotificationChannel(handle, handle)
+                                        } else {
+                                            // If earlier version channel ID is not used
+                                            // https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#NotificationCompat.Builder(android.content.Context)
+                                            ""
+                                        }
+
+                                val loader = FlutterInjector.instance().flutterLoader()
+                                val key = loader.getLookupKeyForAsset("assets/" + data.getString("Picture"))//"assets/profiles/001-centaur.png")
+                                val fh = applicationContext.assets.open(key)
+
+
+                                val clickIntent = Intent(applicationContext, MainActivity::class.java).also { intent ->
+                                    intent.action = Intent.ACTION_RUN
+                                    intent.putExtra("EventType", "NotificationClicked")
+                                    intent.putExtra("ProfileOnion", data.getString("ProfileOnion"))
+                                    intent.putExtra("Handle", handle)
+                                }
+
+                                val newNotification = NotificationCompat.Builder(applicationContext, channelId)
+                                        .setContentTitle(data.getString("Nick"))
+                                        .setContentText("New message")//todo: translate
+                                        .setLargeIcon(BitmapFactory.decodeStream(fh))
+                                        .setSmallIcon(R.mipmap.knott_transparent)
+                                        .setContentIntent(PendingIntent.getActivity(applicationContext, 1, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT))
+                                        .setAutoCancel(true)
+                                        .build()
+                                notificationManager.notify(getNotificationID(data.getString("ProfileOnion"), handle), newNotification)
                             }
-
-                            val newNotification = NotificationCompat.Builder(applicationContext, channelId)
-                                    .setContentTitle(data.getString("Nick"))
-                                    .setContentText("New message")//todo: translate
-                                    .setLargeIcon(BitmapFactory.decodeStream(fh))
-                                    .setSmallIcon(R.mipmap.knott_transparent)
-                                    .setContentIntent(PendingIntent.getActivity(applicationContext, 1, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT))
-                                    .setAutoCancel(true)
-                                    .build()
-                            notificationManager.notify(getNotificationID(data.getString("ProfileOnion"), handle), newNotification)
                         }
                     } else if (evt.EventType == "FileDownloadProgressUpdate") {
                         try {
