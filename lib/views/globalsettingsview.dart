@@ -53,11 +53,13 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
             isAlwaysShown: true,
             child: SingleChildScrollView(
                 clipBehavior: Clip.antiAlias,
+                padding: EdgeInsets.all(20),
                 child: ConstrainedBox(
                     constraints: BoxConstraints(
                       minHeight: viewportConstraints.maxHeight,
                     ),
                     child: Column(children: [
+                      Row(mainAxisAlignment: MainAxisAlignment.center, children: [Text(AppLocalizations.of(context)!.settingsGroupAppearance, style: TextStyle(fontWeight: FontWeight.bold))]),
                       ListTile(
                           title: Text(AppLocalizations.of(context)!.settingLanguage, style: TextStyle(color: settings.current().mainTextColor)),
                           leading: Icon(CwtchIcons.change_language, color: settings.current().mainTextColor),
@@ -135,24 +137,78 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                             style: TextStyle(color: settings.current().mainTextColor),
                           ),
                           leading: Icon(Icons.table_chart, color: settings.current().mainTextColor),
-                          trailing: Container(
-                              width: MediaQuery.of(context).size.width / 4,
-                              child: DropdownButton(
-                                  isExpanded: true,
-                                  value: settings.uiColumnModeLandscape.toString(),
-                                  onChanged: (String? newValue) {
-                                    settings.uiColumnModeLandscape = Settings.uiColumnModeFromString(newValue!);
-                                    saveSettings(context);
-                                  },
-                                  items: Settings.uiColumnModeOptions(true).map<DropdownMenuItem<String>>((DualpaneMode value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value.toString(),
-                                      child: Text(
-                                        Settings.uiColumnModeToString(value, context),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    );
-                                  }).toList()))),
+                          trailing: DropdownButton(
+                              value: settings.uiColumnModeLandscape.toString(),
+                              onChanged: (String? newValue) {
+                                settings.uiColumnModeLandscape = Settings.uiColumnModeFromString(newValue!);
+                                saveSettings(context);
+                              },
+                              items: Settings.uiColumnModeOptions(true).map<DropdownMenuItem<String>>((DualpaneMode value) {
+                                return DropdownMenuItem<String>(
+                                  value: value.toString(),
+                                  child: Text(
+                                    Settings.uiColumnModeToString(value, context),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                );
+                              }).toList())),
+                      SwitchListTile(
+                        title: Text(AppLocalizations.of(context)!.streamerModeLabel, style: TextStyle(color: settings.current().mainTextColor)),
+                        subtitle: Text(AppLocalizations.of(context)!.descriptionStreamerMode),
+                        value: settings.streamerMode,
+                        onChanged: (bool value) {
+                          settings.setStreamerMode(value);
+                          // Save Settings...
+                          saveSettings(context);
+                        },
+                        activeTrackColor: settings.theme.defaultButtonColor,
+                        inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
+                        secondary: Icon(CwtchIcons.streamer_bunnymask, color: settings.current().mainTextColor),
+                      ),
+                      SizedBox(
+                        height: 40,
+                      ),
+                      Row(mainAxisAlignment: MainAxisAlignment.center, children: [Text(AppLocalizations.of(context)!.settingGroupBehaviour, style: TextStyle(fontWeight: FontWeight.bold))]),
+                      ListTile(
+                        title: Text(AppLocalizations.of(context)!.notificationPolicySettingLabel),
+                        subtitle: Text(AppLocalizations.of(context)!.notificationPolicySettingDescription),
+                        trailing: DropdownButton(
+                            value: settings.notificationPolicy,
+                            onChanged: (NotificationPolicy? newValue) {
+                              settings.notificationPolicy = newValue!;
+                              saveSettings(context);
+                            },
+                            items: NotificationPolicy.values.map<DropdownMenuItem<NotificationPolicy>>((NotificationPolicy value) {
+                              return DropdownMenuItem<NotificationPolicy>(
+                                value: value,
+                                child: Text(
+                                  Settings.notificationPolicyToString(value, context),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              );
+                            }).toList()),
+                        leading: Icon(CwtchIcons.chat_bubble_empty_24px, color: settings.current().mainTextColor),
+                      ),
+                      ListTile(
+                        title: Text(AppLocalizations.of(context)!.notificationContentSettingLabel),
+                        subtitle: Text(AppLocalizations.of(context)!.notificationContentSettingDescription),
+                        trailing: DropdownButton(
+                            value: settings.notificationContent,
+                            onChanged: (NotificationContent? newValue) {
+                              settings.notificationContent = newValue!;
+                              saveSettings(context);
+                            },
+                            items: NotificationContent.values.map<DropdownMenuItem<NotificationContent>>((NotificationContent value) {
+                              return DropdownMenuItem<NotificationContent>(
+                                value: value,
+                                child: Text(
+                                  Settings.notificationContentToString(value, context),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              );
+                            }).toList()),
+                        leading: Icon(CwtchIcons.chat_bubble_empty_24px, color: settings.current().mainTextColor),
+                      ),
                       SwitchListTile(
                         title: Text(AppLocalizations.of(context)!.blockUnknownLabel, style: TextStyle(color: settings.current().mainTextColor)),
                         subtitle: Text(AppLocalizations.of(context)!.descriptionBlockUnknownConnections),
@@ -171,19 +227,10 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                         inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
                         secondary: Icon(CwtchIcons.block_unknown, color: settings.current().mainTextColor),
                       ),
-                      SwitchListTile(
-                        title: Text(AppLocalizations.of(context)!.streamerModeLabel, style: TextStyle(color: settings.current().mainTextColor)),
-                        subtitle: Text(AppLocalizations.of(context)!.descriptionStreamerMode),
-                        value: settings.streamerMode,
-                        onChanged: (bool value) {
-                          settings.setStreamerMode(value);
-                          // Save Settings...
-                          saveSettings(context);
-                        },
-                        activeTrackColor: settings.theme.defaultButtonColor,
-                        inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
-                        secondary: Icon(CwtchIcons.streamer_bunnymask, color: settings.current().mainTextColor),
+                      SizedBox(
+                        height: 40,
                       ),
+                      Row(mainAxisAlignment: MainAxisAlignment.center, children: [Text(AppLocalizations.of(context)!.settingsGroupExperiments, style: TextStyle(fontWeight: FontWeight.bold))]),
                       SwitchListTile(
                         title: Text(AppLocalizations.of(context)!.experimentsEnabled, style: TextStyle(color: settings.current().mainTextColor)),
                         subtitle: Text(AppLocalizations.of(context)!.descriptionExperiments),

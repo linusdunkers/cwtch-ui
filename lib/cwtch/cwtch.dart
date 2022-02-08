@@ -105,5 +105,9 @@ abstract class Cwtch {
   // non-ffi
   String defaultDownloadPath();
 
+  bool isL10nInit();
+
+  void l10nInit(String notificationSimple, String notificationConversationInfo);
+
   void dispose();
 }

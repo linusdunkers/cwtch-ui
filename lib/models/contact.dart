@@ -1,14 +1,37 @@
 import 'package:cwtch/widgets/messagerow.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 import 'message.dart';
 import 'messagecache.dart';
+
+enum ConversationNotificationPolicy {
+  Default,
+  OptIn,
+  Never,
+}
+
+extension Nameable on ConversationNotificationPolicy {
+  String toName(BuildContext context) {
+    switch (this) {
+      case ConversationNotificationPolicy.Default:
+        return AppLocalizations.of(context)!.conversationNotificationPolicyDefault;
+      case ConversationNotificationPolicy.OptIn:
+        return AppLocalizations.of(context)!.conversationNotificationPolicyOptIn;
+      case ConversationNotificationPolicy.Never:
+        return AppLocalizations.of(context)!.conversationNotificationPolicyNever;
+    }
+  }
+}
 
 class ContactInfoState extends ChangeNotifier {
   final String profileOnion;
   final int identifier;
   final String onion;
   late String _nickname;
+
+  late ConversationNotificationPolicy _notificationPolicy;
 
   late bool _accepted;
   late bool _blocked;
@@ -44,7 +67,8 @@ class ContactInfoState extends ChangeNotifier {
       numUnread = 0,
       lastMessageTime,
       server,
-      archived = false}) {
+      archived = false,
+      notificationPolicy = "ConversationNotificationPolicy.Default"}) {
     this._nickname = nickname;
     this._isGroup = isGroup;
     this._accepted = accepted;
@@ -58,6 +82,7 @@ class ContactInfoState extends ChangeNotifier {
     this._lastMessageTime = lastMessageTime == null ? DateTime.fromMillisecondsSinceEpoch(0) : lastMessageTime;
     this._server = server;
     this._archived = archived;
+    this._notificationPolicy = notificationPolicyFromString(notificationPolicy);
     this.messageCache = new MessageCache();
     keys = Map<String, GlobalKey<MessageRowState>>();
   }
@@ -201,6 +226,13 @@ class ContactInfoState extends ChangeNotifier {
     }
   }
 
+  ConversationNotificationPolicy get notificationsPolicy => _notificationPolicy;
+
+  set notificationsPolicy(ConversationNotificationPolicy newVal) {
+    _notificationPolicy = newVal;
+    notifyListeners();
+  }
+
   GlobalKey<MessageRowState> getMessageKey(int conversation, int message) {
     String index = "c: " + conversation.toString() + " m:" + message.toString();
     if (keys[index] == null) {
@@ -243,5 +275,17 @@ class ContactInfoState extends ChangeNotifier {
   void ackCache(int messageID) {
     this.messageCache.ackCache(messageID);
     notifyListeners();
+  }
+
+  static ConversationNotificationPolicy notificationPolicyFromString(String val) {
+    switch (val) {
+      case "ConversationNotificationPolicy.Default":
+        return ConversationNotificationPolicy.Default;
+      case "ConversationNotificationPolicy.OptIn":
+        return ConversationNotificationPolicy.OptIn;
+      case "ConversationNotificationPolicy.Never":
+        return ConversationNotificationPolicy.Never;
+    }
+    return ConversationNotificationPolicy.Never;
   }
 }

@@ -9,6 +9,7 @@ import 'package:cwtch/models/remoteserver.dart';
 import 'package:cwtch/models/servers.dart';
 import 'package:cwtch/notification_manager.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 import 'package:cwtch/torstatus.dart';
@@ -28,6 +29,9 @@ class CwtchNotifier {
   late AppState appState;
   late ServerListState serverListState;
 
+  String? notificationSimple;
+  String? notificationConversationInfo;
+
   CwtchNotifier(
       ProfileListState pcn, Settings settingsCN, ErrorHandler errorCN, TorStatus torStatusCN, NotificationsManager notificationManagerP, AppState appStateCN, ServerListState serverListStateCN) {
     profileCN = pcn;
@@ -37,6 +41,11 @@ class CwtchNotifier {
     notificationManager = notificationManagerP;
     appState = appStateCN;
     serverListState = serverListStateCN;
+  }
+
+  void l10nInit(String notificationSimple, String notificationConversationInfo) {
+    this.notificationSimple = notificationSimple;
+    this.notificationConversationInfo = notificationConversationInfo;
   }
 
   void handleMessage(String type, dynamic data) {
@@ -60,24 +69,22 @@ class CwtchNotifier {
       case "ContactCreated":
         EnvironmentConfig.debugLog("ContactCreated $data");
 
-        profileCN.getProfile(data["ProfileOnion"])?.contactList.add(ContactInfoState(
-              data["ProfileOnion"],
-              int.parse(data["ConversationID"]),
-              data["RemotePeer"],
-              nickname: data["nick"],
-              status: data["status"],
-              imagePath: data["picture"],
-              defaultImagePath: data["defaultPicture"],
-              blocked: data["blocked"] == "true",
-              accepted: data["accepted"] == "true",
-              savePeerHistory: data["saveConversationHistory"] == null ? "DeleteHistoryConfirmed" : data["saveConversationHistory"],
-              numMessages: int.parse(data["numMessages"]),
-              numUnread: int.parse(data["unread"]),
-              isGroup: false, // by definition
-              server: null,
-              archived: false,
-              lastMessageTime: DateTime.now(), //show at the top of the contact list even if no messages yet
-            ));
+        profileCN.getProfile(data["ProfileOnion"])?.contactList.add(ContactInfoState(data["ProfileOnion"], int.parse(data["ConversationID"]), data["RemotePeer"],
+            nickname: data["nick"],
+            status: data["status"],
+            imagePath: data["picture"],
+            defaultImagePath: data["defaultPicture"],
+            blocked: data["blocked"] == "true",
+            accepted: data["accepted"] == "true",
+            savePeerHistory: data["saveConversationHistory"] == null ? "DeleteHistoryConfirmed" : data["saveConversationHistory"],
+            numMessages: int.parse(data["numMessages"]),
+            numUnread: int.parse(data["unread"]),
+            isGroup: false, // by definition
+            server: null,
+            archived: false,
+            lastMessageTime: DateTime.now(), //show at the top of the contact list even if no messages yet
+            notificationPolicy: data["notificationPolicy"] ?? "ConversationNotificationPolicy.Default"));
+
         break;
       case "NewServer":
         EnvironmentConfig.debugLog("NewServer $data");
@@ -113,7 +120,9 @@ class CwtchNotifier {
               status: status,
               server: data["GroupServer"],
               isGroup: true,
-              lastMessageTime: DateTime.now()));
+              lastMessageTime: DateTime.now(),
+              notificationPolicy: data["notificationPolicy"] ?? "ConversationNotificationPolicy.Default"));
+
           profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(int.parse(data["ConversationID"]), DateTime.now());
         }
         break;
@@ -144,7 +153,6 @@ class CwtchNotifier {
         }
         break;
       case "NewMessageFromPeer":
-        notificationManager.notify("New Message From Peer!");
         var identifier = int.parse(data["ConversationID"]);
         var messageID = int.parse(data["Index"]);
         var timestamp = DateTime.tryParse(data['TimestampReceived'])!;
@@ -154,6 +162,14 @@ class CwtchNotifier {
         String? contenthash = data['ContentHash'];
         var selectedProfile = appState.selectedProfile == data["ProfileOnion"];
         var selectedConversation = selectedProfile && appState.selectedConversation == identifier;
+        var notification = data["notification"];
+
+        if (notification == "SimpleEvent") {
+          notificationManager.notify(notificationSimple ?? "New Message");
+        } else if (notification == "ContactInfo") {
+          var contact = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier);
+          notificationManager.notify((notificationConversationInfo ?? "New Message from %1").replaceFirst("%1", (contact?.nickname ?? senderHandle.toString())));
+        }
 
         profileCN.getProfile(data["ProfileOnion"])?.newMessage(
               identifier,
@@ -209,6 +225,7 @@ class CwtchNotifier {
           String? contenthash = data['ContentHash'];
           var selectedProfile = appState.selectedProfile == data["ProfileOnion"];
           var selectedConversation = selectedProfile && appState.selectedConversation == identifier;
+          var notification = data["notification"];
 
           // Only bother to do anything if we know about the group and the provided index is greater than our current total...
           if (currentTotal != null && idx >= currentTotal) {
@@ -224,7 +241,12 @@ class CwtchNotifier {
             // and `local now`.
             profileCN.getProfile(data["ProfileOnion"])?.newMessage(identifier, idx, timestampSent, senderHandle, senderImage, isAuto, data["Data"], contenthash, selectedProfile, selectedConversation);
 
-            notificationManager.notify("New Message From Group!");
+            if (notification == "SimpleEvent") {
+              notificationManager.notify(notificationSimple ?? "New Message");
+            } else if (notification == "ContactInfo") {
+              var contact = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier);
+              notificationManager.notify((notificationConversationInfo ?? "New Message from %1").replaceFirst("%1", (contact?.nickname ?? senderHandle.toString())));
+            }
             appState.notifyProfileUnread();
           }
           RemoteServerInfoState? server = profileCN.getProfile(data["ProfileOnion"])?.serverList.getServer(contact.server ?? "");

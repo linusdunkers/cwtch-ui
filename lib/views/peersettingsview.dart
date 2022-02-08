@@ -40,9 +40,13 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
 
   @override
   Widget build(BuildContext context) {
+    var handle = Provider.of<ContactInfoState>(context).nickname;
+    if (handle.isEmpty) {
+      handle = Provider.of<ContactInfoState>(context).onion;
+    }
     return Scaffold(
       appBar: AppBar(
-        title: Text(Provider.of<ContactInfoState>(context).onion),
+        title: Text(handle + " " + AppLocalizations.of(context)!.conversationSettings),
       ),
       body: _buildSettingsList(),
     );
@@ -211,6 +215,26 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
                                         child: Text(value),
                                       );
                                     }).toList())),
+                            ListTile(
+                                title: Text(AppLocalizations.of(context)!.conversationNotificationPolicySettingLabel, style: TextStyle(color: settings.current().mainTextColor)),
+                                subtitle: Text(AppLocalizations.of(context)!.conversationNotificationPolicySettingDescription),
+                                leading: Icon(CwtchIcons.chat_bubble_empty_24px, color: settings.current().mainTextColor),
+                                trailing: DropdownButton(
+                                  value: Provider.of<ContactInfoState>(context).notificationsPolicy,
+                                  items: ConversationNotificationPolicy.values.map<DropdownMenuItem<ConversationNotificationPolicy>>((ConversationNotificationPolicy value) {
+                                    return DropdownMenuItem<ConversationNotificationPolicy>(
+                                      value: value,
+                                      child: Text(value.toName(context)),
+                                    );
+                                  }).toList(),
+                                  onChanged: (ConversationNotificationPolicy? newVal) {
+                                    Provider.of<ContactInfoState>(context, listen: false).notificationsPolicy = newVal!;
+                                    var profileOnion = Provider.of<ContactInfoState>(context, listen: false).profileOnion;
+                                    var identifier = Provider.of<ContactInfoState>(context, listen: false).identifier;
+                                    const NotificationPolicyKey = "profile.notification-policy";
+                                    Provider.of<FlwtchState>(context, listen: false).cwtch.SetConversationAttribute(profileOnion, identifier, NotificationPolicyKey, newVal.toString());
+                                  },
+                                )),
                           ]),
                           Column(mainAxisAlignment: MainAxisAlignment.end, crossAxisAlignment: CrossAxisAlignment.end, children: [
                             SizedBox(

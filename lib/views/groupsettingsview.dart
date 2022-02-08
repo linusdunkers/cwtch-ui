@@ -130,7 +130,26 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
                             SizedBox(
                               height: 20,
                             ),
-                            // TODO
+                            ListTile(
+                                title: Text(AppLocalizations.of(context)!.conversationNotificationPolicySettingLabel, style: TextStyle(color: settings.current().mainTextColor)),
+                                subtitle: Text(AppLocalizations.of(context)!.conversationNotificationPolicySettingDescription),
+                                leading: Icon(CwtchIcons.chat_bubble_empty_24px, color: settings.current().mainTextColor),
+                                trailing: DropdownButton(
+                                  value: Provider.of<ContactInfoState>(context).notificationsPolicy,
+                                  items: ConversationNotificationPolicy.values.map<DropdownMenuItem<ConversationNotificationPolicy>>((ConversationNotificationPolicy value) {
+                                    return DropdownMenuItem<ConversationNotificationPolicy>(
+                                      value: value,
+                                      child: Text(value.toName(context)),
+                                    );
+                                  }).toList(),
+                                  onChanged: (ConversationNotificationPolicy? newVal) {
+                                    Provider.of<ContactInfoState>(context, listen: false).notificationsPolicy = newVal!;
+                                    var profileOnion = Provider.of<ContactInfoState>(context, listen: false).profileOnion;
+                                    var identifier = Provider.of<ContactInfoState>(context, listen: false).identifier;
+                                    const NotificationPolicyKey = "profile.notification-policy";
+                                    Provider.of<FlwtchState>(context, listen: false).cwtch.SetConversationAttribute(profileOnion, identifier, NotificationPolicyKey, newVal.toString());
+                                  },
+                                )),
                           ]),
 
                           Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.end, children: [

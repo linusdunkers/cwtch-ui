@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../main.dart';
 import '../settings.dart';
 
 class SplashView extends StatefulWidget {
@@ -14,6 +15,13 @@ class SplashView extends StatefulWidget {
 class _SplashViewState extends State<SplashView> {
   @override
   Widget build(BuildContext context) {
+    var cwtch = Provider.of<FlwtchState>(context, listen: false).cwtch;
+    if (!cwtch.isL10nInit()) {
+      if (AppLocalizations.of(context) != null && AppLocalizations.of(context)!.newMessageNotificationSimple.isNotEmpty ) {
+        cwtch.l10nInit(AppLocalizations.of(context)!.newMessageNotificationSimple, AppLocalizations.of(context)!.newMessageNotificationConversationInfo);
+      }
+    }
+
     return Consumer<AppState>(
         builder: (context, appState, child) => Scaffold(
               key: Key("SplashView"),

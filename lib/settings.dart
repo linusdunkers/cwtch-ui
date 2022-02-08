@@ -22,6 +22,17 @@ enum DualpaneMode {
   CopyPortrait,
 }
 
+enum NotificationPolicy {
+  Mute,
+  OptIn,
+  DefaultAll,
+}
+
+enum NotificationContent {
+  SimpleEvent,
+  ContactInfo,
+}
+
 /// Settings govern the *Globally* relevant settings like Locale, Theme and Experiments.
 /// We also provide access to the version information here as it is also accessed from the
 /// Settings Pane.
@@ -29,11 +40,15 @@ class Settings extends ChangeNotifier {
   Locale locale;
   late PackageInfo packageInfo;
   OpaqueThemeType theme;
+
   // explicitly set experiments to false until told otherwise...
   bool experimentsEnabled = false;
   HashMap<String, bool> experiments = HashMap.identity();
   DualpaneMode _uiColumnModePortrait = DualpaneMode.Single;
   DualpaneMode _uiColumnModeLandscape = DualpaneMode.CopyPortrait;
+
+  NotificationPolicy _notificationPolicy = NotificationPolicy.DefaultAll;
+  NotificationContent _notificationContent = NotificationContent.SimpleEvent;
 
   bool blockUnknownConnections = false;
   bool streamerMode = false;
@@ -93,6 +108,9 @@ class Settings extends ChangeNotifier {
     // single pane vs dual pane preferences
     _uiColumnModePortrait = uiColumnModeFromString(settings["UIColumnModePortrait"]);
     _uiColumnModeLandscape = uiColumnModeFromString(settings["UIColumnModeLandscape"]);
+
+    _notificationPolicy = notificationPolicyFromString(settings["NotificationPolicy"]);
+    _notificationContent = notificationContentFromString(settings["NotificationContent"]);
 
     // auto-download folder
     _downloadPath = settings["DownloadPath"] ?? "";
@@ -173,14 +191,30 @@ class Settings extends ChangeNotifier {
   }
 
   DualpaneMode get uiColumnModePortrait => _uiColumnModePortrait;
+
   set uiColumnModePortrait(DualpaneMode newval) {
     this._uiColumnModePortrait = newval;
     notifyListeners();
   }
 
   DualpaneMode get uiColumnModeLandscape => _uiColumnModeLandscape;
+
   set uiColumnModeLandscape(DualpaneMode newval) {
     this._uiColumnModeLandscape = newval;
+    notifyListeners();
+  }
+
+  NotificationPolicy get notificationPolicy => _notificationPolicy;
+
+  set notificationPolicy(NotificationPolicy newpol) {
+    this._notificationPolicy = newpol;
+    notifyListeners();
+  }
+
+  NotificationContent get notificationContent => _notificationContent;
+
+  set notificationContent(NotificationContent newcon) {
+    this._notificationContent = newcon;
     notifyListeners();
   }
 
@@ -238,6 +272,43 @@ class Settings extends ChangeNotifier {
     }
   }
 
+  static NotificationPolicy notificationPolicyFromString(String? np) {
+    switch (np) {
+      case "NotificationPolicy.None":
+        return NotificationPolicy.Mute;
+      case "NotificationPolicy.OptIn":
+        return NotificationPolicy.OptIn;
+      case "NotificationPolicy.OptOut":
+        return NotificationPolicy.DefaultAll;
+    }
+    return NotificationPolicy.DefaultAll;
+  }
+
+  static NotificationContent notificationContentFromString(String? nc) {
+    switch (nc) {
+      case "NotificationContent.SimpleEvent":
+        return NotificationContent.SimpleEvent;
+      case "NotificationContent.ContactInfo":
+        return NotificationContent.ContactInfo;
+    }
+    return NotificationContent.SimpleEvent;
+  }
+
+  static String notificationPolicyToString(NotificationPolicy np, BuildContext context) {
+    switch (np) {
+      case NotificationPolicy.Mute: return AppLocalizations.of(context)!.notificationPolicyMute;
+      case NotificationPolicy.OptIn: return AppLocalizations.of(context)!.notificationPolicyOptIn;
+      case NotificationPolicy.DefaultAll: return AppLocalizations.of(context)!.notificationPolicyDefaultAll;
+    }
+  }
+
+  static String notificationContentToString(NotificationContent nc, BuildContext context) {
+    switch (nc) {
+      case NotificationContent.SimpleEvent: return AppLocalizations.of(context)!.notificationContentSimpleEvent;
+      case NotificationContent.ContactInfo: return AppLocalizations.of(context)!.notificationContentContactInfo;
+    }
+  }
+
   // checks experiment settings and file extension for image previews
   // (ignores file size; if the user manually accepts the file, assume it's okay to preview)
   bool shouldPreview(String path) {
@@ -247,18 +318,21 @@ class Settings extends ChangeNotifier {
   }
 
   String get downloadPath => _downloadPath;
+
   set downloadPath(String newval) {
     _downloadPath = newval;
     notifyListeners();
   }
 
   bool get allowAdvancedTorConfig => _allowAdvancedTorConfig;
+
   set allowAdvancedTorConfig(bool torConfig) {
     _allowAdvancedTorConfig = torConfig;
     notifyListeners();
   }
 
   bool get useTorCache => _useTorCache;
+
   set useTorCache(bool useTorCache) {
     _useTorCache = useTorCache;
     notifyListeners();
@@ -266,18 +340,21 @@ class Settings extends ChangeNotifier {
 
   // Settings / Gettings for setting the custom tor config..
   String get torConfig => _customTorConfig;
+
   set torConfig(String torConfig) {
     _customTorConfig = torConfig;
     notifyListeners();
   }
 
   int get socksPort => _socksPort;
+
   set socksPort(int newSocksPort) {
     _socksPort = newSocksPort;
     notifyListeners();
   }
 
   int get controlPort => _controlPort;
+
   set controlPort(int controlPort) {
     _controlPort = controlPort;
     notifyListeners();
@@ -285,6 +362,7 @@ class Settings extends ChangeNotifier {
 
   // Setters / Getters for toggling whether the app should use a custom tor config
   bool get useCustomTorConfig => _useCustomTorConfig;
+
   set useCustomTorConfig(bool useCustomTorConfig) {
     _useCustomTorConfig = useCustomTorConfig;
     notifyListeners();
@@ -302,6 +380,8 @@ class Settings extends ChangeNotifier {
       "ThemeMode": theme.mode,
       "PreviousPid": -1,
       "BlockUnknownConnections": blockUnknownConnections,
+      "NotificationPolicy": _notificationPolicy.toString(),
+      "NotificationContent": _notificationContent.toString(),
       "StreamerMode": streamerMode,
       "ExperimentsEnabled": this.experimentsEnabled,
       "Experiments": experiments,
