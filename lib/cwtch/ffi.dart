@@ -100,6 +100,7 @@ class CwtchFfi implements Cwtch {
   late CwtchNotifier cwtchNotifier;
   late Isolate cwtchIsolate;
   ReceivePort _receivePort = ReceivePort();
+  bool _isL10nInit = false;
 
   static String getLibraryPath() {
     if (Platform.isWindows) {
@@ -743,5 +744,16 @@ class CwtchFfi implements Cwtch {
     malloc.free(utf8pass);
     malloc.free(utf8newpass);
     malloc.free(utf8newpasssagain);
+  }
+
+  @override
+  bool isL10nInit() {
+    return _isL10nInit;
+  }
+
+  @override
+  void l10nInit(String notificationSimple, String notificationConversationInfo) {
+    cwtchNotifier.l10nInit(notificationSimple, notificationConversationInfo);
+    _isL10nInit = true;
   }
 }

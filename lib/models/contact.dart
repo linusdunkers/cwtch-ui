@@ -1,5 +1,7 @@
 import 'package:cwtch/widgets/messagerow.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 import 'message.dart';
 import 'messagecache.dart';
@@ -11,14 +13,14 @@ enum ConversationNotificationPolicy {
 }
 
 extension Nameable on ConversationNotificationPolicy {
-  String get toName {
+  String toName(BuildContext context) {
     switch (this) {
       case ConversationNotificationPolicy.Default:
-        return "Default";
+        return AppLocalizations.of(context)!.conversationNotificationPolicyDefault;
       case ConversationNotificationPolicy.OptIn:
-        return "Opt In";
+        return AppLocalizations.of(context)!.conversationNotificationPolicyOptIn;
       case ConversationNotificationPolicy.Never:
-        return "Never";
+        return AppLocalizations.of(context)!.conversationNotificationPolicyNever;
     }
   }
 }

@@ -9,6 +9,7 @@ import 'package:cwtch/models/remoteserver.dart';
 import 'package:cwtch/models/servers.dart';
 import 'package:cwtch/notification_manager.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 import 'package:cwtch/torstatus.dart';
@@ -28,8 +29,11 @@ class CwtchNotifier {
   late AppState appState;
   late ServerListState serverListState;
 
+  String? notificationSimple;
+  String? notificationConversationInfo;
+
   CwtchNotifier(
-      ProfileListState pcn, Settings settingsCN, ErrorHandler errorCN, TorStatus torStatusCN, NotificationsManager notificationManagerP, AppState appStateCN, ServerListState serverListStateCN) {
+  ProfileListState pcn, Settings settingsCN, ErrorHandler errorCN, TorStatus torStatusCN, NotificationsManager notificationManagerP, AppState appStateCN, ServerListState serverListStateCN) {
     profileCN = pcn;
     settings = settingsCN;
     error = errorCN;
@@ -37,6 +41,11 @@ class CwtchNotifier {
     notificationManager = notificationManagerP;
     appState = appStateCN;
     serverListState = serverListStateCN;
+  }
+
+  void l10nInit(String notificationSimple, String notificationConversationInfo) {
+    this.notificationSimple = notificationSimple;
+    this.notificationConversationInfo = notificationConversationInfo;
   }
 
   void handleMessage(String type, dynamic data) {
@@ -160,10 +169,10 @@ class CwtchNotifier {
         var notification = data["notification"];
 
         if (notification == "SimpleEvent") {
-          notificationManager.notify(/*TODO l10n */ "New Message");
+          notificationManager.notify(notificationSimple ?? "New Message");
         } else if (notification == "ContactInfo") {
           var contact = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier);
-          notificationManager.notify(/*TODO l10n */ "New Message from " + (contact?.nickname ?? senderHandle.toString()));
+          notificationManager.notify((notificationConversationInfo ??  "New Message from %1").replaceFirst("%1", (contact?.nickname ?? senderHandle.toString())));
         }
 
         profileCN.getProfile(data["ProfileOnion"])?.newMessage(
@@ -237,10 +246,10 @@ class CwtchNotifier {
             profileCN.getProfile(data["ProfileOnion"])?.newMessage(identifier, idx, timestampSent, senderHandle, senderImage, isAuto, data["Data"], contenthash, selectedProfile, selectedConversation);
 
             if (notification == "SimpleEvent") {
-              notificationManager.notify(/*TODO l10n */ "New Message");
+              notificationManager.notify(notificationSimple ?? "New Message");
             } else if (notification == "ContactInfo") {
               var contact = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier);
-              notificationManager.notify(/*TODO l10n */ "New Message from " + (contact?.nickname ?? senderHandle.toString()));
+              notificationManager.notify( (notificationConversationInfo ??  "New Message from %1").replaceFirst("%1", (contact?.nickname ?? senderHandle.toString())));
             }
             appState.notifyProfileUnread();
           }

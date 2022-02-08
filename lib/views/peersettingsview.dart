@@ -202,15 +202,15 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
                                       );
                                     }).toList())),
                             ListTile(
-                                title: Text(/*AppLocalizations.of(context)!.savePeerHistory*/ "Conversation Notification Policy", style: TextStyle(color: settings.current().mainTextColor)),
-                                subtitle: Text(/*AppLocalizations.of(context)!.savePeerHistoryDescription*/ "The system blah blah..."),
+                                title: Text(AppLocalizations.of(context)!.conversationNotificationPolicySettingLabel, style: TextStyle(color: settings.current().mainTextColor)),
+                                subtitle: Text(AppLocalizations.of(context)!.conversationNotificationPolicySettingDescription),
                                 leading: Icon(CwtchIcons.chat_bubble_empty_24px, color: settings.current().mainTextColor),
                                 trailing: DropdownButton(
                                   value: Provider.of<ContactInfoState>(context).notificationsPolicy,
                                   items: ConversationNotificationPolicy.values.map<DropdownMenuItem<ConversationNotificationPolicy>>((ConversationNotificationPolicy value) {
                                     return DropdownMenuItem<ConversationNotificationPolicy>(
                                       value: value,
-                                      child: Text(value.toName),
+                                      child: Text(value.toName(context)),
                                     );
                                   }).toList(),
                                   onChanged: (ConversationNotificationPolicy? newVal) {

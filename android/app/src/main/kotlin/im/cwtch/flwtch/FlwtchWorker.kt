@@ -29,6 +29,9 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
     private var notificationID: MutableMap<String, Int> = mutableMapOf()
     private var notificationIDnext: Int = 1
 
+    private var notificationSimple: String? =  null
+    private var notificationConversationInfo: String? = null
+
     override suspend fun doWork(): Result {
         val method = inputData.getString(KEY_METHOD)
                 ?: return Result.failure()
@@ -67,13 +70,7 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                         val data = JSONObject(evt.Data)
                         val handle = if (evt.EventType == "NewMessageFromPeer") data.getString("RemotePeer") else data.getString("GroupID");
                         if (data["RemotePeer"] != data["ProfileOnion"]) {
-
-
-
                             val notification = data["notification"]
-
-
-
 
                                 if (notification == "SimpleEvent") {
                                     val channelId =
@@ -92,7 +89,7 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
 
                                     val newNotification = NotificationCompat.Builder(applicationContext, channelId)
                                             .setContentTitle("Cwtch")
-                                            .setContentText("New message")//todo: translate
+                                            .setContentText(notificationSimple ?: "New Message")
                                             .setSmallIcon(R.mipmap.knott_transparent)
                                             .setContentIntent(PendingIntent.getActivity(applicationContext, 1, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT))
                                             .setAutoCancel(true)
@@ -121,7 +118,7 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
 
                                     val newNotification = NotificationCompat.Builder(applicationContext, channelId)
                                             .setContentTitle(data.getString("Nick"))
-                                            .setContentText("New message")//todo: translate
+                                            .setContentText((notificationConversationInfo ?: "New Message From %1").replace("%1", data.getString("Nick")))
                                             .setLargeIcon(BitmapFactory.decodeStream(fh))
                                             .setSmallIcon(R.mipmap.knott_transparent)
                                             .setContentIntent(PendingIntent.getActivity(applicationContext, 1, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT))
@@ -396,6 +393,11 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                 val key = (a.get("Key") as? String) ?: ""
                 val v = (a.get("Val") as? String) ?: ""
                 Cwtch.setServerAttribute(serverOnion, key, v)
+            }
+            "L10nInit" -> {
+                notificationSimple = (a.get("notificationSimple") as? String) ?: "New Message"
+                notificationConversationInfo = (a.get("notificationConversationInfo") as? String)
+                        ?: "New Message From "
             }
             else -> {
                 Log.i("FlwtchWorker", "unknown command: " + method);

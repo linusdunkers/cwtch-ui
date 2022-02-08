@@ -59,7 +59,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                       minHeight: viewportConstraints.maxHeight,
                     ),
                     child: Column(children: [
-                      Row(mainAxisAlignment: MainAxisAlignment.center, children: [Text("Apperance", style: TextStyle(fontWeight: FontWeight.bold))]),
+                      Row(mainAxisAlignment: MainAxisAlignment.center, children: [Text(AppLocalizations.of(context)!.settingsGroupAppearance, style: TextStyle(fontWeight: FontWeight.bold))]),
                       ListTile(
                           title: Text(AppLocalizations.of(context)!.settingLanguage, style: TextStyle(color: settings.current().mainTextColor)),
                           leading: Icon(CwtchIcons.change_language, color: settings.current().mainTextColor),
@@ -168,9 +168,10 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                       SizedBox(
                         height: 40,
                       ),
-                      Row(mainAxisAlignment: MainAxisAlignment.center, children: [Text("Behaviour", style: TextStyle(fontWeight: FontWeight.bold))]),
+                      Row(mainAxisAlignment: MainAxisAlignment.center, children: [Text(AppLocalizations.of(context)!.settingGroupBehaviour, style: TextStyle(fontWeight: FontWeight.bold))]),
                       ListTile(
-                        title: Text(/*AppLocalizations.of(context)!.themeColorLabel*/ "Notification Policy"),
+                        title: Text(AppLocalizations.of(context)!.notificationPolicySettingLabel),
+                        subtitle: Text(AppLocalizations.of(context)!.notificationPolicySettingDescription),
                         trailing: DropdownButton(
                             value: settings.notificationPolicy,
                             onChanged: (NotificationPolicy? newValue) {
@@ -189,7 +190,8 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                         leading: Icon(CwtchIcons.chat_bubble_empty_24px, color: settings.current().mainTextColor),
                       ),
                       ListTile(
-                        title: Text(/*AppLocalizations.of(context)!.themeColorLabel*/ "Notification Content"),
+                        title: Text(AppLocalizations.of(context)!.notificationContentSettingLabel),
+                        subtitle: Text(AppLocalizations.of(context)!.notificationContentSettingDescription),
                         trailing: DropdownButton(
                             value: settings.notificationContent,
                             onChanged: (NotificationContent? newValue) {
@@ -228,7 +230,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                       SizedBox(
                         height: 40,
                       ),
-                      Row(mainAxisAlignment: MainAxisAlignment.center, children: [Text("Experiments", style: TextStyle(fontWeight: FontWeight.bold))]),
+                      Row(mainAxisAlignment: MainAxisAlignment.center, children: [Text(AppLocalizations.of(context)!.settingsGroupExperiments, style: TextStyle(fontWeight: FontWeight.bold))]),
                       SwitchListTile(
                         title: Text(AppLocalizations.of(context)!.experimentsEnabled, style: TextStyle(color: settings.current().mainTextColor)),
                         subtitle: Text(AppLocalizations.of(context)!.descriptionExperiments),

@@ -30,6 +30,7 @@ class CwtchGomobile implements Cwtch {
   late Future<dynamic> androidHomeDirectory;
   String androidHomeDirectoryStr = "";
   late CwtchNotifier cwtchNotifier;
+  bool _isL10nInit = false;
 
   CwtchGomobile(CwtchNotifier _cwtchNotifier) {
     print("gomobile.dart: CwtchGomobile()");
@@ -294,5 +295,17 @@ class CwtchGomobile implements Cwtch {
   @override
   void ChangePassword(String profile, String pass, String newpass, String newpassAgain) {
     cwtchPlatform.invokeMethod("ChangePassword", {"ProfileOnion": profile, "OldPass": pass, "NewPass": newpass, "NewPassAgain": newpassAgain});
+  }
+
+  @override
+  bool isL10nInit() {
+    return _isL10nInit;
+  }
+
+  @override
+  void l10nInit(String notificationSimple, String notificationConversationInfo) {
+    cwtchNotifier.l10nInit(notificationSimple, notificationConversationInfo);
+    cwtchPlatform.invokeMethod("L10nInit", {"notificationSimple": notificationSimple, "notificationConversationInfo": notificationConversationInfo});
+    _isL10nInit = true;
   }
 }
