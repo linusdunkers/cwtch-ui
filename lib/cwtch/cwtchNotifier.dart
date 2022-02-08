@@ -361,16 +361,10 @@ class CwtchNotifier {
               profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(data["RemotePeer"])!.nickname = data["Data"];
             }
           }
-        } else if (data['Path'] == "profile.custom-profile-image" && data["Exists"] == "true") {
-          EnvironmentConfig.debugLog("received ret val of custom profile image: $data");
-          String fileKey = data['Data'];
-          String filePath = data['FilePath'];
-          bool downloaded = data['FileDownloadFinished'] == "true";
-          if (downloaded) {
-            if (profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(data["RemotePeer"]) != null) {
-              profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(data["RemotePeer"])!.imagePath = filePath;
-            }
-          } else {
+        } else if (data['Path'] == "profile.custom-profile-image") {
+          if (data["Exists"] == "true") {
+            EnvironmentConfig.debugLog("received ret val of custom profile image: $data");
+            String fileKey = data['Data'];
             var contact = profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(data["RemotePeer"]);
             if (contact != null) {
               profileCN.getProfile(data["ProfileOnion"])?.waitForDownloadComplete(contact.identifier, fileKey);

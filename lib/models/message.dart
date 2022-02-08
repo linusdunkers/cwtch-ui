@@ -160,6 +160,7 @@ MessageInfo? getMessageInfoFromCache(BuildContext context, String profileOnion, 
 
 Future<MessageInfo?> fetchAndCacheMessageInfo(BuildContext context, String profileOnion, int conversationIdentifier, CacheHandler cacheHandler) {
 // Load and cache
+  var profileInfostate = Provider.of<ProfileInfoState>(context, listen: false);
   try {
     Future<dynamic> rawMessageEnvelopeFuture;
 
@@ -198,14 +199,14 @@ Future<MessageInfo?> fetchAndCacheMessageInfo(BuildContext context, String profi
         var metadata = MessageMetadata(profileOnion, conversationIdentifier, messageID, timestamp, senderHandle, senderImage, signature, attributes, ackd, error, false);
         var messageInfo = new MessageInfo(metadata, messageWrapper['Message']);
 
-        var cache = Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(conversationIdentifier)?.messageCache;
+        var cache = profileInfostate.contactList.getContact(conversationIdentifier)?.messageCache;
         if (cache != null) {
           cacheHandler.add(cache, messageInfo, contenthash);
         }
 
         return messageInfo;
-      } catch (e) {
-        EnvironmentConfig.debugLog("message handler exception on parse message and cache: " + e.toString());
+      } catch (e, stacktrace) {
+        EnvironmentConfig.debugLog("message handler exception on parse message and cache: " + e.toString() + " " + stacktrace.toString());
         return null;
       }
     });

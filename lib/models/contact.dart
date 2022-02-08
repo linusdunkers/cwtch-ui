@@ -187,7 +187,13 @@ class ContactInfoState extends ChangeNotifier {
     notifyListeners();
   }
 
-  String get imagePath => this._imagePath;
+  String get imagePath {
+    // don't show custom images for blocked contacts..
+    if (!this.isBlocked) {
+      return this._imagePath;
+    }
+    return this.defaultImagePath;
+  }
 
   set imagePath(String newVal) {
     this._imagePath = newVal;

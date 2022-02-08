@@ -4,6 +4,7 @@ import 'package:cwtch/cwtch_icons_icons.dart';
 import 'package:cwtch/models/appstate.dart';
 import 'package:cwtch/models/contact.dart';
 import 'package:cwtch/models/profile.dart';
+import 'package:cwtch/widgets/profileimage.dart';
 import 'package:flutter/services.dart';
 import 'package:cwtch/widgets/buttontextfield.dart';
 import 'package:cwtch/widgets/cwtchlabel.dart';
@@ -93,6 +94,19 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
                         margin: EdgeInsets.all(10),
                         padding: EdgeInsets.all(2),
                         child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                          Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+                            ProfileImage(
+                                imagePath: Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment)
+                                    ? Provider.of<ContactInfoState>(context).imagePath
+                                    : Provider.of<ContactInfoState>(context).defaultImagePath,
+                                diameter: 120,
+                                maskOut: false,
+                                border: settings.theme.portraitOnlineBorderColor,
+                                badgeTextColor: settings.theme.portraitContactBadgeTextColor,
+                                badgeColor: settings.theme.portraitContactBadgeColor,
+                                badgeEdit: false)
+                          ]),
+
                           Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
                             CwtchLabel(label: AppLocalizations.of(context)!.displayNameLabel),
                             SizedBox(
