@@ -4,14 +4,32 @@ import 'package:flutter/widgets.dart';
 import 'message.dart';
 import 'messagecache.dart';
 
+enum ConversationNotificationPolicy {
+  Default,
+  OptIn,
+  Never,
+}
+
+extension Nameable on ConversationNotificationPolicy {
+  String get toName {
+    switch (this) {
+      case ConversationNotificationPolicy.Default:
+        return "Default";
+      case ConversationNotificationPolicy.OptIn:
+        return "Opt In";
+      case ConversationNotificationPolicy.Never:
+        return "Never";
+    }
+  }
+}
+
 class ContactInfoState extends ChangeNotifier {
   final String profileOnion;
   final int identifier;
   final String onion;
   late String _nickname;
 
-  late bool _notificationsOptIn;
-  late bool _notificationsOptOut;
+  late ConversationNotificationPolicy _notificationPolicy;
 
   late bool _accepted;
   late bool _blocked;
@@ -48,7 +66,7 @@ class ContactInfoState extends ChangeNotifier {
       lastMessageTime,
       server,
       archived = false,
-      options = const {} }) {
+      notificationPolicy = "ConversationNotificationPolicy.Default"}) {
     this._nickname = nickname;
     this._isGroup = isGroup;
     this._accepted = accepted;
@@ -62,9 +80,7 @@ class ContactInfoState extends ChangeNotifier {
     this._lastMessageTime = lastMessageTime == null ? DateTime.fromMillisecondsSinceEpoch(0) : lastMessageTime;
     this._server = server;
     this._archived = archived;
-    print("Contact: $_nickname, Options: $options opt-in: ${options["notification-opt-in"]} opt-out: ${options["notification-opt-out"]} ");
-    this._notificationsOptIn = (options["notification-opt-in"] ?? "false") == "true";
-    this._notificationsOptOut = (options["notification-opt-out"] ?? "false") == "true";
+    this._notificationPolicy = notificationPolicyFromString(notificationPolicy);
     this.messageCache = new MessageCache();
     keys = Map<String, GlobalKey<MessageRowState>>();
   }
@@ -202,15 +218,10 @@ class ContactInfoState extends ChangeNotifier {
     }
   }
 
-  bool get notificationsOptIn => _notificationsOptIn;
-  set notificationsOptIn(bool newVal)  {
-    _notificationsOptIn =  newVal;
-    notifyListeners();
-  }
+  ConversationNotificationPolicy get notificationsPolicy => _notificationPolicy;
 
-  bool get notificationsOptOut => _notificationsOptOut;
-  set notificationsOptOut(bool newVal)  {
-    _notificationsOptOut =  newVal;
+  set notificationsPolicy(ConversationNotificationPolicy newVal) {
+    _notificationPolicy = newVal;
     notifyListeners();
   }
 
@@ -256,5 +267,17 @@ class ContactInfoState extends ChangeNotifier {
   void ackCache(int messageID) {
     this.messageCache.ackCache(messageID);
     notifyListeners();
+  }
+
+  static ConversationNotificationPolicy notificationPolicyFromString(String val) {
+    switch (val) {
+      case "ConversationNotificationPolicy.Default":
+        return ConversationNotificationPolicy.Default;
+      case "ConversationNotificationPolicy.OptIn":
+        return ConversationNotificationPolicy.OptIn;
+      case "ConversationNotificationPolicy.Never":
+        return ConversationNotificationPolicy.Never;
+    }
+    return ConversationNotificationPolicy.Never;
   }
 }

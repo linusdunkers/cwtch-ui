@@ -64,7 +64,7 @@ class ProfileInfoState extends ChangeNotifier {
             server: contact["groupServer"],
             archived: contact["isArchived"] == true,
             lastMessageTime: DateTime.fromMillisecondsSinceEpoch(1000 * int.parse(contact["lastMsgTime"])),
-            options: contact["options"]);
+            notificationPolicy: contact["notificationPolicy"] ?? "ConversationNotificationPolicy.Default");
       }));
 
       // dummy set to invoke sort-on-load
@@ -101,6 +101,7 @@ class ProfileInfoState extends ChangeNotifier {
 
   //  Getters and Setters for Online Status
   bool get isOnline => this._online;
+
   set isOnline(bool newValue) {
     this._online = newValue;
     notifyListeners();
@@ -110,24 +111,28 @@ class ProfileInfoState extends ChangeNotifier {
   bool get isEncrypted => this._encrypted;
 
   String get nickname => this._nickname;
+
   set nickname(String newValue) {
     this._nickname = newValue;
     notifyListeners();
   }
 
   String get imagePath => this._imagePath;
+
   set imagePath(String newVal) {
     this._imagePath = newVal;
     notifyListeners();
   }
 
   String get defaultImagePath => this._defaultImagePath;
+
   set defaultImagePath(String newVal) {
     this._defaultImagePath = newVal;
     notifyListeners();
   }
 
   int get unreadMessages => this._unreadMessages;
+
   set unreadMessages(int newVal) {
     this._unreadMessages = newVal;
     notifyListeners();
@@ -145,6 +150,7 @@ class ProfileInfoState extends ChangeNotifier {
   }
 
   ContactListState get contactList => this._contacts;
+
   ProfileServerListState get serverList => this._servers;
 
   @override
@@ -184,7 +190,7 @@ class ProfileInfoState extends ChangeNotifier {
                 isGroup: contact["isGroup"],
                 server: contact["groupServer"],
                 lastMessageTime: DateTime.fromMillisecondsSinceEpoch(1000 * int.parse(contact["lastMsgTime"])),
-                options: contact["options"],
+                notificationPolicy: contact["notificationPolicy"] ?? "ConversationNotificationPolicy.Default",
               ));
         }
         unreadMessages += int.parse(contact["numUnread"]);

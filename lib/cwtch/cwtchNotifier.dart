@@ -60,25 +60,24 @@ class CwtchNotifier {
       case "ContactCreated":
         EnvironmentConfig.debugLog("ContactCreated $data");
 
-        profileCN.getProfile(data["ProfileOnion"])?.contactList.add(ContactInfoState(
-              data["ProfileOnion"],
-              int.parse(data["ConversationID"]),
-              data["RemotePeer"],
-              nickname: data["nick"],
-              status: data["status"],
-              imagePath: data["picture"],
-              defaultImagePath: data["defaultPicture"],
-              blocked: data["blocked"] == "true",
-              accepted: data["accepted"] == "true",
-              savePeerHistory: data["saveConversationHistory"] == null ? "DeleteHistoryConfirmed" : data["saveConversationHistory"],
-              numMessages: int.parse(data["numMessages"]),
-              numUnread: int.parse(data["unread"]),
-              isGroup: false, // by definition
-              server: null,
-              archived: false,
-              lastMessageTime: DateTime.now(), //show at the top of the contact list even if no messages yet
-              options: data["options"]
-            ));
+        profileCN.getProfile(data["ProfileOnion"])?.contactList.add(ContactInfoState(data["ProfileOnion"], int.parse(data["ConversationID"]), data["RemotePeer"],
+            nickname: data["nick"],
+            status: data["status"],
+            imagePath: data["picture"],
+            defaultImagePath: data["defaultPicture"],
+            blocked: data["blocked"] == "true",
+            accepted: data["accepted"] == "true",
+            savePeerHistory: data["saveConversationHistory"] == null ? "DeleteHistoryConfirmed" : data["saveConversationHistory"],
+            numMessages: int.parse(data["numMessages"]),
+            numUnread: int.parse(data["unread"]),
+            isGroup: false,
+            // by definition
+            server: null,
+            archived: false,
+            lastMessageTime: DateTime.now(),
+            //show at the top of the contact list even if no messages yet
+            notificationPolicy: data["notificationPolicy"] ?? "ConversationNotificationPolicy.Default"));
+
         break;
       case "NewServer":
         EnvironmentConfig.debugLog("NewServer $data");
@@ -106,8 +105,10 @@ class CwtchNotifier {
         }
         if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(int.parse(data["ConversationID"])) == null) {
           profileCN.getProfile(data["ProfileOnion"])?.contactList.add(ContactInfoState(data["ProfileOnion"], int.parse(data["ConversationID"]), data["GroupID"],
-              blocked: false, // we created
-              accepted: true, // we created
+              blocked: false,
+              // we created
+              accepted: true,
+              // we created
               imagePath: data["picture"],
               defaultImagePath: data["picture"],
               nickname: data["GroupName"],
@@ -115,7 +116,8 @@ class CwtchNotifier {
               server: data["GroupServer"],
               isGroup: true,
               lastMessageTime: DateTime.now(),
-              options: data["options"]));
+              notificationPolicy: data["notificationPolicy"] ?? "ConversationNotificationPolicy.Default"));
+
           profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(int.parse(data["ConversationID"]), DateTime.now());
         }
         break;
@@ -146,7 +148,6 @@ class CwtchNotifier {
         }
         break;
       case "NewMessageFromPeer":
-
         var identifier = int.parse(data["ConversationID"]);
         var messageID = int.parse(data["Index"]);
         var timestamp = DateTime.tryParse(data['TimestampReceived'])!;
@@ -319,8 +320,10 @@ class CwtchNotifier {
           if (profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(groupInvite["GroupID"]) == null) {
             var identifier = int.parse(data["ConversationID"]);
             profileCN.getProfile(data["ProfileOnion"])?.contactList.add(ContactInfoState(data["ProfileOnion"], identifier, groupInvite["GroupID"],
-                blocked: false, // NewGroup only issued on accepting invite
-                accepted: true, // NewGroup only issued on accepting invite
+                blocked: false,
+                // NewGroup only issued on accepting invite
+                accepted: true,
+                // NewGroup only issued on accepting invite
                 imagePath: data["picture"],
                 nickname: groupInvite["GroupName"],
                 server: groupInvite["ServerHost"],

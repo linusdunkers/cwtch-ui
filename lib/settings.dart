@@ -23,9 +23,9 @@ enum DualpaneMode {
 }
 
 enum NotificationPolicy {
-  None,
+  Mute,
   OptIn,
-  OptOut,
+  DefaultAll,
 }
 
 enum NotificationContent {
@@ -47,7 +47,7 @@ class Settings extends ChangeNotifier {
   DualpaneMode _uiColumnModePortrait = DualpaneMode.Single;
   DualpaneMode _uiColumnModeLandscape = DualpaneMode.CopyPortrait;
 
-  NotificationPolicy _notificationPolicy = NotificationPolicy.OptOut;
+  NotificationPolicy _notificationPolicy = NotificationPolicy.DefaultAll;
   NotificationContent _notificationContent = NotificationContent.SimpleEvent;
 
   bool blockUnknownConnections = false;
@@ -275,13 +275,13 @@ class Settings extends ChangeNotifier {
   static NotificationPolicy notificationPolicyFromString(String? np) {
     switch (np) {
       case "NotificationPolicy.None":
-        return NotificationPolicy.None;
+        return NotificationPolicy.Mute;
       case "NotificationPolicy.OptIn":
         return NotificationPolicy.OptIn;
       case "NotificationPolicy.OptOut":
-        return NotificationPolicy.OptOut;
+        return NotificationPolicy.DefaultAll;
     }
-    return NotificationPolicy.OptOut;
+    return NotificationPolicy.DefaultAll;
   }
 
   static NotificationContent notificationContentFromString(String? nc) {
@@ -296,9 +296,9 @@ class Settings extends ChangeNotifier {
 
   static String notificationPolicyToString(NotificationPolicy np, BuildContext context) {
     switch (np) {
-      case NotificationPolicy.None: return "None";
+      case NotificationPolicy.Mute: return "Mute";
       case NotificationPolicy.OptIn: return "OptIn";
-      case NotificationPolicy.OptOut: return "OptOut";
+      case NotificationPolicy.DefaultAll: return "DefaultAll";
     }
   }
 

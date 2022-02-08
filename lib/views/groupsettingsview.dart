@@ -130,40 +130,26 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
                             SizedBox(
                               height: 20,
                             ),
-                            Visibility(
-                                visible: Provider.of<Settings>(context, listen: false).notificationPolicy == NotificationPolicy.OptOut,
-                                child: SwitchListTile(
-                                  title: Text(/*AppLocalizations.of(context)!.savePeerHistory*/"Notifications Opt Out", style: TextStyle(color: settings.current().mainTextColor)),
-                                  subtitle: Text(/*AppLocalizations.of(context)!.savePeerHistoryDescription*/"The system blah blah..."),
-                                  secondary: Icon(CwtchIcons.chat_bubble_empty_24px, color: settings.current().mainTextColor),
-                                  value: Provider.of<ContactInfoState>(context).notificationsOptOut,
-                                  onChanged: (bool optOut) {
-                                    Provider.of<ContactInfoState>(context, listen: false).notificationsOptOut = optOut;
+                            ListTile(
+                                title: Text(/*AppLocalizations.of(context)!.savePeerHistory*/ "Conversation Notification Policy", style: TextStyle(color: settings.current().mainTextColor)),
+                                subtitle: Text(/*AppLocalizations.of(context)!.savePeerHistoryDescription*/ "The system blah blah..."),
+                                leading: Icon(CwtchIcons.chat_bubble_empty_24px, color: settings.current().mainTextColor),
+                                trailing: DropdownButton(
+                                  value: Provider.of<ContactInfoState>(context).notificationsPolicy,
+                                  items: ConversationNotificationPolicy.values.map<DropdownMenuItem<ConversationNotificationPolicy>>((ConversationNotificationPolicy value) {
+                                    return DropdownMenuItem<ConversationNotificationPolicy>(
+                                      value: value,
+                                      child: Text(value.toName),
+                                    );
+                                  }).toList(),
+                                  onChanged: (ConversationNotificationPolicy? newVal) {
+                                    Provider.of<ContactInfoState>(context, listen: false).notificationsPolicy = newVal!;
                                     var profileOnion = Provider.of<ContactInfoState>(context, listen: false).profileOnion;
                                     var identifier = Provider.of<ContactInfoState>(context, listen: false).identifier;
-                                    const NotificationOptOutKey = "profile.notification-opt-out";
-                                    Provider.of<FlwtchState>(context, listen: false).cwtch.SetConversationAttribute(profileOnion, identifier, NotificationOptOutKey, optOut.toString());
+                                    const NotificationPolicyKey = "profile.notification-policy";
+                                    Provider.of<FlwtchState>(context, listen: false).cwtch.SetConversationAttribute(profileOnion, identifier, NotificationPolicyKey, newVal.toString());
                                   },
-                                  activeTrackColor: settings.theme.defaultButtonColor,
-                                  inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
                                 )),
-                            Visibility(
-                                visible: Provider.of<Settings>(context, listen: false).notificationPolicy == NotificationPolicy.OptIn,
-                                child: SwitchListTile(
-                                  title: Text(/*AppLocalizations.of(context)!.savePeerHistory*/"Notifications Opt In", style: TextStyle(color: settings.current().mainTextColor)),
-                                  subtitle: Text(/*AppLocalizations.of(context)!.savePeerHistoryDescription*/"The system blah blah..."),
-                                  secondary: Icon(CwtchIcons.chat_bubble_empty_24px, color: settings.current().mainTextColor),
-                                  value: Provider.of<ContactInfoState>(context).notificationsOptIn,
-                                  onChanged: (bool optIn) {
-                                    Provider.of<ContactInfoState>(context, listen: false).notificationsOptIn = optIn;
-                                    var profileOnion = Provider.of<ContactInfoState>(context, listen: false).profileOnion;
-                                    var identifier = Provider.of<ContactInfoState>(context, listen: false).identifier;
-                                    const NotificationOptInKey = "profile.notification-opt-in";
-                                    Provider.of<FlwtchState>(context, listen: false).cwtch.SetConversationAttribute(profileOnion, identifier, NotificationOptInKey, optIn.toString());
-                                  },
-                                  activeTrackColor: settings.theme.defaultButtonColor,
-                                  inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
-                                ))
                           ]),
 
                           Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.end, children: [
