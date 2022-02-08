@@ -170,21 +170,24 @@ class _MessageViewState extends State<MessageView> {
   }
 
   void _pushContactSettings() {
-    Navigator.of(context).push(MaterialPageRoute<void>(
-      builder: (BuildContext bcontext) {
-        if (Provider.of<ContactInfoState>(context, listen: false).isGroup == true) {
-          return MultiProvider(
-            providers: [ChangeNotifierProvider.value(value: Provider.of<ContactInfoState>(context)), ChangeNotifierProvider.value(value: Provider.of<ProfileInfoState>(context))],
-            child: GroupSettingsView(),
-          );
-        } else {
-          return MultiProvider(
-            providers: [ChangeNotifierProvider.value(value: Provider.of<ContactInfoState>(context))],
-            child: PeerSettingsView(),
-          );
-        }
-      },
-    ));
+    var profileInfoState = Provider.of<ProfileInfoState>(context, listen: false);
+    var contactInfoState = Provider.of<ContactInfoState>(context, listen: false);
+
+    if (Provider.of<ContactInfoState>(context, listen: false).isGroup == true) {
+      Navigator.of(context).push(MaterialPageRoute<void>(builder: (BuildContext bcontext) {
+        return MultiProvider(
+          providers: [ChangeNotifierProvider.value(value: profileInfoState), ChangeNotifierProvider.value(value: contactInfoState)],
+          child: GroupSettingsView(),
+        );
+      }));
+    } else {
+      Navigator.of(context).push(MaterialPageRoute<void>(builder: (BuildContext bcontext) {
+        return MultiProvider(
+          providers: [ChangeNotifierProvider.value(value: profileInfoState), ChangeNotifierProvider.value(value: contactInfoState)],
+          child: PeerSettingsView(),
+        );
+      }));
+    }
   }
 
   // todo: legacy groups currently have restricted message
