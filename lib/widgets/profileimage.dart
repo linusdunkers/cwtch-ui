@@ -38,9 +38,10 @@ class _ProfileImageState extends State<ProfileImage> {
     var file = new File(widget.imagePath);
     var image = Image.file(
       file,
-      cacheWidth: 512,
-      cacheHeight: 512,
+      cacheWidth: 1920,
       filterQuality: FilterQuality.medium,
+      fit: BoxFit.cover,
+      alignment: Alignment.center,
       // We need some theme specific blending here...we might want to consider making this a theme level attribute
       colorBlendMode: !widget.maskOut
           ? Provider.of<Settings>(context).theme.mode == mode_dark
@@ -48,7 +49,7 @@ class _ProfileImageState extends State<ProfileImage> {
               : BlendMode.darken
           : BlendMode.srcOut,
       color: Provider.of<Settings>(context).theme.portraitBackgroundColor,
-      isAntiAlias: true,
+      isAntiAlias: false,
       width: widget.diameter,
       height: widget.diameter,
       errorBuilder: (context, error, stackTrace) {

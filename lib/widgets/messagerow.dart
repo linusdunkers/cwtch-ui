@@ -167,7 +167,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
           child: Padding(
               padding: EdgeInsets.all(4.0),
               child: ProfileImage(
-                diameter: 48.0,
+                diameter: 64.0,
                 // default to the contact image...otherwise use a derived sender image...
                 imagePath: imagePath,
                 border: contact.status == "Authenticated" ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor : Provider.of<Settings>(context).theme.portraitOfflineBorderColor,
