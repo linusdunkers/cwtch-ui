@@ -33,7 +33,7 @@ class CwtchNotifier {
   String? notificationConversationInfo;
 
   CwtchNotifier(
-  ProfileListState pcn, Settings settingsCN, ErrorHandler errorCN, TorStatus torStatusCN, NotificationsManager notificationManagerP, AppState appStateCN, ServerListState serverListStateCN) {
+      ProfileListState pcn, Settings settingsCN, ErrorHandler errorCN, TorStatus torStatusCN, NotificationsManager notificationManagerP, AppState appStateCN, ServerListState serverListStateCN) {
     profileCN = pcn;
     settings = settingsCN;
     error = errorCN;
@@ -172,7 +172,7 @@ class CwtchNotifier {
           notificationManager.notify(notificationSimple ?? "New Message");
         } else if (notification == "ContactInfo") {
           var contact = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier);
-          notificationManager.notify((notificationConversationInfo ??  "New Message from %1").replaceFirst("%1", (contact?.nickname ?? senderHandle.toString())));
+          notificationManager.notify((notificationConversationInfo ?? "New Message from %1").replaceFirst("%1", (contact?.nickname ?? senderHandle.toString())));
         }
 
         profileCN.getProfile(data["ProfileOnion"])?.newMessage(
@@ -249,7 +249,7 @@ class CwtchNotifier {
               notificationManager.notify(notificationSimple ?? "New Message");
             } else if (notification == "ContactInfo") {
               var contact = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier);
-              notificationManager.notify( (notificationConversationInfo ??  "New Message from %1").replaceFirst("%1", (contact?.nickname ?? senderHandle.toString())));
+              notificationManager.notify((notificationConversationInfo ?? "New Message from %1").replaceFirst("%1", (contact?.nickname ?? senderHandle.toString())));
             }
             appState.notifyProfileUnread();
           }
