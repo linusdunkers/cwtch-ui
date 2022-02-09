@@ -348,7 +348,7 @@ steps:
 
   - name: ui-tests
     commands:
-      - export PATH=$PATH:/Users/Dan/development/flutter/bin
+      - export PATH=$PATH:/Users/Dan/development/flutter/bin:/usr/local/bin
       - export GEM_HOME=$HOME/.gem
       - export PATH=$GEM_HOME/ruby/2.6.0/bin:$PATH
       - ./run-tests.sh

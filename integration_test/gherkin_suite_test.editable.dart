@@ -95,6 +95,6 @@ void main() {
         ResetCwtchEnvironment(),
         AttachScreenshotOnFailedStepHook(),
       ],
-      (World world) { var res = app.main(); sleep(Duration(seconds:1)); return res;},
+      (World world) { var res = app.main(); sleep(Duration(seconds:2)); return res;},
   );
 }

@@ -5,7 +5,7 @@ Feature: Streamer mode
     And I wait until the text "vbmmsbx3rhndpfz6t3jkrd7m3yu62xzrldxkdgsw4rsehiwuw3tmo7yd" is present
     And I wait until the text "pjurzypqui3dnpxj6aemk6cqz22yx6zfr5lq4jzu7muwe2yyx2zrnzyd" is present
     Given I tap the 'OpenSettingsView' button
-    And I wait for 1 second
+    And I wait for 2 second
     And I tap the widget that contains the text "Streamer/Presentation Mode"
     Then I expect the switch that contains the text "Streamer/Presentation Mode" to be checked
     When I tap the back button

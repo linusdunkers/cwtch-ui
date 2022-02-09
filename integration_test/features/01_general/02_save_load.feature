@@ -7,7 +7,7 @@ Feature: Settings pane opens and can save settings persistently
 
   Scenario: Change every setting (except Language)
     Given I tap the 'OpenSettingsView' button
-    And I wait for 1 second
+    And I wait for 4 second
     When I tap the widget that contains the text "Use Light Themes"
     #And I choose option 3 from the "DropdownTheme" dropdown
     #When I tap the "DropdownTheme" button
@@ -36,7 +36,7 @@ Feature: Settings pane opens and can save settings persistently
 
   Scenario: When the app is reloaded, settings from the previous scenario have persisted
     Given I tap the 'OpenSettingsView' button
-    And I wait for 1 second
+    And I wait for 2 second
     Then I expect the switch that contains the text "Use Light Themes" to be checked
     And I expect the switch that contains the text "Block Unknown Contacts" to be checked
     And I expect the switch that contains the text "Streamer/Presentation Mode" to be checked

@@ -3,6 +3,7 @@ Feature: Block unknown contacts setting
   Scenario: Carol adds Alice but Alice doesn't see it because Block Unknowns is enabled
     Given I wait until the widget with type 'ProfileMgrView' is present
     Given I tap the 'OpenSettingsView' button
+    And I wait for 2 second
     When I tap the widget that contains the text "Block Unknown Contacts"
     Then I expect the switch that contains the text "Block Unknown Contacts" to be checked
     Given I tap the back button
@@ -10,7 +11,7 @@ Feature: Block unknown contacts setting
     And I tap the button that contains the text "Carol"
     And I tap the button with tooltip "Add a new contact or conversation"
     When I fill the "txtAddP2P" field with "vbmmsbx3rhndpfz6t3jkrd7m3yu62xzrldxkdgsw4rsehiwuw3tmo7yd"
-    And I wait for 1 second
+    And I wait for 2 second
     And I take a screenshot
     And I tap the back button
     And I wait until the text "Alice" is present
