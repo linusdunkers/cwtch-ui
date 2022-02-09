@@ -153,7 +153,7 @@ class _AddContactViewState extends State<AddContactView> {
                         },
                         onChanged: (String importBundle) async {
                           var profileOnion = Provider.of<ProfileInfoState>(context, listen: false).onion;
-                          Provider.of<FlwtchState>(context, listen: false).cwtch.ImportBundle(profileOnion, importBundle);
+                          Provider.of<FlwtchState>(context, listen: false).cwtch.ImportBundle(profileOnion, importBundle.replaceFirst("cwtch:", ""));
 
                           Future.delayed(const Duration(milliseconds: 500), () {
                             if (globalErrorHandler.importBundleSuccess) {
