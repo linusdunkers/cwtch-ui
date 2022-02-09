@@ -351,7 +351,6 @@ steps:
       - export PATH=$PATH:/Users/Dan/development/flutter/bin
       - export GEM_HOME=$HOME/.gem
       - export PATH=$GEM_HOME/ruby/2.6.0/bin:$PATH
-      - flutter doctor
       - ./run-tests.sh
       - cp integration_test/gherkin/reports/cucumber_report.html deploy/macos_cucumber_report.html
 
