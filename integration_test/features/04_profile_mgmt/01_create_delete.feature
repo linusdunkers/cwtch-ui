@@ -23,6 +23,7 @@ Feature: Basic Profile Management
         Then I tap the "button" widget with label "Add new profile"
         And I expect a "ProfileRow" widget with text "Alice (Unencrypted)"
         And I take a screenshot
+        And I wait for 2 second
         Then I tap the "ProfileRow" widget with label "Alice (Unencrypted)"
         And I expect the text "Alice (Unencrypted) » Conversations" to be present
         And I take a screenshot
@@ -43,6 +44,7 @@ Feature: Basic Profile Management
         And I take a screenshot
         Then I tap the "button" widget with label "Add new profile"
         And I expect a "ProfileRow" widget with text "Alice (Encrypted)"
+        And I wait for 2 second
         And I take a screenshot
         Then I tap the "ProfileRow" widget with label "Alice (Encrypted)"
         And I expect the text 'Alice (Encrypted) » Conversations' to be present
