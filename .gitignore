@@ -40,6 +40,12 @@ app.*.symbols
 # Obfuscation related
 app.*.map.json
 
+# Gherkin
+run-tests.env
+test1
+test2
+testHome
+
 linux/tor
 linux/libCwtch.so
 android/cwtch/cwtch.aar

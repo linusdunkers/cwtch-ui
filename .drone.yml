@@ -60,6 +60,25 @@ steps:
       - tar -czf cwtch-`cat ../VERSION`.tar.gz cwtch
       - rm -r cwtch
 
+  - name: widget-tests
+    image: cirrusci/flutter:2.8.0
+    volumes:
+      - name: deps
+        path: /root/.pub-cache
+    commands:
+      # - flutter config --enable-linux-desktop
+      - flutter test --coverage
+      - genhtml coverage/lcov.info -o coverage/html
+
+  - name: ui-tests
+    image: openpriv/flutter-desktop:linux-fstable-2.8.0
+    volumes:
+      - name: deps
+        path: /root/.pub-cache
+    commands:
+      - ./run-tests.sh
+      - cp integration_test/gherkin/reports/cucumber_report.html deploy/linux_cucumber_report.html
+
   - name: test-build-android
     image: cirrusci/flutter:2.8.0
     when:
@@ -94,15 +113,6 @@ steps:
       - cp build/app/outputs/apk/release/app-release.apk deploy/
       #- cp build/app/outputs/flutter-apk/app-debug.apk deploy/android
 
-  - name: widget-tests
-    image: cirrusci/flutter:2.8.0
-    volumes:
-      - name: deps
-        path: /root/.pub-cache
-    commands:
-      # - flutter config --enable-linux-desktop
-      - flutter test --coverage
-      - genhtml coverage/lcov.info -o coverage/html
 
   - name: deploy-buildfiles
     image: kroniak/ssh-client
@@ -335,6 +345,15 @@ steps:
       - macos/package-release.sh
       - mkdir -p deploy
       - mv Cwtch.dmg deploy
+
+  - name: ui-tests
+    commands:
+      - export PATH=$PATH:/Users/Dan/development/flutter/bin
+      - export GEM_HOME=$HOME/.gem
+      - export PATH=$GEM_HOME/ruby/2.6.0/bin:$PATH
+      - flutter doctor
+      - ./run-tests.sh
+      - cp integration_test/gherkin/reports/cucumber_report.html deploy/macos_cucumber_report.html
 
   - name: deploy-buildfiles
     environment:
