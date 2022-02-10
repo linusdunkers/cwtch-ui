@@ -95,6 +95,6 @@ void main() {
         ResetCwtchEnvironment(),
         AttachScreenshotOnFailedStepHook(),
       ],
-      (World world) { var res = app.main(); sleep(Duration(seconds:2)); return res;},
+      (World world) { var killRes = Process.run("pkill", ["-9", "tor"]); var res = app.main(); sleep(Duration(seconds:2)); return res;},
   );
 }
