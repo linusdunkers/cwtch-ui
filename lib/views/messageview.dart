@@ -197,7 +197,6 @@ class _MessageViewState extends State<MessageView> {
   static const GroupMessageLengthMax = 1600;
 
   void _sendMessage([String? ignoredParam]) {
-
     // Trim message
     final messageWithoutNewLine = ctrlrCompose.value.text.trimRight();
     ctrlrCompose.value = TextEditingValue(text: messageWithoutNewLine);
