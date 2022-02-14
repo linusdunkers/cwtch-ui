@@ -376,9 +376,9 @@ class _MessageViewState extends State<MessageView> {
   }
 
   // Send the message if enter is pressed without the shift key...
-  void handleKeyPress(event) {
-    var data = event.data as RawKeyEventData;
-    if (data.logicalKey == LogicalKeyboardKey.enter && !event.isShiftPressed) {
+  void handleKeyPress(RawKeyEvent event) {
+    var data = event.data;
+    if ((data.logicalKey == LogicalKeyboardKey.enter && !event.isShiftPressed) || data.logicalKey == LogicalKeyboardKey.numpadEnter && !event.isShiftPressed) {
       _sendMessage();
     }
   }
