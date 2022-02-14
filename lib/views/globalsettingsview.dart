@@ -137,7 +137,9 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                             style: TextStyle(color: settings.current().mainTextColor),
                           ),
                           leading: Icon(Icons.table_chart, color: settings.current().mainTextColor),
-                          trailing: DropdownButton(
+                          trailing: Container(
+                          width: MediaQuery.of(context).size.width / 4,
+                              child: DropdownButton(
                               value: settings.uiColumnModeLandscape.toString(),
                               onChanged: (String? newValue) {
                                 settings.uiColumnModeLandscape = Settings.uiColumnModeFromString(newValue!);
@@ -151,7 +153,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 );
-                              }).toList())),
+                              }).toList()))),
                       SwitchListTile(
                         title: Text(AppLocalizations.of(context)!.streamerModeLabel, style: TextStyle(color: settings.current().mainTextColor)),
                         subtitle: Text(AppLocalizations.of(context)!.descriptionStreamerMode),
@@ -192,7 +194,9 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                       ListTile(
                         title: Text(AppLocalizations.of(context)!.notificationContentSettingLabel),
                         subtitle: Text(AppLocalizations.of(context)!.notificationContentSettingDescription),
-                        trailing: DropdownButton(
+                        trailing: Container(
+                          width: MediaQuery.of(context).size.width / 4,
+                  child:DropdownButton(
                             value: settings.notificationContent,
                             onChanged: (NotificationContent? newValue) {
                               settings.notificationContent = newValue!;
@@ -206,7 +210,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               );
-                            }).toList()),
+                            }).toList())),
                         leading: Icon(CwtchIcons.chat_bubble_empty_24px, color: settings.current().mainTextColor),
                       ),
                       SwitchListTile(
