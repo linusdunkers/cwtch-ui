@@ -196,7 +196,7 @@ class CwtchGomobile implements Cwtch {
   @override
   // ignore: non_constant_identifier_names
   void DeleteContact(String profileOnion, int conversation) {
-    cwtchPlatform.invokeMethod("DeleteContact", {"ProfileOnion": profileOnion, "conversation": conversation});
+    cwtchPlatform.invokeMethod("DeleteConversation", {"ProfileOnion": profileOnion, "conversation": conversation});
   }
 
   @override

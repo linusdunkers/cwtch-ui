@@ -296,16 +296,21 @@ class Settings extends ChangeNotifier {
 
   static String notificationPolicyToString(NotificationPolicy np, BuildContext context) {
     switch (np) {
-      case NotificationPolicy.Mute: return AppLocalizations.of(context)!.notificationPolicyMute;
-      case NotificationPolicy.OptIn: return AppLocalizations.of(context)!.notificationPolicyOptIn;
-      case NotificationPolicy.DefaultAll: return AppLocalizations.of(context)!.notificationPolicyDefaultAll;
+      case NotificationPolicy.Mute:
+        return AppLocalizations.of(context)!.notificationPolicyMute;
+      case NotificationPolicy.OptIn:
+        return AppLocalizations.of(context)!.notificationPolicyOptIn;
+      case NotificationPolicy.DefaultAll:
+        return AppLocalizations.of(context)!.notificationPolicyDefaultAll;
     }
   }
 
   static String notificationContentToString(NotificationContent nc, BuildContext context) {
     switch (nc) {
-      case NotificationContent.SimpleEvent: return AppLocalizations.of(context)!.notificationContentSimpleEvent;
-      case NotificationContent.ContactInfo: return AppLocalizations.of(context)!.notificationContentContactInfo;
+      case NotificationContent.SimpleEvent:
+        return AppLocalizations.of(context)!.notificationContentSimpleEvent;
+      case NotificationContent.ContactInfo:
+        return AppLocalizations.of(context)!.notificationContentContactInfo;
     }
   }
 

@@ -137,21 +137,23 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                             style: TextStyle(color: settings.current().mainTextColor),
                           ),
                           leading: Icon(Icons.table_chart, color: settings.current().mainTextColor),
-                          trailing: DropdownButton(
-                              value: settings.uiColumnModeLandscape.toString(),
-                              onChanged: (String? newValue) {
-                                settings.uiColumnModeLandscape = Settings.uiColumnModeFromString(newValue!);
-                                saveSettings(context);
-                              },
-                              items: Settings.uiColumnModeOptions(true).map<DropdownMenuItem<String>>((DualpaneMode value) {
-                                return DropdownMenuItem<String>(
-                                  value: value.toString(),
-                                  child: Text(
-                                    Settings.uiColumnModeToString(value, context),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                );
-                              }).toList())),
+                          trailing: Container(
+                              width: MediaQuery.of(context).size.width / 4,
+                              child: DropdownButton(
+                                  value: settings.uiColumnModeLandscape.toString(),
+                                  onChanged: (String? newValue) {
+                                    settings.uiColumnModeLandscape = Settings.uiColumnModeFromString(newValue!);
+                                    saveSettings(context);
+                                  },
+                                  items: Settings.uiColumnModeOptions(true).map<DropdownMenuItem<String>>((DualpaneMode value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value.toString(),
+                                      child: Text(
+                                        Settings.uiColumnModeToString(value, context),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    );
+                                  }).toList()))),
                       SwitchListTile(
                         title: Text(AppLocalizations.of(context)!.streamerModeLabel, style: TextStyle(color: settings.current().mainTextColor)),
                         subtitle: Text(AppLocalizations.of(context)!.descriptionStreamerMode),
@@ -192,21 +194,23 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                       ListTile(
                         title: Text(AppLocalizations.of(context)!.notificationContentSettingLabel),
                         subtitle: Text(AppLocalizations.of(context)!.notificationContentSettingDescription),
-                        trailing: DropdownButton(
-                            value: settings.notificationContent,
-                            onChanged: (NotificationContent? newValue) {
-                              settings.notificationContent = newValue!;
-                              saveSettings(context);
-                            },
-                            items: NotificationContent.values.map<DropdownMenuItem<NotificationContent>>((NotificationContent value) {
-                              return DropdownMenuItem<NotificationContent>(
-                                value: value,
-                                child: Text(
-                                  Settings.notificationContentToString(value, context),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              );
-                            }).toList()),
+                        trailing: Container(
+                            width: MediaQuery.of(context).size.width / 4,
+                            child: DropdownButton(
+                                value: settings.notificationContent,
+                                onChanged: (NotificationContent? newValue) {
+                                  settings.notificationContent = newValue!;
+                                  saveSettings(context);
+                                },
+                                items: NotificationContent.values.map<DropdownMenuItem<NotificationContent>>((NotificationContent value) {
+                                  return DropdownMenuItem<NotificationContent>(
+                                    value: value,
+                                    child: Text(
+                                      Settings.notificationContentToString(value, context),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  );
+                                }).toList())),
                         leading: Icon(CwtchIcons.chat_bubble_empty_24px, color: settings.current().mainTextColor),
                       ),
                       SwitchListTile(

@@ -2,7 +2,6 @@ import 'package:cwtch/widgets/messagerow.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-
 import 'message.dart';
 import 'messagecache.dart';
 

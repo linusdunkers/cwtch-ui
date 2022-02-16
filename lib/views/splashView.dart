@@ -17,7 +17,7 @@ class _SplashViewState extends State<SplashView> {
   Widget build(BuildContext context) {
     var cwtch = Provider.of<FlwtchState>(context, listen: false).cwtch;
     if (!cwtch.isL10nInit()) {
-      if (AppLocalizations.of(context) != null && AppLocalizations.of(context)!.newMessageNotificationSimple.isNotEmpty ) {
+      if (AppLocalizations.of(context) != null && AppLocalizations.of(context)!.newMessageNotificationSimple.isNotEmpty) {
         cwtch.l10nInit(AppLocalizations.of(context)!.newMessageNotificationSimple, AppLocalizations.of(context)!.newMessageNotificationConversationInfo);
       }
     }

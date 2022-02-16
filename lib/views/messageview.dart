@@ -197,6 +197,10 @@ class _MessageViewState extends State<MessageView> {
   static const GroupMessageLengthMax = 1600;
 
   void _sendMessage([String? ignoredParam]) {
+    // Trim message
+    final messageWithoutNewLine = ctrlrCompose.value.text.trimRight();
+    ctrlrCompose.value = TextEditingValue(text: messageWithoutNewLine);
+
     var isGroup = Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(Provider.of<AppState>(context, listen: false).selectedConversation!)!.isGroup;
 
     // peers and groups currently have different length constraints (servers can store less)...
@@ -372,11 +376,9 @@ class _MessageViewState extends State<MessageView> {
   }
 
   // Send the message if enter is pressed without the shift key...
-  void handleKeyPress(event) {
-    var data = event.data as RawKeyEventData;
-    if (data.logicalKey == LogicalKeyboardKey.enter && !event.isShiftPressed) {
-      final messageWithoutNewLine = ctrlrCompose.value.text.trimRight();
-      ctrlrCompose.value = TextEditingValue(text: messageWithoutNewLine);
+  void handleKeyPress(RawKeyEvent event) {
+    var data = event.data;
+    if ((data.logicalKey == LogicalKeyboardKey.enter && !event.isShiftPressed) || data.logicalKey == LogicalKeyboardKey.numpadEnter && !event.isShiftPressed) {
       _sendMessage();
     }
   }
