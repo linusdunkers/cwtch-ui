@@ -165,10 +165,10 @@ class CwtchNotifier {
         var notification = data["notification"];
 
         if (notification == "SimpleEvent") {
-          notificationManager.notify(notificationSimple ?? "New Message");
+          notificationManager.notify(notificationSimple ?? "New Message", "", 0);
         } else if (notification == "ContactInfo") {
           var contact = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier);
-          notificationManager.notify((notificationConversationInfo ?? "New Message from %1").replaceFirst("%1", (contact?.nickname ?? senderHandle.toString())));
+          notificationManager.notify((notificationConversationInfo ?? "New Message from %1").replaceFirst("%1", (contact?.nickname ?? senderHandle.toString())), data["ProfileOnion"], identifier);
         }
 
         profileCN.getProfile(data["ProfileOnion"])?.newMessage(
@@ -242,10 +242,10 @@ class CwtchNotifier {
             profileCN.getProfile(data["ProfileOnion"])?.newMessage(identifier, idx, timestampSent, senderHandle, senderImage, isAuto, data["Data"], contenthash, selectedProfile, selectedConversation);
 
             if (notification == "SimpleEvent") {
-              notificationManager.notify(notificationSimple ?? "New Message");
+              notificationManager.notify(notificationSimple ?? "New Message", "", 0);
             } else if (notification == "ContactInfo") {
               var contact = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier);
-              notificationManager.notify((notificationConversationInfo ?? "New Message from %1").replaceFirst("%1", (contact?.nickname ?? senderHandle.toString())));
+              notificationManager.notify((notificationConversationInfo ?? "New Message from %1").replaceFirst("%1", (contact?.nickname ?? senderHandle.toString())), data["ProfileOnion"], identifier);
             }
             appState.notifyProfileUnread();
           }
