@@ -78,11 +78,12 @@ class NixNotificationManager implements NotificationsManager {
   NixNotificationManager(Future<void> Function(String, int) notificationSelectConvo) {
     this.notificationSelectConvo = notificationSelectConvo;
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    final MacOSInitializationSettings initializationSettingsMacOS = MacOSInitializationSettings();
+    final MacOSInitializationSettings initializationSettingsMacOS = MacOSInitializationSettings(defaultPresentSound: true);
     final LinuxInitializationSettings initializationSettingsLinux =
     LinuxInitializationSettings(
       defaultActionName: 'Open notification',
       defaultIcon: AssetsLinuxIcon('assets/knott.png'),
+      defaultSuppressSound: true
     );
 
     final InitializationSettings initializationSettings = InitializationSettings(android: null, iOS: null, macOS: initializationSettingsMacOS, linux: initializationSettingsLinux);
