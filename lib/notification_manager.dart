@@ -4,8 +4,11 @@ import 'dart:io';
 
 import 'package:cwtch/main.dart';
 import 'package:win_toast/win_toast.dart';
-import 'package:desktop_notifications/desktop_notifications.dart';
+//import 'package:desktop_notifications/desktop_notifications.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_local_notifications_linux/flutter_local_notifications_linux.dart';
+import 'package:flutter_local_notifications_linux/src/model/hint.dart';
+
 import 'package:path/path.dart' as path;
 
 import 'config.dart';
@@ -64,9 +67,9 @@ class NotificationPayload {
         convoId = json['convoId'];
 
   Map<String, dynamic> toJson() => {
-    'profileOnion': profileOnion,
-    'convoId': convoId,
-  };
+        'profileOnion': profileOnion,
+        'convoId': convoId,
+      };
 }
 
 // FlutterLocalNotificationsPlugin based NotificationManager that handles Linux and MacOS
@@ -80,18 +83,14 @@ class NixNotificationManager implements NotificationsManager {
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     final MacOSInitializationSettings initializationSettingsMacOS = MacOSInitializationSettings(defaultPresentSound: true);
     final LinuxInitializationSettings initializationSettingsLinux =
-    LinuxInitializationSettings(
-      defaultActionName: 'Open notification',
-      defaultIcon: AssetsLinuxIcon('assets/knott.png'),
-      defaultSuppressSound: true
-    );
+        LinuxInitializationSettings(defaultActionName: 'Open notification', defaultIcon: AssetsLinuxIcon('assets/knott.png'), defaultSuppressSound: true);
 
     final InitializationSettings initializationSettings = InitializationSettings(android: null, iOS: null, macOS: initializationSettingsMacOS, linux: initializationSettingsLinux);
 
     flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<MacOSFlutterLocalNotificationsPlugin>()?.requestPermissions(
           alert: true,
-          badge: true,
-          sound: true,
+          badge: false,
+          sound: false,
         );
 
     scheduleMicrotask(() async {
@@ -99,16 +98,19 @@ class NixNotificationManager implements NotificationsManager {
     });
   }
 
+  Future<void> notify(String message, String profile, int conversationId) async {
+    // Warning: Only use title field on Linux, body field will render links as clickable
+    await flutterLocalNotificationsPlugin.show(0, message, '', NotificationDetails(linux: LinuxNotificationDetails(suppressSound: true, category: LinuxNotificationCategory.imReceived())),
+        payload: jsonEncode(NotificationPayload(profile, conversationId)));
+  }
+
+  // Notification click response function, triggers ui jump to conversation
   void selectNotification(String? payloadJson) async {
     if (payloadJson != null) {
       Map<String, dynamic> payloadMap = jsonDecode(payloadJson);
-      var  payload = NotificationPayload.fromJson(payloadMap);
+      var payload = NotificationPayload.fromJson(payloadMap);
       notificationSelectConvo(payload.profileOnion, payload.convoId);
     }
-}
-
-  Future<void> notify(String message, String profile, int conversationId) async {
-    await flutterLocalNotificationsPlugin.show(0, 'Cwtch', message, null, payload: jsonEncode(NotificationPayload(profile, conversationId)));
   }
 }
 

@@ -189,14 +189,7 @@ packages:
       name: dbus
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.8"
-  desktop_notifications:
-    dependency: "direct main"
-    description:
-      name: desktop_notifications
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.6.0"
+    version: "0.7.1"
   fake_async:
     dependency: transitive
     description:
@@ -269,7 +262,7 @@ packages:
       name: flutter_local_notifications_linux
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.1+1"
+    version: "0.4.2"
   flutter_local_notifications_platform_interface:
     dependency: transitive
     description:
@@ -824,7 +817,7 @@ packages:
       name: xdg_directories
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.0"
+    version: "0.2.0+1"
   xml:
     dependency: transitive
     description:
