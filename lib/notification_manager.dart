@@ -81,7 +81,7 @@ class NixNotificationManager implements NotificationsManager {
   NixNotificationManager(Future<void> Function(String, int) notificationSelectConvo) {
     this.notificationSelectConvo = notificationSelectConvo;
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    final MacOSInitializationSettings initializationSettingsMacOS = MacOSInitializationSettings(defaultPresentSound: true);
+    final MacOSInitializationSettings initializationSettingsMacOS = MacOSInitializationSettings(defaultPresentSound: false);
     final LinuxInitializationSettings initializationSettingsLinux =
         LinuxInitializationSettings(defaultActionName: 'Open notification', defaultIcon: AssetsLinuxIcon('assets/knott.png'), defaultSuppressSound: true);
 
@@ -99,9 +99,11 @@ class NixNotificationManager implements NotificationsManager {
   }
 
   Future<void> notify(String message, String profile, int conversationId) async {
-    // Warning: Only use title field on Linux, body field will render links as clickable
-    await flutterLocalNotificationsPlugin.show(0, message, '', NotificationDetails(linux: LinuxNotificationDetails(suppressSound: true, category: LinuxNotificationCategory.imReceived())),
-        payload: jsonEncode(NotificationPayload(profile, conversationId)));
+    if (!globalAppState.focus) {
+      // Warning: Only use title field on Linux, body field will render links as clickable
+      await flutterLocalNotificationsPlugin.show(0, message, '', NotificationDetails(linux: LinuxNotificationDetails(suppressSound: true, category: LinuxNotificationCategory.imReceived())),
+          payload: jsonEncode(NotificationPayload(profile, conversationId)));
+    }
   }
 
   // Notification click response function, triggers ui jump to conversation
