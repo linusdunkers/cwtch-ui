@@ -80,6 +80,8 @@ class FileBubbleState extends State<FileBubble> {
     var downloadActive = Provider.of<ProfileInfoState>(context).downloadActive(widget.fileKey());
     var downloadGotManifest = Provider.of<ProfileInfoState>(context).downloadGotManifest(widget.fileKey());
 
+    var messageStatusWidget = MessageBubbleDecoration(ackd: metadata.ackd, errored: metadata.error, prettyDate: prettyDate, fromMe: fromMe);
+
     // If the sender is not us, then we want to give them a nickname...
     var senderDisplayStr = "";
     var senderIsContact = false;
@@ -195,7 +197,7 @@ class FileBubbleState extends State<FileBubble> {
                 crossAxisAlignment: fromMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                 mainAxisAlignment: fromMe ? MainAxisAlignment.end : MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
-                children: [wdgSender, isPreview ? Container() : wdgMessage, wdgDecorations]),
+                children: [wdgSender, isPreview ? Container() : wdgMessage, wdgDecorations, messageStatusWidget]),
           ));
     });
   }

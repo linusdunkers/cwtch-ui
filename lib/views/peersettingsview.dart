@@ -57,7 +57,7 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
       return LayoutBuilder(builder: (BuildContext context, BoxConstraints viewportConstraints) {
         String? acnCircuit = Provider.of<ContactInfoState>(context).acnCircuit;
 
-        Widget path = Text(Provider.of<ContactInfoState>(context, listen: false).status);
+        Widget path = Text(Provider.of<ContactInfoState>(context).status);
 
         if (acnCircuit != null) {
           var hops = acnCircuit.split(",");
