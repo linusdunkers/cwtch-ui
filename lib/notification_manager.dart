@@ -1,38 +1,27 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cwtch/main.dart';
 import 'package:win_toast/win_toast.dart';
-import 'package:desktop_notifications/desktop_notifications.dart';
+//import 'package:desktop_notifications/desktop_notifications.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_local_notifications_linux/flutter_local_notifications_linux.dart';
+import 'package:flutter_local_notifications_linux/src/model/hint.dart';
+
 import 'package:path/path.dart' as path;
 
 import 'config.dart';
 
 // NotificationsManager provides a wrapper around platform specific notifications logic.
 abstract class NotificationsManager {
-  Future<void> notify(String message);
+  Future<void> notify(String message, String profile, int conversationId);
 }
 
 // NullNotificationsManager ignores all notification requests
 class NullNotificationsManager implements NotificationsManager {
   @override
-  Future<void> notify(String message) async {}
-}
-
-// LinuxNotificationsManager uses the desktop_notifications package to implement
-// the standard dbus-powered linux desktop notifications.
-class LinuxNotificationsManager implements NotificationsManager {
-  int previous_id = 0;
-  late NotificationsClient client;
-
-  LinuxNotificationsManager(NotificationsClient client) {
-    this.client = client;
-  }
-
-  Future<void> notify(String message) async {
-    var iconPath = Uri.file(path.join(path.current, "cwtch.png"));
-    client.notify(message, appName: "cwtch", appIcon: iconPath.toString(), replacesId: this.previous_id).then((Notification value) => previous_id = value.id);
-  }
+  Future<void> notify(String message, String profile, int conversationId) async {}
 }
 
 // Windows Notification Manager uses https://pub.dev/packages/desktoasts to implement
@@ -47,7 +36,7 @@ class WindowsNotificationManager implements NotificationsManager {
     });
   }
 
-  Future<void> notify(String message) async {
+  Future<void> notify(String message, String profile, int conversationId) async {
     if (initialized && !globalAppState.focus) {
       if (!active) {
         active = true;
@@ -64,16 +53,75 @@ class WindowsNotificationManager implements NotificationsManager {
   }
 }
 
-NotificationsManager newDesktopNotificationsManager() {
-  if (Platform.isLinux) {
+class NotificationPayload {
+  late String profileOnion;
+  late int convoId;
+
+  NotificationPayload(String po, int cid) {
+    profileOnion = po;
+    convoId = cid;
+  }
+
+  NotificationPayload.fromJson(Map<String, dynamic> json)
+      : profileOnion = json['profileOnion'],
+        convoId = json['convoId'];
+
+  Map<String, dynamic> toJson() => {
+        'profileOnion': profileOnion,
+        'convoId': convoId,
+      };
+}
+
+// FlutterLocalNotificationsPlugin based NotificationManager that handles Linux and MacOS
+// Todo: it can also handle Android, do we want to migrate away from our manual solution?
+class NixNotificationManager implements NotificationsManager {
+  late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  late Future<void> Function(String, int) notificationSelectConvo;
+
+  NixNotificationManager(Future<void> Function(String, int) notificationSelectConvo) {
+    this.notificationSelectConvo = notificationSelectConvo;
+    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    final MacOSInitializationSettings initializationSettingsMacOS = MacOSInitializationSettings(defaultPresentSound: false);
+    final LinuxInitializationSettings initializationSettingsLinux =
+        LinuxInitializationSettings(defaultActionName: 'Open notification', defaultIcon: AssetsLinuxIcon('assets/knott.png'), defaultSuppressSound: true);
+
+    final InitializationSettings initializationSettings = InitializationSettings(android: null, iOS: null, macOS: initializationSettingsMacOS, linux: initializationSettingsLinux);
+
+    flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<MacOSFlutterLocalNotificationsPlugin>()?.requestPermissions(
+          alert: true,
+          badge: false,
+          sound: false,
+        );
+
+    scheduleMicrotask(() async {
+      await flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: selectNotification);
+    });
+  }
+
+  Future<void> notify(String message, String profile, int conversationId) async {
+    if (!globalAppState.focus) {
+      // Warning: Only use title field on Linux, body field will render links as clickable
+      await flutterLocalNotificationsPlugin.show(0, message, '', NotificationDetails(linux: LinuxNotificationDetails(suppressSound: true, category: LinuxNotificationCategory.imReceived())),
+          payload: jsonEncode(NotificationPayload(profile, conversationId)));
+    }
+  }
+
+  // Notification click response function, triggers ui jump to conversation
+  void selectNotification(String? payloadJson) async {
+    if (payloadJson != null) {
+      Map<String, dynamic> payloadMap = jsonDecode(payloadJson);
+      var payload = NotificationPayload.fromJson(payloadMap);
+      notificationSelectConvo(payload.profileOnion, payload.convoId);
+    }
+  }
+}
+
+NotificationsManager newDesktopNotificationsManager(Future<void> Function(String profileOnion, int convoId) notificationSelectConvo) {
+  if (Platform.isLinux || Platform.isMacOS) {
     try {
-      // Test that we can actually access DBUS. Otherwise return a null
-      // notifications manager...
-      NotificationsClient client = NotificationsClient();
-      client.getCapabilities();
-      return LinuxNotificationsManager(client);
+      return NixNotificationManager(notificationSelectConvo);
     } catch (e) {
-      EnvironmentConfig.debugLog("Attempted to access DBUS for notifications but failed. Switching off notifications.");
+      EnvironmentConfig.debugLog("Failed to create NixNotificationManager. Switching off notifications.");
     }
   } else if (Platform.isWindows) {
     try {
@@ -82,5 +130,6 @@ NotificationsManager newDesktopNotificationsManager() {
       EnvironmentConfig.debugLog("Failed to create Windows desktoasts notification manager");
     }
   }
+
   return NullNotificationsManager();
 }

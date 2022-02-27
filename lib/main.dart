@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:cwtch/config.dart';
 import 'package:cwtch/notification_manager.dart';
 import 'package:cwtch/themes/cwtch.dart';
+import 'package:cwtch/views/doublecolview.dart';
 import 'package:cwtch/views/messageview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:cwtch/cwtch/ffi.dart';
@@ -17,8 +18,11 @@ import 'cwtch/cwtch.dart';
 import 'cwtch/cwtchNotifier.dart';
 import 'licenses.dart';
 import 'models/appstate.dart';
+import 'models/contactlist.dart';
+import 'models/profile.dart';
 import 'models/profilelist.dart';
 import 'models/servers.dart';
+import 'views/contactsview.dart';
 import 'views/profilemgrview.dart';
 import 'views/splashView.dart';
 import 'dart:io' show Platform, exit, sleep;
@@ -78,10 +82,10 @@ class FlwtchState extends State<Flwtch> with WindowListener {
       var cwtchNotifier = new CwtchNotifier(profs, globalSettings, globalErrorHandler, globalTorStatus, NullNotificationsManager(), globalAppState, globalServersList);
       cwtch = CwtchGomobile(cwtchNotifier);
     } else if (Platform.isLinux) {
-      var cwtchNotifier = new CwtchNotifier(profs, globalSettings, globalErrorHandler, globalTorStatus, newDesktopNotificationsManager(), globalAppState, globalServersList);
+      var cwtchNotifier = new CwtchNotifier(profs, globalSettings, globalErrorHandler, globalTorStatus, newDesktopNotificationsManager(_notificationSelectConvo), globalAppState, globalServersList);
       cwtch = CwtchFfi(cwtchNotifier);
     } else {
-      var cwtchNotifier = new CwtchNotifier(profs, globalSettings, globalErrorHandler, globalTorStatus, newDesktopNotificationsManager(), globalAppState, globalServersList);
+      var cwtchNotifier = new CwtchNotifier(profs, globalSettings, globalErrorHandler, globalTorStatus, newDesktopNotificationsManager(_notificationSelectConvo), globalAppState, globalServersList);
       cwtch = CwtchFfi(cwtchNotifier);
     }
     print("initState: invoking cwtch.Start()");
@@ -182,36 +186,43 @@ class FlwtchState extends State<Flwtch> with WindowListener {
   // coder beware: args["RemotePeer"] is actually a handle, and could be eg a groupID
   Future<void> _externalNotificationClicked(MethodCall call) async {
     var args = jsonDecode(call.arguments);
-    var profile = profs.getProfile(args["ProfileOnion"])!;
-    var convo = profile.contactList.getContact(args["Handle"])!;
+    _notificationSelectConvo(args["ProfileOnion"], args["Handle"]);
+  }
+
+  Future<void> _notificationSelectConvo(String profileOnion, int convoId) async {
+    var profile = profs.getProfile(profileOnion)!;
+    var convo = profile.contactList.getContact(convoId)!;
+    if (profileOnion.isEmpty) {
+      return;
+    }
     Provider.of<AppState>(navKey.currentContext!, listen: false).initialScrollIndex = convo.unreadMessages;
     convo.unreadMessages = 0;
 
-    // single pane mode pushes; double pane mode reads AppState.selectedProfile/Conversation
-    var isLandscape = Provider.of<AppState>(navKey.currentContext!, listen: false).isLandscape(navKey.currentContext!);
-    if (Provider.of<Settings>(navKey.currentContext!, listen: false).uiColumns(isLandscape).length == 1) {
-      while (navKey.currentState!.canPop()) {
-        print("messageview already open; popping before pushing replacement");
-        navKey.currentState!.pop();
-      }
-      navKey.currentState?.push(
-        MaterialPageRoute<void>(
-          builder: (BuildContext builderContext) {
-            return MultiProvider(
-              providers: [
-                ChangeNotifierProvider.value(value: profile),
-                ChangeNotifierProvider.value(value: convo),
-              ],
-              builder: (context, child) => MessageView(),
-            );
-          },
-        ),
-      );
-    } else {
-      //dual pane
-      Provider.of<AppState>(navKey.currentContext!, listen: false).selectedProfile = args["ProfileOnion"];
-      Provider.of<AppState>(navKey.currentContext!, listen: false).selectedConversation = args["Handle"];
+    // Clear nav path back to root
+    while (navKey.currentState!.canPop()) {
+      navKey.currentState!.pop();
     }
+
+    Provider.of<AppState>(navKey.currentContext!, listen: false).selectedConversation = null;
+    Provider.of<AppState>(navKey.currentContext!, listen: false).selectedProfile = profileOnion;
+    Provider.of<AppState>(navKey.currentContext!, listen: false).selectedConversation = convoId;
+
+    Navigator.of(navKey.currentContext!).push(
+      MaterialPageRoute<void>(
+        settings: RouteSettings(name: "conversations"),
+        builder: (BuildContext buildcontext) {
+          return OrientationBuilder(builder: (orientationBuilderContext, orientation) {
+            return MultiProvider(
+                providers: [ChangeNotifierProvider<ProfileInfoState>.value(value: profile), ChangeNotifierProvider<ContactListState>.value(value: profile.contactList)],
+                builder: (innercontext, widget) {
+                  var appState = Provider.of<AppState>(navKey.currentContext!);
+                  var settings = Provider.of<Settings>(navKey.currentContext!);
+                  return settings.uiColumns(appState.isLandscape(innercontext)).length > 1 ? DoubleColumnView() : MessageView();
+                });
+          });
+        },
+      ),
+    );
   }
 
   // using windowManager flutter plugin until proper lifecycle management lands in desktop

@@ -218,7 +218,7 @@ class MainActivity: FlutterActivity() {
         WorkManager.getInstance(this).enqueue(workRequest)
         WorkManager.getInstance(applicationContext).getWorkInfoByIdLiveData(workRequest.id).observe(
             this, Observer { workInfo ->
-                if (workInfo.state == WorkInfo.State.SUCCEEDED) {
+                if (workInfo != null && workInfo.state == WorkInfo.State.SUCCEEDED) {
                     val res = workInfo.outputData.keyValueMap.toString()
                     result.success(workInfo.outputData.getString("result"))
                 }

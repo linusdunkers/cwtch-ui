@@ -140,6 +140,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                           trailing: Container(
                               width: MediaQuery.of(context).size.width / 4,
                               child: DropdownButton(
+                                  isExpanded: true,
                                   value: settings.uiColumnModeLandscape.toString(),
                                   onChanged: (String? newValue) {
                                     settings.uiColumnModeLandscape = Settings.uiColumnModeFromString(newValue!);
@@ -197,6 +198,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                         trailing: Container(
                             width: MediaQuery.of(context).size.width / 4,
                             child: DropdownButton(
+                                isExpanded: true,
                                 value: settings.notificationContent,
                                 onChanged: (NotificationContent? newValue) {
                                   settings.notificationContent = newValue!;
