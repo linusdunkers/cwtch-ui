@@ -421,6 +421,9 @@ String getLanguageFull(context, String languageCode) {
   if (languageCode == "ru") {
     return AppLocalizations.of(context)!.localeRU;
   }
+  if (languageCode == "ro") {
+    return AppLocalizations.of(context)!.localeRo;
+  }
   return languageCode;
 }
 
