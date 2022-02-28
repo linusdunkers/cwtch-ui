@@ -12,22 +12,25 @@ import 'package:cwtch/errorHandler.dart';
 import 'package:cwtch/settings.dart';
 import 'package:cwtch/torstatus.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 import 'cwtch/cwtch.dart';
 import 'cwtch/cwtchNotifier.dart';
+import 'l10n/delegateLb.dart';
 import 'licenses.dart';
 import 'models/appstate.dart';
 import 'models/contactlist.dart';
 import 'models/profile.dart';
 import 'models/profilelist.dart';
 import 'models/servers.dart';
-import 'views/contactsview.dart';
 import 'views/profilemgrview.dart';
 import 'views/splashView.dart';
-import 'dart:io' show Platform, exit, sleep;
+import 'dart:io' show Platform, exit;
 import 'themes/opaque.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:intl/intl.dart' as intl;
 
 var globalSettings = Settings(Locale("en", ''), CwtchDark());
 var globalErrorHandler = ErrorHandler();
@@ -120,7 +123,13 @@ class FlwtchState extends State<Flwtch> with WindowListener {
             key: Key('app'),
             navigatorKey: navKey,
             locale: settings.locale,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            localizationsDelegates: <LocalizationsDelegate<dynamic>>[
+              AppLocalizations.delegate,
+              MaterialLocalizationDelegate(),
+              GlobalMaterialLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+            ],
             supportedLocales: AppLocalizations.supportedLocales,
             title: 'Cwtch',
             theme: mkThemeData(settings),

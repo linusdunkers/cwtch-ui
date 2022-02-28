@@ -67,7 +67,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                               value: Provider.of<Settings>(context).locale.languageCode,
                               onChanged: (String? newValue) {
                                 setState(() {
-                                  settings.switchLocale(Locale(newValue!, ''));
+                                  settings.switchLocale(Locale(newValue!));
                                   saveSettings(context);
                                 });
                               },
@@ -412,11 +412,20 @@ String getLanguageFull(context, String languageCode) {
   if (languageCode == "de") {
     return AppLocalizations.of(context)!.localeDe;
   }
+  if (languageCode == "el") {
+    return AppLocalizations.of(context)!.localeEl;
+  }
   if (languageCode == "it") {
     return AppLocalizations.of(context)!.localeIt;
   }
+  if (languageCode == "no") {
+    return AppLocalizations.of(context)!.localeNo;
+  }
   if (languageCode == "pl") {
     return AppLocalizations.of(context)!.localePl;
+  }
+  if (languageCode == "lb") {
+    return AppLocalizations.of(context)!.localeLb;
   }
   if (languageCode == "ru") {
     return AppLocalizations.of(context)!.localeRU;
