@@ -1,6 +1,9 @@
 {
     "@@locale": "no",
     "@@last_modified": "2022-03-01T21:00:12+01:00",
+    "localeEl": "Gresk",
+    "localeNo": "Norsk",
+    "localeLb": "Luxemburgsk",
     "conversationNotificationPolicySettingDescription": "Sett meldingsoppførsel(notification) for denne samtalen",
     "localeRo": "Rumensk",
     "newMessageNotificationConversationInfo": "Ny melding fra %1",
