@@ -1,6 +1,7 @@
 {
     "@@locale": "it",
-    "@@last_modified": "2022-02-28T21:28:34+01:00",
+    "@@last_modified": "2022-03-01T01:00:41+01:00",
+    "savePeerHistory": "Salva Cronologia",
     "localeEl": "Greek",
     "localeNo": "Norwegian",
     "localeLb": "Luxembourgish",
@@ -43,7 +44,6 @@
     "torSettingsEnabledAdvanced": "Enable Advanced Tor Configuration",
     "serverNotSynced": "Sincronizzazione Nuovi Messaggi (L'operazione può richiedere del tempo)...",
     "copiedClipboardNotification": "Copiato negli appunti",
-    "savePeerHistory": "Salva Cronologia ",
     "blockUnknownLabel": "Blocca Contatti Sconosciuti",
     "unblockBtn": "Sblocca il Contatto",
     "dontSavePeerHistory": "Elimina Cronologia",

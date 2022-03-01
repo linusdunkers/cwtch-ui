@@ -1,6 +1,7 @@
 {
     "@@locale": "es",
-    "@@last_modified": "2022-02-28T21:28:34+01:00",
+    "@@last_modified": "2022-03-01T01:00:41+01:00",
+    "addPeerTab": "Agregar Contacto",
     "localeEl": "Greek",
     "localeNo": "Norwegian",
     "localeLb": "Luxembourgish",
@@ -248,7 +249,6 @@
     "defaultGroupName": "El Grupo Asombroso",
     "createGroupBtn": "Crear",
     "copiedToClipboardNotification": "Copiado al portapapeles",
-    "addPeerTab": "Agregar Contacto",
     "createGroupTab": "Crear un grupo",
     "peerAddress": "Dirección",
     "peerName": "Nombre",
