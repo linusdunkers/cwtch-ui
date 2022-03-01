@@ -7,11 +7,10 @@ import 'package:cwtch/models/message.dart';
 import 'package:cwtch/models/profile.dart';
 import 'package:cwtch/widgets/malformedbubble.dart';
 import 'package:file_picker_desktop/file_picker_desktop.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../main.dart';
-import 'package:intl/intl.dart';
+
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../settings.dart';
@@ -51,7 +50,8 @@ class FileBubbleState extends State<FileBubble> {
     var flagStarted = Provider.of<MessageMetadata>(context).attributes["file-downloaded"] == "true";
     var borderRadiousEh = 15.0;
     var showFileSharing = Provider.of<Settings>(context, listen: false).isExperimentEnabled(FileSharingExperiment);
-    var prettyDate = DateFormat.yMd(Platform.localeName).add_jm().format(Provider.of<MessageMetadata>(context).timestamp);
+    DateTime messageDate = Provider.of<MessageMetadata>(context).timestamp;
+
     var metadata = Provider.of<MessageMetadata>(context);
     var path = Provider.of<ProfileInfoState>(context).downloadFinalPath(widget.fileKey());
 
@@ -80,7 +80,7 @@ class FileBubbleState extends State<FileBubble> {
     var downloadActive = Provider.of<ProfileInfoState>(context).downloadActive(widget.fileKey());
     var downloadGotManifest = Provider.of<ProfileInfoState>(context).downloadGotManifest(widget.fileKey());
 
-    var messageStatusWidget = MessageBubbleDecoration(ackd: metadata.ackd, errored: metadata.error, prettyDate: prettyDate, fromMe: fromMe);
+    var messageStatusWidget = MessageBubbleDecoration(ackd: metadata.ackd, errored: metadata.error, messageDate: messageDate, fromMe: fromMe);
 
     // If the sender is not us, then we want to give them a nickname...
     var senderDisplayStr = "";

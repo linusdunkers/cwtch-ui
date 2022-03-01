@@ -41,7 +41,7 @@ class InvitationBubbleState extends State<InvitationBubble> {
     var borderRadiousEh = 15.0;
     var showGroupInvite = Provider.of<Settings>(context).isExperimentEnabled(TapirGroupsExperiment);
     rejected = Provider.of<MessageMetadata>(context).attributes["rejected-invite"] == "true";
-    var prettyDate = DateFormat.yMd(Platform.localeName).add_jm().format(Provider.of<MessageMetadata>(context).timestamp);
+    DateTime messageDate = Provider.of<MessageMetadata>(context).timestamp;
 
     // If the sender is not us, then we want to give them a nickname...
     var senderDisplayStr = "";
@@ -77,7 +77,7 @@ class InvitationBubbleState extends State<InvitationBubble> {
     if (isGroup && !showGroupInvite) {
       wdgDecorations = Text('\u202F');
     } else if (fromMe) {
-      wdgDecorations = MessageBubbleDecoration(ackd: Provider.of<MessageMetadata>(context).ackd, errored: Provider.of<MessageMetadata>(context).error, fromMe: fromMe, prettyDate: prettyDate);
+      wdgDecorations = MessageBubbleDecoration(ackd: Provider.of<MessageMetadata>(context).ackd, errored: Provider.of<MessageMetadata>(context).error, fromMe: fromMe, messageDate: messageDate);
     } else if (isAccepted) {
       wdgDecorations = Text(AppLocalizations.of(context)!.accepted + '\u202F');
     } else if (this.rejected) {

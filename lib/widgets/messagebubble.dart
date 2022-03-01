@@ -36,7 +36,6 @@ class MessageBubbleState extends State<MessageBubble> {
     var showClickableLinks = Provider.of<Settings>(context).isExperimentEnabled(ClickableLinksExperiment);
 
     DateTime messageDate = Provider.of<MessageMetadata>(context).timestamp;
-    prettyDate = DateFormat.yMd(Platform.localeName).add_jm().format(messageDate.toLocal());
 
     // If the sender is not us, then we want to give them a nickname...
     var senderDisplayStr = "";
@@ -86,7 +85,7 @@ class MessageBubbleState extends State<MessageBubble> {
       );
     }
 
-    var wdgDecorations = MessageBubbleDecoration(ackd: Provider.of<MessageMetadata>(context).ackd, errored: Provider.of<MessageMetadata>(context).error, fromMe: fromMe, prettyDate: prettyDate);
+    var wdgDecorations = MessageBubbleDecoration(ackd: Provider.of<MessageMetadata>(context).ackd, errored: Provider.of<MessageMetadata>(context).error, fromMe: fromMe, messageDate: messageDate);
 
     var error = Provider.of<MessageMetadata>(context).error;
 

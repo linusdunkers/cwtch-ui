@@ -30,7 +30,6 @@ class QuotedMessageBubbleState extends State<QuotedMessageBubble> {
     var borderRadiousEh = 15.0;
 
     DateTime messageDate = Provider.of<MessageMetadata>(context).timestamp;
-    prettyDate = DateFormat.yMd().add_jm().format(messageDate.toLocal());
 
     // If the sender is not us, then we want to give them a nickname...
     var senderDisplayStr = "";
@@ -82,7 +81,7 @@ class QuotedMessageBubbleState extends State<QuotedMessageBubble> {
       },
     );
 
-    var wdgDecorations = MessageBubbleDecoration(ackd: Provider.of<MessageMetadata>(context).ackd, errored: Provider.of<MessageMetadata>(context).error, fromMe: fromMe, prettyDate: prettyDate);
+    var wdgDecorations = MessageBubbleDecoration(ackd: Provider.of<MessageMetadata>(context).ackd, errored: Provider.of<MessageMetadata>(context).error, fromMe: fromMe, messageDate: messageDate);
 
     var error = Provider.of<MessageMetadata>(context).error;
 

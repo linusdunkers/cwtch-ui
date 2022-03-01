@@ -1,13 +1,14 @@
+import 'dart:io';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import '../settings.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // Provides message decorations (acks/errors/dates etc.) for generic message bubble overlays (chats, invites etc.)
 class MessageBubbleDecoration extends StatefulWidget {
-  MessageBubbleDecoration({required this.ackd, required this.errored, required this.prettyDate, required this.fromMe});
-  final String prettyDate;
+  MessageBubbleDecoration({required this.ackd, required this.errored, required this.messageDate, required this.fromMe});
+  final DateTime messageDate;
   final bool fromMe;
   final bool ackd;
   final bool errored;
@@ -19,12 +20,14 @@ class MessageBubbleDecoration extends StatefulWidget {
 class _MessageBubbleDecoration extends State<MessageBubbleDecoration> {
   @override
   Widget build(BuildContext context) {
+    var prettyDate = DateFormat.yMd(Platform.localeName).add_jm().format(widget.messageDate.toLocal());
+
     return Center(
         widthFactor: 1.0,
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(widget.prettyDate,
+            Text(prettyDate,
                 style: TextStyle(fontSize: 9.0, color: widget.fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor),
                 textAlign: widget.fromMe ? TextAlign.right : TextAlign.left),
             !widget.fromMe
