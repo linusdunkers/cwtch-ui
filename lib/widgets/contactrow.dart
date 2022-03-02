@@ -144,7 +144,7 @@ class _ContactRowState extends State<ContactRow> {
 
   String dateToNiceString(DateTime date) {
     if (date.millisecondsSinceEpoch == 0) {
-      return AppLocalizations.of(context)!.dateNever;
+      return AppLocalizations.of(context)!.conversationNotificationPolicyNever;
     }
     // If the last message was over a day ago, just state the date
     if (DateTime.now().difference(date).inDays > 1) {
