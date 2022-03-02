@@ -17,7 +17,7 @@ import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 import 'cwtch/cwtch.dart';
 import 'cwtch/cwtchNotifier.dart';
-import 'l10n/delegateLb.dart';
+import 'l10n/custom_material_delegate.dart';
 import 'licenses.dart';
 import 'models/appstate.dart';
 import 'models/contactlist.dart';
