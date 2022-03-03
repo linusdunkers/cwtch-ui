@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
 
-// Flutter doesn't supported Luxembourgish...
+// Flutter doesn't supported Luxembourgish, or Welsh, so we have to provide our
+// own delegate for built-in widget translations...
 class MaterialLocalizationDelegate extends LocalizationsDelegate<MaterialLocalizations> {
   @override
   bool isSupported(Locale locale) {
-    return locale.languageCode == "lb";
+    return locale.languageCode == "lb" || locale.languageCode == "cy";
   }
 
   @override
   Future<MaterialLocalizations> load(Locale locale) async {
-    return MaterialLocalizationLu();
+    switch (locale.languageCode) {
+      case "cy":
+        return MaterialLocalizationCy();
+      case "lb":
+        return MaterialLocalizationLu();
+    }
+    throw UnimplementedError("unknown language");
   }
 
   @override
@@ -18,6 +25,10 @@ class MaterialLocalizationDelegate extends LocalizationsDelegate<MaterialLocaliz
   }
 }
 
+// Support Welsh, Default to English
+class MaterialLocalizationCy extends DefaultMaterialLocalizations {}
+
+// Support Luxembourgish, Default to German
 class MaterialLocalizationLu extends MaterialLocalizations {
   @override
   String get aboutListTileTitleRaw => r'Über $applicationName';

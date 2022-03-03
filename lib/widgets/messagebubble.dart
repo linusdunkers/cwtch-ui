@@ -142,7 +142,7 @@ class MessageBubbleState extends State<MessageBubble> {
                                 Clipboard.setData(new ClipboardData(text: link.url));
 
                                 final snackBar = SnackBar(
-                                  content: Text(AppLocalizations.of(context)!.copiedClipboardNotification),
+                                  content: Text(AppLocalizations.of(context)!.copiedToClipboardNotification),
                                 );
 
                                 Navigator.pop(bcontext);

@@ -73,7 +73,7 @@ class _AddContactViewState extends State<AddContactView> {
 
   void _copyOnion() {
     Clipboard.setData(new ClipboardData(text: Provider.of<ProfileInfoState>(context, listen: false).onion));
-    final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.copiedClipboardNotification));
+    final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.copiedToClipboardNotification));
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
@@ -221,7 +221,7 @@ class _AddContactViewState extends State<AddContactView> {
                         SizedBox(
                           height: 20,
                         ),
-                        CwtchLabel(label: AppLocalizations.of(context)!.groupName),
+                        CwtchLabel(label: AppLocalizations.of(context)!.groupNameLabel),
                         SizedBox(
                           height: 20,
                         ),

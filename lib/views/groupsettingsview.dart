@@ -199,7 +199,7 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
 
   void _copyOnion() {
     Clipboard.setData(new ClipboardData(text: Provider.of<ContactInfoState>(context, listen: false).onion));
-    final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.copiedClipboardNotification));
+    final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.copiedToClipboardNotification));
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
