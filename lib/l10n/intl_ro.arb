@@ -1,6 +1,7 @@
 {
     "@@locale": "ro",
-    "@@last_modified": "2022-03-02T23:55:45+01:00",
+    "@@last_modified": "2022-03-03T19:10:17+01:00",
+    "localeDa": "Daneză",
     "localeCy": "Velşă",
     "conversationNotificationPolicySettingDescription": "Controlați comportamentul de notificare al acestei conversații",
     "localeNo": "Norvegiană",

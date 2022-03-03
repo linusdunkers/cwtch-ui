@@ -1,7 +1,8 @@
 {
     "@@locale": "el",
-    "@@last_modified": "2022-03-02T23:55:45+01:00",
-    "localeCy": "Welsh",
+    "@@last_modified": "2022-03-03T19:10:17+01:00",
+    "localeCy": "Ουαλικά",
+    "localeDa": "Δανικά",
     "server": "Διακομιστής",
     "peerName": "Όνομα",
     "peerAddress": "Διεύθυνση",
