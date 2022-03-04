@@ -48,7 +48,7 @@ class QuotedMessage extends Message {
   }
 
   @override
-  Widget getWidget(BuildContext context) {
+  Widget getWidget(BuildContext context, Key key) {
     try {
       dynamic message = jsonDecode(this.content);
 
@@ -59,7 +59,7 @@ class QuotedMessage extends Message {
       return ChangeNotifierProvider.value(
           value: this.metadata,
           builder: (bcontext, child) {
-            return MessageRow(QuotedMessageBubble(message["body"], messageHandler(bcontext, metadata.profileOnion, metadata.conversationIdentifier, ByContentHash(message["quotedHash"]))));
+            return MessageRow(QuotedMessageBubble(message["body"], messageHandler(bcontext, metadata.profileOnion, metadata.conversationIdentifier, ByContentHash(message["quotedHash"]))), key: key);
           });
     } catch (e) {
       return MalformedBubble();

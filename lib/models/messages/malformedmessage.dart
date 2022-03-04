@@ -9,11 +9,11 @@ class MalformedMessage extends Message {
   MalformedMessage(this.metadata);
 
   @override
-  Widget getWidget(BuildContext context) {
+  Widget getWidget(BuildContext context, Key key) {
     return ChangeNotifierProvider.value(
         value: this.metadata,
         builder: (context, child) {
-          return MessageRow(MalformedBubble());
+          return MessageRow(MalformedBubble(), key: key);
         });
   }
 

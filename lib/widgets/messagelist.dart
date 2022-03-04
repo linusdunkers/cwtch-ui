@@ -87,7 +87,11 @@ class _MessageListState extends State<MessageList> {
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
                                       var message = snapshot.data as Message;
-                                      return message.getWidget(context);
+                                      // here we create an index key for the contact and assign it to the row. Indexes are unique so we can
+                                      // reliably use this without running into duplicate keys...it isn't ideal as it means keys need to be re-built
+                                      // when new messages are added...however it is better than the alternative of not having widget keys at all.
+                                      var key = Provider.of<ContactInfoState>(outerContext, listen: false).getMessageKey(contactHandle, messageIndex);
+                                      return message.getWidget(context, key);
                                     } else {
                                       return MessageLoadingBubble();
                                     }

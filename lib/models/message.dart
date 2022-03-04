@@ -32,7 +32,7 @@ const GroupConversationHandleLength = 32;
 abstract class Message {
   MessageMetadata getMetadata();
 
-  Widget getWidget(BuildContext context);
+  Widget getWidget(BuildContext context, Key key);
 
   Widget getPreviewWidget(BuildContext context);
 }

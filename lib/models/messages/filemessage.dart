@@ -18,7 +18,7 @@ class FileMessage extends Message {
   FileMessage(this.metadata, this.content);
 
   @override
-  Widget getWidget(BuildContext context) {
+  Widget getWidget(BuildContext context, Key key) {
     return ChangeNotifierProvider.value(
         value: this.metadata,
         builder: (bcontext, child) {
@@ -42,7 +42,7 @@ class FileMessage extends Message {
             return MessageRow(MalformedBubble());
           }
 
-          return MessageRow(FileBubble(nameSuggestion, rootHash, nonce, fileSize, isAuto: metadata.isAuto));
+          return MessageRow(FileBubble(nameSuggestion, rootHash, nonce, fileSize, isAuto: metadata.isAuto), key: key);
         });
   }
 
