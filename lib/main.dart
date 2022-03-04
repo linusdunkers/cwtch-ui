@@ -179,9 +179,9 @@ class FlwtchState extends State<Flwtch> with WindowListener {
   }
 
   Future<void> shutdown() async {
-    cwtch.Shutdown();
+    await cwtch.Shutdown();
     // Wait a few seconds as shutting down things takes a little time..
-    Future.delayed(Duration(seconds: 2)).then((value) {
+    Future.delayed(Duration(seconds: 1)).then((value) {
       if (Platform.isAndroid) {
         SystemNavigator.pop();
       } else if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {

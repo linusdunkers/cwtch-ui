@@ -80,7 +80,9 @@ class ProfileInfoState extends ChangeNotifier {
       List<dynamic> servers = jsonDecode(serversJson);
       this._servers.replace(servers.map((server) {
         // TODO Keys...
-        return RemoteServerInfoState(server["onion"], server["identifier"], server["description"], server["status"]);
+        var preSyncStartTime = DateTime.tryParse(server["syncProgress"]["startTime"]);
+        var lastMessageTime = DateTime.tryParse(server["syncProgress"]["lastMessageTime"]);
+        return RemoteServerInfoState(server["onion"], server["identifier"], server["description"], server["status"], lastPreSyncMessageTime: preSyncStartTime, mostRecentMessageTime: lastMessageTime);
       }));
 
       this._contacts.contacts.forEach((contact) {

@@ -317,7 +317,7 @@ class CwtchNotifier {
                 server: groupInvite["ServerHost"],
                 status: status,
                 isGroup: true,
-                lastMessageTime: DateTime.fromMillisecondsSinceEpoch(0)));
+                lastMessageTime: DateTime.now()));
             profileCN.getProfile(data["ProfileOnion"])?.contactList.updateLastMessageTime(identifier, DateTime.fromMillisecondsSinceEpoch(0));
           }
         }
