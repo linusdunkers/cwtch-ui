@@ -117,7 +117,7 @@ class NixNotificationManager implements NotificationsManager {
 }
 
 NotificationsManager newDesktopNotificationsManager(Future<void> Function(String profileOnion, int convoId) notificationSelectConvo) {
-  if (Platform.isLinux || Platform.isMacOS) {
+  if ((Platform.isLinux && !Platform.isAndroid) || Platform.isMacOS) {
     try {
       return NixNotificationManager(notificationSelectConvo);
     } catch (e) {

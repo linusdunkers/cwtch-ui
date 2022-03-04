@@ -12,7 +12,12 @@ class RemoteServerInfoState extends ChangeNotifier {
   double syncProgress = 0;
   DateTime lastPreSyncMessagTime = new DateTime(2020);
 
-  RemoteServerInfoState(this.onion, this.identifier, this.description, this._status);
+  RemoteServerInfoState(this.onion, this.identifier, this.description, this._status, {lastPreSyncMessageTime, mostRecentMessageTime}) {
+    if (_status == "Authenticated") {
+      this.lastPreSyncMessagTime = lastPreSyncMessageTime;
+      updateSyncProgressFor(mostRecentMessageTime);
+    }
+  }
 
   void updateDescription(String newDescription) {
     this.description = newDescription;
@@ -45,8 +50,8 @@ class RemoteServerInfoState extends ChangeNotifier {
   // updateSyncProgressFor point takes a message's time, and updates the server sync progress,
   // based on that point in time between the precalculated lastPreSyncMessagTime and Now
   void updateSyncProgressFor(DateTime point) {
-    var range = lastPreSyncMessagTime.difference(DateTime.now());
-    var pointFromStart = lastPreSyncMessagTime.difference(point);
+    var range = lastPreSyncMessagTime.toUtc().difference(DateTime.now().toUtc());
+    var pointFromStart = lastPreSyncMessagTime.toUtc().difference(point.toUtc());
     syncProgress = pointFromStart.inSeconds / range.inSeconds;
     notifyListeners();
   }

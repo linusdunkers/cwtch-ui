@@ -61,6 +61,7 @@ class _RemoteServerRowState extends State<RemoteServerRow> {
                         visible: server.status == "Authenticated",
                         child: LinearProgressIndicator(
                           color: Provider.of<Settings>(context).theme.defaultButtonActiveColor,
+                          backgroundColor: Provider.of<Settings>(context).theme.defaultButtonDisabledColor,
                           value: server.syncProgress,
                         )),
                   ],

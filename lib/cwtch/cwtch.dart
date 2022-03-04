@@ -100,7 +100,7 @@ abstract class Cwtch {
   void SetServerAttribute(String serverOnion, String key, String val);
 
   // ignore: non_constant_identifier_names
-  void Shutdown();
+  Future<void> Shutdown();
 
   // non-ffi
   String defaultDownloadPath();
