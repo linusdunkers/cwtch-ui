@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import 'message.dart';
 
 class MessageInfo {
@@ -6,7 +8,7 @@ class MessageInfo {
   MessageInfo(this.metadata, this.wrapper);
 }
 
-class MessageCache {
+class MessageCache extends ChangeNotifier {
   late Map<int, MessageInfo> cache;
   late List<int?> cacheByIndex;
   late Map<String, int> cacheByHash;
@@ -35,6 +37,7 @@ class MessageCache {
     if (contenthash != null && contenthash != "") {
       this.cacheByHash[contenthash] = messageID;
     }
+    notifyListeners();
   }
 
   void add(MessageInfo messageInfo, int index, String? contenthash) {
@@ -43,6 +46,7 @@ class MessageCache {
     if (contenthash != null && contenthash != "") {
       this.cacheByHash[contenthash] = messageInfo.metadata.messageID;
     }
+    notifyListeners();
   }
 
   void addUnindexed(MessageInfo messageInfo, String? contenthash) {
@@ -50,9 +54,16 @@ class MessageCache {
     if (contenthash != null && contenthash != "") {
       this.cacheByHash[contenthash] = messageInfo.metadata.messageID;
     }
+    notifyListeners();
   }
 
   void ackCache(int messageID) {
     cache[messageID]?.metadata.ackd = true;
+    notifyListeners();
+  }
+
+  void errCache(int messageID) {
+    cache[messageID]?.metadata.error = true;
+    notifyListeners();
   }
 }

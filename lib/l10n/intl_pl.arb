@@ -1,6 +1,7 @@
 {
     "@@locale": "pl",
-    "@@last_modified": "2022-03-03T19:10:17+01:00",
+    "@@last_modified": "2022-03-04T17:33:01+01:00",
+    "deleteConfirmLabel": "Wpisz USUŃ aby potwierdzić",
     "localeLb": "Luksemburski",
     "localeNo": "Norweski",
     "localeEl": "Grecki",
@@ -63,7 +64,6 @@
     "addNewProfileBtn": "Dodaj",
     "deleteConfirmText": "USUŃ",
     "deleteProfileConfirmBtn": "Usuń",
-    "deleteConfirmLabel": "Wpisz USUŃ aby potwierdzić",
     "deleteProfileBtn": "Usuń profil",
     "passwordChangeError": "Zmiana hasła nie powiodła się: hasło niepoprawne",
     "passwordErrorMatch": "Hasła nie są identyczne",

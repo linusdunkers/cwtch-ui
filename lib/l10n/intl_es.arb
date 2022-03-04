@@ -1,6 +1,6 @@
 {
     "@@locale": "es",
-    "@@last_modified": "2022-03-03T19:10:17+01:00",
+    "@@last_modified": "2022-03-04T17:33:01+01:00",
     "localeDa": "Danés",
     "groupInviteSettingsWarning": "¡Has recibido una invitación para unirte a un grupo! Por favor habilita el experimento de chat grupal en Configuración para ver esta invitación",
     "plainServerDescription": "Te recomendamos que protejas tus servidores de Cwtch con una contraseña. Si no estableces una contraseña en este servidor, cualquiera que tenga acceso a este dispositivo podrá acceder a la información sobre este servidor incluyendo claves criptográficas confidenciales",

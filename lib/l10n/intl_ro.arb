@@ -1,6 +1,8 @@
 {
     "@@locale": "ro",
-    "@@last_modified": "2022-03-03T19:10:17+01:00",
+    "@@last_modified": "2022-03-04T17:33:01+01:00",
+    "deleteProfileConfirmBtn": "Sigur ștergeti profilul",
+    "deleteConfirmLabel": "Tastați ȘTERGE pentru a confirma",
     "localeDa": "Daneză",
     "localeCy": "Velşă",
     "conversationNotificationPolicySettingDescription": "Controlați comportamentul de notificare al acestei conversații",
@@ -89,8 +91,6 @@
     "passwordErrorMatch": "Parolele nu se potrivesc",
     "passwordChangeError": "Eroare la schimbarea parolei: Parola furnizată a fost respinsă",
     "deleteProfileBtn": "Ștergeți profilul",
-    "deleteConfirmLabel": "Tastați DELETE pentru a confirma",
-    "deleteProfileConfirmBtn": "Sigur ștergeti profilul",
     "deleteConfirmText": "ȘTERGE",
     "addNewProfileBtn": "Adăugați un profil nou",
     "enterProfilePassword": "Introduceți o parolă pentru a vă vizualiza profilurile",
