@@ -50,8 +50,8 @@ class RemoteServerInfoState extends ChangeNotifier {
   // updateSyncProgressFor point takes a message's time, and updates the server sync progress,
   // based on that point in time between the precalculated lastPreSyncMessagTime and Now
   void updateSyncProgressFor(DateTime point) {
-    var range = lastPreSyncMessagTime.difference(DateTime.now());
-    var pointFromStart = lastPreSyncMessagTime.difference(point);
+    var range = lastPreSyncMessagTime.toUtc().difference(DateTime.now().toUtc());
+    var pointFromStart = lastPreSyncMessagTime.toUtc().difference(point.toUtc());
     syncProgress = pointFromStart.inSeconds / range.inSeconds;
     notifyListeners();
   }

@@ -63,9 +63,9 @@ class FlwtchState extends State<Flwtch> with WindowListener {
 
   final GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
 
-  Future<dynamic> shutdownDirect(MethodCall call) {
+  Future<dynamic> shutdownDirect(MethodCall call) async {
     print(call);
-    cwtch.Shutdown();
+    await cwtch.Shutdown();
     return Future.value({});
   }
 
@@ -247,8 +247,8 @@ class FlwtchState extends State<Flwtch> with WindowListener {
   }
 
   @override
-  void dispose() {
-    cwtch.Shutdown();
+  void dispose() async {
+    await cwtch.Shutdown();
     windowManager.removeListener(this);
     cwtch.dispose();
     super.dispose();

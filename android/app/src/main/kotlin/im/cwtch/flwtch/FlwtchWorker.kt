@@ -32,7 +32,15 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
     private var notificationSimple: String? =  null
     private var notificationConversationInfo: String? = null
 
+
     override suspend fun doWork(): Result {
+        // Hack to uncomment and deploy if your device has zombie workers you need to kill
+        // We need a proper solution but this will clear those out for now
+        /*if (notificationSimple == null) {
+            Log.e("FlwtchWorker", "doWork found notificationSimple is null, app has not started, this is a stale thread, terminating")
+            return Result.failure()
+        }*/
+
         val method = inputData.getString(KEY_METHOD)
                 ?: return Result.failure()
         val args = inputData.getString(KEY_ARGS)
@@ -52,7 +60,7 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
     }
 
     private fun handleCwtch(method: String, args: String): Result {
-        try {
+
             val a = JSONObject(args)
             when (method) {
                 "Start" -> {
@@ -66,142 +74,151 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                     Log.i("FlwtchWorker.kt", "startCwtch success, starting coroutine AppbusEvent loop...")
                     val downloadIDs = mutableMapOf<String, Int>()
                     while (true) {
-                        val evt = MainActivity.AppbusEvent(Cwtch.getAppBusEvent())
-                        // TODO replace this notification block with the NixNotification manager in dart as it has access to contact names and also needs less working around
-                        if (evt.EventType == "NewMessageFromPeer" || evt.EventType == "NewMessageFromGroup") {
-                            val data = JSONObject(evt.Data)
-                            val handle = data.getString("RemotePeer");
-                            if (data["RemotePeer"] != data["ProfileOnion"]) {
-                                val notification = data["notification"]
+                        try {
+                            val evt = MainActivity.AppbusEvent(Cwtch.getAppBusEvent())
+                            // TODO replace this notification block with the NixNotification manager in dart as it has access to contact names and also needs less working around
+                            if (evt.EventType == "NewMessageFromPeer" || evt.EventType == "NewMessageFromGroup") {
+                                val data = JSONObject(evt.Data)
+                                val handle = data.getString("RemotePeer");
+                                val conversationId = data.getInt("ConversationID").toString();
+                                val notificationChannel = if (evt.EventType == "NewMessageFromPeer") handle else conversationId
+                                if (data["RemotePeer"] != data["ProfileOnion"]) {
+                                    val notification = data["notification"]
 
-                                if (notification == "SimpleEvent") {
-                                    val channelId =
-                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                                createMessageNotificationChannel("Cwtch", "Cwtch")
-                                            } else {
-                                                // If earlier version channel ID is not used
-                                                // https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#NotificationCompat.Builder(android.content.Context)
-                                                ""
-                                            }
+                                    if (notification == "SimpleEvent") {
+                                        val channelId =
+                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                                    createMessageNotificationChannel("Cwtch", "Cwtch")
+                                                } else {
+                                                    // If earlier version channel ID is not used
+                                                    // https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#NotificationCompat.Builder(android.content.Context)
+                                                    ""
+                                                }
 
-                                    val clickIntent = Intent(applicationContext, MainActivity::class.java).also { intent ->
-                                        intent.action = Intent.ACTION_RUN
-                                        intent.putExtra("EventType", "NotificationClicked")
+                                        val clickIntent = Intent(applicationContext, MainActivity::class.java).also { intent ->
+                                            intent.action = Intent.ACTION_RUN
+                                            intent.putExtra("EventType", "NotificationClicked")
+                                        }
+
+                                        val newNotification = NotificationCompat.Builder(applicationContext, channelId)
+                                                .setContentTitle("Cwtch")
+                                                .setContentText(notificationSimple ?: "New Message")
+                                                .setSmallIcon(R.mipmap.knott_transparent)
+                                                .setContentIntent(PendingIntent.getActivity(applicationContext, 1, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT))
+                                                .setAutoCancel(true)
+                                                .build()
+
+                                        notificationManager.notify(getNotificationID("Cwtch", "Cwtch"), newNotification)
+                                    } else if (notification == "ContactInfo") {
+                                        val channelId =
+                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                                    createMessageNotificationChannel(notificationChannel, notificationChannel)
+                                                } else {
+                                                    // If earlier version channel ID is not used
+                                                    // https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#NotificationCompat.Builder(android.content.Context)
+                                                    ""
+                                                }
+                                        val loader = FlutterInjector.instance().flutterLoader()
+                                        Log.i("FlwtchWorker.kt", "notification for " + evt.EventType + " " + handle + " " + conversationId + " " + channelId)
+                                        Log.i("FlwtchWorker.kt", data.toString());
+                                        val key = loader.getLookupKeyForAsset(data.getString("picture"))//"assets/profiles/001-centaur.png")
+                                        val fh = applicationContext.assets.open(key)
+
+                                        val clickIntent = Intent(applicationContext, MainActivity::class.java).also { intent ->
+                                            intent.action = Intent.ACTION_RUN
+                                            intent.putExtra("EventType", "NotificationClicked")
+                                            intent.putExtra("ProfileOnion", data.getString("ProfileOnion"))
+                                            intent.putExtra("Handle", handle)
+                                        }
+
+                                        val newNotification = NotificationCompat.Builder(applicationContext, channelId)
+                                                .setContentTitle(data.getString("Nick"))
+                                                .setContentText((notificationConversationInfo
+                                                        ?: "New Message From %1").replace("%1", data.getString("Nick")))
+                                                .setLargeIcon(BitmapFactory.decodeStream(fh))
+                                                .setSmallIcon(R.mipmap.knott_transparent)
+                                                .setContentIntent(PendingIntent.getActivity(applicationContext, 1, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT))
+                                                .setAutoCancel(true)
+                                                .build()
+
+                                        notificationManager.notify(getNotificationID(data.getString("ProfileOnion"), channelId), newNotification)
                                     }
 
-                                    val newNotification = NotificationCompat.Builder(applicationContext, channelId)
-                                            .setContentTitle("Cwtch")
-                                            .setContentText(notificationSimple ?: "New Message")
-                                            .setSmallIcon(R.mipmap.knott_transparent)
-                                            .setContentIntent(PendingIntent.getActivity(applicationContext, 1, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT))
-                                            .setAutoCancel(true)
-                                            .build()
-
-                                    notificationManager.notify(getNotificationID("Cwtch", "Cwtch"), newNotification)
-                                } else if (notification == "ContactInfo") {
-                                    val channelId =
-                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                                createMessageNotificationChannel(handle, handle)
-                                            } else {
-                                                // If earlier version channel ID is not used
-                                                // https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#NotificationCompat.Builder(android.content.Context)
-                                                ""
-                                            }
-                                    val loader = FlutterInjector.instance().flutterLoader()
-                                    val key = loader.getLookupKeyForAsset("assets/" + data.getString("Picture"))//"assets/profiles/001-centaur.png")
-                                    val fh = applicationContext.assets.open(key)
-
-                                    val clickIntent = Intent(applicationContext, MainActivity::class.java).also { intent ->
-                                        intent.action = Intent.ACTION_RUN
-                                        intent.putExtra("EventType", "NotificationClicked")
-                                        intent.putExtra("ProfileOnion", data.getString("ProfileOnion"))
-                                        intent.putExtra("Handle", handle)
-                                    }
-
-                                    val newNotification = NotificationCompat.Builder(applicationContext, channelId)
-                                            .setContentTitle(data.getString("Nick"))
-                                            .setContentText((notificationConversationInfo
-                                                    ?: "New Message From %1").replace("%1", data.getString("Nick")))
-                                            .setLargeIcon(BitmapFactory.decodeStream(fh))
-                                            .setSmallIcon(R.mipmap.knott_transparent)
-                                            .setContentIntent(PendingIntent.getActivity(applicationContext, 1, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT))
-                                            .setAutoCancel(true)
-                                            .build()
-
-                                    notificationManager.notify(getNotificationID(data.getString("ProfileOnion"), handle), newNotification)
                                 }
-
-                            }
-                        } else if (evt.EventType == "FileDownloadProgressUpdate") {
-                            try {
+                            } else if (evt.EventType == "FileDownloadProgressUpdate") {
+                                try {
+                                    val data = JSONObject(evt.Data);
+                                    val fileKey = data.getString("FileKey");
+                                    val title = data.getString("NameSuggestion");
+                                    val progress = data.getString("Progress").toInt();
+                                    val progressMax = data.getString("FileSizeInChunks").toInt();
+                                    if (!downloadIDs.containsKey(fileKey)) {
+                                        downloadIDs.put(fileKey, downloadIDs.count());
+                                    }
+                                    var dlID = downloadIDs.get(fileKey);
+                                    if (dlID == null) {
+                                        dlID = 0;
+                                    }
+                                    if (progress >= 0) {
+                                        val channelId =
+                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                                    createDownloadNotificationChannel(fileKey, fileKey)
+                                                } else {
+                                                    // If earlier version channel ID is not used
+                                                    // https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#NotificationCompat.Builder(android.content.Context)
+                                                    ""
+                                                };
+                                        val newNotification = NotificationCompat.Builder(applicationContext, channelId)
+                                                .setOngoing(true)
+                                                .setContentTitle("Downloading")//todo: translate
+                                                .setContentText(title)
+                                                .setSmallIcon(android.R.drawable.stat_sys_download)
+                                                .setProgress(progressMax, progress, false)
+                                                .setSound(null)
+                                                //.setSilent(true)
+                                                .build();
+                                        notificationManager.notify(dlID, newNotification);
+                                    }
+                                } catch (e: Exception) {
+                                    Log.d("FlwtchWorker->FileDownloadProgressUpdate", e.toString() + " :: " + e.getStackTrace());
+                                }
+                            } else if (evt.EventType == "FileDownloaded") {
+                                Log.d("FlwtchWorker", "file downloaded!");
                                 val data = JSONObject(evt.Data);
+                                val tempFile = data.getString("TempFile");
                                 val fileKey = data.getString("FileKey");
-                                val title = data.getString("NameSuggestion");
-                                val progress = data.getString("Progress").toInt();
-                                val progressMax = data.getString("FileSizeInChunks").toInt();
-                                if (!downloadIDs.containsKey(fileKey)) {
-                                    downloadIDs.put(fileKey, downloadIDs.count());
+                                if (tempFile != "" && tempFile != data.getString("FilePath")) {
+                                    val filePath = data.getString("FilePath");
+                                    Log.i("FlwtchWorker", "moving " + tempFile + " to " + filePath);
+                                    val sourcePath = Paths.get(tempFile);
+                                    val targetUri = Uri.parse(filePath);
+                                    val os = this.applicationContext.getContentResolver().openOutputStream(targetUri);
+                                    val bytesWritten = Files.copy(sourcePath, os);
+                                    Log.d("FlwtchWorker", "copied " + bytesWritten.toString() + " bytes");
+                                    if (bytesWritten != 0L) {
+                                        os?.flush();
+                                        os?.close();
+                                        Files.delete(sourcePath);
+                                    }
                                 }
-                                var dlID = downloadIDs.get(fileKey);
-                                if (dlID == null) {
-                                    dlID = 0;
-                                }
-                                if (progress >= 0) {
-                                    val channelId =
-                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                                createDownloadNotificationChannel(fileKey, fileKey)
-                                            } else {
-                                                // If earlier version channel ID is not used
-                                                // https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#NotificationCompat.Builder(android.content.Context)
-                                                ""
-                                            };
-                                    val newNotification = NotificationCompat.Builder(applicationContext, channelId)
-                                            .setOngoing(true)
-                                            .setContentTitle("Downloading")//todo: translate
-                                            .setContentText(title)
-                                            .setSmallIcon(android.R.drawable.stat_sys_download)
-                                            .setProgress(progressMax, progress, false)
-                                            .setSound(null)
-                                            //.setSilent(true)
-                                            .build();
-                                    notificationManager.notify(dlID, newNotification);
-                                }
-                            } catch (e: Exception) {
-                                Log.d("FlwtchWorker->FileDownloadProgressUpdate", e.toString() + " :: " + e.getStackTrace());
-                            }
-                        } else if (evt.EventType == "FileDownloaded") {
-                            Log.d("FlwtchWorker", "file downloaded!");
-                            val data = JSONObject(evt.Data);
-                            val tempFile = data.getString("TempFile");
-                            val fileKey = data.getString("FileKey");
-                            if (tempFile != "" && tempFile != data.getString("FilePath")) {
-                                val filePath = data.getString("FilePath");
-                                Log.i("FlwtchWorker", "moving " + tempFile + " to " + filePath);
-                                val sourcePath = Paths.get(tempFile);
-                                val targetUri = Uri.parse(filePath);
-                                val os = this.applicationContext.getContentResolver().openOutputStream(targetUri);
-                                val bytesWritten = Files.copy(sourcePath, os);
-                                Log.d("FlwtchWorker", "copied " + bytesWritten.toString() + " bytes");
-                                if (bytesWritten != 0L) {
-                                    os?.flush();
-                                    os?.close();
-                                    Files.delete(sourcePath);
+                                if (downloadIDs.containsKey(fileKey)) {
+                                    notificationManager.cancel(downloadIDs.get(fileKey) ?: 0);
                                 }
                             }
-                            if (downloadIDs.containsKey(fileKey)) {
-                                notificationManager.cancel(downloadIDs.get(fileKey) ?: 0);
-                            }
-                        }
 
-                        Intent().also { intent ->
-                            intent.action = "im.cwtch.flwtch.broadcast.SERVICE_EVENT_BUS"
-                            intent.putExtra("EventType", evt.EventType)
-                            intent.putExtra("Data", evt.Data)
-                            intent.putExtra("EventID", evt.EventID)
-                            LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
+                            Intent().also { intent ->
+                                intent.action = "im.cwtch.flwtch.broadcast.SERVICE_EVENT_BUS"
+                                intent.putExtra("EventType", evt.EventType)
+                                intent.putExtra("Data", evt.Data)
+                                intent.putExtra("EventID", evt.EventID)
+                                LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
+                            }
+                        } catch (e: Exception) {
+                            Log.e("FlwtchWorker", "Error in handleCwtch: " + e.toString() + " :: " + e.getStackTrace());
                         }
                     }
                 }
+
                 "ReconnectCwtchForeground" -> {
                     Cwtch.reconnectCwtchForeground()
                 }
@@ -408,11 +425,8 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                     return Result.failure()
                 }
             }
+
             return Result.success()
-        } catch (e: Exception) {
-            Log.e("FlwtchWorker", "Error in handleCwtch: " + e.toString() + " :: " + e.getStackTrace())
-            return Result.failure()
-        }
     }
 
     // Creates an instance of ForegroundInfo which can be used to update the

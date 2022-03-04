@@ -153,6 +153,7 @@ class CwtchNotifier {
         }
         break;
       case "NewMessageFromPeer":
+
         var identifier = int.parse(data["ConversationID"]);
         var messageID = int.parse(data["Index"]);
         var timestamp = DateTime.tryParse(data['TimestampReceived'])!;
