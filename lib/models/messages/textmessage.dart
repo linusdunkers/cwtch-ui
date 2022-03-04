@@ -29,13 +29,12 @@ class TextMessage extends Message {
   }
 
   @override
-  Widget getWidget(BuildContext context, Key key) {
+  Widget getWidget(BuildContext context) {
     return ChangeNotifierProvider.value(
         value: this.metadata,
         builder: (bcontext, child) {
           return MessageRow(
             MessageBubble(this.content),
-            key: key,
           );
         });
   }

@@ -276,6 +276,11 @@ class ContactInfoState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void errCache(int messageID) {
+    this.messageCache.errCache(messageID);
+    notifyListeners();
+  }
+
   static ConversationNotificationPolicy notificationPolicyFromString(String val) {
     switch (val) {
       case "ConversationNotificationPolicy.Default":

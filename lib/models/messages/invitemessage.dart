@@ -17,7 +17,7 @@ class InviteMessage extends Message {
   InviteMessage(this.overlay, this.metadata, this.content);
 
   @override
-  Widget getWidget(BuildContext context, Key key) {
+  Widget getWidget(BuildContext context) {
     return ChangeNotifierProvider.value(
         value: this.metadata,
         builder: (bcontext, child) {
@@ -39,7 +39,7 @@ class InviteMessage extends Message {
               return MessageRow(MalformedBubble());
             }
           }
-          return MessageRow(InvitationBubble(overlay, inviteTarget, inviteNick, invite), key: key);
+          return MessageRow(InvitationBubble(overlay, inviteTarget, inviteNick, invite));
         });
   }
 

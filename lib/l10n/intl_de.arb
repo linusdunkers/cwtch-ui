@@ -1,6 +1,7 @@
 {
     "@@locale": "de",
-    "@@last_modified": "2022-03-03T19:10:17+01:00",
+    "@@last_modified": "2022-03-04T17:33:01+01:00",
+    "deleteConfirmLabel": "Gib LÖSCHEN ein, um zu bestätigen",
     "localeDa": "Dänisch",
     "localeCy": "Walisisch",
     "pasteAddressToAddContact": "Cwtch Adresse, Einladung oder Schlüssel hier hinzufügen, um eine neue Konversation hinzuzufügen",
@@ -176,7 +177,6 @@
     "yourServers": "Deine Server",
     "yourProfiles": "Deine Profile",
     "enterProfilePassword": "Gib ein Passwort ein, um deine Profile anzuzeigen",
-    "deleteConfirmLabel": "Gib LÖSCHEN ein um zu bestätigen",
     "notificationNewMessageFromGroup": "Neue Nachricht in einer Gruppe!",
     "notificationNewMessageFromPeer": "Neue Nachricht von einem Kontakt!",
     "tooltipHidePassword": "Password verstecken",

@@ -63,10 +63,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
     var actualMessage = Flexible(flex: Platform.isAndroid ? 10 : 3, fit: FlexFit.loose, child: widget.child);
 
     _dragAffinity = fromMe ? Alignment.centerRight : Alignment.centerLeft;
-
-    if (_dragAlignment == Alignment.center) {
-      _dragAlignment = fromMe ? Alignment.centerRight : Alignment.centerLeft;
-    }
+    _dragAlignment = fromMe ? Alignment.centerRight : Alignment.centerLeft;
 
     var senderDisplayStr = "";
     if (!fromMe) {

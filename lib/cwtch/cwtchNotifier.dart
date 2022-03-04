@@ -192,25 +192,14 @@ class CwtchNotifier {
         var conversation = int.parse(data["ConversationID"]);
         var messageID = int.parse(data["Index"]);
 
-        var contact = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(conversation);
-        // We return -1 for protocol message acks if there is no message
-        if (messageID == -1) break;
-        var key = contact!.getMessageKeyOrFail(conversation, messageID);
-        if (key == null) break;
-        try {
-          var message = Provider.of<MessageMetadata>(key.currentContext!, listen: false);
-          message.ackd = true;
-
-          // We only ever see acks from authenticated peers.
-          // If the contact is marked as offline then override this - can happen when the contact is removed from the front
-          // end during syncing.
-          if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(conversation)!.isOnline() == false) {
-            profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(conversation)!.status = "Authenticated";
-          }
-          profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(conversation)!.ackCache(messageID);
-        } catch (e) {
-          // ignore, most likely cause is the key got optimized out...
+        // We only ever see acks from authenticated peers.
+        // If the contact is marked as offline then override this - can happen when the contact is removed from the front
+        // end during syncing.
+        if (profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(conversation)!.isOnline() == false) {
+          profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(conversation)!.status = "Authenticated";
         }
+        profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(conversation)!.ackCache(messageID);
+
         break;
       case "NewMessageFromGroup":
         var identifier = int.parse(data["ConversationID"]);
@@ -259,12 +248,8 @@ class CwtchNotifier {
       case "IndexedFailure":
         var identifier = int.parse(data["ConversationID"]);
         var contact = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier);
-        var idx = int.parse(data["Index"]);
-        var key = contact?.getMessageKeyOrFail(contact.identifier, idx);
-        if (key != null) {
-          var message = Provider.of<MessageMetadata>(key.currentContext!, listen: false);
-          message.error = true;
-        }
+        var messageID = int.parse(data["Index"]);
+        contact!.errCache(messageID);
         break;
       case "AppError":
         EnvironmentConfig.debugLog("New App Error: $data");
