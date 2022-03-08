@@ -356,7 +356,7 @@ class FileBubbleState extends State<FileBubble> {
   void pop(context, File myFile, Widget meta) async {
     await showDialog(
         context: context,
-        builder: (_) => Dialog(
+        builder: (bcontext) => Dialog(
             alignment: Alignment.center,
             child: Container(
               padding: EdgeInsets.all(10),
@@ -365,16 +365,16 @@ class FileBubbleState extends State<FileBubble> {
                     title: meta,
                     trailing: IconButton(
                         icon: Icon(Icons.close),
-                        color: Provider.of<Settings>(context, listen: false).theme.toolbarIconColor,
+                        color: Provider.of<Settings>(bcontext, listen: false).theme.toolbarIconColor,
                         iconSize: 32,
                         onPressed: () {
-                          Navigator.pop(context, true);
+                          Navigator.pop(bcontext, true);
                         })),
                 Image.file(
                   myFile,
-                  cacheWidth: (MediaQuery.of(context).size.width * 0.6).floor(),
-                  width: (MediaQuery.of(context).size.width * 0.6),
-                  height: (MediaQuery.of(context).size.height * 0.6),
+                  cacheWidth: (MediaQuery.of(bcontext).size.width * 0.6).floor(),
+                  width: (MediaQuery.of(bcontext).size.width * 0.6),
+                  height: (MediaQuery.of(bcontext).size.height * 0.6),
                   fit: BoxFit.scaleDown,
                 ),
                 SizedBox(
