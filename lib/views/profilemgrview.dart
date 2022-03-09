@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cwtch/constants.dart';
+import 'package:cwtch/controllers/enter_password.dart';
+import 'package:cwtch/controllers/filesharing.dart';
 import 'package:cwtch/cwtch_icons_icons.dart';
 import 'package:cwtch/models/appstate.dart';
 import 'package:cwtch/models/profile.dart';
@@ -67,7 +70,7 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
               actions: getActions(),
             ),
             floatingActionButton: FloatingActionButton(
-              onPressed: _pushAddProfile,
+              onPressed: _modalAddImportProfiles,
               tooltip: AppLocalizations.of(context)!.addNewProfileBtn,
               child: Icon(
                 Icons.add,
@@ -159,8 +162,9 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
     ));
   }
 
-  void _pushAddProfile({onion: ""}) {
-    Navigator.of(context).push(MaterialPageRoute<void>(
+  void _pushAddProfile(bcontext, {onion: ""}) {
+    Navigator.popUntil(bcontext, (route) => route.isFirst);
+    Navigator.of(bcontext).push(MaterialPageRoute<void>(
       builder: (BuildContext context) {
         return MultiProvider(
           providers: [
@@ -172,6 +176,70 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
         );
       },
     ));
+  }
+
+  void _modalAddImportProfiles() {
+    showModalBottomSheet<void>(
+        context: context,
+        isScrollControlled: true,
+        builder: (BuildContext context) {
+          return Padding(
+              padding: MediaQuery.of(context).viewInsets,
+              child: RepaintBoundary(
+                  child: Container(
+                height: 200, // bespoke value courtesy of the [TextField] docs
+                child: Center(
+                    child: Padding(
+                        padding: EdgeInsets.all(10.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                              Spacer(),
+                              Expanded(
+                                  child: ElevatedButton(
+                                child: Text(AppLocalizations.of(context)!.addProfileTitle, semanticsLabel: AppLocalizations.of(context)!.addProfileTitle),
+                                onPressed: () {
+                                  _pushAddProfile(context);
+                                },
+                              )),
+                              Spacer()
+                            ]),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                              Spacer(),
+                              Expanded(
+                                  child: Tooltip(
+                                      message: AppLocalizations.of(context)!.importProfileTooltip,
+                                      child: ElevatedButton(
+                                        child: Text(AppLocalizations.of(context)!.importProfile, semanticsLabel: AppLocalizations.of(context)!.importProfile),
+                                        onPressed: () {
+                                          // 10GB profiles should be enough for anyone?
+                                          showFilePicker(context, MaxGeneralFileSharingSize, (file) {
+                                            showPasswordDialog(context, AppLocalizations.of(context)!.importProfile, AppLocalizations.of(context)!.importProfile, (password) {
+                                              Navigator.popUntil(context, (route) => route.isFirst);
+                                              Provider.of<FlwtchState>(context, listen: false).cwtch.ImportProfile(file.path, password).then((value) {
+                                                if (value == "") {
+                                                  final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.successfullyImportedProfile.replaceFirst("%profile", file.path)));
+                                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                                } else {
+                                                  final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.failedToImportProfile));
+                                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                                }
+                                              });
+                                            });
+                                          }, () {}, () {});
+                                        },
+                                      ))),
+                              Spacer()
+                            ]),
+                          ],
+                        ))),
+              )));
+        });
   }
 
   void _modalUnlockProfiles() {

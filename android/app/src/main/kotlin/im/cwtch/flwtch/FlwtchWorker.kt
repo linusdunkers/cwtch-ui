@@ -428,6 +428,16 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                     notificationConversationInfo = (a.get("notificationConversationInfo") as? String)
                             ?: "New Message From "
                 }
+                "ExportProfile" -> {
+                    val profileOnion = (a.get("ProfileOnion") as? String) ?: ""
+                    val file = (a.get("file") as? String) ?: ""
+                    Cwtch.exportProfile(profileOnion, file)
+                }
+                "ImportProfile" -> {
+                    val file = (a.get("file") as? String) ?: ""
+                    val password = (a.get("pass") as? String) ?: ""
+                    return Result.success(Data.Builder().putString("result", Cwtch.importProfile(file, pass)).build());
+                }
                 else -> {
                     Log.i(TAG, "unknown command: " + method);
                     return Result.failure()

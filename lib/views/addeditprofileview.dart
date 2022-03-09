@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cwtch/config.dart';
+import 'package:cwtch/controllers/filesharing.dart';
 import 'package:cwtch/cwtch/cwtch.dart';
 import 'package:cwtch/models/appstate.dart';
 import 'package:cwtch/models/profile.dart';
@@ -286,6 +287,28 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                   ),
                                 ],
                               ),
+                              Visibility(
+                                  visible: Provider.of<ProfileInfoState>(context, listen: false).onion.isNotEmpty,
+                                  child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.end, children: [
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    Tooltip(
+                                        message: AppLocalizations.of(context)!.exportProfileTooltip,
+                                        child: ElevatedButton.icon(
+                                          onPressed: () {
+                                            showCreateFilePicker(context).then((name) {
+                                              if (name != null) {
+                                                Provider.of<FlwtchState>(context, listen: false).cwtch.ExportProfile(ctrlrOnion.value.text, name);
+                                                final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.fileSavedTo + " " + name));
+                                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                              }
+                                            });
+                                          },
+                                          icon: Icon(Icons.import_export),
+                                          label: Text(AppLocalizations.of(context)!.exportProfile),
+                                        ))
+                                  ])),
                               Visibility(
                                   visible: Provider.of<ProfileInfoState>(context, listen: false).onion.isNotEmpty,
                                   child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.end, children: [

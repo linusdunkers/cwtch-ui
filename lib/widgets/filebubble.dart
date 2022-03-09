@@ -46,10 +46,10 @@ class FileBubbleState extends State<FileBubble> {
 
   @override
   Widget build(BuildContext context) {
-    var fromMe = Provider.of<MessageMetadata>(context, listen: false).senderHandle == Provider.of<ProfileInfoState>(context).onion;
+    var fromMe = Provider.of<MessageMetadata>(context).senderHandle == Provider.of<ProfileInfoState>(context).onion;
     var flagStarted = Provider.of<MessageMetadata>(context).attributes["file-downloaded"] == "true";
     var borderRadiousEh = 15.0;
-    var showFileSharing = Provider.of<Settings>(context, listen: false).isExperimentEnabled(FileSharingExperiment);
+    var showFileSharing = Provider.of<Settings>(context).isExperimentEnabled(FileSharingExperiment);
     DateTime messageDate = Provider.of<MessageMetadata>(context).timestamp;
 
     var metadata = Provider.of<MessageMetadata>(context);
