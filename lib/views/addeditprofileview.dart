@@ -297,13 +297,19 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                         message: AppLocalizations.of(context)!.exportProfileTooltip,
                                         child: ElevatedButton.icon(
                                           onPressed: () {
-                                            showCreateFilePicker(context).then((name) {
-                                              if (name != null) {
-                                                Provider.of<FlwtchState>(context, listen: false).cwtch.ExportProfile(ctrlrOnion.value.text, name);
-                                                final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.fileSavedTo + " " + name));
-                                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                              }
-                                            });
+                                            if (Platform.isAndroid) {
+                                              Provider.of<FlwtchState>(context, listen: false).cwtch.ExportProfile(ctrlrOnion.value.text, ctrlrOnion.value.text + ".tar.gz");
+                                              final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.fileSavedTo + " " + ctrlrOnion.value.text + ".tar.gz"));
+                                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                            } else {
+                                              showCreateFilePicker(context).then((name) {
+                                                if (name != null) {
+                                                  Provider.of<FlwtchState>(context, listen: false).cwtch.ExportProfile(ctrlrOnion.value.text, name);
+                                                  final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.fileSavedTo + " " + name));
+                                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                                }
+                                              });
+                                            }
                                           },
                                           icon: Icon(Icons.import_export),
                                           label: Text(AppLocalizations.of(context)!.exportProfile),
