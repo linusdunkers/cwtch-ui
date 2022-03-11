@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 
-enum ModalState { none, storageMigration }
+enum ModalState { none, storageMigration, shutdown }
 
 class AppState extends ChangeNotifier {
   bool cwtchInit = false;

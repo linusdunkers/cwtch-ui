@@ -136,6 +136,7 @@ class MainActivity: FlutterActivity() {
         shutdownClickChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL_SHUTDOWN_CLICK)
     }
 
+    // MethodChannel CHANNEL_APP_INFO handler (Flutter Channel for requests for Android environment info)
     private fun handleAppInfo(@NonNull call: MethodCall, @NonNull result: Result) {
         when (call.method) {
             CALL_APP_INFO -> result.success(getNativeLibDir())
