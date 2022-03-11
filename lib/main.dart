@@ -153,9 +153,8 @@ class FlwtchState extends State<Flwtch> with WindowListener {
     Widget continueButton = ElevatedButton(
         child: Text(AppLocalizations.of(navKey.currentContext!)!.shutdownCwtchAction),
         onPressed: () {
-          // Directly call the shutdown command, Android will do this for us...
-          Provider.of<FlwtchState>(navKey.currentContext!, listen: false).shutdown();
           Provider.of<AppState>(navKey.currentContext!, listen: false).cwtchIsClosing = true;
+          Navigator.of(navKey.currentContext!).pop(); // dismiss dialog
         });
 
     // set up the AlertDialog
@@ -175,10 +174,17 @@ class FlwtchState extends State<Flwtch> with WindowListener {
       builder: (BuildContext context) {
         return alert;
       },
-    );
+    ).then((val) {
+      if (Provider.of<AppState>(navKey.currentContext!, listen: false).cwtchIsClosing) {
+        globalAppState.SetModalState(ModalState.shutdown);
+        // Directly call the shutdown command, Android will do this for us...
+        Provider.of<FlwtchState>(navKey.currentContext!, listen: false).shutdown();
+      }
+    });
   }
 
   Future<void> shutdown() async {
+    globalAppState.SetModalState(ModalState.shutdown);
     await cwtch.Shutdown();
     // Wait a few seconds as shutting down things takes a little time..
     Future.delayed(Duration(seconds: 1)).then((value) {
@@ -248,6 +254,7 @@ class FlwtchState extends State<Flwtch> with WindowListener {
 
   @override
   void dispose() async {
+    globalAppState.SetModalState(ModalState.shutdown);
     await cwtch.Shutdown();
     windowManager.removeListener(this);
     cwtch.dispose();

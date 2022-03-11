@@ -32,6 +32,8 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
     private var notificationSimple: String? =  null
     private var notificationConversationInfo: String? = null
 
+    private val TAG: String = "FlwtchWorker.kt"
+
 
     override suspend fun doWork(): Result {
         // Hack to uncomment and deploy if your device has zombie workers you need to kill
@@ -60,18 +62,24 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
     }
 
     private fun handleCwtch(method: String, args: String): Result {
+            if (method != "Start") {
+                if (Cwtch.started() != 1.toLong()) {
+                    Log.e(TAG, "libCwtch-go reports it is not initialized yet")
+                    return Result.failure()
+                }
+            }
 
             val a = JSONObject(args)
             when (method) {
                 "Start" -> {
-                    Log.i("FlwtchWorker.kt", "handleAppInfo Start")
+                    Log.i(TAG, "handleAppInfo Start")
                     val appDir = (a.get("appDir") as? String) ?: ""
                     val torPath = (a.get("torPath") as? String) ?: "tor"
-                    Log.i("FlwtchWorker.kt", "appDir: '$appDir' torPath: '$torPath'")
+                    Log.i(TAG, "appDir: '$appDir' torPath: '$torPath'")
 
                     if (Cwtch.startCwtch(appDir, torPath) != 0.toLong()) return Result.failure()
 
-                    Log.i("FlwtchWorker.kt", "startCwtch success, starting coroutine AppbusEvent loop...")
+                    Log.i(TAG, "startCwtch success, starting coroutine AppbusEvent loop...")
                     val downloadIDs = mutableMapOf<String, Int>()
                     while (true) {
                         try {
@@ -119,8 +127,8 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                                                     ""
                                                 }
                                         val loader = FlutterInjector.instance().flutterLoader()
-                                        Log.i("FlwtchWorker.kt", "notification for " + evt.EventType + " " + handle + " " + conversationId + " " + channelId)
-                                        Log.i("FlwtchWorker.kt", data.toString());
+                                        Log.i(TAG, "notification for " + evt.EventType + " " + handle + " " + conversationId + " " + channelId)
+                                        Log.i(TAG, data.toString());
                                         val key = loader.getLookupKeyForAsset(data.getString("picture"))//"assets/profiles/001-centaur.png")
                                         val fh = applicationContext.assets.open(key)
 
@@ -183,18 +191,18 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                                     Log.d("FlwtchWorker->FileDownloadProgressUpdate", e.toString() + " :: " + e.getStackTrace());
                                 }
                             } else if (evt.EventType == "FileDownloaded") {
-                                Log.d("FlwtchWorker", "file downloaded!");
+                                Log.d(TAG, "file downloaded!");
                                 val data = JSONObject(evt.Data);
                                 val tempFile = data.getString("TempFile");
                                 val fileKey = data.getString("FileKey");
                                 if (tempFile != "" && tempFile != data.getString("FilePath")) {
                                     val filePath = data.getString("FilePath");
-                                    Log.i("FlwtchWorker", "moving " + tempFile + " to " + filePath);
+                                    Log.i(TAG, "moving " + tempFile + " to " + filePath);
                                     val sourcePath = Paths.get(tempFile);
                                     val targetUri = Uri.parse(filePath);
                                     val os = this.applicationContext.getContentResolver().openOutputStream(targetUri);
                                     val bytesWritten = Files.copy(sourcePath, os);
-                                    Log.d("FlwtchWorker", "copied " + bytesWritten.toString() + " bytes");
+                                    Log.d("TAG", "copied " + bytesWritten.toString() + " bytes");
                                     if (bytesWritten != 0L) {
                                         os?.flush();
                                         os?.close();
@@ -214,7 +222,7 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                                 LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
                             }
                         } catch (e: Exception) {
-                            Log.e("FlwtchWorker", "Error in handleCwtch: " + e.toString() + " :: " + e.getStackTrace());
+                            Log.e(TAG, "Error in handleCwtch: " + e.toString() + " :: " + e.getStackTrace());
                         }
                     }
                 }
@@ -242,7 +250,7 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                     val profile = (a.get("ProfileOnion") as? String) ?: ""
                     val conversation = a.getInt("conversation").toLong()
                     val indexI = a.getInt("index").toLong()
-                    Log.d("FlwtchWorker", "Cwtch GetMessage " + profile + " " + conversation.toString() + " " + indexI.toString())
+                    Log.d(TAG, "Cwtch GetMessage " + profile + " " + conversation.toString() + " " + indexI.toString())
                     return Result.success(Data.Builder().putString("result", Cwtch.getMessage(profile, conversation, indexI)).build())
                 }
                 "GetMessageByID" -> {
@@ -285,7 +293,7 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                     val profile = (a.get("ProfileOnion") as? String) ?: ""
                     val conversation = a.getInt("conversation").toLong()
                     val message = (a.get("message") as? String) ?: ""
-                    Log.i("FlwtchWorker.kt", "SendMessage: $message")
+                    Log.i(TAG, "SendMessage: $message")
                     Cwtch.sendMessage(profile, conversation, message)
                 }
                 "SendInvitation" -> {
@@ -421,7 +429,7 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                             ?: "New Message From "
                 }
                 else -> {
-                    Log.i("FlwtchWorker", "unknown command: " + method);
+                    Log.i(TAG, "unknown command: " + method);
                     return Result.failure()
                 }
             }

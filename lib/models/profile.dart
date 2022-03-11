@@ -172,7 +172,7 @@ class ProfileInfoState extends ChangeNotifier {
         var profileContact = this._contacts.getContact(contact["identifier"]);
         if (profileContact != null) {
           profileContact.status = contact["status"];
-          profileContact.totalMessages = contact["numMessages"];
+          profileContact.totalMessages = contact["numMessages"]; // Todo: trigger cache update (bulk upload)
           profileContact.unreadMessages = contact["numUnread"];
           profileContact.lastMessageTime = DateTime.fromMillisecondsSinceEpoch(1000 * int.parse(contact["lastMsgTime"]));
         } else {
