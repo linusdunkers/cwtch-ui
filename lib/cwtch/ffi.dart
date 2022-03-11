@@ -52,6 +52,9 @@ typedef StringFn = void Function(Pointer<Utf8> dir, int);
 typedef string_string_to_void_function = Void Function(Pointer<Utf8> str, Int32 length, Pointer<Utf8> str2, Int32 length2);
 typedef StringStringFn = void Function(Pointer<Utf8>, int, Pointer<Utf8>, int);
 
+typedef string_string_to_string_function = Pointer<Utf8> Function(Pointer<Utf8> str, Int32 length, Pointer<Utf8> str2, Int32 length2);
+typedef StringFromStringStringFn = Pointer<Utf8> Function(Pointer<Utf8>, int, Pointer<Utf8>, int);
+
 typedef string_int_to_void_function = Void Function(Pointer<Utf8> str, Int32 length, Int32 handle);
 typedef VoidFromStringIntFn = void Function(Pointer<Utf8>, int, int);
 
@@ -755,5 +758,34 @@ class CwtchFfi implements Cwtch {
   void l10nInit(String notificationSimple, String notificationConversationInfo) {
     cwtchNotifier.l10nInit(notificationSimple, notificationConversationInfo);
     _isL10nInit = true;
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void ExportProfile(String profile, String file) {
+    final utf8profile = profile.toNativeUtf8();
+    final utf8file = file.toNativeUtf8();
+    var exportProfileC = library.lookup<NativeFunction<void_from_string_string_function>>("c_ExportProfile");
+    // ignore: non_constant_identifier_names
+    final ExportProfileFn = exportProfileC.asFunction<VoidFromStringStringFn>();
+    ExportProfileFn(utf8profile, utf8profile.length, utf8file, utf8file.length);
+    malloc.free(utf8profile);
+    malloc.free(utf8file);
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  Future<String> ImportProfile(String file, String pass) async {
+    final utf8pass = pass.toNativeUtf8();
+    final utf8file = file.toNativeUtf8();
+    var exportProfileC = library.lookup<NativeFunction<string_string_to_string_function>>("c_ImportProfile");
+    // ignore: non_constant_identifier_names
+    final ExportProfileFn = exportProfileC.asFunction<StringFromStringStringFn>();
+    Pointer<Utf8> result = ExportProfileFn(utf8file, utf8file.length, utf8pass, utf8pass.length);
+    String importResult = result.toDartString();
+    _UnsafeFreePointerAnyUseOfThisFunctionMustBeDoubleApproved(result);
+    malloc.free(utf8pass);
+    malloc.free(utf8file);
+    return importResult;
   }
 }

@@ -308,4 +308,16 @@ class CwtchGomobile implements Cwtch {
     cwtchPlatform.invokeMethod("L10nInit", {"notificationSimple": notificationSimple, "notificationConversationInfo": notificationConversationInfo});
     _isL10nInit = true;
   }
+
+  @override
+  // ignore: non_constant_identifier_names
+  void ExportProfile(String profile, String file) {
+    cwtchPlatform.invokeMethod("ExportProfile", {"ProfileOnion": profile, "file": file});
+  }
+
+  @override
+  // ignore: non_constant_identifier_names
+  Future<dynamic> ImportProfile(String file, String pass) {
+    return cwtchPlatform.invokeMethod("ImportProfile", {"file": file, "pass": pass});
+  }
 }

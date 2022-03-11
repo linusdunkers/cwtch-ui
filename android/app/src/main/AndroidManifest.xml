@@ -46,7 +46,7 @@
     <!--Needed to run in background (lol)-->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
-    <!--Meeded to check if activity is foregrounded or if messages from the service should be queued-->
+    <!--Needed to check if activity is foregrounded or if messages from the service should be queued-->
     <uses-permission android:name="android.permission.GET_TASKS" />
 
     <queries>

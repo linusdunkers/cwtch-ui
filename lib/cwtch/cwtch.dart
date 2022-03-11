@@ -1,5 +1,3 @@
-import 'package:flutter/src/services/text_input.dart';
-
 // To handle profiles that are "unencrypted" (i.e don't require a password to open) we currently create a profile with a defacto, hardcoded password.
 // Details: https://docs.openprivacy.ca/cwtch-security-handbook/profile_encryption_and_storage.html
 const DefaultPassword = "be gay do crime";
@@ -18,6 +16,11 @@ abstract class Cwtch {
   void DeleteProfile(String profile, String pass);
   // ignore: non_constant_identifier_names
   void ChangePassword(String profile, String pass, String newpass, String newpassAgain);
+
+  // ignore: non_constant_identifier_names
+  void ExportProfile(String profile, String file);
+  // ignore: non_constant_identifier_names
+  Future<dynamic> ImportProfile(String file, String pass);
 
   // ignore: non_constant_identifier_names
   void ResetTor();

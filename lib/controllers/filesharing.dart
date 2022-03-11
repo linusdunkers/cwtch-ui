@@ -28,3 +28,17 @@ void showFilePicker(BuildContext ctx, int maxBytes, Function(File) onSuccess, Fu
     onCancel();
   }
 }
+
+Future<String?> showCreateFilePicker(BuildContext ctx) async {
+  // only allow one file picker at a time
+  // note: ideally we would destroy file picker when leaving a conversation
+  // but we don't currently have that option.
+  // we need to store AppState in a variable because ctx might be destroyed
+  // while awaiting for pickFiles.
+  var appstate = Provider.of<AppState>(ctx, listen: false);
+  appstate.disableFilePicker = true;
+  // currently lockParentWindow only works on Windows...
+  String? result = await FilePicker.platform.saveFile(lockParentWindow: true);
+  appstate.disableFilePicker = false;
+  return result;
+}

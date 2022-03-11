@@ -1,6 +1,7 @@
 package im.cwtch.flwtch
 
 import android.app.*
+import android.os.Environment
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
@@ -427,6 +428,17 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                     notificationSimple = (a.get("notificationSimple") as? String) ?: "New Message"
                     notificationConversationInfo = (a.get("notificationConversationInfo") as? String)
                             ?: "New Message From "
+                }
+                "ExportProfile" -> {
+                    val profileOnion = (a.get("ProfileOnion") as? String) ?: ""
+                    val file = StringBuilder().append(this.applicationContext.cacheDir).append("/").append((a.get("file") as? String) ?: "").toString()
+                    Log.i("FlwtchWorker", "constructing exported file " + file);
+                    Cwtch.exportProfile(profileOnion,file)
+                }
+                "ImportProfile" -> {
+                    val file = (a.get("file") as? String) ?: ""
+                    val pass = (a.get("pass") as? String) ?: ""
+                    return Result.success(Data.Builder().putString("result", Cwtch.importProfile(file, pass)).build());
                 }
                 else -> {
                     Log.i(TAG, "unknown command: " + method);

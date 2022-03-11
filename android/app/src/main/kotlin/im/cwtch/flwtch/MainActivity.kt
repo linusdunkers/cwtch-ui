@@ -62,6 +62,7 @@ class MainActivity: FlutterActivity() {
     // "Download to..." prompt extra arguments
     private val FILEPICKER_REQUEST_CODE = 234
     private val PREVIEW_EXPORT_REQUEST_CODE = 235
+    private val PROFILE_EXPORT_REQUEST_CODE = 236
     private var dlToProfile = ""
     private var dlToHandle = ""
     private var dlToFileKey = ""
@@ -110,9 +111,21 @@ class MainActivity: FlutterActivity() {
             )), ErrorLogResult(""));//placeholder; this Result is never actually invoked
         } else if (requestCode == PREVIEW_EXPORT_REQUEST_CODE) {
             val targetPath = intent!!.getData().toString()
-            var srcFile = File(this.exportFromPath)
-            Log.i("MainActivity:PREVIEW_EXPORT", "exporting previewed file")
             val sourcePath = Paths.get(this.exportFromPath);
+            val targetUri = Uri.parse(targetPath);
+            val os = this.applicationContext.getContentResolver().openOutputStream(targetUri);
+            val bytesWritten = Files.copy(sourcePath, os);
+            Log.d("MainActivity:PREVIEW_EXPORT", "copied " + bytesWritten.toString() + " bytes");
+            if (bytesWritten != 0L) {
+                os?.flush();
+                os?.close();
+                //Files.delete(sourcePath);
+            }
+        } else if (requestCode == PROFILE_EXPORT_REQUEST_CODE ) {
+            val targetPath = intent!!.getData().toString()
+            val srcFile = StringBuilder().append(this.applicationContext.cacheDir).append("/").append(this.exportFromPath).toString();
+            Log.i("MainActivity:PREVIEW_EXPORT", "exporting previewed file " + srcFile);
+            val sourcePath = Paths.get(srcFile);
             val targetUri = Uri.parse(targetPath);
             val os = this.applicationContext.getContentResolver().openOutputStream(targetUri);
             val bytesWritten = Files.copy(sourcePath, os);
@@ -211,6 +224,14 @@ class MainActivity: FlutterActivity() {
             }
             startActivityForResult(intent, PREVIEW_EXPORT_REQUEST_CODE)
             return
+        } else if (call.method == "ExportProfile") {
+            this.exportFromPath = argmap["file"] ?: ""
+            val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+                addCategory(Intent.CATEGORY_OPENABLE)
+                type = "application/gzip"
+                putExtra(Intent.EXTRA_TITLE, argmap["file"])
+            }
+            startActivityForResult(intent, PROFILE_EXPORT_REQUEST_CODE)
         }
 
         // ...otherwise fallthru to a normal ffi method call (and return the result using the result callback)
