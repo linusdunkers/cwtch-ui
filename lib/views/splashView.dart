@@ -49,8 +49,9 @@ class _SplashViewState extends State<SplashView> {
                                   ? appState.appError
                                   : appState.modalState == ModalState.none
                                       ? AppLocalizations.of(context)!.loadingCwtch
-                                      : appState.modalState == ModalState.storageMigration ? AppLocalizations.of(context)!.storageMigrationModalMessage
-                                        : AppLocalizations.of(context)!.shuttingDownApp, // Todo l10n AppLocalizations.of(context)!.storageMigrationModalMessage
+                                      : appState.modalState == ModalState.storageMigration
+                                          ? AppLocalizations.of(context)!.storageMigrationModalMessage
+                                          : AppLocalizations.of(context)!.shuttingDownApp, // Todo l10n AppLocalizations.of(context)!.storageMigrationModalMessage
                               style: TextStyle(
                                   fontSize: 16.0, color: appState.appError == "" ? Provider.of<Settings>(context).theme.mainTextColor : Provider.of<Settings>(context).theme.textfieldErrorColor))),
                       Visibility(
