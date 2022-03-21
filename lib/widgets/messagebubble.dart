@@ -129,13 +129,12 @@ class MessageBubbleState extends State<MessageBubble> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        Text(
-                            "Opening this link will launch an application outside of Cwtch and may reveal metadata or otherwise compromise the security of Cwtch. Only open links from people you trust. Are you sure you want to continue?"),
+                        Text(AppLocalizations.of(context)!.clickableLinksWarning),
                         Flex(direction: Axis.horizontal, mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
                           Container(
                             margin: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                             child: ElevatedButton(
-                              child: Text("Copy link", semanticsLabel: "Copy link"),
+                              child: Text(AppLocalizations.of(context)!.clickableLinksCopy, semanticsLabel: AppLocalizations.of(context)!.clickableLinksCopy),
                               onPressed: () {
                                 Clipboard.setData(new ClipboardData(text: link.url));
 
@@ -151,13 +150,16 @@ class MessageBubbleState extends State<MessageBubble> {
                           Container(
                             margin: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                             child: ElevatedButton(
-                              child: Text("Open link", semanticsLabel: "Open link"),
+                              child: Text(AppLocalizations.of(context)!.clickableLinkOpen, semanticsLabel: AppLocalizations.of(context)!.clickableLinkOpen),
                               onPressed: () async {
                                 if (await canLaunch(link.url)) {
                                   await launch(link.url);
                                   Navigator.pop(bcontext);
                                 } else {
-                                  throw 'Could not launch $link';
+                                  final snackBar = SnackBar(
+                                    content: Text(AppLocalizations.of(context)!.clickableLinkError),
+                                  );
+                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
                                 }
                               },
                             ),

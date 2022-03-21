@@ -199,7 +199,13 @@ class _MessageViewState extends State<MessageView> {
   void _sendMessage([String? ignoredParam]) {
     // Trim message
     final messageWithoutNewLine = ctrlrCompose.value.text.trimRight();
-    ctrlrCompose.value = TextEditingValue(text: messageWithoutNewLine);
+    ctrlrCompose.value = TextEditingValue(text: messageWithoutNewLine, selection: TextSelection.fromPosition(TextPosition(offset: messageWithoutNewLine.length)));
+
+    // Do this after we trim to preserve enter-behaviour...
+    bool isOffline = Provider.of<ContactInfoState>(context).isOnline() == false;
+    if (isOffline) {
+      return;
+    }
 
     var isGroup = Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(Provider.of<AppState>(context, listen: false).selectedConversation!)!.isGroup;
 
@@ -302,7 +308,7 @@ class _MessageViewState extends State<MessageView> {
                             maxLengthEnforcement: MaxLengthEnforcement.enforced,
                             maxLines: null,
                             onFieldSubmitted: _sendMessage,
-                            enabled: !isOffline,
+                            enabled: true, // always allow editing...
                             onChanged: (String x) {
                               setState(() {
                                 // we need to force a rerender here to update the max length count

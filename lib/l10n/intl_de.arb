@@ -1,6 +1,10 @@
 {
     "@@locale": "de",
-    "@@last_modified": "2022-03-11T01:06:46+01:00",
+    "@@last_modified": "2022-03-21T17:12:38+01:00",
+    "clickableLinkError": "Error encountered while attempting to open URL",
+    "clickableLinksCopy": "Copy URL",
+    "clickableLinkOpen": "Open URL",
+    "clickableLinksWarning": "Opening this URL will launch an application outside of Cwtch and may reveal metadata or otherwise compromise the security of Cwtch. Only open URLs from people you trust. Are you sure you want to continue?",
     "shuttingDownApp": "Shutting down...",
     "successfullyImportedProfile": "Successfully Imported Profile: %profile",
     "failedToImportProfile": "Error Importing Profile",
