@@ -1,4 +1,7 @@
+import 'package:cwtch/config.dart';
+import 'package:cwtch/controllers/filesharing.dart';
 import 'package:cwtch/cwtch_icons_icons.dart';
+import 'package:cwtch/models/appstate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'dart:io';
@@ -43,27 +46,25 @@ class _CwtchFolderPickerState extends State<CwtchFolderPicker> {
               testKey: widget.testKey,
               controller: ctrlrVal,
               readonly: Platform.isAndroid,
-              onPressed: () async {
-                if (Platform.isAndroid) {
-                  return;
-                }
+              onPressed: Provider.of<AppState>(context).disableFilePicker
+                  ? null
+                  : () async {
+                      if (Platform.isAndroid) {
+                        return;
+                      }
 
-                try {
-                  var selectedDirectory = await getDirectoryPath();
-                  if (selectedDirectory != null) {
-                    //File directory = File(selectedDirectory);
-                    selectedDirectory += "/";
-                    ctrlrVal.text = selectedDirectory;
-                    if (widget.onSave != null) {
-                      widget.onSave!(selectedDirectory);
-                    }
-                  } else {
-                    // User canceled the picker
-                  }
-                } catch (e) {
-                  print(e);
-                }
-              },
+                      var selectedDirectory = await showSelectDirectoryPicker(context);
+                      if (selectedDirectory != null) {
+                        //File directory = File(selectedDirectory);
+                        selectedDirectory += "/";
+                        ctrlrVal.text = selectedDirectory;
+                        if (widget.onSave != null) {
+                          widget.onSave!(selectedDirectory);
+                        }
+                      } else {
+                        // User canceled the picker
+                      }
+                    },
               onChanged: widget.onSave,
               icon: Icon(Icons.folder),
               tooltip: widget.tooltip,
