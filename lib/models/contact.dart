@@ -82,7 +82,7 @@ class ContactInfoState extends ChangeNotifier {
     this._server = server;
     this._archived = archived;
     this._notificationPolicy = notificationPolicyFromString(notificationPolicy);
-    this.messageCache = new MessageCache();
+    this.messageCache = new MessageCache(_totalMessages);
     keys = Map<String, GlobalKey<MessageRowState>>();
   }
 
@@ -183,6 +183,7 @@ class ContactInfoState extends ChangeNotifier {
 
   set totalMessages(int newVal) {
     this._totalMessages = newVal;
+    this.messageCache.storageMessageCount = newVal;
     notifyListeners();
   }
 
@@ -251,7 +252,7 @@ class ContactInfoState extends ChangeNotifier {
     return ret;
   }
 
-  void newMessage(int identifier, int messageID, DateTime timestamp, String senderHandle, String senderImage, bool isAuto, String data, String? contenthash, bool selectedConversation) {
+  void newMessage(int identifier, int messageID, DateTime timestamp, String senderHandle, String senderImage, bool isAuto, String data, String contenthash, bool selectedConversation) {
     if (!selectedConversation) {
       unreadMessages++;
     } else {

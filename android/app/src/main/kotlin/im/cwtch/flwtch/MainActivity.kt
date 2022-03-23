@@ -35,6 +35,9 @@ import android.os.Environment
 import android.database.Cursor
 import android.provider.MediaStore
 
+import cwtch.Cwtch
+
+
 class MainActivity: FlutterActivity() {
     override fun provideSplashScreen(): SplashScreen? = SplashView()
 
@@ -168,84 +171,117 @@ class MainActivity: FlutterActivity() {
     // receives messages from the ForegroundService (which provides, ironically enough, the backend)
     private fun handleCwtch(@NonNull call: MethodCall, @NonNull result: Result) {
         var method = call.method
+        // todo change usage patern to match that in FlwtchWorker
+        // Unsafe for anything using int args, causes access time attempt to cast to string which will fail
         val argmap: Map<String, String> = call.arguments as Map<String, String>
 
         // the frontend calls Start every time it fires up, but we don't want to *actually* call Cwtch.Start()
         // in case the ForegroundService is still running. in both cases, however, we *do* want to re-register
         // the eventbus listener.
-        if (call.method == "Start") {
-            val uniqueTag = argmap["torPath"] ?: "nullEventBus"
+        when (call.method) {
+            "Start" -> {
+                val uniqueTag = argmap["torPath"] ?: "nullEventBus"
 
-            // note: because the ForegroundService is specified as UniquePeriodicWork, it can't actually get
-            // accidentally duplicated. however, we still need to manually check if it's running or not, so
-            // that we can divert this method call to ReconnectCwtchForeground instead if so.
-            val works = WorkManager.getInstance(this).getWorkInfosByTag(WORKER_TAG).get()
-            for (workInfo in works) {
-                WorkManager.getInstance(this).cancelWorkById(workInfo.id)
-            }
-            WorkManager.getInstance(this).pruneWork()
-
-            Log.i("MainActivity.kt", "Start() launching foregroundservice")
-            // this is where the eventbus ForegroundService gets launched. WorkManager should keep it alive after this
-            val data: Data = Data.Builder().putString(FlwtchWorker.KEY_METHOD, call.method).putString(FlwtchWorker.KEY_ARGS, JSONObject(argmap).toString()).build()
-            // 15 minutes is the shortest interval you can request
-            val workRequest = PeriodicWorkRequestBuilder<FlwtchWorker>(15, TimeUnit.MINUTES).setInputData(data).addTag(WORKER_TAG).addTag(uniqueTag).build()
-            WorkManager.getInstance(this).enqueueUniquePeriodicWork("req_$uniqueTag", ExistingPeriodicWorkPolicy.REPLACE, workRequest)
-            return
-        } else if (call.method == "CreateDownloadableFile") {
-            this.dlToProfile = argmap["ProfileOnion"] ?: ""
-            this.dlToHandle = argmap["handle"] ?: ""
-            val suggestedName = argmap["filename"] ?: "filename.ext"
-            this.dlToFileKey = argmap["filekey"] ?: ""
-            val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
-                addCategory(Intent.CATEGORY_OPENABLE)
-                type = "application/octet-stream"
-                putExtra(Intent.EXTRA_TITLE, suggestedName)
-            }
-            startActivityForResult(intent, FILEPICKER_REQUEST_CODE)
-            return
-        } else if (call.method == "ExportPreviewedFile") {
-            this.exportFromPath = argmap["Path"] ?: ""
-            val suggestion = argmap["FileName"] ?: "filename.ext"
-            var imgType = "jpeg"
-            if (suggestion.endsWith("png")) {
-                imgType = "png"
-            } else if (suggestion.endsWith("webp")) {
-                imgType = "webp"
-            } else if (suggestion.endsWith("bmp")) {
-                imgType = "bmp"
-            } else if (suggestion.endsWith("gif")) {
-                imgType = "gif"
-            }
-            val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
-                addCategory(Intent.CATEGORY_OPENABLE)
-                type = "image/" + imgType
-                putExtra(Intent.EXTRA_TITLE, suggestion)
-            }
-            startActivityForResult(intent, PREVIEW_EXPORT_REQUEST_CODE)
-            return
-        } else if (call.method == "ExportProfile") {
-            this.exportFromPath = argmap["file"] ?: ""
-            val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
-                addCategory(Intent.CATEGORY_OPENABLE)
-                type = "application/gzip"
-                putExtra(Intent.EXTRA_TITLE, argmap["file"])
-            }
-            startActivityForResult(intent, PROFILE_EXPORT_REQUEST_CODE)
-        }
-
-        // ...otherwise fallthru to a normal ffi method call (and return the result using the result callback)
-        val data: Data = Data.Builder().putString(FlwtchWorker.KEY_METHOD, method).putString(FlwtchWorker.KEY_ARGS, JSONObject(argmap).toString()).build()
-        val workRequest = OneTimeWorkRequestBuilder<FlwtchWorker>().setInputData(data).build()
-        WorkManager.getInstance(this).enqueue(workRequest)
-        WorkManager.getInstance(applicationContext).getWorkInfoByIdLiveData(workRequest.id).observe(
-            this, Observer { workInfo ->
-                if (workInfo != null && workInfo.state == WorkInfo.State.SUCCEEDED) {
-                    val res = workInfo.outputData.keyValueMap.toString()
-                    result.success(workInfo.outputData.getString("result"))
+                // note: because the ForegroundService is specified as UniquePeriodicWork, it can't actually get
+                // accidentally duplicated. however, we still need to manually check if it's running or not, so
+                // that we can divert this method call to ReconnectCwtchForeground instead if so.
+                val works = WorkManager.getInstance(this).getWorkInfosByTag(WORKER_TAG).get()
+                for (workInfo in works) {
+                    WorkManager.getInstance(this).cancelWorkById(workInfo.id)
                 }
+                WorkManager.getInstance(this).pruneWork()
+
+                Log.i("MainActivity.kt", "Start() launching foregroundservice")
+                // this is where the eventbus ForegroundService gets launched. WorkManager should keep it alive after this
+                val data: Data = Data.Builder().putString(FlwtchWorker.KEY_METHOD, call.method).putString(FlwtchWorker.KEY_ARGS, JSONObject(argmap).toString()).build()
+                // 15 minutes is the shortest interval you can request
+                val workRequest = PeriodicWorkRequestBuilder<FlwtchWorker>(15, TimeUnit.MINUTES).setInputData(data).addTag(WORKER_TAG).addTag(uniqueTag).build()
+                WorkManager.getInstance(this).enqueueUniquePeriodicWork("req_$uniqueTag", ExistingPeriodicWorkPolicy.REPLACE, workRequest)
             }
-        )
+            "CreateDownloadableFile" -> {
+                this.dlToProfile = argmap["ProfileOnion"] ?: ""
+                this.dlToHandle = argmap["handle"] ?: ""
+                val suggestedName = argmap["filename"] ?: "filename.ext"
+                this.dlToFileKey = argmap["filekey"] ?: ""
+                val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+                    addCategory(Intent.CATEGORY_OPENABLE)
+                    type = "application/octet-stream"
+                    putExtra(Intent.EXTRA_TITLE, suggestedName)
+                }
+                startActivityForResult(intent, FILEPICKER_REQUEST_CODE)
+            }
+            "ExportPreviewedFile" -> {
+                this.exportFromPath = argmap["Path"] ?: ""
+                val suggestion = argmap["FileName"] ?: "filename.ext"
+                var imgType = "jpeg"
+                if (suggestion.endsWith("png")) {
+                    imgType = "png"
+                } else if (suggestion.endsWith("webp")) {
+                    imgType = "webp"
+                } else if (suggestion.endsWith("bmp")) {
+                    imgType = "bmp"
+                } else if (suggestion.endsWith("gif")) {
+                    imgType = "gif"
+                }
+                val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+                    addCategory(Intent.CATEGORY_OPENABLE)
+                    type = "image/" + imgType
+                    putExtra(Intent.EXTRA_TITLE, suggestion)
+                }
+                startActivityForResult(intent, PREVIEW_EXPORT_REQUEST_CODE)
+            }
+            "ExportProfile" -> {
+                this.exportFromPath = argmap["file"] ?: ""
+                val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+                    addCategory(Intent.CATEGORY_OPENABLE)
+                    type = "application/gzip"
+                    putExtra(Intent.EXTRA_TITLE, argmap["file"])
+                }
+                startActivityForResult(intent, PROFILE_EXPORT_REQUEST_CODE)
+            }
+            "GetMessages" -> {
+                Log.d("MainActivity.kt", "Cwtch GetMessages")
+
+                val profile = argmap["ProfileOnion"] ?: ""
+                val conversation: Int = call.argument("conversation") ?: 0
+                val indexI: Int = call.argument("index") ?: 0
+                val count: Int = call.argument("count") ?: 1
+
+                result.success(Cwtch.getMessages(profile, conversation.toLong(), indexI.toLong(), count.toLong()))
+            }
+            "SendMessage" -> {
+                val profile: String = call.argument("ProfileOnion") ?: ""
+                val conversation: Int = call.argument("conversation") ?: 0
+                val message: String = call.argument("message") ?: ""
+                result.success(Cwtch.sendMessage(profile, conversation.toLong(), message))
+            }
+            "SendInvitation" -> {
+                val profile: String = call.argument("ProfileOnion") ?: ""
+                val conversation: Int = call.argument("conversation") ?: 0
+                val target: Int = call.argument("target") ?: 0
+                result.success(Cwtch.sendInvitation(profile, conversation.toLong(), target.toLong()))
+            }
+            "ShareFile" -> {
+                val profile: String = call.argument("ProfileOnion") ?: ""
+                val conversation: Int = call.argument("conversation") ?: 0
+                val filepath: String = call.argument("filepath") ?: ""
+                result.success(Cwtch.shareFile(profile, conversation.toLong(), filepath))
+            }
+            else -> {
+                // ...otherwise fallthru to a normal ffi method call (and return the result using the result callback)
+                val data: Data = Data.Builder().putString(FlwtchWorker.KEY_METHOD, method).putString(FlwtchWorker.KEY_ARGS, JSONObject(argmap).toString()).build()
+                val workRequest = OneTimeWorkRequestBuilder<FlwtchWorker>().setInputData(data).build()
+                WorkManager.getInstance(this).enqueue(workRequest)
+                WorkManager.getInstance(applicationContext).getWorkInfoByIdLiveData(workRequest.id).observe(
+                        this, Observer { workInfo ->
+                            if (workInfo != null && workInfo.state == WorkInfo.State.SUCCEEDED) {
+                                val res = workInfo.outputData.keyValueMap.toString()
+                                result.success(workInfo.outputData.getString("result"))
+                            }
+                    }
+                )
+            }
+        }
     }
 
     // using onresume/onstop for broadcastreceiver because of extended discussion on https://stackoverflow.com/questions/7439041/how-to-unregister-broadcastreceiver

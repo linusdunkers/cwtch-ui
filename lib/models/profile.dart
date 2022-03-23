@@ -202,7 +202,7 @@ class ProfileInfoState extends ChangeNotifier {
   }
 
   void newMessage(
-      int identifier, int messageID, DateTime timestamp, String senderHandle, String senderImage, bool isAuto, String data, String? contenthash, bool selectedProfile, bool selectedConversation) {
+      int identifier, int messageID, DateTime timestamp, String senderHandle, String senderImage, bool isAuto, String data, String contenthash, bool selectedProfile, bool selectedConversation) {
     if (!selectedProfile) {
       unreadMessages++;
       notifyListeners();

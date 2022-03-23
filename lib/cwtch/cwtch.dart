@@ -48,12 +48,15 @@ abstract class Cwtch {
   Future<dynamic> GetMessageByContentHash(String profile, int handle, String contentHash);
 
   // ignore: non_constant_identifier_names
-  void SendMessage(String profile, int handle, String message);
-  // ignore: non_constant_identifier_names
-  void SendInvitation(String profile, int handle, int target);
+  Future<dynamic> GetMessages(String profile, int handle, int index, int count);
 
   // ignore: non_constant_identifier_names
-  void ShareFile(String profile, int handle, String filepath);
+  Future<dynamic> SendMessage(String profile, int handle, String message);
+  // ignore: non_constant_identifier_names
+  Future<dynamic> SendInvitation(String profile, int handle, int target);
+
+  // ignore: non_constant_identifier_names
+  Future<dynamic> ShareFile(String profile, int handle, String filepath);
   // ignore: non_constant_identifier_names
   void DownloadFile(String profile, int handle, String filepath, String manifestpath, String filekey);
   // android-only

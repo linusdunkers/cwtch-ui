@@ -159,7 +159,7 @@ class CwtchNotifier {
         var senderHandle = data['RemotePeer'];
         var senderImage = data['picture'];
         var isAuto = data['Auto'] == "true";
-        String? contenthash = data['ContentHash'];
+        String contenthash = data['ContentHash'];
         var selectedProfile = appState.selectedProfile == data["ProfileOnion"];
         var selectedConversation = selectedProfile && appState.selectedConversation == identifier;
         var notification = data["notification"];
@@ -211,7 +211,7 @@ class CwtchNotifier {
           var contact = profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier);
           var currentTotal = contact!.totalMessages;
           var isAuto = data['Auto'] == "true";
-          String? contenthash = data['ContentHash'];
+          String contenthash = data['ContentHash'];
           var selectedProfile = appState.selectedProfile == data["ProfileOnion"];
           var selectedConversation = selectedProfile && appState.selectedConversation == identifier;
           var notification = data["notification"];

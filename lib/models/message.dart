@@ -63,9 +63,11 @@ Message compileOverlay(MessageMetadata metadata, String messageData) {
 }
 
 abstract class CacheHandler {
-  MessageInfo? lookup(MessageCache cache);
-  Future<dynamic> fetch(Cwtch cwtch, String profileOnion, int conversationIdentifier);
-  void add(MessageCache cache, MessageInfo messageInfo, String contenthash);
+  //Future<MessageInfo?> lookup(MessageCache cache);
+  //Future<MessageInfo?> fetch(Cwtch cwtch, String profileOnion, int conversationIdentifier, MessageCache cache);
+
+  Future<MessageInfo?> get(Cwtch cwtch, String profileOnion, int conversationIdentifier, MessageCache cache);
+  //void add(MessageCache cache, MessageInfo messageInfo);
 }
 
 class ByIndex implements CacheHandler {
@@ -73,16 +75,44 @@ class ByIndex implements CacheHandler {
 
   ByIndex(this.index);
 
-  MessageInfo? lookup(MessageCache cache) {
+  Future<MessageInfo?> lookup(MessageCache cache) async {
+    var msg = cache.getByIndex(index);
+    return msg;
+  }
+
+  Future<MessageInfo?> get( Cwtch cwtch, String profileOnion, int conversationIdentifier, MessageCache cache) async {
+    var chunk = 40;
+    if (chunk > cache.storageMessageCount - index) {
+      chunk = cache.storageMessageCount - index;
+    }
+
+    if (index < cache.cacheByIndex.length) {
+      return cache.getByIndex(index);
+    }
+    cache.lockIndexs(index, index+chunk);
+    var msgs = await cwtch.GetMessages(profileOnion, conversationIdentifier, index, chunk);
+    int i = 0; // declared here for use in finally to unlock
+    try {
+      List<dynamic> messagesWrapper = jsonDecode(msgs);
+
+      for(; i < messagesWrapper.length; i++) {
+        var messageInfo = messageWrapperToInfo(profileOnion, conversationIdentifier, messagesWrapper[i]);
+        cache.addIndexed(messageInfo, index + i);
+      }
+      //messageWrapperToInfo
+    } catch (e, stacktrace) {
+      EnvironmentConfig.debugLog("Error: Getting indexed messages $index to ${index+chunk} failed parsing: " + e.toString() + " " + stacktrace.toString());
+    } finally {
+      // todo unlock remaining and mark malformed
+      if (i != chunk) {
+        cache.malformIndexes(index+i, index+chunk);
+      }
+    }
     return cache.getByIndex(index);
   }
 
-  Future<dynamic> fetch(Cwtch cwtch, String profileOnion, int conversationIdentifier) {
-    return cwtch.GetMessage(profileOnion, conversationIdentifier, index);
-  }
-
-  void add(MessageCache cache, MessageInfo messageInfo, String contenthash) {
-    cache.add(messageInfo, index, contenthash);
+  void add(MessageCache cache, MessageInfo messageInfo) {
+    cache.addIndexed(messageInfo, index);
   }
 }
 
@@ -91,17 +121,28 @@ class ById implements CacheHandler {
 
   ById(this.id);
 
-  MessageInfo? lookup(MessageCache cache) {
-    return cache.getById(id);
+  Future<MessageInfo?> lookup(MessageCache cache) {
+    return Future<MessageInfo?>.value(cache.getById(id));
   }
 
-  Future<dynamic> fetch(Cwtch cwtch, String profileOnion, int conversationIdentifier) {
-    return cwtch.GetMessageByID(profileOnion, conversationIdentifier, id);
+  Future<MessageInfo?> fetch(Cwtch cwtch, String profileOnion, int conversationIdentifier, MessageCache cache) async {
+    var rawMessageEnvelope = await cwtch.GetMessageByID(profileOnion, conversationIdentifier, id);
+    var messageInfo = messageJsonToInfo(profileOnion, conversationIdentifier, rawMessageEnvelope);
+    if (messageInfo == null) {
+      return Future.value(null);
+    }
+    cache.addUnindexed(messageInfo);
+    return Future.value(messageInfo);
   }
 
-  void add(MessageCache cache, MessageInfo messageInfo, String contenthash) {
-    cache.addUnindexed(messageInfo, contenthash);
+  Future<MessageInfo?> get(Cwtch cwtch, String profileOnion, int conversationIdentifier, MessageCache cache) async {
+    var messageInfo = await lookup(cache);
+    if (messageInfo != null) {
+      return Future.value(messageInfo);
+    }
+    return fetch(cwtch, profileOnion, conversationIdentifier, cache);
   }
+
 }
 
 class ByContentHash implements CacheHandler {
@@ -109,111 +150,89 @@ class ByContentHash implements CacheHandler {
 
   ByContentHash(this.hash);
 
-  MessageInfo? lookup(MessageCache cache) {
-    return cache.getByContentHash(hash);
+  Future<MessageInfo?> lookup(MessageCache cache) {
+    return Future<MessageInfo?>.value(cache.getByContentHash(hash));
   }
 
-  Future<dynamic> fetch(Cwtch cwtch, String profileOnion, int conversationIdentifier) {
-    return cwtch.GetMessageByContentHash(profileOnion, conversationIdentifier, hash);
-  }
-
-  void add(MessageCache cache, MessageInfo messageInfo, String contenthash) {
-    cache.addUnindexed(messageInfo, contenthash);
-  }
-}
-
-Future<Message> messageHandler(BuildContext context, String profileOnion, int conversationIdentifier, CacheHandler cacheHandler) {
-  var malformedMetadata = MessageMetadata(profileOnion, conversationIdentifier, 0, DateTime.now(), "", "", "", <String, String>{}, false, true, false);
-  // Hit cache
-  MessageInfo? messageInfo = getMessageInfoFromCache(context, profileOnion, conversationIdentifier, cacheHandler);
-  if (messageInfo != null) {
-    return Future.value(compileOverlay(messageInfo.metadata, messageInfo.wrapper));
-  }
-
-  // Fetch and Cache
-  var messageInfoFuture = fetchAndCacheMessageInfo(context, profileOnion, conversationIdentifier, cacheHandler);
-  return messageInfoFuture.then((MessageInfo? messageInfo) {
-    if (messageInfo != null) {
-      return compileOverlay(messageInfo.metadata, messageInfo.wrapper);
-    } else {
-      return MalformedMessage(malformedMetadata);
+  Future<MessageInfo?> fetch(Cwtch cwtch, String profileOnion, int conversationIdentifier, MessageCache cache) async {
+    var rawMessageEnvelope = await cwtch.GetMessageByContentHash(profileOnion, conversationIdentifier, hash);
+    var messageInfo = messageJsonToInfo(profileOnion, conversationIdentifier, rawMessageEnvelope);
+    if (messageInfo == null) {
+      return Future.value(null);
     }
-  });
+    cache.addUnindexed(messageInfo);
+    return Future.value(messageInfo);
+  }
+
+  Future<MessageInfo?> get( Cwtch cwtch, String profileOnion, int conversationIdentifier, MessageCache cache) async {
+    var messageInfo = await lookup(cache);
+    if (messageInfo != null) {
+      return Future.value(messageInfo);
+    }
+    return fetch(cwtch, profileOnion, conversationIdentifier, cache);
+  }
 }
 
-MessageInfo? getMessageInfoFromCache(BuildContext context, String profileOnion, int conversationIdentifier, CacheHandler cacheHandler) {
-  // Hit cache
+Future<Message> messageHandler(BuildContext context, String profileOnion, int conversationIdentifier, CacheHandler cacheHandler) async {
+  var malformedMetadata = MessageMetadata(profileOnion, conversationIdentifier, 0, DateTime.now(), "", "", "", <String, String>{}, false, true, false, "");
+  var cwtch = Provider.of<FlwtchState>(context, listen: false).cwtch;
+
+  MessageCache? cache;
   try {
-    var cache = Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(conversationIdentifier)?.messageCache;
-    if (cache != null) {
-      MessageInfo? messageInfo = cacheHandler.lookup(cache);
-      if (messageInfo != null) {
-        return messageInfo;
-      }
+    cache = Provider
+        .of<ProfileInfoState>(context, listen: false)
+        .contactList
+        .getContact(conversationIdentifier)
+        ?.messageCache;
+    if (cache == null) {
+      EnvironmentConfig.debugLog("error: cannot get message cache for profile: $profileOnion conversation: $conversationIdentifier");
+      return MalformedMessage(malformedMetadata);
     }
   } catch (e) {
     EnvironmentConfig.debugLog("message handler exception on get from cache: $e");
     // provider check failed...make an expensive call...
+    return MalformedMessage(malformedMetadata);
   }
-  return null;
+
+  MessageInfo? messageInfo = await cacheHandler.get(cwtch, profileOnion, conversationIdentifier, cache);
+
+  if (messageInfo != null) {
+    return compileOverlay(messageInfo.metadata, messageInfo.wrapper);
+  } else {
+    return MalformedMessage(malformedMetadata);
+  }
 }
 
-Future<MessageInfo?> fetchAndCacheMessageInfo(BuildContext context, String profileOnion, int conversationIdentifier, CacheHandler cacheHandler) {
-// Load and cache
-  var profileInfostate = Provider.of<ProfileInfoState>(context, listen: false);
+MessageInfo? messageJsonToInfo(String profileOnion, int conversationIdentifier, dynamic messageJson) {
   try {
-    Future<dynamic> rawMessageEnvelopeFuture;
+    dynamic messageWrapper = jsonDecode(messageJson);
 
-    rawMessageEnvelopeFuture = cacheHandler.fetch(Provider.of<FlwtchState>(context, listen: false).cwtch, profileOnion, conversationIdentifier);
+    if (messageWrapper == null || messageWrapper['Message'] == '' || messageWrapper['Message'] == '{}') {
+      return null;
+    }
 
-    return rawMessageEnvelopeFuture.then((dynamic rawMessageEnvelope) {
-      try {
-        dynamic messageWrapper = jsonDecode(rawMessageEnvelope);
-        // There are 2 conditions in which this error condition can be met:
-        // 1. The application == nil, in which case this instance of the UI is already
-        // broken beyond repair, and will either be replaced by a new version, or requires a complete
-        // restart.
-        // 2. This index was incremented and we happened to fetch the timeline prior to the messages inclusion.
-        // This should be rare as Timeline addition/fetching is mutex protected and Dart itself will pipeline the
-        // calls to libCwtch-go - however because we use goroutines on the backend there is always a chance that one
-        // will find itself delayed.
-        // The second case is recoverable by tail-recursing this future.
-        if (messageWrapper['Message'] == null || messageWrapper['Message'] == '' || messageWrapper['Message'] == '{}') {
-          return Future.delayed(Duration(seconds: 2), () {
-            print("Tail recursive call to messageHandler called. This should be a rare event. If you see multiples of this log over a short period of time please log it as a bug.");
-            return fetchAndCacheMessageInfo(context, profileOnion, conversationIdentifier, cacheHandler);
-          });
-        }
-
-        // Construct the initial metadata
-        var messageID = messageWrapper['ID'];
-        var timestamp = DateTime.tryParse(messageWrapper['Timestamp'])!;
-        var senderHandle = messageWrapper['PeerID'];
-        var senderImage = messageWrapper['ContactImage'];
-        var attributes = messageWrapper['Attributes'];
-        var ackd = messageWrapper['Acknowledged'];
-        var error = messageWrapper['Error'] != null;
-        var signature = messageWrapper['Signature'];
-        var contenthash = messageWrapper['ContentHash'];
-        var localIndex = messageWrapper['LocalIndex'];
-        var metadata = MessageMetadata(profileOnion, conversationIdentifier, messageID, timestamp, senderHandle, senderImage, signature, attributes, ackd, error, false);
-        var messageInfo = new MessageInfo(metadata, messageWrapper['Message']);
-
-        var cache = profileInfostate.contactList.getContact(conversationIdentifier)?.messageCache;
-        if (cache != null) {
-          cacheHandler.add(cache, messageInfo, contenthash);
-        }
-
-        return messageInfo;
-      } catch (e, stacktrace) {
-        EnvironmentConfig.debugLog("message handler exception on parse message and cache: " + e.toString() + " " + stacktrace.toString());
-        return null;
-      }
-    });
-  } catch (e) {
-    EnvironmentConfig.debugLog("message handler exeption on get message: $e");
-    return Future.value(null);
+    return messageWrapperToInfo(profileOnion, conversationIdentifier, messageWrapper);
+  } catch (e, stacktrace) {
+    EnvironmentConfig.debugLog("message handler exception on parse message and cache: " + e.toString() + " " + stacktrace.toString());
+    return null;
   }
+}
+
+MessageInfo messageWrapperToInfo(String profileOnion, int conversationIdentifier, dynamic messageWrapper) {
+  // Construct the initial metadata
+  var messageID = messageWrapper['ID'];
+  var timestamp = DateTime.tryParse(messageWrapper['Timestamp'])!;
+  var senderHandle = messageWrapper['PeerID'];
+  var senderImage = messageWrapper['ContactImage'];
+  var attributes = messageWrapper['Attributes'];
+  var ackd = messageWrapper['Acknowledged'];
+  var error = messageWrapper['Error'] != null;
+  var signature = messageWrapper['Signature'];
+  var contenthash = messageWrapper['ContentHash'];
+  var metadata = MessageMetadata(profileOnion, conversationIdentifier, messageID, timestamp, senderHandle, senderImage, signature, attributes, ackd, error, false, contenthash);
+  var messageInfo = new MessageInfo(metadata, messageWrapper['Message']);
+
+  return messageInfo;
 }
 
 class MessageMetadata extends ChangeNotifier {
@@ -231,6 +250,7 @@ class MessageMetadata extends ChangeNotifier {
   final bool isAuto;
 
   final String? signature;
+  final String contenthash;
 
   dynamic get attributes => this._attributes;
 
@@ -249,5 +269,5 @@ class MessageMetadata extends ChangeNotifier {
   }
 
   MessageMetadata(
-      this.profileOnion, this.conversationIdentifier, this.messageID, this.timestamp, this.senderHandle, this.senderImage, this.signature, this._attributes, this._ackd, this._error, this.isAuto);
+      this.profileOnion, this.conversationIdentifier, this.messageID, this.timestamp, this.senderHandle, this.senderImage, this.signature, this._attributes, this._ackd, this._error, this.isAuto, this.contenthash);
 }
