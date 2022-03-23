@@ -107,7 +107,9 @@ class _ContactsViewState extends State<ContactsView> {
                   ? Provider.of<ProfileInfoState>(context).imagePath
                   : Provider.of<ProfileInfoState>(context).defaultImagePath,
               diameter: 42,
-              border: Provider.of<Settings>(context).current().portraitOnlineBorderColor,
+              border: Provider.of<ProfileInfoState>(context).isOnline
+                  ? Provider.of<Settings>(context).current().portraitOnlineBorderColor
+                  : Provider.of<Settings>(context).current().portraitOfflineBorderColor,
               badgeTextColor: Colors.red,
               badgeColor: Colors.red,
             ),
