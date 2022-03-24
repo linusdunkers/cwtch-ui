@@ -256,7 +256,6 @@ class _MessageViewState extends State<MessageView> {
   }
 
   void _sendMessageHandler(dynamic messageJson) {
-    var cache = Provider.of<ContactInfoState>(context, listen: false).messageCache;
     var profileOnion = Provider.of<ContactInfoState>(context, listen: false).profileOnion;
     var identifier = Provider.of<ContactInfoState>(context, listen: false).identifier;
     var profile = Provider.of<ProfileInfoState>(context, listen: false);
@@ -393,8 +392,10 @@ class _MessageViewState extends State<MessageView> {
   // Send the message if enter is pressed without the shift key...
   void handleKeyPress(RawKeyEvent event) {
     var data = event.data;
-    if ((data.logicalKey == LogicalKeyboardKey.enter && !event.isShiftPressed) || data.logicalKey == LogicalKeyboardKey.numpadEnter && !event.isShiftPressed) {
-      _sendMessage();
+    if (event is RawKeyUpEvent) {
+      if ((data.logicalKey == LogicalKeyboardKey.enter && !event.isShiftPressed) || data.logicalKey == LogicalKeyboardKey.numpadEnter && !event.isShiftPressed) {
+        _sendMessage();
+      }
     }
   }
 
