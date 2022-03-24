@@ -94,6 +94,11 @@ class CwtchGomobile implements Cwtch {
     return cwtchPlatform.invokeMethod("GetMessageByID", {"ProfileOnion": profile, "conversation": conversation, "id": id});
   }
 
+  // ignore: non_constant_identifier_names
+  Future<dynamic> GetMessages(String profile, int conversation, int index, int count) {
+    return cwtchPlatform.invokeMethod("GetMessages", {"ProfileOnion": profile, "conversation": conversation, "index": index, "count": count});
+  }
+
   @override
   // ignore: non_constant_identifier_names
   void SendProfileEvent(String onion, String jsonEvent) {
@@ -129,20 +134,20 @@ class CwtchGomobile implements Cwtch {
 
   @override
   // ignore: non_constant_identifier_names
-  void SendMessage(String profileOnion, int conversation, String message) {
-    cwtchPlatform.invokeMethod("SendMessage", {"ProfileOnion": profileOnion, "conversation": conversation, "message": message});
+  Future<dynamic> SendMessage(String profileOnion, int conversation, String message) {
+    return cwtchPlatform.invokeMethod("SendMessage", {"ProfileOnion": profileOnion, "conversation": conversation, "message": message});
   }
 
   @override
   // ignore: non_constant_identifier_names
-  void SendInvitation(String profileOnion, int conversation, int target) {
-    cwtchPlatform.invokeMethod("SendInvitation", {"ProfileOnion": profileOnion, "conversation": conversation, "target": target});
+  Future<dynamic> SendInvitation(String profileOnion, int conversation, int target) {
+    return cwtchPlatform.invokeMethod("SendInvitation", {"ProfileOnion": profileOnion, "conversation": conversation, "target": target});
   }
 
   @override
   // ignore: non_constant_identifier_names
-  void ShareFile(String profileOnion, int conversation, String filepath) {
-    cwtchPlatform.invokeMethod("ShareFile", {"ProfileOnion": profileOnion, "conversation": conversation, "filepath": filepath});
+  Future<dynamic> ShareFile(String profileOnion, int conversation, String filepath) {
+    return cwtchPlatform.invokeMethod("ShareFile", {"ProfileOnion": profileOnion, "conversation": conversation, "filepath": filepath});
   }
 
   @override

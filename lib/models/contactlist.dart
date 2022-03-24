@@ -123,7 +123,7 @@ class ContactListState extends ChangeNotifier {
     return idx >= 0 ? _contacts[idx] : null;
   }
 
-  void newMessage(int identifier, int messageID, DateTime timestamp, String senderHandle, String senderImage, bool isAuto, String data, String? contenthash, bool selectedConversation) {
+  void newMessage(int identifier, int messageID, DateTime timestamp, String senderHandle, String senderImage, bool isAuto, String data, String contenthash, bool selectedConversation) {
     getContact(identifier)?.newMessage(identifier, messageID, timestamp, senderHandle, senderImage, isAuto, data, contenthash, selectedConversation);
     updateLastMessageTime(identifier, DateTime.now());
   }

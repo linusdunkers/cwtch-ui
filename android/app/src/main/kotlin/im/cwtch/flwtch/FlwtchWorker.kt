@@ -290,25 +290,7 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                     val conversation = a.getInt("conversation").toLong()
                     Cwtch.unblockContact(profile, conversation)
                 }
-                "SendMessage" -> {
-                    val profile = (a.get("ProfileOnion") as? String) ?: ""
-                    val conversation = a.getInt("conversation").toLong()
-                    val message = (a.get("message") as? String) ?: ""
-                    Log.i(TAG, "SendMessage: $message")
-                    Cwtch.sendMessage(profile, conversation, message)
-                }
-                "SendInvitation" -> {
-                    val profile = (a.get("ProfileOnion") as? String) ?: ""
-                    val conversation = a.getInt("conversation").toLong()
-                    val target = a.getInt("target").toLong()
-                    Cwtch.sendInvitation(profile, conversation, target)
-                }
-                "ShareFile" -> {
-                    val profile = (a.get("ProfileOnion") as? String) ?: ""
-                    val conversation = a.getInt("conversation").toLong()
-                    val filepath = (a.get("filepath") as? String) ?: ""
-                    Cwtch.shareFile(profile, conversation, filepath)
-                }
+
                 "DownloadFile" -> {
                     val profile = (a.get("ProfileOnion") as? String) ?: ""
                     val conversation = a.getInt("conversation").toLong()

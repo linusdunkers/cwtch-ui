@@ -229,17 +229,15 @@ class _MessageViewState extends State<MessageView> {
             ChatMessage cm = new ChatMessage(o: QuotedMessageOverlay, d: quotedMessage);
             Provider.of<FlwtchState>(context, listen: false)
                 .cwtch
-                .SendMessage(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).identifier, jsonEncode(cm));
+                .SendMessage(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).identifier, jsonEncode(cm)).then(_sendMessageHandler);
           } catch (e) {}
           Provider.of<AppState>(context, listen: false).selectedIndex = null;
-          _sendMessageHelper();
         });
       } else {
         ChatMessage cm = new ChatMessage(o: TextMessageOverlay, d: ctrlrCompose.value.text);
         Provider.of<FlwtchState>(context, listen: false)
             .cwtch
-            .SendMessage(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).identifier, jsonEncode(cm));
-        _sendMessageHelper();
+            .SendMessage(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).identifier, jsonEncode(cm)).then(_sendMessageHandler);
       }
     }
   }
@@ -247,29 +245,40 @@ class _MessageViewState extends State<MessageView> {
   void _sendInvitation([String? ignoredParam]) {
     Provider.of<FlwtchState>(context, listen: false)
         .cwtch
-        .SendInvitation(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).identifier, this.selectedContact);
-    _sendMessageHelper();
+        .SendInvitation(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).identifier, this.selectedContact).then(_sendMessageHandler);
   }
 
   void _sendFile(String filePath) {
+
     Provider.of<FlwtchState>(context, listen: false)
         .cwtch
-        .ShareFile(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).identifier, filePath);
-    _sendMessageHelper();
+        .ShareFile(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).identifier, filePath).then(_sendMessageHandler);
   }
 
-  void _sendMessageHelper() {
+  void _sendMessageHandler(dynamic messageJson) {
+    var cache = Provider.of<ContactInfoState>(context, listen: false).messageCache;
+    var profileOnion = Provider.of<ContactInfoState>(context, listen: false).profileOnion;
+    var identifier = Provider.of<ContactInfoState>(context, listen: false).identifier;
+    var profile = Provider.of<ProfileInfoState>(context, listen: false);
+
+    var messageInfo = messageJsonToInfo(profileOnion, identifier, messageJson);
+    if (messageInfo != null) {
+      profile.newMessage(
+        messageInfo.metadata.conversationIdentifier,
+        messageInfo.metadata.messageID,
+        messageInfo.metadata.timestamp,
+        messageInfo.metadata.senderHandle,
+        messageInfo.metadata.senderImage ?? "",
+        messageInfo.metadata.isAuto,
+        messageInfo.wrapper,
+        messageInfo.metadata.contenthash,
+        true,
+        true,
+      );
+    }
+
     ctrlrCompose.clear();
     focusNode.requestFocus();
-    Future.delayed(const Duration(milliseconds: 80), () {
-      var profile = Provider.of<ContactInfoState>(context, listen: false).profileOnion;
-      var identifier = Provider.of<ContactInfoState>(context, listen: false).identifier;
-      fetchAndCacheMessageInfo(context, profile, identifier, ByIndex(0));
-      Provider.of<ContactInfoState>(context, listen: false).newMarker++;
-      Provider.of<ContactInfoState>(context, listen: false).totalMessages += 1;
-      // Resort the contact list...
-      Provider.of<ProfileInfoState>(context, listen: false).contactList.updateLastMessageTime(Provider.of<ContactInfoState>(context, listen: false).identifier, DateTime.now());
-    });
   }
 
   Widget _buildComposeBox() {

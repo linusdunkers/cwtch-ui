@@ -61,12 +61,18 @@ typedef VoidFromStringIntFn = void Function(Pointer<Utf8>, int, int);
 typedef get_json_blob_string_function = Pointer<Utf8> Function(Pointer<Utf8> str, Int32 length);
 typedef GetJsonBlobStringFn = Pointer<Utf8> Function(Pointer<Utf8> str, int len);
 
+typedef get_json_blob_from_string_int_string_function = Pointer<Utf8> Function(Pointer<Utf8>, Int32 , Int32, Pointer<Utf8>, Int32);
+typedef GetJsonBlobFromStrIntStrFn = Pointer<Utf8> Function(Pointer<Utf8>, int, int, Pointer<Utf8>, int);
+
 //func GetMessage(profile_ptr *C.char, profile_len C.int, handle_ptr *C.char, handle_len C.int, message_index C.int) *C.char {
 typedef get_json_blob_from_str_str_int_function = Pointer<Utf8> Function(Pointer<Utf8>, Int32, Pointer<Utf8>, Int32, Int32);
 typedef GetJsonBlobFromStrStrIntFn = Pointer<Utf8> Function(Pointer<Utf8>, int, Pointer<Utf8>, int, int);
 
 typedef get_json_blob_from_str_int_int_function = Pointer<Utf8> Function(Pointer<Utf8>, Int32, Int32, Int32);
 typedef GetJsonBlobFromStrIntIntFn = Pointer<Utf8> Function(Pointer<Utf8>, int, int, int);
+
+typedef get_json_blob_from_str_int_int_int_function = Pointer<Utf8> Function(Pointer<Utf8>, Int32, Int32, Int32, Int32);
+typedef GetJsonBlobFromStrIntIntIntFn = Pointer<Utf8> Function(Pointer<Utf8>, int, int, int, int);
 
 typedef get_json_blob_from_str_int_string_function = Pointer<Utf8> Function(Pointer<Utf8>, Int32, Int32, Pointer<Utf8>, Int32);
 typedef GetJsonBlobFromStrIntStringFn = Pointer<Utf8> Function(
@@ -300,6 +306,19 @@ class CwtchFfi implements Cwtch {
     return jsonMessage;
   }
 
+  // ignore: non_constant_identifier_names
+  Future<dynamic> GetMessages(String profile, int handle, int index, int count) async {
+    var getMessagesC = library.lookup<NativeFunction<get_json_blob_from_str_int_int_int_function>>("c_GetMessages");
+    // ignore: non_constant_identifier_names
+    final GetMessages = getMessagesC.asFunction<GetJsonBlobFromStrIntIntIntFn>();
+    final utf8profile = profile.toNativeUtf8();
+    Pointer<Utf8> jsonMessageBytes = GetMessages(utf8profile, utf8profile.length, handle, index, count);
+    String jsonMessage = jsonMessageBytes.toDartString();
+    _UnsafeFreePointerAnyUseOfThisFunctionMustBeDoubleApproved(jsonMessageBytes);
+    malloc.free(utf8profile);
+    return jsonMessage;
+  }
+
   @override
   // ignore: non_constant_identifier_names
   void SendProfileEvent(String onion, String json) {
@@ -359,39 +378,48 @@ class CwtchFfi implements Cwtch {
 
   @override
   // ignore: non_constant_identifier_names
-  void SendMessage(String profileOnion, int contactHandle, String message) {
-    var sendMessage = library.lookup<NativeFunction<void_from_string_int_string_function>>("c_SendMessage");
+  Future<dynamic> SendMessage(String profileOnion, int contactHandle, String message) async {
+    var sendMessage = library.lookup<NativeFunction<get_json_blob_from_string_int_string_function>>("c_SendMessage");
     // ignore: non_constant_identifier_names
-    final SendMessage = sendMessage.asFunction<VoidFromStringIntStringFn>();
+    final SendMessage = sendMessage.asFunction<GetJsonBlobFromStrIntStrFn>();
     final u1 = profileOnion.toNativeUtf8();
     final u3 = message.toNativeUtf8();
-    SendMessage(u1, u1.length, contactHandle, u3, u3.length);
+    Pointer<Utf8> jsonMessageBytes =  SendMessage(u1, u1.length, contactHandle, u3, u3.length);
+    String jsonMessage = jsonMessageBytes.toDartString();
+    _UnsafeFreePointerAnyUseOfThisFunctionMustBeDoubleApproved(jsonMessageBytes);
     malloc.free(u1);
     malloc.free(u3);
+    return jsonMessage;
   }
 
   @override
   // ignore: non_constant_identifier_names
-  void SendInvitation(String profileOnion, int contactHandle, int target) {
-    var sendInvitation = library.lookup<NativeFunction<void_from_string_int_int_function>>("c_SendInvitation");
+  Future<dynamic> SendInvitation(String profileOnion, int contactHandle, int target) async {
+    var sendInvitation = library.lookup<NativeFunction<get_json_blob_from_str_int_int_function>>("c_SendInvitation");
     // ignore: non_constant_identifier_names
-    final SendInvitation = sendInvitation.asFunction<VoidFromStringIntIntFn>();
+    final SendInvitation = sendInvitation.asFunction<GetJsonBlobFromStrIntIntFn>();
     final u1 = profileOnion.toNativeUtf8();
-    SendInvitation(u1, u1.length, contactHandle, target);
+    Pointer<Utf8> jsonMessageBytes = SendInvitation(u1, u1.length, contactHandle, target);
+    String jsonMessage = jsonMessageBytes.toDartString();
+    _UnsafeFreePointerAnyUseOfThisFunctionMustBeDoubleApproved(jsonMessageBytes);
     malloc.free(u1);
+    return jsonMessage;
   }
 
   @override
   // ignore: non_constant_identifier_names
-  void ShareFile(String profileOnion, int contactHandle, String filepath) {
-    var shareFile = library.lookup<NativeFunction<void_from_string_int_string_function>>("c_ShareFile");
+  Future<dynamic> ShareFile(String profileOnion, int contactHandle, String filepath) async {
+    var shareFile = library.lookup<NativeFunction<get_json_blob_from_string_int_string_function>>("c_ShareFile");
     // ignore: non_constant_identifier_names
-    final ShareFile = shareFile.asFunction<VoidFromStringIntStringFn>();
+    final ShareFile = shareFile.asFunction<GetJsonBlobFromStrIntStrFn>();
     final u1 = profileOnion.toNativeUtf8();
     final u3 = filepath.toNativeUtf8();
-    ShareFile(u1, u1.length, contactHandle, u3, u3.length);
+    Pointer<Utf8> jsonMessageBytes = ShareFile(u1, u1.length, contactHandle, u3, u3.length);
+    String jsonMessage = jsonMessageBytes.toDartString();
+    _UnsafeFreePointerAnyUseOfThisFunctionMustBeDoubleApproved(jsonMessageBytes);
     malloc.free(u1);
     malloc.free(u3);
+    return jsonMessage;
   }
 
   @override

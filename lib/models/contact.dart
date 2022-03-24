@@ -42,7 +42,7 @@ class ContactInfoState extends ChangeNotifier {
   late int _totalMessages = 0;
   late DateTime _lastMessageTime;
   late Map<String, GlobalKey<MessageRowState>> keys;
-  int _newMarker = 0;
+  int _newMarkerMsgId = -1;
   DateTime _newMarkerClearAt = DateTime.now();
   late MessageCache messageCache;
 
@@ -82,7 +82,7 @@ class ContactInfoState extends ChangeNotifier {
     this._server = server;
     this._archived = archived;
     this._notificationPolicy = notificationPolicyFromString(notificationPolicy);
-    this.messageCache = new MessageCache();
+    this.messageCache = new MessageCache(_totalMessages);
     keys = Map<String, GlobalKey<MessageRowState>>();
   }
 
@@ -148,41 +148,29 @@ class ContactInfoState extends ChangeNotifier {
   int get unreadMessages => this._unreadMessages;
 
   set unreadMessages(int newVal) {
-    // don't reset newMarker position when unreadMessages is being cleared
-    if (newVal > 0) {
-      this._newMarker = newVal;
-    } else {
+    if (newVal == 0) {
+      // conversation has been selected, start the countdown for the New Messager marker to be reset
       this._newMarkerClearAt = DateTime.now().add(const Duration(minutes: 2));
     }
     this._unreadMessages = newVal;
     notifyListeners();
   }
 
-  int get newMarker {
+  int get newMarkerMsgId {
     if (DateTime.now().isAfter(this._newMarkerClearAt)) {
       // perform heresy
-      this._newMarker = 0;
+      this._newMarkerMsgId = -1;
       // no need to notifyListeners() because presumably this getter is
       // being called from a renderer anyway
     }
-    return this._newMarker;
-  }
-
-  // what's a getter that sometimes sets without a setter
-  // that sometimes doesn't set
-  set newMarker(int newVal) {
-    // only unreadMessages++ can set newMarker = 1;
-    // avoids drawing a marker when the convo is already open
-    if (newVal >= 1) {
-      this._newMarker = newVal;
-      notifyListeners();
-    }
+    return this._newMarkerMsgId;
   }
 
   int get totalMessages => this._totalMessages;
 
   set totalMessages(int newVal) {
     this._totalMessages = newVal;
+    this.messageCache.storageMessageCount = newVal;
     notifyListeners();
   }
 
@@ -251,11 +239,12 @@ class ContactInfoState extends ChangeNotifier {
     return ret;
   }
 
-  void newMessage(int identifier, int messageID, DateTime timestamp, String senderHandle, String senderImage, bool isAuto, String data, String? contenthash, bool selectedConversation) {
+  void newMessage(int identifier, int messageID, DateTime timestamp, String senderHandle, String senderImage, bool isAuto, String data, String contenthash, bool selectedConversation) {
     if (!selectedConversation) {
       unreadMessages++;
-    } else {
-      newMarker++;
+    }
+    if (_newMarkerMsgId == -1) {
+      _newMarkerMsgId = messageID;
     }
 
     this._lastMessageTime = timestamp;
