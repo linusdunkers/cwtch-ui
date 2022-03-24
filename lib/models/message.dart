@@ -63,11 +63,7 @@ Message compileOverlay(MessageMetadata metadata, String messageData) {
 }
 
 abstract class CacheHandler {
-  //Future<MessageInfo?> lookup(MessageCache cache);
-  //Future<MessageInfo?> fetch(Cwtch cwtch, String profileOnion, int conversationIdentifier, MessageCache cache);
-
   Future<MessageInfo?> get(Cwtch cwtch, String profileOnion, int conversationIdentifier, MessageCache cache);
-  //void add(MessageCache cache, MessageInfo messageInfo);
 }
 
 class ByIndex implements CacheHandler {
@@ -81,7 +77,9 @@ class ByIndex implements CacheHandler {
   }
 
   Future<MessageInfo?> get( Cwtch cwtch, String profileOnion, int conversationIdentifier, MessageCache cache) async {
+    // observationally flutter future builder seemed to be reaching for 20-40 message on pane load, so we start trying to load up to that many messages in one request
     var chunk = 40;
+    // check that we aren't asking for messages beyond stored messages
     if (chunk > cache.storageMessageCount - index) {
       chunk = cache.storageMessageCount - index;
     }
@@ -91,7 +89,7 @@ class ByIndex implements CacheHandler {
     }
     cache.lockIndexs(index, index+chunk);
     var msgs = await cwtch.GetMessages(profileOnion, conversationIdentifier, index, chunk);
-    int i = 0; // declared here for use in finally to unlock
+    int i = 0; // i used to loop through returned messages. if doesn't reach the requested count, we will use it in the finally stanza to error out the remaining asked for messages in the cache
     try {
       List<dynamic> messagesWrapper = jsonDecode(msgs);
 
@@ -103,7 +101,6 @@ class ByIndex implements CacheHandler {
     } catch (e, stacktrace) {
       EnvironmentConfig.debugLog("Error: Getting indexed messages $index to ${index+chunk} failed parsing: " + e.toString() + " " + stacktrace.toString());
     } finally {
-      // todo unlock remaining and mark malformed
       if (i != chunk) {
         cache.malformIndexes(index+i, index+chunk);
       }

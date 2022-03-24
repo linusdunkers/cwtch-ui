@@ -113,6 +113,9 @@ class MessageCache extends ChangeNotifier {
     notifyListeners();
   }
 
+  // inserts place holder values into the index cache that will block on .get() until .finishLoad() is called on them with message contents
+  // or .failLoad() is called on them to mark them malformed
+  // this prevents successive ui message build requests from triggering multiple GetMesssage requests to the backend, as the first one locks a block of messages and the rest wait on that
   void lockIndexs(int start, int end) {
     for(var i = start; i < end; i++) {
       this.cacheByIndex.insert(i, LocalIndexMessage(null, isLoading: true));
@@ -132,9 +135,7 @@ class MessageCache extends ChangeNotifier {
     } else {
       this.cacheByIndex.insert(index, LocalIndexMessage(messageInfo.metadata.messageID));
     }
-    if (messageInfo.metadata.contenthash != "") {
-      this.cacheByHash[messageInfo.metadata.contenthash] = messageInfo.metadata.messageID;
-    }
+    this.cacheByHash[messageInfo.metadata.contenthash] = messageInfo.metadata.messageID;
     notifyListeners();
   }
 
