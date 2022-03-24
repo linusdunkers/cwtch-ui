@@ -77,17 +77,23 @@ class ByIndex implements CacheHandler {
   }
 
   Future<MessageInfo?> get( Cwtch cwtch, String profileOnion, int conversationIdentifier, MessageCache cache) async {
-    // observationally flutter future builder seemed to be reaching for 20-40 message on pane load, so we start trying to load up to that many messages in one request
-    var chunk = 40;
-    // check that we aren't asking for messages beyond stored messages
-    if (chunk > cache.storageMessageCount - index) {
-      chunk = cache.storageMessageCount - index;
-    }
-
+    // if in cache, get
     if (index < cache.cacheByIndex.length) {
       return cache.getByIndex(index);
     }
-    cache.lockIndexs(index, index+chunk);
+
+    // otherwise we are going to fetch, so we'll fetch a chunk of messages
+    // observationally flutter future builder seemed to be reaching for 20-40 message on pane load, so we start trying to load up to that many messages in one request
+    var chunk = 40;
+    // check that we aren't asking for messages beyond stored messages
+    if (index + chunk >= cache.storageMessageCount) {
+      chunk = cache.storageMessageCount - index;
+      if (chunk <= 0) {
+        return Future.value(null);
+      }
+    }
+
+    cache.lockIndexes(index, index+chunk);
     var msgs = await cwtch.GetMessages(profileOnion, conversationIdentifier, index, chunk);
     int i = 0; // i used to loop through returned messages. if doesn't reach the requested count, we will use it in the finally stanza to error out the remaining asked for messages in the cache
     try {
