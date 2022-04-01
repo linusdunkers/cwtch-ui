@@ -50,6 +50,7 @@ class ProfileInfoState extends ChangeNotifier {
 
       List<dynamic> contacts = jsonDecode(contactsJson);
       this._contacts.addAll(contacts.map((contact) {
+        this._unreadMessages += contact["numUnread"] as int;
         return ContactInfoState(this.onion, contact["identifier"], contact["onion"],
             nickname: contact["name"],
             status: contact["status"],
@@ -164,12 +165,14 @@ class ProfileInfoState extends ChangeNotifier {
     this._nickname = name;
     this._imagePath = picture;
     this._online = online;
+    this._unreadMessages = 0;
     this.replaceServers(serverJson);
 
     if (contactsJson != null && contactsJson != "" && contactsJson != "null") {
       List<dynamic> contacts = jsonDecode(contactsJson);
       contacts.forEach((contact) {
         var profileContact = this._contacts.getContact(contact["identifier"]);
+        this._unreadMessages += contact["numUnread"] as int;
         if (profileContact != null) {
           profileContact.status = contact["status"];
           profileContact.totalMessages = contact["numMessages"]; // Todo: trigger cache update (bulk upload)

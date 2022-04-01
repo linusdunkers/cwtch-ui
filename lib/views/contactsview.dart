@@ -1,3 +1,4 @@
+import 'package:cwtch/cwtch/cwtch.dart';
 import 'package:cwtch/cwtch_icons_icons.dart';
 import 'package:cwtch/models/appstate.dart';
 import 'package:cwtch/models/contact.dart';
@@ -38,6 +39,8 @@ void selectConversation(BuildContext context, int handle) {
   // if in singlepane mode, push to the stack
   var isLandscape = Provider.of<AppState>(context, listen: false).isLandscape(context);
   if (Provider.of<Settings>(context, listen: false).uiColumns(isLandscape).length == 1) _pushMessageView(context, handle);
+  // Set last message seen time in backend
+  Provider.of<FlwtchState>(context, listen: false).cwtch.SetConversationAttribute(Provider.of<ProfileInfoState>(context, listen: false).onion, handle, LastMessageSeenTimeKey, DateTime.now().toUtc().toIso8601String());
 }
 
 void _pushMessageView(BuildContext context, int handle) {
