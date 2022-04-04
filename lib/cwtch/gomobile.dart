@@ -35,6 +35,7 @@ class CwtchGomobile implements Cwtch {
   CwtchGomobile(CwtchNotifier _cwtchNotifier) {
     print("gomobile.dart: CwtchGomobile()");
     cwtchNotifier = _cwtchNotifier;
+    cwtchNotifier.setMessageSeenCallback((String profile, int conversation, DateTime time) => {this.SetConversationAttribute(profile, conversation, LastMessageSeenTimeKey, time.toIso8601String())});
     androidHomeDirectory = getApplicationDocumentsDirectory();
     androidLibraryDir = appInfoPlatform.invokeMethod('getNativeLibDir');
 

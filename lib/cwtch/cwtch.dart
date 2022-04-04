@@ -2,6 +2,8 @@
 // Details: https://docs.openprivacy.ca/cwtch-security-handbook/profile_encryption_and_storage.html
 const DefaultPassword = "be gay do crime";
 
+const LastMessageSeenTimeKey = "profile.lastMessageSeenTime";
+
 abstract class Cwtch {
   // ignore: non_constant_identifier_names
   Future<void> Start();

@@ -18,6 +18,8 @@ import '../config.dart';
 import '../errorHandler.dart';
 import '../settings.dart';
 
+typedef SeenMessageCallback = Function(String, int, DateTime);
+
 // Class that handles libcwtch-go events (received either via ffi with an isolate or gomobile over a method channel from kotlin)
 //   Takes Notifiers and triggers them on appropriate events
 class CwtchNotifier {
@@ -31,6 +33,8 @@ class CwtchNotifier {
 
   String? notificationSimple;
   String? notificationConversationInfo;
+
+  SeenMessageCallback? seenMessageCallback;
 
   CwtchNotifier(
       ProfileListState pcn, Settings settingsCN, ErrorHandler errorCN, TorStatus torStatusCN, NotificationsManager notificationManagerP, AppState appStateCN, ServerListState serverListStateCN) {
@@ -46,6 +50,10 @@ class CwtchNotifier {
   void l10nInit(String notificationSimple, String notificationConversationInfo) {
     this.notificationSimple = notificationSimple;
     this.notificationConversationInfo = notificationConversationInfo;
+  }
+
+  void setMessageSeenCallback(SeenMessageCallback callback) {
+    seenMessageCallback = callback;
   }
 
   void handleMessage(String type, dynamic data) {
@@ -164,6 +172,10 @@ class CwtchNotifier {
         var selectedConversation = selectedProfile && appState.selectedConversation == identifier;
         var notification = data["notification"];
 
+        if (selectedConversation && seenMessageCallback != null) {
+          seenMessageCallback!(data["ProfileOnion"]!, identifier, DateTime.now().toUtc());
+        }
+
         if (notification == "SimpleEvent") {
           notificationManager.notify(notificationSimple ?? "New Message", "", 0);
         } else if (notification == "ContactInfo") {
@@ -229,6 +241,9 @@ class CwtchNotifier {
             // and ensure that malicious contacts in groups can only set this timestamp to a value within the range of `last seen message time`
             // and `local now`.
             profileCN.getProfile(data["ProfileOnion"])?.newMessage(identifier, idx, timestampSent, senderHandle, senderImage, isAuto, data["Data"], contenthash, selectedProfile, selectedConversation);
+            if (selectedConversation && seenMessageCallback != null) {
+              seenMessageCallback!(data["ProfileOnion"]!, identifier, DateTime.now().toUtc());
+            }
 
             if (notification == "SimpleEvent") {
               notificationManager.notify(notificationSimple ?? "New Message", "", 0);

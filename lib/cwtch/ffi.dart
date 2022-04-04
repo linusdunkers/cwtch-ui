@@ -133,6 +133,7 @@ class CwtchFfi implements Cwtch {
     }
     library = DynamicLibrary.open(libraryPath);
     cwtchNotifier = _cwtchNotifier;
+    cwtchNotifier.setMessageSeenCallback((String profile, int conversation, DateTime time) => {this.SetConversationAttribute(profile, conversation, LastMessageSeenTimeKey, time.toIso8601String())});
   }
 
   // ignore: non_constant_identifier_names
