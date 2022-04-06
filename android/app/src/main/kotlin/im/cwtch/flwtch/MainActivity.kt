@@ -55,6 +55,7 @@ class MainActivity: FlutterActivity() {
     private val CHANNEL_NOTIF_CLICK = "im.cwtch.flwtch/notificationClickHandler"
     private val CHANNEL_SHUTDOWN_CLICK = "im.cwtch.flwtch/shutdownClickHandler"
 
+    private val TAG: String = "MainActivity.kt"
     // WorkManager tag applied to all Start() infinite coroutines
     val WORKER_TAG = "cwtchEventBusWorker"
 
@@ -266,6 +267,194 @@ class MainActivity: FlutterActivity() {
                 val conversation: Int = call.argument("conversation") ?: 0
                 val filepath: String = call.argument("filepath") ?: ""
                 result.success(Cwtch.shareFile(profile, conversation.toLong(), filepath))
+            }
+
+            "CreateProfile" -> {
+                val nick: String = call.argument("nick") ?: ""
+                val pass: String = call.argument("pass") ?: ""
+                Cwtch.createProfile(nick, pass)
+            }
+            "LoadProfiles" -> {
+                val pass: String = call.argument("pass") ?: ""
+                Cwtch.loadProfiles(pass)
+            }
+            "ChangePassword" -> {
+                val profile: String = call.argument("ProfileOnion") ?: ""
+                val pass: String = call.argument("OldPass") ?: ""
+                val passNew: String = call.argument("NewPass") ?: ""
+                val passNew2: String = call.argument("NewPassAgain") ?: ""
+                Cwtch.changePassword(profile, pass, passNew, passNew2)
+            }
+            "GetMessage" -> {
+                val profile: String = call.argument("ProfileOnion") ?: ""
+                val conversation: Int = call.argument("conversation") ?: 0
+                val indexI: Int = call.argument("index") ?: 0
+                result.success(Data.Builder().putString("result", Cwtch.getMessage(profile, conversation.toLong(), indexI.toLong())).build())
+            }
+            "GetMessageByID" -> {
+                val profile: String = call.argument("ProfileOnion") ?: ""
+                val conversation: Int = call.argument("conversation") ?: 0
+                val id: Int = call.argument("id") ?: 0
+                result.success(Data.Builder().putString("result", Cwtch.getMessageByID(profile, conversation.toLong(), id.toLong())).build())
+            }
+            "GetMessageByContentHash" -> {
+                val profile: String = call.argument("ProfileOnion") ?: ""
+                val conversation: Int = call.argument("conversation") ?: 0
+                val contentHash: String = call.argument("contentHash") ?: ""
+                result.success(Data.Builder().putString("result", Cwtch.getMessagesByContentHash(profile, conversation.toLong(), contentHash)).build())
+            }
+            "SetMessageAttribute" -> {
+                val profile: String = call.argument("ProfileOnion") ?: ""
+                val conversation: Int = call.argument("conversation") ?: 0
+                val channel: Int = call.argument("Chanenl") ?: 0
+                val midx: Int = call.argument("Message") ?: 0
+                val key: String = call.argument("key") ?: ""
+                val value: String = call.argument("value") ?: ""
+                Cwtch.setMessageAttribute(profile, conversation.toLong(), channel.toLong(), midx.toLong(), key, value)
+            }
+            "AcceptConversation" -> {
+                val profile: String = call.argument("ProfileOnion") ?: ""
+                val conversation: Int = call.argument("conversation") ?: 0
+                Cwtch.acceptConversation(profile, conversation.toLong())
+            }
+            "BlockContact" -> {
+                val profile: String = call.argument("ProfileOnion") ?: ""
+                val conversation: Int = call.argument("conversation") ?: 0
+                Cwtch.blockContact(profile, conversation.toLong())
+            }
+            "UnblockContact" -> {
+                val profile: String = call.argument("ProfileOnion") ?: ""
+                val conversation: Int = call.argument("conversation") ?: 0
+                Cwtch.unblockContact(profile, conversation.toLong())
+            }
+
+            "DownloadFile" -> {
+                val profile: String = call.argument("ProfileOnion") ?: ""
+                val conversation: Int = call.argument("conversation") ?: 0
+                val filepath: String = call.argument("filepath") ?: ""
+                val manifestpath: String = call.argument("manifestpath") ?: ""
+                val filekey: String = call.argument("filekey") ?: ""
+                // FIXME: Prevent spurious calls by Intent
+                if (profile != "") {
+                    Cwtch.downloadFile(profile, conversation.toLong(), filepath, manifestpath, filekey)
+                }
+            }
+            "CheckDownloadStatus" -> {
+                val profile: String = call.argument("ProfileOnion") ?: ""
+                val fileKey: String = call.argument("fileKey") ?: ""
+                Cwtch.checkDownloadStatus(profile, fileKey)
+            }
+            "VerifyOrResumeDownload" -> {
+                val profile: String = call.argument("ProfileOnion") ?: ""
+                val conversation: Int = call.argument("conversation") ?: 0
+                val fileKey: String = call.argument("fileKey") ?: ""
+                Cwtch.verifyOrResumeDownload(profile, conversation.toLong(), fileKey)
+            }
+            "SendProfileEvent" -> {
+                val onion: String= call.argument("onion") ?: ""
+                val jsonEvent: String = call.argument("jsonEvent") ?: ""
+                Cwtch.sendProfileEvent(onion, jsonEvent)
+            }
+            "SendAppEvent" -> {
+                val jsonEvent: String = call.argument("jsonEvent") ?: ""
+                Cwtch.sendAppEvent(jsonEvent)
+            }
+            "ResetTor" -> {
+                Cwtch.resetTor()
+            }
+            "ImportBundle" -> {
+                val profile: String = call.argument("ProfileOnion") ?: ""
+                val bundle: String = call.argument("bundle") ?: ""
+                Cwtch.importBundle(profile, bundle)
+            }
+            "CreateGroup" -> {
+                val profile: String = call.argument("ProfileOnion") ?: ""
+                val server: String = call.argument("server") ?: ""
+                val groupName: String = call.argument("groupName") ?: ""
+                Cwtch.createGroup(profile, server, groupName)
+            }
+            "DeleteProfile" -> {
+                val profile: String = call.argument("ProfileOnion") ?: ""
+                val pass: String = call.argument("pass") ?: ""
+                Cwtch.deleteProfile(profile, pass)
+            }
+            "ArchiveConversation" -> {
+                val profile: String = call.argument("ProfileOnion") ?: ""
+                val conversation: Int = call.argument("conversation") ?: 0
+                Cwtch.archiveConversation(profile, conversation.toLong())
+            }
+            "DeleteConversation" -> {
+                val profile: String = call.argument("ProfileOnion") ?: ""
+                val conversation: Int = call.argument("conversation") ?: 0
+                Cwtch.deleteContact(profile, conversation.toLong())
+            }
+            "SetProfileAttribute" -> {
+                val profile: String = call.argument("ProfileOnion") ?: ""
+                val key: String = call.argument("Key") ?: ""
+                val v: String = call.argument("Val") ?: ""
+                Cwtch.setProfileAttribute(profile, key, v)
+            }
+            "SetConversationAttribute" -> {
+                val profile: String = call.argument("ProfileOnion") ?: ""
+                val conversation: Int = call.argument("conversation") ?: 0
+                val key: String = call.argument("Key") ?: ""
+                val v: String = call.argument("Val") ?: ""
+                Cwtch.setConversationAttribute(profile, conversation.toLong(), key, v)
+            }
+            "LoadServers" -> {
+                val password: String = call.argument("Password") ?: ""
+                Cwtch.loadServers(password)
+            }
+            "CreateServer" -> {
+                val password: String = call.argument("Password") ?: ""
+                val desc: String = call.argument("Description") ?: ""
+                val autostart: Boolean = call.argument("Autostart") ?: false
+                Cwtch.createServer(password, desc, autostart)
+            }
+            "DeleteServer" -> {
+                val serverOnion: String = call.argument("ServerOnion") ?: ""
+                val password: String = call.argument("Password") ?: ""
+                Cwtch.deleteServer(serverOnion, password)
+            }
+            "LaunchServers" -> {
+                Cwtch.launchServers()
+            }
+            "LaunchServer" -> {
+                val serverOnion: String = call.argument("ServerOnion") ?: ""
+                Cwtch.launchServer(serverOnion)
+            }
+            "StopServer" -> {
+                val serverOnion: String = call.argument("ServerOnion") ?: ""
+                Cwtch.stopServer(serverOnion)
+            }
+            "StopServers" -> {
+                Cwtch.stopServers()
+            }
+            "DestroyServers" -> {
+                Cwtch.destroyServers()
+            }
+            "SetServerAttribute" -> {
+                val serverOnion: String = call.argument("ServerOnion") ?: ""
+                val key: String = call.argument("Key") ?: ""
+                val v: String = call.argument("Val") ?: ""
+                Cwtch.setServerAttribute(serverOnion, key, v)
+            }
+            "ExportProfile" -> {
+                val profileOnion: String = call.argument("ProfileOnion") ?: ""
+                val file: String = StringBuilder().append(this.applicationContext.cacheDir).append("/").append(call.argument("file") ?: "").toString()
+                Log.i("FlwtchWorker", "constructing exported file " + file);
+                Cwtch.exportProfile(profileOnion,file)
+            }
+            "ImportProfile" -> {
+                val file: String = call.argument("file") ?: ""
+                val pass: String = call.argument("pass") ?: ""
+                Data.Builder().putString("result", Cwtch.importProfile(file, pass)).build()
+            }
+            "ReconnectCwtchForeground" -> {
+                Cwtch.reconnectCwtchForeground()
+            }
+            "Shutdown" -> {
+                Cwtch.shutdownCwtch();
             }
             else -> {
                 // ...otherwise fallthru to a normal ffi method call (and return the result using the result callback)

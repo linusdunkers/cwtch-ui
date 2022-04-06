@@ -175,7 +175,7 @@ class ProfileInfoState extends ChangeNotifier {
         this._unreadMessages += contact["numUnread"] as int;
         if (profileContact != null) {
           profileContact.status = contact["status"];
-          profileContact.totalMessages = contact["numMessages"]; // Todo: trigger cache update (bulk upload)
+          profileContact.totalMessages = contact["numMessages"];
           profileContact.unreadMessages = contact["numUnread"];
           profileContact.lastMessageTime = DateTime.fromMillisecondsSinceEpoch(1000 * int.parse(contact["lastMsgTime"]));
         } else {
@@ -198,7 +198,6 @@ class ProfileInfoState extends ChangeNotifier {
                 notificationPolicy: contact["notificationPolicy"] ?? "ConversationNotificationPolicy.Default",
               ));
         }
-        unreadMessages += int.parse(contact["numUnread"]);
       });
     }
     this._contacts.resort();
