@@ -86,6 +86,7 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                         try {
                             val evt = MainActivity.AppbusEvent(Cwtch.getAppBusEvent())
                             // TODO replace this notification block with the NixNotification manager in dart as it has access to contact names and also needs less working around
+
                             if (evt.EventType == "NewMessageFromPeer" || evt.EventType == "NewMessageFromGroup") {
                                 val data = JSONObject(evt.Data)
                                 val handle = data.getString("RemotePeer");
@@ -222,212 +223,26 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                                 intent.putExtra("EventID", evt.EventID)
                                 LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
                             }
+                            if (evt.EventType == "Shutdown") {
+                                Log.i(TAG, "processing shutdown event, exiting FlwtchWorker/Start()...");
+                                return Result.success()
+                            }
                         } catch (e: Exception) {
                             Log.e(TAG, "Error in handleCwtch: " + e.toString() + " :: " + e.getStackTrace());
                         }
                     }
                 }
-
-                "ReconnectCwtchForeground" -> {
-                    Cwtch.reconnectCwtchForeground()
-                }
-                "CreateProfile" -> {
-                    val nick = (a.get("nick") as? String) ?: ""
-                    val pass = (a.get("pass") as? String) ?: ""
-                    Cwtch.createProfile(nick, pass)
-                }
-                "LoadProfiles" -> {
-                    val pass = (a.get("pass") as? String) ?: ""
-                    Cwtch.loadProfiles(pass)
-                }
-                "ChangePassword" -> {
-                    val profile = (a.get("ProfileOnion") as? String) ?: ""
-                    val pass = (a.get("OldPass") as? String) ?: ""
-                    val passNew = (a.get("NewPass") as? String) ?: ""
-                    val passNew2 = (a.get("NewPassAgain") as? String) ?: ""
-                    Cwtch.changePassword(profile, pass, passNew, passNew2)
-                }
-                "GetMessage" -> {
-                    val profile = (a.get("ProfileOnion") as? String) ?: ""
-                    val conversation = a.getInt("conversation").toLong()
-                    val indexI = a.getInt("index").toLong()
-                    Log.d(TAG, "Cwtch GetMessage " + profile + " " + conversation.toString() + " " + indexI.toString())
-                    return Result.success(Data.Builder().putString("result", Cwtch.getMessage(profile, conversation, indexI)).build())
-                }
-                "GetMessageByID" -> {
-                    val profile = (a.get("ProfileOnion") as? String) ?: ""
-                    val conversation = a.getInt("conversation").toLong()
-                    val id = a.getInt("id").toLong()
-                    return Result.success(Data.Builder().putString("result", Cwtch.getMessageByID(profile, conversation, id)).build())
-                }
-                "GetMessageByContentHash" -> {
-                    val profile = (a.get("ProfileOnion") as? String) ?: ""
-                    val conversation = a.getInt("conversation").toLong()
-                    val contentHash = (a.get("contentHash") as? String) ?: ""
-                    return Result.success(Data.Builder().putString("result", Cwtch.getMessagesByContentHash(profile, conversation, contentHash)).build())
-                }
-                "UpdateMessageAttribute" -> {
-                    val profile = (a.get("ProfileOnion") as? String) ?: ""
-                    val conversation = a.getInt("conversation").toLong()
-                    val channel = a.getInt("chanenl").toLong()
-                    val midx = a.getInt("midx").toLong()
-                    val key = (a.get("key") as? String) ?: ""
-                    val value = (a.get("value") as? String) ?: ""
-                    Cwtch.setMessageAttribute(profile, conversation, channel, midx, key, value)
-                }
-                "AcceptConversation" -> {
-                    val profile = (a.get("ProfileOnion") as? String) ?: ""
-                    val conversation = a.getInt("conversation").toLong()
-                    Cwtch.acceptConversation(profile, conversation)
-                }
-                "BlockContact" -> {
-                    val profile = (a.get("ProfileOnion") as? String) ?: ""
-                    val conversation = a.getInt("conversation").toLong()
-                    Cwtch.blockContact(profile, conversation)
-                }
-                "UnblockContact" -> {
-                    val profile = (a.get("ProfileOnion") as? String) ?: ""
-                    val conversation = a.getInt("conversation").toLong()
-                    Cwtch.unblockContact(profile, conversation)
-                }
-
-                "DownloadFile" -> {
-                    val profile = (a.get("ProfileOnion") as? String) ?: ""
-                    val conversation = a.getInt("conversation").toLong()
-                    val filepath = (a.get("filepath") as? String) ?: ""
-                    val manifestpath = (a.get("manifestpath") as? String) ?: ""
-                    val filekey = (a.get("filekey") as? String) ?: ""
-                    // FIXME: Prevent spurious calls by Intent
-                    if (profile != "") {
-                        Cwtch.downloadFile(profile, conversation, filepath, manifestpath, filekey)
-                    }
-                }
-                "CheckDownloadStatus" -> {
-                    val profile = (a.get("ProfileOnion") as? String) ?: ""
-                    val fileKey = (a.get("fileKey") as? String) ?: ""
-                    Cwtch.checkDownloadStatus(profile, fileKey)
-                }
-                "VerifyOrResumeDownload" -> {
-                    val profile = (a.get("ProfileOnion") as? String) ?: ""
-                    val conversation = a.getInt("conversation").toLong()
-                    val fileKey = (a.get("fileKey") as? String) ?: ""
-                    Cwtch.verifyOrResumeDownload(profile, conversation, fileKey)
-                }
-                "SendProfileEvent" -> {
-                    val onion = (a.get("onion") as? String) ?: ""
-                    val jsonEvent = (a.get("jsonEvent") as? String) ?: ""
-                    Cwtch.sendProfileEvent(onion, jsonEvent)
-                }
-                "SendAppEvent" -> {
-                    val jsonEvent = (a.get("jsonEvent") as? String) ?: ""
-                    Cwtch.sendAppEvent(jsonEvent)
-                }
-                "ResetTor" -> {
-                    Cwtch.resetTor()
-                }
-                "ImportBundle" -> {
-                    val profile = (a.get("ProfileOnion") as? String) ?: ""
-                    val bundle = (a.get("bundle") as? String) ?: ""
-                    Cwtch.importBundle(profile, bundle)
-                }
-                "CreateGroup" -> {
-                    val profile = (a.get("ProfileOnion") as? String) ?: ""
-                    val server = (a.get("server") as? String) ?: ""
-                    val groupName = (a.get("groupName") as? String) ?: ""
-                    Cwtch.createGroup(profile, server, groupName)
-                }
-                "DeleteProfile" -> {
-                    val profile = (a.get("ProfileOnion") as? String) ?: ""
-                    val pass = (a.get("pass") as? String) ?: ""
-                    Cwtch.deleteProfile(profile, pass)
-                }
-                "ArchiveConversation" -> {
-                    val profile = (a.get("ProfileOnion") as? String) ?: ""
-                    val conversation = a.getInt("conversation").toLong()
-                    Cwtch.archiveConversation(profile, conversation)
-                }
-                "DeleteConversation" -> {
-                    val profile = (a.get("ProfileOnion") as? String) ?: ""
-                    val conversation = a.getInt("conversation").toLong()
-                    Cwtch.deleteContact(profile, conversation)
-                }
-                "SetProfileAttribute" -> {
-                    val profile = (a.get("ProfileOnion") as? String) ?: ""
-                    val key = (a.get("Key") as? String) ?: ""
-                    val v = (a.get("Val") as? String) ?: ""
-                    Cwtch.setProfileAttribute(profile, key, v)
-                }
-                "SetConversationAttribute" -> {
-                    val profile = (a.get("ProfileOnion") as? String) ?: ""
-                    val conversation = a.getInt("conversation").toLong()
-                    val key = (a.get("Key") as? String) ?: ""
-                    val v = (a.get("Val") as? String) ?: ""
-                    Cwtch.setConversationAttribute(profile, conversation, key, v)
-                }
-                "Shutdown" -> {
-                    Cwtch.shutdownCwtch();
-                    return Result.success()
-                }
-                "LoadServers" -> {
-                    val password = (a.get("Password") as? String) ?: ""
-                    Cwtch.loadServers(password)
-                }
-                "CreateServer" -> {
-                    val password = (a.get("Password") as? String) ?: ""
-                    val desc = (a.get("Description") as? String) ?: ""
-                    val autostart = (a.get("Autostart") as? Boolean) ?: false
-                    Cwtch.createServer(password, desc, autostart)
-                }
-                "DeleteServer" -> {
-                    val serverOnion = (a.get("ServerOnion") as? String) ?: ""
-                    val password = (a.get("Password") as? String) ?: ""
-                    Cwtch.deleteServer(serverOnion, password)
-                }
-                "LaunchServers" -> {
-                    Cwtch.launchServers()
-                }
-                "LaunchServer" -> {
-                    val serverOnion = (a.get("ServerOnion") as? String) ?: ""
-                    Cwtch.launchServer(serverOnion)
-                }
-                "StopServer" -> {
-                    val serverOnion = (a.get("ServerOnion") as? String) ?: ""
-                    Cwtch.stopServer(serverOnion)
-                }
-                "StopServers" -> {
-                    Cwtch.stopServers()
-                }
-                "DestroyServers" -> {
-                    Cwtch.destroyServers()
-                }
-                "SetServerAttribute" -> {
-                    val serverOnion = (a.get("ServerOnion") as? String) ?: ""
-                    val key = (a.get("Key") as? String) ?: ""
-                    val v = (a.get("Val") as? String) ?: ""
-                    Cwtch.setServerAttribute(serverOnion, key, v)
-                }
+                // Event passing translations from Flutter to Kotlin worker scope so the worker can use them
                 "L10nInit" -> {
                     notificationSimple = (a.get("notificationSimple") as? String) ?: "New Message"
                     notificationConversationInfo = (a.get("notificationConversationInfo") as? String)
                             ?: "New Message From "
-                }
-                "ExportProfile" -> {
-                    val profileOnion = (a.get("ProfileOnion") as? String) ?: ""
-                    val file = StringBuilder().append(this.applicationContext.cacheDir).append("/").append((a.get("file") as? String) ?: "").toString()
-                    Log.i("FlwtchWorker", "constructing exported file " + file);
-                    Cwtch.exportProfile(profileOnion,file)
-                }
-                "ImportProfile" -> {
-                    val file = (a.get("file") as? String) ?: ""
-                    val pass = (a.get("pass") as? String) ?: ""
-                    return Result.success(Data.Builder().putString("result", Cwtch.importProfile(file, pass)).build());
                 }
                 else -> {
                     Log.i(TAG, "unknown command: " + method);
                     return Result.failure()
                 }
             }
-
             return Result.success()
     }
 

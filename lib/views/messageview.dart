@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:crypto/crypto.dart';
+import 'package:cwtch/cwtch/cwtch.dart';
 import 'package:cwtch/cwtch_icons_icons.dart';
 import 'package:cwtch/models/appstate.dart';
 import 'package:cwtch/models/chatmessage.dart';
@@ -278,6 +279,8 @@ class _MessageViewState extends State<MessageView> {
 
     ctrlrCompose.clear();
     focusNode.requestFocus();
+
+    Provider.of<FlwtchState>(context, listen: false).cwtch.SetConversationAttribute(profileOnion, identifier, LastMessageSeenTimeKey, DateTime.now().toIso8601String());
   }
 
   Widget _buildComposeBox() {
