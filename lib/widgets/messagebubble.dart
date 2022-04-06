@@ -32,7 +32,7 @@ class MessageBubbleState extends State<MessageBubble> {
     var fromMe = Provider.of<MessageMetadata>(context).senderHandle == Provider.of<ProfileInfoState>(context).onion;
     var borderRadiousEh = 15.0;
     var showClickableLinks = Provider.of<Settings>(context).isExperimentEnabled(ClickableLinksExperiment);
-
+    var formatMessages = Provider.of<Settings>(context).isExperimentEnabled(FormattingExperiment);
     DateTime messageDate = Provider.of<MessageMetadata>(context).timestamp;
 
     // If the sender is not us, then we want to give them a nickname...
@@ -48,40 +48,27 @@ class MessageBubbleState extends State<MessageBubble> {
     var wdgSender = SelectableText(senderDisplayStr,
         style: TextStyle(fontSize: 9.0, color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor));
 
-    var wdgMessage;
-
-    if (!showClickableLinks) {
-      wdgMessage = SelectableText(
-        widget.content + '\u202F',
-        //key: Key(myKey),
-        focusNode: _focus,
-        style: TextStyle(
-          color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor,
-        ),
-        textAlign: TextAlign.left,
-        textWidthBasis: TextWidthBasis.longestLine,
-      );
-    } else {
-      wdgMessage = SelectableLinkify(
-        text: widget.content + '\u202F',
-        // TODO: onOpen breaks the "selectable" functionality. Maybe something to do with gesture handler?
-        options: LinkifyOptions(looseUrl: true, defaultToHttps: true),
-        linkifiers: [UrlLinkifier()],
-        onOpen: (link) {
-          _modalOpenLink(context, link);
-        },
-        //key: Key(myKey),
-        focusNode: _focus,
-        style: TextStyle(
-          color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor,
-        ),
-        linkStyle: TextStyle(
-          color: Provider.of<Settings>(context).current().mainTextColor,
-        ),
-        textAlign: TextAlign.left,
-        textWidthBasis: TextWidthBasis.longestLine,
-      );
-    }
+    var wdgMessage = SelectableLinkify(
+      text: widget.content + '\u202F',
+      // TODO: onOpen breaks the "selectable" functionality. Maybe something to do with gesture handler?
+      options: LinkifyOptions(messageFormatting: formatMessages, parseLinks: showClickableLinks, looseUrl: true, defaultToHttps: true),
+      linkifiers: [UrlLinkifier()],
+      onOpen: showClickableLinks
+          ? (link) {
+              _modalOpenLink(context, link);
+            }
+          : null,
+      //key: Key(myKey),
+      focusNode: _focus,
+      style: TextStyle(
+        color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor,
+      ),
+      linkStyle: TextStyle(
+        color: Provider.of<Settings>(context).current().mainTextColor,
+      ),
+      textAlign: TextAlign.left,
+      textWidthBasis: TextWidthBasis.longestLine,
+    );
 
     var wdgDecorations = MessageBubbleDecoration(ackd: Provider.of<MessageMetadata>(context).ackd, errored: Provider.of<MessageMetadata>(context).error, fromMe: fromMe, messageDate: messageDate);
 

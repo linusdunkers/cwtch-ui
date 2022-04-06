@@ -368,6 +368,24 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                             inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
                             secondary: Icon(Icons.link, color: settings.current().mainTextColor),
                           )),
+                      Visibility(
+                          visible: settings.experimentsEnabled,
+                          child: SwitchListTile(
+                            title: Text(AppLocalizations.of(context)!.formattingExperiment, style: TextStyle(color: settings.current().mainTextColor)),
+                            subtitle: Text(AppLocalizations.of(context)!.messageFormattingDescription),
+                            value: settings.isExperimentEnabled(FormattingExperiment),
+                            onChanged: (bool value) {
+                              if (value) {
+                                settings.enableExperiment(FormattingExperiment);
+                              } else {
+                                settings.disableExperiment(FormattingExperiment);
+                              }
+                              saveSettings(context);
+                            },
+                            activeTrackColor: settings.theme.defaultButtonActiveColor,
+                            inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
+                            secondary: Icon(Icons.text_fields, color: settings.current().mainTextColor),
+                          )),
                       AboutListTile(
                           icon: appIcon,
                           applicationIcon: Padding(padding: EdgeInsets.all(5), child: Icon(CwtchIcons.cwtch_knott)),

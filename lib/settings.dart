@@ -14,6 +14,7 @@ const ServerManagementExperiment = "servers-experiment";
 const FileSharingExperiment = "filesharing";
 const ImagePreviewsExperiment = "filesharing-images";
 const ClickableLinksExperiment = "clickable-links";
+const FormattingExperiment = "message-formatting";
 
 enum DualpaneMode {
   Single,

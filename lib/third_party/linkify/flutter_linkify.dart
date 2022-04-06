@@ -24,6 +24,8 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //     SOFTWARE.
 
+import 'dart:ui';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -357,11 +359,7 @@ TextSpan buildTextSpan(
                 message: element.url,
                 inlineSpan: LinkableSpan(
                   mouseCursor: SystemMouseCursors.click,
-                  inlineSpan: TextSpan(
-                    text: element.text,
-                    style: linkStyle,
-                    recognizer: onOpen != null ? (TapGestureRecognizer()..onTap = () => onOpen(element)) : null,
-                  ),
+                  inlineSpan: TextSpan(text: element.text, style: linkStyle, recognizer: onOpen != null ? (TapGestureRecognizer()..onTap = () => onOpen(element)) : null, semanticsLabel: element.text),
                 ));
           } else {
             return TooltipSpan(
@@ -372,6 +370,42 @@ TextSpan buildTextSpan(
                   recognizer: onOpen != null ? (TapGestureRecognizer()..onTap = () => onOpen(element)) : null,
                 ));
           }
+        } else if (element is BoldElement) {
+          return TextSpan(text: element.text.replaceAll("*", ""), style: style?.copyWith(fontWeight: FontWeight.bold), semanticsLabel: element.text);
+        } else if (element is ItalicElement) {
+          return TextSpan(text: element.text.replaceAll("*", ""), style: style?.copyWith(fontStyle: FontStyle.italic), semanticsLabel: element.text);
+        } else if (element is SuperElement) {
+          return WidgetSpan(
+              child: Transform.translate(
+            offset: const Offset(2, -6),
+            child: Text(element.text.replaceAll("^", ""),
+                //superscript is usually smaller in size
+                textScaleFactor: 0.7,
+                style: style,
+                semanticsLabel: element.text),
+          ));
+        } else if (element is SubElement) {
+          return WidgetSpan(
+              child: Transform.translate(
+            offset: const Offset(2, 4),
+            child: Text(element.text.replaceAll("_", ""),
+                //superscript is usually smaller in size
+                textScaleFactor: 0.7,
+                style: style,
+                semanticsLabel: element.text),
+          ));
+        } else if (element is StrikeElement) {
+          return TextSpan(
+              text: element.text.replaceAll("~~", ""),
+              style: style?.copyWith(decoration: TextDecoration.lineThrough, decorationColor: style.color, decorationStyle: TextDecorationStyle.solid),
+              semanticsLabel: element.text);
+        } else if (element is CodeElement) {
+          return TextSpan(
+              text: element.text.replaceAll("\`", ""),
+              // monospace fonts at the same size as regular text makes them appear
+              // slightly larger, so we compensate by making them slightly smaller...
+              style: style?.copyWith(fontFamily: "RobotoMono", fontSize: style.fontSize! - 1.0),
+              semanticsLabel: element.text);
         } else {
           return TextSpan(
             text: element.text,

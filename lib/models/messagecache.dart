@@ -19,7 +19,6 @@ class LocalIndexMessage {
 
   late int? messageId;
 
-
   LocalIndexMessage(int? messageId, {cacheOnly = false, isLoading = false}) {
     this.messageId = messageId;
     this.cacheOnly = cacheOnly;
@@ -117,20 +116,20 @@ class MessageCache extends ChangeNotifier {
   // or .failLoad() is called on them to mark them malformed
   // this prevents successive ui message build requests from triggering multiple GetMesssage requests to the backend, as the first one locks a block of messages and the rest wait on that
   void lockIndexes(int start, int end) {
-    for(var i = start; i < end; i++) {
+    for (var i = start; i < end; i++) {
       this.cacheByIndex.insert(i, LocalIndexMessage(null, isLoading: true));
     }
   }
 
   void malformIndexes(int start, int end) {
-    for(var i = start; i < end; i++) {
+    for (var i = start; i < end; i++) {
       this.cacheByIndex[i].failLoad();
     }
   }
 
   void addIndexed(MessageInfo messageInfo, int index) {
     this.cache[messageInfo.metadata.messageID] = messageInfo;
-    if (index < this.cacheByIndex.length ) {
+    if (index < this.cacheByIndex.length) {
       this.cacheByIndex[index].finishLoad(messageInfo.metadata.messageID);
     } else {
       this.cacheByIndex.insert(index, LocalIndexMessage(messageInfo.metadata.messageID));

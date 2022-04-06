@@ -40,7 +40,9 @@ void selectConversation(BuildContext context, int handle) {
   var isLandscape = Provider.of<AppState>(context, listen: false).isLandscape(context);
   if (Provider.of<Settings>(context, listen: false).uiColumns(isLandscape).length == 1) _pushMessageView(context, handle);
   // Set last message seen time in backend
-  Provider.of<FlwtchState>(context, listen: false).cwtch.SetConversationAttribute(Provider.of<ProfileInfoState>(context, listen: false).onion, handle, LastMessageSeenTimeKey, DateTime.now().toUtc().toIso8601String());
+  Provider.of<FlwtchState>(context, listen: false)
+      .cwtch
+      .SetConversationAttribute(Provider.of<ProfileInfoState>(context, listen: false).onion, handle, LastMessageSeenTimeKey, DateTime.now().toUtc().toIso8601String());
 }
 
 void _pushMessageView(BuildContext context, int handle) {

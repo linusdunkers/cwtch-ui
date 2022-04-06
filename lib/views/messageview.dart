@@ -230,7 +230,8 @@ class _MessageViewState extends State<MessageView> {
             ChatMessage cm = new ChatMessage(o: QuotedMessageOverlay, d: quotedMessage);
             Provider.of<FlwtchState>(context, listen: false)
                 .cwtch
-                .SendMessage(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).identifier, jsonEncode(cm)).then(_sendMessageHandler);
+                .SendMessage(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).identifier, jsonEncode(cm))
+                .then(_sendMessageHandler);
           } catch (e) {}
           Provider.of<AppState>(context, listen: false).selectedIndex = null;
         });
@@ -238,7 +239,8 @@ class _MessageViewState extends State<MessageView> {
         ChatMessage cm = new ChatMessage(o: TextMessageOverlay, d: ctrlrCompose.value.text);
         Provider.of<FlwtchState>(context, listen: false)
             .cwtch
-            .SendMessage(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).identifier, jsonEncode(cm)).then(_sendMessageHandler);
+            .SendMessage(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).identifier, jsonEncode(cm))
+            .then(_sendMessageHandler);
       }
     }
   }
@@ -246,14 +248,15 @@ class _MessageViewState extends State<MessageView> {
   void _sendInvitation([String? ignoredParam]) {
     Provider.of<FlwtchState>(context, listen: false)
         .cwtch
-        .SendInvitation(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).identifier, this.selectedContact).then(_sendMessageHandler);
+        .SendInvitation(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).identifier, this.selectedContact)
+        .then(_sendMessageHandler);
   }
 
   void _sendFile(String filePath) {
-
     Provider.of<FlwtchState>(context, listen: false)
         .cwtch
-        .ShareFile(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).identifier, filePath).then(_sendMessageHandler);
+        .ShareFile(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).identifier, filePath)
+        .then(_sendMessageHandler);
   }
 
   void _sendMessageHandler(dynamic messageJson) {
