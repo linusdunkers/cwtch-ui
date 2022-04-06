@@ -37,6 +37,30 @@ abstract class LinkifyElement {
   bool equals(other) => other is LinkifyElement && other.text == text;
 }
 
+class BoldElement extends LinkifyElement {
+  BoldElement(String text) : super(text);
+}
+
+class ItalicElement extends LinkifyElement {
+  ItalicElement(String text) : super(text);
+}
+
+class SuperElement extends LinkifyElement {
+  SuperElement(String text) : super(text);
+}
+
+class SubElement extends LinkifyElement {
+  SubElement(String text) : super(text);
+}
+
+class StrikeElement extends LinkifyElement {
+  StrikeElement(String text) : super(text);
+}
+
+class CodeElement extends LinkifyElement {
+  CodeElement(String text) : super(text);
+}
+
 class LinkableElement extends LinkifyElement {
   final String url;
 
@@ -81,11 +105,10 @@ class LinkifyOptions {
   /// Excludes `.` at end of URLs.
   final bool excludeLastPeriod;
 
-  const LinkifyOptions({
-    this.looseUrl = false,
-    this.defaultToHttps = false,
-    this.excludeLastPeriod = true,
-  });
+  final bool messageFormatting;
+  final bool parseLinks;
+
+  const LinkifyOptions({this.looseUrl = false, this.defaultToHttps = false, this.excludeLastPeriod = true, this.messageFormatting = false, this.parseLinks = false});
 }
 
 const _urlLinkifier = UrlLinkifier();

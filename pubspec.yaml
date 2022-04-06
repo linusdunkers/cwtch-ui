@@ -95,6 +95,11 @@ flutter:
     - family:  CwtchIcons
       fonts:
         - asset: assets/fonts/CwtchIcons.ttf
+    - family: RobotoMono
+      fonts:
+          - asset: assets/fonts/RobotoMono-Regular.ttf
+          - asset: assets/fonts/RobotoMono-Bold.ttf
+            weight: 700
 
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a

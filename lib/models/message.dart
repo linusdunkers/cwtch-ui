@@ -76,7 +76,7 @@ class ByIndex implements CacheHandler {
     return msg;
   }
 
-  Future<MessageInfo?> get( Cwtch cwtch, String profileOnion, int conversationIdentifier, MessageCache cache) async {
+  Future<MessageInfo?> get(Cwtch cwtch, String profileOnion, int conversationIdentifier, MessageCache cache) async {
     // if in cache, get
     if (index < cache.cacheByIndex.length) {
       return cache.getByIndex(index);
@@ -93,22 +93,22 @@ class ByIndex implements CacheHandler {
       }
     }
 
-    cache.lockIndexes(index, index+chunk);
+    cache.lockIndexes(index, index + chunk);
     var msgs = await cwtch.GetMessages(profileOnion, conversationIdentifier, index, chunk);
     int i = 0; // i used to loop through returned messages. if doesn't reach the requested count, we will use it in the finally stanza to error out the remaining asked for messages in the cache
     try {
       List<dynamic> messagesWrapper = jsonDecode(msgs);
 
-      for(; i < messagesWrapper.length; i++) {
+      for (; i < messagesWrapper.length; i++) {
         var messageInfo = messageWrapperToInfo(profileOnion, conversationIdentifier, messagesWrapper[i]);
         cache.addIndexed(messageInfo, index + i);
       }
       //messageWrapperToInfo
     } catch (e, stacktrace) {
-      EnvironmentConfig.debugLog("Error: Getting indexed messages $index to ${index+chunk} failed parsing: " + e.toString() + " " + stacktrace.toString());
+      EnvironmentConfig.debugLog("Error: Getting indexed messages $index to ${index + chunk} failed parsing: " + e.toString() + " " + stacktrace.toString());
     } finally {
       if (i != chunk) {
-        cache.malformIndexes(index+i, index+chunk);
+        cache.malformIndexes(index + i, index + chunk);
       }
     }
     return cache.getByIndex(index);
@@ -145,7 +145,6 @@ class ById implements CacheHandler {
     }
     return fetch(cwtch, profileOnion, conversationIdentifier, cache);
   }
-
 }
 
 class ByContentHash implements CacheHandler {
@@ -167,7 +166,7 @@ class ByContentHash implements CacheHandler {
     return Future.value(messageInfo);
   }
 
-  Future<MessageInfo?> get( Cwtch cwtch, String profileOnion, int conversationIdentifier, MessageCache cache) async {
+  Future<MessageInfo?> get(Cwtch cwtch, String profileOnion, int conversationIdentifier, MessageCache cache) async {
     var messageInfo = await lookup(cache);
     if (messageInfo != null) {
       return Future.value(messageInfo);
@@ -182,11 +181,7 @@ Future<Message> messageHandler(BuildContext context, String profileOnion, int co
 
   MessageCache? cache;
   try {
-    cache = Provider
-        .of<ProfileInfoState>(context, listen: false)
-        .contactList
-        .getContact(conversationIdentifier)
-        ?.messageCache;
+    cache = Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(conversationIdentifier)?.messageCache;
     if (cache == null) {
       EnvironmentConfig.debugLog("error: cannot get message cache for profile: $profileOnion conversation: $conversationIdentifier");
       return MalformedMessage(malformedMetadata);
@@ -271,6 +266,6 @@ class MessageMetadata extends ChangeNotifier {
     notifyListeners();
   }
 
-  MessageMetadata(
-      this.profileOnion, this.conversationIdentifier, this.messageID, this.timestamp, this.senderHandle, this.senderImage, this.signature, this._attributes, this._ackd, this._error, this.isAuto, this.contenthash);
+  MessageMetadata(this.profileOnion, this.conversationIdentifier, this.messageID, this.timestamp, this.senderHandle, this.senderImage, this.signature, this._attributes, this._ackd, this._error,
+      this.isAuto, this.contenthash);
 }

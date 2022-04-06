@@ -1,6 +1,8 @@
 {
     "@@locale": "pt",
-    "@@last_modified": "2022-03-21T17:12:38+01:00",
+    "@@last_modified": "2022-04-06T22:31:33+02:00",
+    "messageFormattingDescription": "Enable rich text formatting in displayed messages e.g. **bold** and *italic*",
+    "formattingExperiment": "Message Formatting",
     "clickableLinkError": "Error encountered while attempting to open URL",
     "clickableLinksCopy": "Copy URL",
     "clickableLinkOpen": "Open URL",

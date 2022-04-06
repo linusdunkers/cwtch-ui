@@ -61,7 +61,7 @@ typedef VoidFromStringIntFn = void Function(Pointer<Utf8>, int, int);
 typedef get_json_blob_string_function = Pointer<Utf8> Function(Pointer<Utf8> str, Int32 length);
 typedef GetJsonBlobStringFn = Pointer<Utf8> Function(Pointer<Utf8> str, int len);
 
-typedef get_json_blob_from_string_int_string_function = Pointer<Utf8> Function(Pointer<Utf8>, Int32 , Int32, Pointer<Utf8>, Int32);
+typedef get_json_blob_from_string_int_string_function = Pointer<Utf8> Function(Pointer<Utf8>, Int32, Int32, Pointer<Utf8>, Int32);
 typedef GetJsonBlobFromStrIntStrFn = Pointer<Utf8> Function(Pointer<Utf8>, int, int, Pointer<Utf8>, int);
 
 //func GetMessage(profile_ptr *C.char, profile_len C.int, handle_ptr *C.char, handle_len C.int, message_index C.int) *C.char {
@@ -385,7 +385,7 @@ class CwtchFfi implements Cwtch {
     final SendMessage = sendMessage.asFunction<GetJsonBlobFromStrIntStrFn>();
     final u1 = profileOnion.toNativeUtf8();
     final u3 = message.toNativeUtf8();
-    Pointer<Utf8> jsonMessageBytes =  SendMessage(u1, u1.length, contactHandle, u3, u3.length);
+    Pointer<Utf8> jsonMessageBytes = SendMessage(u1, u1.length, contactHandle, u3, u3.length);
     String jsonMessage = jsonMessageBytes.toDartString();
     _UnsafeFreePointerAnyUseOfThisFunctionMustBeDoubleApproved(jsonMessageBytes);
     malloc.free(u1);
