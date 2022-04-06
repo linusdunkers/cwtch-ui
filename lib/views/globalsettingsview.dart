@@ -384,7 +384,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                             },
                             activeTrackColor: settings.theme.defaultButtonActiveColor,
                             inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
-                            secondary: Icon(Icons.link, color: settings.current().mainTextColor),
+                            secondary: Icon(Icons.text_fields, color: settings.current().mainTextColor),
                           )),
                       AboutListTile(
                           icon: appIcon,

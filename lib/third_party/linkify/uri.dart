@@ -25,6 +25,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+import 'package:cwtch/config.dart';
+
 import 'linkify.dart';
 
 final _urlRegex = RegExp(
@@ -209,7 +211,9 @@ class UrlLinkifier extends Linkifier {
           // we can jump straight to message formatting...
           list.addAll(parseFormatting(element, options));
         } else {
-          // unreachable
+          // unreachable - if we get here then there is something wrong in the above logic since every combination of
+          // formatting options should have already been accounted for.
+          EnvironmentConfig.debugLog("'unreachable' code path in formatting has been triggered. this is very likely a bug - please report $options");
         }
       }
     });
