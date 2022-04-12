@@ -171,6 +171,9 @@ class SelectableLinkify extends StatelessWidget {
 
   // TextSpan
 
+  /// Style for code text
+  final TextStyle? codeStyle;
+
   /// Style for non-link text
   final TextStyle? style;
 
@@ -255,6 +258,7 @@ class SelectableLinkify extends StatelessWidget {
     this.linkStyle,
     // RichText
     this.textAlign,
+    this.codeStyle,
     this.textDirection,
     this.minLines,
     this.maxLines,
@@ -291,6 +295,7 @@ class SelectableLinkify extends StatelessWidget {
       buildTextSpan(
         elements,
         style: Theme.of(context).textTheme.bodyText2?.merge(style),
+        codeStyle: Theme.of(context).textTheme.bodyText2?.merge(codeStyle),
         onOpen: onOpen,
         linkStyle: Theme.of(context)
             .textTheme
@@ -347,6 +352,7 @@ TextSpan buildTextSpan(
   List<LinkifyElement> elements, {
   TextStyle? style,
   TextStyle? linkStyle,
+  TextStyle? codeStyle,
   LinkCallback? onOpen,
   bool useMouseRegion = false,
 }) {
@@ -404,7 +410,7 @@ TextSpan buildTextSpan(
               text: element.text.replaceAll("\`", ""),
               // monospace fonts at the same size as regular text makes them appear
               // slightly larger, so we compensate by making them slightly smaller...
-              style: style?.copyWith(fontFamily: "RobotoMono", fontSize: style.fontSize! - 1.0),
+              style: codeStyle?.copyWith(fontFamily: "RobotoMono", fontSize: codeStyle.fontSize! - 1.5),
               semanticsLabel: element.text);
         } else {
           return TextSpan(

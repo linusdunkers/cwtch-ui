@@ -128,8 +128,8 @@ ThemeData mkThemeData(Settings opaque) {
     primaryIconTheme: IconThemeData(
       color: opaque.current().mainTextColor,
     ),
-    primaryColor: opaque.current().backgroundMainColor,
-    canvasColor: opaque.current().backgroundPaneColor,
+    primaryColor: opaque.current().mainTextColor,
+    canvasColor: opaque.current().backgroundMainColor,
     backgroundColor: opaque.current().backgroundMainColor,
     highlightColor: opaque.current().hilightElementColor,
     iconTheme: IconThemeData(
@@ -154,6 +154,7 @@ ThemeData mkThemeData(Settings opaque) {
         actionsIconTheme: IconThemeData(
           color: opaque.current().mainTextColor,
         )),
+
     //bottomNavigationBarTheme: BottomNavigationBarThemeData(type: BottomNavigationBarType.fixed, backgroundColor: opaque.current().backgroundHilightElementColor),  // Can't determine current use
     textButtonTheme: TextButtonThemeData(
       style: ButtonStyle(
@@ -181,7 +182,10 @@ ThemeData mkThemeData(Settings opaque) {
       ),
     ),
     scrollbarTheme: ScrollbarThemeData(isAlwaysShown: false, thumbColor: MaterialStateProperty.all(opaque.current().scrollbarDefaultColor)),
-    tabBarTheme: TabBarTheme(indicator: UnderlineTabIndicator(borderSide: BorderSide(color: opaque.current().defaultButtonActiveColor))),
+    tabBarTheme: TabBarTheme(
+        labelColor: opaque.current().mainTextColor,
+        unselectedLabelColor: opaque.current().mainTextColor,
+        indicator: UnderlineTabIndicator(borderSide: BorderSide(color: opaque.current().defaultButtonActiveColor))),
     dialogTheme: DialogTheme(
         backgroundColor: opaque.current().backgroundPaneColor,
         titleTextStyle: TextStyle(color: opaque.current().mainTextColor),
@@ -207,8 +211,14 @@ ThemeData mkThemeData(Settings opaque) {
       thumbColor: MaterialStateProperty.all(opaque.current().mainTextColor),
       trackColor: MaterialStateProperty.all(opaque.current().dropShadowColor),
     ),
+    // the only way to change the text Selection Context Menu Color ?!
+    brightness: opaque.current().mode == mode_dark ? Brightness.dark : Brightness.light,
     floatingActionButtonTheme: FloatingActionButtonThemeData(
-        backgroundColor: opaque.current().defaultButtonColor, hoverColor: opaque.current().defaultButtonActiveColor, enableFeedback: true, splashColor: opaque.current().defaultButtonActiveColor),
+        foregroundColor: opaque.current().mainTextColor,
+        backgroundColor: opaque.current().defaultButtonColor,
+        hoverColor: opaque.current().defaultButtonActiveColor,
+        enableFeedback: true,
+        splashColor: opaque.current().defaultButtonActiveColor),
     textSelectionTheme: TextSelectionThemeData(
         cursorColor: opaque.current().defaultButtonActiveColor, selectionColor: opaque.current().defaultButtonActiveColor, selectionHandleColor: opaque.current().defaultButtonActiveColor),
   );
