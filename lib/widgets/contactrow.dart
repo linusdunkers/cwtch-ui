@@ -40,7 +40,7 @@ class _ContactRowState extends State<ContactRow> {
     return Card(
         clipBehavior: Clip.antiAlias,
         color: Provider.of<AppState>(context).selectedConversation == contact.identifier ? Provider.of<Settings>(context).theme.backgroundHilightElementColor : null,
-        borderOnForeground: false,
+        borderOnForeground: true,
         margin: EdgeInsets.all(0.0),
         child: InkWell(
           child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [

@@ -18,6 +18,7 @@ OpaqueThemeType GetMidnightTheme(String mode) {
 
 class MidnightDark extends CwtchDark {
   static final Color background = Color(0xFF1B1B1B);
+  static final Color backgroundAlt = Color(0xFF494949);
   static final Color header = Color(0xFF1B1B1B);
   static final Color userBubble = Color(0xFF373737);
   static final Color peerBubble = Color(0xFF494949);
@@ -41,6 +42,7 @@ class MidnightDark extends CwtchDark {
   get messageFromOtherTextColor => font; //whiteishPurple;
   get textfieldBackgroundColor => peerBubble;
   get textfieldBorderColor => userBubble;
+  get backgroundHilightElementColor => backgroundAlt;
 }
 
 class MidnightLight extends CwtchLight {

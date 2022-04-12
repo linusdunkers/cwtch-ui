@@ -19,7 +19,7 @@ class TextMessage extends Message {
     return ChangeNotifierProvider.value(
         value: this.metadata,
         builder: (bcontext, child) {
-          return Text(this.content);
+          return SelectableText(this.content);
         });
   }
 
