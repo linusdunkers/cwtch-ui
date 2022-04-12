@@ -1,49 +1,44 @@
 package im.cwtch.flwtch
 
 import SplashView
+import android.annotation.TargetApi
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import androidx.annotation.NonNull
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.PowerManager
+import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
 import android.util.Log
 import android.view.Window
+import androidx.annotation.NonNull
 import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.work.*
-import io.flutter.embedding.android.SplashScreen
+import cwtch.Cwtch
 import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.android.SplashScreen
 import io.flutter.embedding.engine.FlutterEngine
-import io.flutter.plugin.common.MethodChannel
-import io.flutter.plugin.common.MethodCall
-import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.ErrorLogResult
-
+import io.flutter.plugin.common.MethodCall
+import io.flutter.plugin.common.MethodChannel
+import io.flutter.plugin.common.MethodChannel.Result
 import org.json.JSONObject
-import java.util.concurrent.TimeUnit
-import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
-import java.nio.file.StandardCopyOption
-
-import android.net.Uri
-import android.provider.DocumentsContract
-import android.content.ContentUris
-import android.os.Build
-import android.os.Environment
-import android.database.Cursor
-import android.provider.MediaStore
-
-import cwtch.Cwtch
+import java.util.concurrent.TimeUnit
 
 
 class MainActivity: FlutterActivity() {
     override fun provideSplashScreen(): SplashScreen? = SplashView()
 
+
     // Channel to get app info
     private val CHANNEL_APP_INFO = "test.flutter.dev/applicationInfo"
     private val CALL_APP_INFO = "getNativeLibDir"
+    private val CALL_ASK_BATTERY_EXEMPTION = "requestBatteryExemption"
+    private val CALL_IS_BATTERY_EXEMPT = "isBatteryExempt"
 
     // Channel to get cwtch api calls on
     private val CHANNEL_CWTCH = "cwtch"
@@ -67,6 +62,7 @@ class MainActivity: FlutterActivity() {
     private val FILEPICKER_REQUEST_CODE = 234
     private val PREVIEW_EXPORT_REQUEST_CODE = 235
     private val PROFILE_EXPORT_REQUEST_CODE = 236
+    private val REQUEST_DOZE_WHITELISTING_CODE:Int = 9
     private var dlToProfile = ""
     private var dlToHandle = ""
     private var dlToFileKey = ""
@@ -99,7 +95,7 @@ class MainActivity: FlutterActivity() {
         super.onActivityResult(requestCode, result, intent);
 
         if (intent == null || intent!!.getData() == null) {
-            Log.i("MainActivity:onActivityResult", "user canceled activity");
+            Log.i(TAG, "user canceled activity");
             return;
         }
 
@@ -139,6 +135,8 @@ class MainActivity: FlutterActivity() {
                 os?.close();
                 //Files.delete(sourcePath);
             }
+        } else if (requestCode == REQUEST_DOZE_WHITELISTING_CODE) {
+            checkIgnoreBatteryOpt()
         }
     }
 
@@ -158,8 +156,24 @@ class MainActivity: FlutterActivity() {
         when (call.method) {
             CALL_APP_INFO -> result.success(getNativeLibDir())
                     ?: result.error("Unavailable", "nativeLibDir not available", null);
+            CALL_ASK_BATTERY_EXEMPTION -> result.success(checkIgnoreBatteryOpt()) ?: false;
+            CALL_IS_BATTERY_EXEMPT -> result.success(requestBatteryExemption());
             else -> result.notImplemented()
         }
+    }
+
+    @TargetApi(23)
+    private fun checkIgnoreBatteryOpt(): Boolean {
+        val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
+        return powerManager.isIgnoringBatteryOptimizations(this.packageName) ?: false;
+    }
+
+    @TargetApi(23)
+    private fun requestBatteryExemption() {
+        val i = Intent()
+        i.action = ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+        i.data = Uri.parse("package:" + this.packageName)
+        startActivityForResult(i, REQUEST_DOZE_WHITELISTING_CODE);
     }
 
     private fun getNativeLibDir(): String {
@@ -489,9 +503,7 @@ class MainActivity: FlutterActivity() {
         // We need to do this here because after a "pause" flutter is still running
         // but we might have lost sync with the background process...
         Log.i("MainActivity.kt", "Call ReconnectCwtchForeground")
-        val data: Data = Data.Builder().putString(FlwtchWorker.KEY_METHOD, "ReconnectCwtchForeground").putString(FlwtchWorker.KEY_ARGS, "{}").build()
-        val workRequest = OneTimeWorkRequestBuilder<FlwtchWorker>().setInputData(data).build()
-        WorkManager.getInstance(applicationContext).enqueue(workRequest)
+        Cwtch.reconnectCwtchForeground()
     }
 
     override fun onStop() {

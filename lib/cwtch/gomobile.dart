@@ -57,6 +57,18 @@ class CwtchGomobile implements Cwtch {
     return cwtchPlatform.invokeMethod("Start", {"appDir": cwtchDir, "torPath": torPath});
   }
 
+  //* Android Only Requests
+
+  Future<bool> IsBatteryExempt() async {
+    return await appInfoPlatform?.invokeMethod('isBatteryExempt') ?? false;
+  }
+
+  Future<void> RequestBatteryExemption() async {
+    await appInfoPlatform?.invokeMethod('requestBatteryExemption');
+  }
+
+  //* End Android Only Requests
+
   @override
   // ignore: non_constant_identifier_names
   Future<void> ReconnectCwtchForeground() async {
