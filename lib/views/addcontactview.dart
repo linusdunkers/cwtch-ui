@@ -21,6 +21,10 @@ import '../main.dart';
 /// NOTE: This view makes use of the global Error Handler to receive events from the Cwtch Library (for validating
 /// error states caused by incorrect import string or duplicate requests to add a specific contact)
 class AddContactView extends StatefulWidget {
+  final newGroup;
+
+  const AddContactView({Key? key, this.newGroup}) : super(key: key);
+
   @override
   _AddContactViewState createState() => _AddContactViewState();
 }
@@ -52,9 +56,10 @@ class _AddContactViewState extends State<AddContactView> {
     ctrlrOnion.text = Provider.of<ProfileInfoState>(context).onion;
 
     /// We display a different number of tabs depending on the experiment setup
-    bool groupsEnabled = Provider.of<Settings>(context).isExperimentEnabled(TapirGroupsExperiment);
-    return Consumer<ErrorHandler>(builder: (context, globalErrorHandler, child) {
+    bool groupsEnabled = Provider.of<Settings>(context, listen: false).isExperimentEnabled(TapirGroupsExperiment);
+    return Consumer<ErrorHandler>(builder: (bcontext, globalErrorHandler, child) {
       return DefaultTabController(
+          initialIndex: widget.newGroup && groupsEnabled ? 1 : 0,
           length: groupsEnabled ? 2 : 1,
           child: Column(children: [
             (groupsEnabled ? getTabBarWithGroups() : getTabBarWithAddPeerOnly()),
@@ -62,10 +67,10 @@ class _AddContactViewState extends State<AddContactView> {
                 child: TabBarView(
               children: (groupsEnabled
                   ? [
-                      addPeerTab(),
-                      addGroupTab(),
+                      addPeerTab(bcontext),
+                      addGroupTab(bcontext),
                     ]
-                  : [addPeerTab()]),
+                  : [addPeerTab(bcontext)]),
             )),
           ]));
     });
@@ -105,7 +110,7 @@ class _AddContactViewState extends State<AddContactView> {
 
   /// The Add Peer Tab allows a peer to add a specific non-group peer to their contact lists
   /// We also provide a convenient way to copy their onion.
-  Widget addPeerTab() {
+  Widget addPeerTab(bcontext) {
     return Scrollbar(
         child: SingleChildScrollView(
             clipBehavior: Clip.antiAlias,
@@ -152,18 +157,18 @@ class _AddContactViewState extends State<AddContactView> {
                           return null;
                         },
                         onChanged: (String importBundle) async {
-                          var profileOnion = Provider.of<ProfileInfoState>(context, listen: false).onion;
-                          Provider.of<FlwtchState>(context, listen: false).cwtch.ImportBundle(profileOnion, importBundle.replaceFirst("cwtch:", ""));
+                          var profileOnion = Provider.of<ProfileInfoState>(bcontext, listen: false).onion;
+                          Provider.of<FlwtchState>(bcontext, listen: false).cwtch.ImportBundle(profileOnion, importBundle.replaceFirst("cwtch:", ""));
 
                           Future.delayed(const Duration(milliseconds: 500), () {
                             if (globalErrorHandler.importBundleSuccess) {
                               // TODO: This isn't ideal, but because onChange can be fired during this future check
                               // and because the context can change after being popped we have this kind of double assertion...
                               // There is probably a better pattern to handle this...
-                              if (AppLocalizations.of(context) != null) {
-                                final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.successfullAddedContact + importBundle));
-                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                Navigator.popUntil(context, (route) => route.settings.name == "conversations");
+                              if (AppLocalizations.of(bcontext) != null) {
+                                final snackBar = SnackBar(content: Text(AppLocalizations.of(bcontext)!.successfullAddedContact + importBundle));
+                                ScaffoldMessenger.of(bcontext).showSnackBar(snackBar);
+                                Navigator.popUntil(bcontext, (route) => route.settings.name == "conversations");
                               }
                             }
                           });
@@ -174,10 +179,10 @@ class _AddContactViewState extends State<AddContactView> {
   }
 
   /// TODO Add Group Pane
-  Widget addGroupTab() {
+  Widget addGroupTab(bcontext) {
     // TODO We should replace with with a "Paste in Server Key Bundle"
-    if (Provider.of<ProfileInfoState>(context).serverList.servers.isEmpty) {
-      return Text(AppLocalizations.of(context)!.addServerFirst);
+    if (Provider.of<ProfileInfoState>(bcontext).serverList.servers.isEmpty) {
+      return Text(AppLocalizations.of(bcontext)!.addServerFirst);
     }
 
     return Scrollbar(
@@ -205,11 +210,7 @@ class _AddContactViewState extends State<AddContactView> {
                             },
                             isExpanded: true, // magic property
                             value: server,
-                            items: Provider.of<ProfileInfoState>(context)
-                                .serverList
-                                .servers
-                                .where((serverInfo) => serverInfo.status == "Synced")
-                                .map<DropdownMenuItem<String>>((RemoteServerInfoState serverInfo) {
+                            items: Provider.of<ProfileInfoState>(bcontext).serverList.servers.map<DropdownMenuItem<String>>((RemoteServerInfoState serverInfo) {
                               return DropdownMenuItem<String>(
                                 value: serverInfo.onion,
                                 child: Text(
@@ -221,13 +222,13 @@ class _AddContactViewState extends State<AddContactView> {
                         SizedBox(
                           height: 20,
                         ),
-                        CwtchLabel(label: AppLocalizations.of(context)!.groupNameLabel),
+                        CwtchLabel(label: AppLocalizations.of(bcontext)!.groupNameLabel),
                         SizedBox(
                           height: 20,
                         ),
                         CwtchTextField(
                           controller: ctrlrGroupName,
-                          hintText: AppLocalizations.of(context)!.groupNameLabel,
+                          hintText: AppLocalizations.of(bcontext)!.groupNameLabel,
                           onChanged: (newValue) {},
                           validator: (value) {},
                         ),
@@ -236,33 +237,17 @@ class _AddContactViewState extends State<AddContactView> {
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            var profileOnion = Provider.of<ProfileInfoState>(context, listen: false).onion;
-                            Provider.of<FlwtchState>(context, listen: false).cwtch.CreateGroup(profileOnion, server, ctrlrGroupName.text);
+                            var profileOnion = Provider.of<ProfileInfoState>(bcontext, listen: false).onion;
+                            Provider.of<FlwtchState>(bcontext, listen: false).cwtch.CreateGroup(profileOnion, server, ctrlrGroupName.text);
                             Future.delayed(const Duration(milliseconds: 500), () {
                               final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.successfullAddedContact + " " + ctrlrGroupName.text));
-                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                              Navigator.pop(context);
+                              ScaffoldMessenger.of(bcontext).showSnackBar(snackBar);
+                              Navigator.pop(bcontext);
                             });
                           },
                           child: Text(AppLocalizations.of(context)!.createGroupBtn),
                         ),
                       ],
                     )))));
-  }
-
-  /// TODO Manage Servers Tab
-  Widget manageServersTab() {
-    final tiles = Provider.of<ProfileInfoState>(context).serverList.servers.map((RemoteServerInfoState server) {
-      return ChangeNotifierProvider<RemoteServerInfoState>.value(
-          value: server,
-          child: ListTile(
-            title: Text(server.onion),
-          ));
-    });
-    final divided = ListTile.divideTiles(
-      context: context,
-      tiles: tiles,
-    ).toList();
-    return ListView(children: divided);
   }
 }

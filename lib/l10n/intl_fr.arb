@@ -1,8 +1,9 @@
 {
     "@@locale": "fr",
-    "@@last_modified": "2022-04-06T22:31:33+02:00",
-    "messageFormattingDescription": "Enable rich text formatting in displayed messages e.g. **bold** and *italic*",
-    "formattingExperiment": "Message Formatting",
+    "@@last_modified": "2022-04-12T20:56:53+02:00",
+    "thisFeatureRequiresGroupExpermientsToBeEnabled": "This feature requires the Groups Experiment to be enabled in Settings",
+    "messageFormattingDescription": "Activer la mise en forme de texte enrichi dans les messages affichés, par exemple **gras** et *italique*",
+    "formattingExperiment": "Mise en forme des messages",
     "clickableLinksWarning": "L'ouverture de cette URL lancera une application en dehors de Cwtch et peut révéler des métadonnées ou compromettre la sécurité de Cwtch. N'ouvrez que les URLs de personnes en qui vous avez confiance. Êtes-vous sûr de vouloir continuer ?",
     "clickableLinksCopy": "Copier l'URL",
     "clickableLinkOpen": "Ouvrir l'URL",
