@@ -128,7 +128,7 @@ class _ContactsViewState extends State<ContactsView> {
           actions: getActions(context),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: _pushAddContact,
+          onPressed: _modalAddImportChoice,
           tooltip: AppLocalizations.of(context)!.tooltipAddContact,
           child: const Icon(CwtchIcons.person_add_alt_1_24px),
         ),
@@ -204,14 +204,18 @@ class _ContactsViewState extends State<ContactsView> {
     return RepaintBoundary(child: ListView(children: divided));
   }
 
-  void _pushAddContact() {
+  void _pushAddContact(bool newGroup) {
+    // close modal
+    Navigator.popUntil(context, (route) => route.settings.name == "conversations");
+
+    // open add contact  / create group pane
     Navigator.of(context).push(MaterialPageRoute<void>(
       builder: (BuildContext bcontext) {
         return MultiProvider(
           providers: [
             ChangeNotifierProvider.value(value: Provider.of<ProfileInfoState>(context)),
           ],
-          child: AddContactView(),
+          child: AddContactView(newGroup: newGroup),
         );
       },
     ));
@@ -227,5 +231,80 @@ class _ContactsViewState extends State<ContactsView> {
         );
       },
     ));
+  }
+
+  void _modalAddImportChoice() {
+    bool groupsEnabled = Provider.of<Settings>(context, listen: false).isExperimentEnabled(TapirGroupsExperiment);
+
+    showModalBottomSheet<void>(
+        context: context,
+        isScrollControlled: true,
+        builder: (BuildContext context) {
+          return Padding(
+              padding: MediaQuery.of(context).viewInsets,
+              child: RepaintBoundary(
+                  child: Container(
+                height: 200, // bespoke value courtesy of the [TextField] docs
+                child: Center(
+                    child: Padding(
+                        padding: EdgeInsets.all(10.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                              Spacer(),
+                              Expanded(
+                                  child: Tooltip(
+                                      message: AppLocalizations.of(context)!.tooltipAddContact,
+                                      child: ElevatedButton(
+                                        child: Text(AppLocalizations.of(context)!.addContact, semanticsLabel: AppLocalizations.of(context)!.addContact),
+                                        onPressed: () {
+                                          _pushAddContact(false);
+                                        },
+                                      ))),
+                              Spacer()
+                            ]),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                              Spacer(),
+                              Expanded(
+                                child: Tooltip(
+                                    message: groupsEnabled ? AppLocalizations.of(context)!.addServerTooltip : AppLocalizations.of(context)!.thisFeatureRequiresGroupExpermientsToBeEnabled,
+                                    child: ElevatedButton(
+                                      child: Text(AppLocalizations.of(context)!.addServerTitle, semanticsLabel: AppLocalizations.of(context)!.addServerTitle),
+                                      onPressed: groupsEnabled
+                                          ? () {
+                                              _pushAddContact(false);
+                                            }
+                                          : null,
+                                    )),
+                              ),
+                              Spacer()
+                            ]),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                              Spacer(),
+                              Expanded(
+                                  child: Tooltip(
+                                      message: groupsEnabled ? AppLocalizations.of(context)!.createGroupTitle : AppLocalizations.of(context)!.thisFeatureRequiresGroupExpermientsToBeEnabled,
+                                      child: ElevatedButton(
+                                        child: Text(AppLocalizations.of(context)!.createGroupTitle, semanticsLabel: AppLocalizations.of(context)!.createGroupTitle),
+                                        onPressed: groupsEnabled
+                                            ? () {
+                                                _pushAddContact(true);
+                                              }
+                                            : null,
+                                      ))),
+                              Spacer()
+                            ]),
+                          ],
+                        ))),
+              )));
+        });
   }
 }
