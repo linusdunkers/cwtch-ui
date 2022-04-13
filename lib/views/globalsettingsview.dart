@@ -227,7 +227,8 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                               if (value) {
                                 requestBatteryExemption();
                               } else {
-                                // We don't ask for it to be turned off, user has to manually in android settings, so this is a NOP
+                                // We can't ask for it to be turned off, show an informational popup
+                                showBatteryDialog(context);
                               }
                             },
                             activeTrackColor: settings.theme.defaultButtonColor,
@@ -466,6 +467,32 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                     ]))));
       });
     });
+  }
+
+  showBatteryDialog(BuildContext context) {
+    Widget okButton = ElevatedButton(
+        child: Text(AppLocalizations.of(context)!.okButton),
+        onPressed: () {
+                Navigator.of(context).pop();
+            },
+          );
+
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text(AppLocalizations.of(context)!.settingsAndroidPowerReenablePopup),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }
 

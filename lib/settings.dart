@@ -109,8 +109,8 @@ class Settings extends ChangeNotifier {
     // single pane vs dual pane preferences
     _uiColumnModePortrait = uiColumnModeFromString(settings["UIColumnModePortrait"]);
     _uiColumnModeLandscape = uiColumnModeFromString(settings["UIColumnModeLandscape"]);
-
     _notificationPolicy = notificationPolicyFromString(settings["NotificationPolicy"]);
+
     _notificationContent = notificationContentFromString(settings["NotificationContent"]);
 
     // auto-download folder
@@ -275,7 +275,7 @@ class Settings extends ChangeNotifier {
 
   static NotificationPolicy notificationPolicyFromString(String? np) {
     switch (np) {
-      case "NotificationPolicy.None":
+      case "NotificationPolicy.Mute":
         return NotificationPolicy.Mute;
       case "NotificationPolicy.OptIn":
         return NotificationPolicy.OptIn;
