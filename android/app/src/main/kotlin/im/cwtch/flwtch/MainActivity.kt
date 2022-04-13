@@ -12,6 +12,7 @@ import android.os.PowerManager
 import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
 import android.util.Log
 import android.view.Window
+import android.view.WindowManager
 import androidx.annotation.NonNull
 import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -70,6 +71,20 @@ class MainActivity: FlutterActivity() {
     private var dlToHandle = ""
     private var dlToFileKey = ""
     private var exportFromPath = ""
+
+    override fun onCreate(savedInstanceState: android.os.Bundle?) {
+        super.onCreate(savedInstanceState)
+        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
+        // Todo: when we support SDK 31
+        // hideOverlay()
+    }
+
+    /*
+    @TargetApi(31)
+    fun hideOverlay() {
+        window.setHideOverlayWindows(true);
+    }
+    */
 
     // handles clicks received from outside the app (ie, notifications)
     override fun onNewIntent(intent: Intent) {
