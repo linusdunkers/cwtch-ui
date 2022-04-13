@@ -1,7 +1,11 @@
 {
     "@@locale": "fr",
-    "@@last_modified": "2022-04-12T20:56:53+02:00",
-    "thisFeatureRequiresGroupExpermientsToBeEnabled": "This feature requires the Groups Experiment to be enabled in Settings",
+    "@@last_modified": "2022-04-13T22:56:39+02:00",
+    "okButton": "OK",
+    "settingsAndroidPowerReenablePopup": "Cannot re-enable Battery Optimization from within Cwtch. Please go to Android \/ Settings \/ Apps \/ Cwtch \/ Battery and set Usage to 'Optimized'",
+    "thisFeatureRequiresGroupExpermientsToBeEnabled": "Cette fonctionnalité nécessite que l’expérience Groupes soit activée dans Paramètres",
+    "settingAndroidPowerExemptionDescription": "Android applique par défaut un profil de gestion de l'énergie \"optimisé\" aux applications, ce qui peut entraîner leur arrêt ou leur suppression. Demandez à Android d'exempter Cwtch de ce profil pour une meilleure stabilité mais une plus grande consommation d'énergie.",
+    "settingAndroidPowerExemption": "Android ignore les optimisations de la batterie",
     "messageFormattingDescription": "Activer la mise en forme de texte enrichi dans les messages affichés, par exemple **gras** et *italique*",
     "formattingExperiment": "Mise en forme des messages",
     "clickableLinksWarning": "L'ouverture de cette URL lancera une application en dehors de Cwtch et peut révéler des métadonnées ou compromettre la sécurité de Cwtch. N'ouvrez que les URLs de personnes en qui vous avez confiance. Êtes-vous sûr de vouloir continuer ?",

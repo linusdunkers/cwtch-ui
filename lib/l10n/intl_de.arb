@@ -1,6 +1,10 @@
 {
     "@@locale": "de",
-    "@@last_modified": "2022-04-12T20:56:53+02:00",
+    "@@last_modified": "2022-04-13T22:56:39+02:00",
+    "okButton": "OK",
+    "settingsAndroidPowerReenablePopup": "Cannot re-enable Battery Optimization from within Cwtch. Please go to Android \/ Settings \/ Apps \/ Cwtch \/ Battery and set Usage to 'Optimized'",
+    "settingAndroidPowerExemptionDescription": "Optional: Request Android to exempt Cwtch from optimized power management. This will result in better stability at the cost of greater battery use.",
+    "settingAndroidPowerExemption": "Android Ignore Battery Optimizations",
     "thisFeatureRequiresGroupExpermientsToBeEnabled": "This feature requires the Groups Experiment to be enabled in Settings",
     "messageFormattingDescription": "Enable rich text formatting in displayed messages e.g. **bold** and *italic*",
     "formattingExperiment": "Message Formatting",

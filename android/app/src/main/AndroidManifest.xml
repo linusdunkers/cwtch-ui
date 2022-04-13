@@ -46,6 +46,10 @@
     <!--Needed to run in background (lol)-->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
+    <!-- Ability to ask user to exempt app from power management (which can kill it more frequently especially on some devices.
+         Allows app to use ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS -->
+    <uses-permission-sdk-23 android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+
     <!--Needed to check if activity is foregrounded or if messages from the service should be queued-->
     <uses-permission android:name="android.permission.GET_TASKS" />
 
