@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'package:cwtch/cwtch_icons_icons.dart';
 import 'package:cwtch/models/servers.dart';
 import 'package:cwtch/widgets/folderpicker.dart';
@@ -13,6 +14,7 @@ import 'package:cwtch/themes/opaque.dart';
 import 'package:cwtch/themes/pumpkin.dart';
 import 'package:cwtch/themes/vampire.dart';
 import 'package:cwtch/themes/witch.dart';
+import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:cwtch/settings.dart';
@@ -29,10 +31,51 @@ class GlobalSettingsView extends StatefulWidget {
 }
 
 class _GlobalSettingsViewState extends State<GlobalSettingsView> {
+  static const androidSettingsChannel = const MethodChannel('androidSettings');
+  static const androidSettingsChangeChannel = const MethodChannel('androidSettingsChanged');
+  bool powerExempt = false;
+
   @override
   void dispose() {
     super.dispose();
   }
+
+  @override
+  void initState() {
+    super.initState();
+    androidSettingsChangeChannel.setMethodCallHandler(handleSettingsChanged);
+
+    if (Platform.isAndroid) {
+      isBatteryExempt().then((value) => setState(() { powerExempt = value; }) );
+    } else {
+      powerExempt = false;
+    }
+  }
+
+  // Handler on method channel for MainActivity/onActivityResult to report the user choice when we ask for power exemption
+  Future<void> handleSettingsChanged(MethodCall call) async {
+    if (call.method == "powerExemptionChange") {
+      if (call.arguments) {
+        setState(() {
+          powerExempt = true;
+        });
+      }
+    }
+  }
+
+  //* Android Only Requests
+
+  Future<bool> isBatteryExempt() async {
+    return await androidSettingsChannel.invokeMethod('isBatteryExempt', {}) ?? false;
+  }
+
+
+  Future<void> requestBatteryExemption() async {
+    await androidSettingsChannel.invokeMethod('requestBatteryExemption', {});
+    return Future.value();
+  }
+
+  //* End Android Only Requests
 
   @override
   Widget build(BuildContext context) {
@@ -172,6 +215,28 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                         height: 40,
                       ),
                       Row(mainAxisAlignment: MainAxisAlignment.center, children: [Text(AppLocalizations.of(context)!.settingGroupBehaviour, style: TextStyle(fontWeight: FontWeight.bold))]),
+                      Visibility(
+                        visible: Platform.isAndroid,
+                          child: SwitchListTile(
+                            title: Text(AppLocalizations.of(context)!.settingAndroidPowerExemption, style: TextStyle(color: settings
+                                .current()
+                                .mainTextColor)),
+                            subtitle: Text(AppLocalizations.of(context)!.settingAndroidPowerExemptionDescription),
+                            value: powerExempt,
+                            onChanged: (bool value) {
+                              if (value) {
+                                requestBatteryExemption();
+                              } else {
+                                // We don't ask for it to be turned off, user has to manually in android settings, so this is a NOP
+                              }
+                            },
+                            activeTrackColor: settings.theme.defaultButtonColor,
+                            inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
+                            secondary: Icon(Icons.power, color: settings
+                                .current()
+                                .mainTextColor),
+                          ),
+                      ),
                       ListTile(
                         title: Text(AppLocalizations.of(context)!.notificationPolicySettingLabel),
                         subtitle: Text(AppLocalizations.of(context)!.notificationPolicySettingDescription),

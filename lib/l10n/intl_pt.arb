@@ -1,6 +1,8 @@
 {
     "@@locale": "pt",
-    "@@last_modified": "2022-04-12T20:56:53+02:00",
+    "@@last_modified": "2022-04-13T02:54:41+02:00",
+    "settingAndroidPowerExemptionDescription": "Android by default applies an \"optimized\" power management profile to apps which can result in them being stopped or killed. Request Android to exempt Cwtch from this for better stability but more power use.",
+    "settingAndroidPowerExemption": "Android Ignore Battery Optimizations",
     "thisFeatureRequiresGroupExpermientsToBeEnabled": "This feature requires the Groups Experiment to be enabled in Settings",
     "messageFormattingDescription": "Enable rich text formatting in displayed messages e.g. **bold** and *italic*",
     "formattingExperiment": "Message Formatting",

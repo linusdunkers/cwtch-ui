@@ -37,6 +37,9 @@ class MainActivity: FlutterActivity() {
     // Channel to get app info
     private val CHANNEL_APP_INFO = "test.flutter.dev/applicationInfo"
     private val CALL_APP_INFO = "getNativeLibDir"
+    private val ANDROID_SETTINGS_CHANNEL_NAME = "androidSettings"
+    private val ANDROID_SETTINGS_CHANGE_NAME= "androidSettingsChanged"
+    private var andoidSettingsChangeChannel: MethodChannel? = null
     private val CALL_ASK_BATTERY_EXEMPTION = "requestBatteryExemption"
     private val CALL_IS_BATTERY_EXEMPT = "isBatteryExempt"
 
@@ -94,6 +97,14 @@ class MainActivity: FlutterActivity() {
     override fun onActivityResult(requestCode: Int, result: Int, intent: Intent?) {
         super.onActivityResult(requestCode, result, intent);
 
+        // has null intent and data
+        if (requestCode == REQUEST_DOZE_WHITELISTING_CODE) {
+            // 0 == "battery optimized" (still)
+            // -1 == "no battery optimization" (exempt!)
+            andoidSettingsChangeChannel!!.invokeMethod("powerExemptionChange", result == -1)
+            return;
+        }
+
         if (intent == null || intent!!.getData() == null) {
             Log.i(TAG, "user canceled activity");
             return;
@@ -135,8 +146,6 @@ class MainActivity: FlutterActivity() {
                 os?.close();
                 //Files.delete(sourcePath);
             }
-        } else if (requestCode == REQUEST_DOZE_WHITELISTING_CODE) {
-            checkIgnoreBatteryOpt()
         }
     }
 
@@ -147,8 +156,10 @@ class MainActivity: FlutterActivity() {
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL_APP_INFO).setMethodCallHandler { call, result -> handleAppInfo(call, result) }
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL_CWTCH).setMethodCallHandler { call, result -> handleCwtch(call, result) }
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, ANDROID_SETTINGS_CHANNEL_NAME).setMethodCallHandler { call, result -> handleAndroidSettings(call, result) }
         notificationClickChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL_NOTIF_CLICK)
         shutdownClickChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL_SHUTDOWN_CLICK)
+        andoidSettingsChangeChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, ANDROID_SETTINGS_CHANGE_NAME)
     }
 
     // MethodChannel CHANNEL_APP_INFO handler (Flutter Channel for requests for Android environment info)
@@ -156,8 +167,16 @@ class MainActivity: FlutterActivity() {
         when (call.method) {
             CALL_APP_INFO -> result.success(getNativeLibDir())
                     ?: result.error("Unavailable", "nativeLibDir not available", null);
-            CALL_ASK_BATTERY_EXEMPTION -> result.success(checkIgnoreBatteryOpt()) ?: false;
-            CALL_IS_BATTERY_EXEMPT -> result.success(requestBatteryExemption());
+            else -> result.notImplemented()
+        }
+    }
+
+    // MethodChannel ANDROID_SETTINGS_CHANNEL_NAME handler (Flutter Channel for requests for Android settings)
+    // Called from lib/view/globalsettingsview.dart
+    private fun handleAndroidSettings(@NonNull call: MethodCall, @NonNull result: Result) {
+        when (call.method) {
+            CALL_IS_BATTERY_EXEMPT -> result.success(checkIgnoreBatteryOpt() ?: false);
+            CALL_ASK_BATTERY_EXEMPTION -> { requestBatteryExemption(); result.success(null); }
             else -> result.notImplemented()
         }
     }
