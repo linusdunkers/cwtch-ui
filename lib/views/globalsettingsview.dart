@@ -46,7 +46,9 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
     androidSettingsChangeChannel.setMethodCallHandler(handleSettingsChanged);
 
     if (Platform.isAndroid) {
-      isBatteryExempt().then((value) => setState(() { powerExempt = value; }) );
+      isBatteryExempt().then((value) => setState(() {
+            powerExempt = value;
+          }));
     } else {
       powerExempt = false;
     }
@@ -68,7 +70,6 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
   Future<bool> isBatteryExempt() async {
     return await androidSettingsChannel.invokeMethod('isBatteryExempt', {}) ?? false;
   }
-
 
   Future<void> requestBatteryExemption() async {
     await androidSettingsChannel.invokeMethod('requestBatteryExemption', {});
@@ -217,26 +218,22 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                       Row(mainAxisAlignment: MainAxisAlignment.center, children: [Text(AppLocalizations.of(context)!.settingGroupBehaviour, style: TextStyle(fontWeight: FontWeight.bold))]),
                       Visibility(
                         visible: Platform.isAndroid,
-                          child: SwitchListTile(
-                            title: Text(AppLocalizations.of(context)!.settingAndroidPowerExemption, style: TextStyle(color: settings
-                                .current()
-                                .mainTextColor)),
-                            subtitle: Text(AppLocalizations.of(context)!.settingAndroidPowerExemptionDescription),
-                            value: powerExempt,
-                            onChanged: (bool value) {
-                              if (value) {
-                                requestBatteryExemption();
-                              } else {
-                                // We can't ask for it to be turned off, show an informational popup
-                                showBatteryDialog(context);
-                              }
-                            },
-                            activeTrackColor: settings.theme.defaultButtonColor,
-                            inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
-                            secondary: Icon(Icons.power, color: settings
-                                .current()
-                                .mainTextColor),
-                          ),
+                        child: SwitchListTile(
+                          title: Text(AppLocalizations.of(context)!.settingAndroidPowerExemption, style: TextStyle(color: settings.current().mainTextColor)),
+                          subtitle: Text(AppLocalizations.of(context)!.settingAndroidPowerExemptionDescription),
+                          value: powerExempt,
+                          onChanged: (bool value) {
+                            if (value) {
+                              requestBatteryExemption();
+                            } else {
+                              // We can't ask for it to be turned off, show an informational popup
+                              showBatteryDialog(context);
+                            }
+                          },
+                          activeTrackColor: settings.theme.defaultButtonColor,
+                          inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
+                          secondary: Icon(Icons.power, color: settings.current().mainTextColor),
+                        ),
                       ),
                       ListTile(
                         title: Text(AppLocalizations.of(context)!.notificationPolicySettingLabel),
@@ -464,6 +461,24 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                               child: SelectableText(AppLocalizations.of(context)!.versionBuilddate.replaceAll("%1", EnvironmentConfig.BUILD_VER).replaceAll("%2", EnvironmentConfig.BUILD_DATE)),
                             )
                           ]),
+                      Visibility(
+                        visible: EnvironmentConfig.BUILD_VER == dev_version && !Platform.isAndroid,
+                        child: FutureBuilder(
+                          future: Provider.of<FlwtchState>(context).cwtch.GetDebugInfo(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return Column(
+                                children: [
+                                  Text("libCwtch Debug Info: " + snapshot.data.toString()),
+                                  Text("Message Cache Size (Mb): " + (Provider.of<FlwtchState>(context).profs.cacheMemUsage() / (1024 * 1024)).toString())
+                                ],
+                              );
+                            } else {
+                              return Container();
+                            }
+                          },
+                        ),
+                      )
                     ]))));
       });
     });
@@ -471,12 +486,11 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
 
   showBatteryDialog(BuildContext context) {
     Widget okButton = ElevatedButton(
-        child: Text(AppLocalizations.of(context)!.okButton),
-        onPressed: () {
-                Navigator.of(context).pop();
-            },
-          );
-
+      child: Text(AppLocalizations.of(context)!.okButton),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(

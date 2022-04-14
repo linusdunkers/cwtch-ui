@@ -127,4 +127,8 @@ class ContactListState extends ChangeNotifier {
     getContact(identifier)?.newMessage(identifier, messageID, timestamp, senderHandle, senderImage, isAuto, data, contenthash, selectedConversation);
     updateLastMessageTime(identifier, DateTime.now());
   }
+
+  int cacheMemUsage() {
+    return _contacts.map((e) => e.messageCache.size()).fold(0, (previousValue, element) => previousValue + element);
+  }
 }

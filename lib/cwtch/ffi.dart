@@ -102,6 +102,9 @@ typedef VoidFromStringIntIntFn = void Function(Pointer<Utf8>, int, int, int);
 typedef appbus_events_function = Pointer<Utf8> Function();
 typedef AppbusEventsFn = Pointer<Utf8> Function();
 
+typedef void_to_string = Pointer<Utf8> Function();
+typedef StringFromVoid = Pointer<Utf8> Function();
+
 const String UNSUPPORTED_OS = "unsupported-os";
 
 class CwtchFfi implements Cwtch {
@@ -816,5 +819,15 @@ class CwtchFfi implements Cwtch {
     malloc.free(utf8pass);
     malloc.free(utf8file);
     return importResult;
+  }
+
+  @override
+  Future<String> GetDebugInfo() async {
+    var getDebugInfo = library.lookup<NativeFunction<void_to_string>>("c_GetDebugInfo");
+    final GetDebugInfo = getDebugInfo.asFunction<StringFromVoid>();
+    Pointer<Utf8> result = GetDebugInfo();
+    String debugResult = result.toDartString();
+    _UnsafeFreePointerAnyUseOfThisFunctionMustBeDoubleApproved(result);
+    return debugResult;
   }
 }
