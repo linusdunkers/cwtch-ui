@@ -118,4 +118,6 @@ abstract class Cwtch {
   void l10nInit(String notificationSimple, String notificationConversationInfo);
 
   void dispose();
+
+  Future<dynamic> GetDebugInfo();
 }

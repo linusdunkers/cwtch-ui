@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 
 import 'package:flutter/foundation.dart';
 
@@ -9,6 +10,11 @@ class MessageInfo {
   late String wrapper;
 
   MessageInfo(this.metadata, this.wrapper);
+
+  int size() {
+    var wrapperSize = wrapper.length * 2;
+    return wrapperSize;
+  }
 }
 
 class LocalIndexMessage {
@@ -154,5 +160,12 @@ class MessageCache extends ChangeNotifier {
   void errCache(int messageID) {
     cache[messageID]?.metadata.error = true;
     notifyListeners();
+  }
+
+  int size() {
+    // very naive cache size, assuming MessageInfo are fairly large on average
+    // and everything else is small in comparison
+    int cacheSize = cache.entries.map((e) => e.value.size()).fold(0, (previousValue, element) => previousValue! + element);
+    return cacheSize + cacheByHash.length * 64 + cacheByIndex.length * 16;
   }
 }

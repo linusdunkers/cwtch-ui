@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 
 import 'profile.dart';
@@ -30,4 +31,8 @@ class ProfileListState extends ChangeNotifier {
   }
 
   int generateUnreadCount(String selectedProfile) => _profiles.where((p) => p.onion != selectedProfile).fold(0, (i, p) => i + p.unreadMessages);
+
+  int cacheMemUsage() {
+    return _profiles.map((e) => e.cacheMemUsage()).fold(0, (previousValue, element) => previousValue + element);
+  }
 }

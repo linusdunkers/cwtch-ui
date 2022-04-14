@@ -326,4 +326,11 @@ class CwtchGomobile implements Cwtch {
   Future<dynamic> ImportProfile(String file, String pass) {
     return cwtchPlatform.invokeMethod("ImportProfile", {"file": file, "pass": pass});
   }
+
+  @override
+  Future GetDebugInfo() {
+    // FIXME: getDebugInfo is less useful for Android so for now
+    // we just assume it will always be called from desktop...
+    throw UnimplementedError();
+  }
 }

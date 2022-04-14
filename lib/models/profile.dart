@@ -339,4 +339,8 @@ class ProfileInfoState extends ChangeNotifier {
     _downloadTriggers[fileKey] = identifier;
     notifyListeners();
   }
+
+  int cacheMemUsage() {
+    return _contacts.cacheMemUsage();
+  }
 }
