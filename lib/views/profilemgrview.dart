@@ -75,6 +75,7 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
               child: Icon(
                 Icons.add,
                 semanticLabel: AppLocalizations.of(context)!.addNewProfileBtn,
+                color: Provider.of<Settings>(context).theme.defaultButtonTextColor,
               ),
             ),
             body: _buildProfileManager(),
