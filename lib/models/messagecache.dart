@@ -165,7 +165,7 @@ class MessageCache extends ChangeNotifier {
   int size() {
     // very naive cache size, assuming MessageInfo are fairly large on average
     // and everything else is small in comparison
-    int cacheSize = cache.entries.map((e) => e.value.size()).fold(0, (previousValue, element) => previousValue! + element);
+    int cacheSize = cache.entries.map((e) => e.value.size()).fold(0, (previousValue, element) => previousValue + element);
     return cacheSize + cacheByHash.length * 64 + cacheByIndex.length * 16;
   }
 }

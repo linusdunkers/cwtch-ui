@@ -41,6 +41,7 @@ class _ServersView extends State<ServersView> {
           child: Icon(
             Icons.add,
             semanticLabel: AppLocalizations.of(context)!.addServerTooltip,
+            color: Provider.of<Settings>(context).theme.defaultButtonTextColor,
           ),
         ),
         body: Consumer<ServerListState>(
