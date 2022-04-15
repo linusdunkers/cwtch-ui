@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cwtch/main.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:win_toast/win_toast.dart';
-//import 'package:desktop_notifications/desktop_notifications.dart';
+import 'package:desktop_notifications/desktop_notifications.dart' as linux_notifications;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_local_notifications_linux/flutter_local_notifications_linux.dart';
 import 'package:flutter_local_notifications_linux/src/model/hint.dart';
@@ -53,6 +55,52 @@ class WindowsNotificationManager implements NotificationsManager {
   }
 }
 
+// LinuxNotificationsManager uses the desktop_notifications package to implement
+// the standard dbus-powered linux desktop notifications.
+class LinuxNotificationsManager implements NotificationsManager {
+  int previous_id = 0;
+  late linux_notifications.NotificationsClient client;
+  late Future<void> Function(String, int) notificationSelectConvo;
+  late String assetsPath;
+
+  LinuxNotificationsManager(Future<void> Function(String, int) notificationSelectConvo) {
+    this.client = linux_notifications.NotificationsClient();
+    this.notificationSelectConvo = notificationSelectConvo;
+    scheduleMicrotask(() async {
+      assetsPath = await detectLinuxAssetsPath();
+    });
+  }
+
+  // Cwtch can install in non flutter supported ways on linux, this code detects where the assets are on Linux
+  Future<String> detectLinuxAssetsPath() async {
+    var devStat =  FileStat.stat("assets");
+    var localStat =  FileStat.stat("data/flutter_assets");
+    var homeStat =  FileStat.stat((Platform.environment["HOME"] ?? "") + "/.local/share/cwtch/data/flutter_assets");
+    var rootStat =  FileStat.stat("/usr/share/cwtch/data/flutter_assets");
+
+    if ((await devStat).type == FileSystemEntityType.directory) {
+      return Directory.current.path; //appPath;
+    } else if ((await localStat).type == FileSystemEntityType.directory) {
+      return path.join(Directory.current.path, "data/flutter_assets/");
+    } else if ((await homeStat).type == FileSystemEntityType.directory) {
+      return (Platform.environment["HOME"] ?? "") + "/.local/share/cwtch/data/flutter_assets/";
+    } else if ((await rootStat).type == FileSystemEntityType.directory) {
+      return "/usr/share/cwtch/data/flutter_assets/";
+    }
+    return "";
+  }
+
+  Future<void> notify(String message, String profile, int conversationId) async {
+    var iconPath = Uri.file(path.join(assetsPath, "assets/knott.png"));
+    client.notify(message, appName: "cwtch", appIcon: iconPath.toString(), replacesId: this.previous_id).then((linux_notifications.Notification value) async {
+      previous_id = value.id;
+      if ((await value.closeReason) == linux_notifications.NotificationClosedReason.dismissed)  {
+        this.notificationSelectConvo(profile, conversationId);
+      }
+    });
+  }
+}
+
 class NotificationPayload {
   late String profileOnion;
   late int convoId;
@@ -67,12 +115,13 @@ class NotificationPayload {
         convoId = json['convoId'];
 
   Map<String, dynamic> toJson() => {
-        'profileOnion': profileOnion,
-        'convoId': convoId,
-      };
+    'profileOnion': profileOnion,
+    'convoId': convoId,
+  };
 }
 
-// FlutterLocalNotificationsPlugin based NotificationManager that handles Linux and MacOS
+// FlutterLocalNotificationsPlugin based NotificationManager that handles MacOS
+// Todo: work with author to allow settings of asset_path so we can use this for Linux and deprecate the LinuxNotificationManager
 // Todo: it can also handle Android, do we want to migrate away from our manual solution?
 class NixNotificationManager implements NotificationsManager {
   late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
@@ -81,19 +130,19 @@ class NixNotificationManager implements NotificationsManager {
   NixNotificationManager(Future<void> Function(String, int) notificationSelectConvo) {
     this.notificationSelectConvo = notificationSelectConvo;
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
     final MacOSInitializationSettings initializationSettingsMacOS = MacOSInitializationSettings(defaultPresentSound: false);
     final LinuxInitializationSettings initializationSettingsLinux =
         LinuxInitializationSettings(defaultActionName: 'Open notification', defaultIcon: AssetsLinuxIcon('assets/knott.png'), defaultSuppressSound: true);
 
     final InitializationSettings initializationSettings = InitializationSettings(android: null, iOS: null, macOS: initializationSettingsMacOS, linux: initializationSettingsLinux);
-
-    flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<MacOSFlutterLocalNotificationsPlugin>()?.requestPermissions(
-          alert: true,
-          badge: false,
-          sound: false,
-        );
-
     scheduleMicrotask(() async {
+      flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<MacOSFlutterLocalNotificationsPlugin>()?.requestPermissions(
+        alert: true,
+        badge: false,
+        sound: false,
+      );
+
       await flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: selectNotification);
     });
   }
@@ -117,7 +166,13 @@ class NixNotificationManager implements NotificationsManager {
 }
 
 NotificationsManager newDesktopNotificationsManager(Future<void> Function(String profileOnion, int convoId) notificationSelectConvo) {
-  if ((Platform.isLinux && !Platform.isAndroid) || Platform.isMacOS) {
+  if (Platform.isLinux && !Platform.isAndroid) {
+    try {
+      return LinuxNotificationsManager(notificationSelectConvo);
+    } catch (e) {
+      EnvironmentConfig.debugLog("Failed to create LinuxNotificationManager. Switching off notifications.");
+    }
+  } else if (Platform.isMacOS) {
     try {
       return NixNotificationManager(notificationSelectConvo);
     } catch (e) {
