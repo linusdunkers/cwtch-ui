@@ -77,38 +77,51 @@ class ByIndex implements CacheHandler {
   }
 
   Future<MessageInfo?> get(Cwtch cwtch, String profileOnion, int conversationIdentifier, MessageCache cache) async {
-    // if in cache, get
-    if (index < cache.cacheByIndex.length) {
+    // if in cache, get. But if the cache has unsynced or not in cache, we'll have to do a fetch
+    if (cache.indexUnsynced == 0 && index < cache.cacheByIndex.length) {
       return cache.getByIndex(index);
     }
 
     // otherwise we are going to fetch, so we'll fetch a chunk of messages
     // observationally flutter future builder seemed to be reaching for 20-40 message on pane load, so we start trying to load up to that many messages in one request
-    var chunk = 40;
+    var amount = 40;
+    var start = index;
+    // we have to keep the indexed cache contiguous so reach back to the end of it and start the fetch from there
+    if (index > cache.cacheByIndex.length) {
+      start = cache.cacheByIndex.length;
+      amount += index - start;
+    }
+
+    // on android we may have recieved messages on the backend that we didn't process in the UI, get them
+    // override the index chunk setting, the index math is wrong will we fetch these and these are all that should be missing
+    if (cache.indexUnsynced > 0) {
+      start = 0;
+      amount = cache.indexUnsynced;
+    }
+
     // check that we aren't asking for messages beyond stored messages
-    if (index + chunk >= cache.storageMessageCount) {
-      chunk = cache.storageMessageCount - index;
-      if (chunk <= 0) {
+    if (start + amount >= cache.storageMessageCount) {
+      amount = cache.storageMessageCount - start;
+      if (amount <= 0) {
         return Future.value(null);
       }
     }
 
-    cache.lockIndexes(index, index + chunk);
-    var msgs = await cwtch.GetMessages(profileOnion, conversationIdentifier, index, chunk);
+    cache.lockIndexes(start, start + amount);
+    var msgs = await cwtch.GetMessages(profileOnion, conversationIdentifier, start, amount);
     int i = 0; // i used to loop through returned messages. if doesn't reach the requested count, we will use it in the finally stanza to error out the remaining asked for messages in the cache
     try {
       List<dynamic> messagesWrapper = jsonDecode(msgs);
 
       for (; i < messagesWrapper.length; i++) {
         var messageInfo = messageWrapperToInfo(profileOnion, conversationIdentifier, messagesWrapper[i]);
-        cache.addIndexed(messageInfo, index + i);
+        cache.addIndexed(messageInfo, start + i);
       }
-      //messageWrapperToInfo
     } catch (e, stacktrace) {
-      EnvironmentConfig.debugLog("Error: Getting indexed messages $index to ${index + chunk} failed parsing: " + e.toString() + " " + stacktrace.toString());
+      EnvironmentConfig.debugLog("Error: Getting indexed messages $start to ${start + amount} failed parsing: " + e.toString() + " " + stacktrace.toString());
     } finally {
-      if (i != chunk) {
-        cache.malformIndexes(index + i, index + chunk);
+      if (i != amount) {
+        cache.malformIndexes(start + i, start + amount);
       }
     }
     return cache.getByIndex(index);
