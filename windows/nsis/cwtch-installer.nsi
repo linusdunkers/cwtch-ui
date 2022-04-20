@@ -45,6 +45,17 @@ InstallDirRegKey HKCU "Software\Cwtch" "installLocation"
 
 ShowInstDetails show
 
+; Init / make sure isn't running
+; https://nsis.sourceforge.io/Check_whether_your_application_is_running
+
+Function .onInit
+FindProcDLL::FindProc "Cwtch.exe"
+StrCmp $R0 "1" found not_found
+found:
+  MessageBox MB_ICONEXCLAMATION|MB_OK "Cwtch is still running, please exit it before running installer"  /SD IDOK
+  Abort
+not_found:
+
 ; Pages --------
 
 
