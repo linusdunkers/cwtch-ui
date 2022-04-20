@@ -74,6 +74,8 @@ class MessageCache extends ChangeNotifier {
 
   // local index to MessageId
   late List<LocalIndexMessage> cacheByIndex;
+  // index unsynced is used on android on reconnect to tell us new messages are in the backend that should be at the front of the index cache
+  int _indexUnsynced = 0;
 
   // map of content hash to MessageId
   late Map<String, int> cacheByHash;
@@ -87,11 +89,34 @@ class MessageCache extends ChangeNotifier {
     this._storageMessageCount = storageMessageCount;
   }
 
-  int get indexedLength => cacheByIndex.length;
-
   int get storageMessageCount => _storageMessageCount;
   set storageMessageCount(int newval) {
     this._storageMessageCount = newval;
+  }
+
+  // On android reconnect, get unread message cound and the last seen Id
+  // sync this data with what we have cached to determine if/how many messages are now at the front of the index that we don't have cached
+  void addFrontIndexGap(int count, int lastSeenId) {
+    // scan across indexed message the unread count amount (that's the last time UI/BE acked a message)
+    // if we find the last seen ID, the diff of unread count is what's unsynced
+    for(var i = 0; i < (count+1) && i < cacheByIndex.length; i++) {
+      if (this.cacheByIndex[i].messageId == lastSeenId) {
+        // we have
+        this._indexUnsynced = count - i;
+        notifyListeners();
+        return;
+      }
+    }
+    // we did not find a matching index, diff to the back end is too great, reset index cache
+    resetIndexCache();
+  }
+  
+  int get indexUnsynced => _indexUnsynced;
+
+  void resetIndexCache() {
+    this._indexUnsynced = 0;
+    cacheByIndex = List.empty(growable: true);
+    notifyListeners();
   }
 
   MessageInfo? getById(int id) => cache[id];
@@ -124,6 +149,9 @@ class MessageCache extends ChangeNotifier {
   void lockIndexes(int start, int end) {
     for (var i = start; i < end; i++) {
       this.cacheByIndex.insert(i, LocalIndexMessage(null, isLoading: true));
+      if (this._indexUnsynced > 0) {
+        this._indexUnsynced--;
+      }
     }
   }
 

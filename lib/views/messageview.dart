@@ -128,7 +128,7 @@ class _MessageViewState extends State<MessageView> {
           backgroundColor: Provider.of<Settings>(context).theme.backgroundMainColor,
           floatingActionButton: appState.unreadMessagesBelow
               ? FloatingActionButton(
-                  child: Icon(Icons.arrow_downward),
+                  child: Icon(Icons.arrow_downward, color: Provider.of<Settings>(context).current().defaultButtonTextColor),
                   onPressed: () {
                     Provider.of<AppState>(context, listen: false).initialScrollIndex = 0;
                     Provider.of<AppState>(context, listen: false).unreadMessagesBelow = false;

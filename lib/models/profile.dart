@@ -177,6 +177,13 @@ class ProfileInfoState extends ChangeNotifier {
           profileContact.status = contact["status"];
           profileContact.totalMessages = contact["numMessages"];
           profileContact.unreadMessages = contact["numUnread"];
+          // we only count up to 100 unread messages, if more than that we can't accuratly resync message cache, just reset
+          if (contact["numUnread"] > 100 || (contact["numUnread"] > 0 && contact["lastSeenMessageId"] == -1)) {
+            profileContact.messageCache.resetIndexCache();
+          } else if (contact["numUnread"] > 0) {
+            print("contact ${contact["name"]} with unread ${contact["numUnread"]} so addFrontIndexGap");
+            profileContact.messageCache.addFrontIndexGap(contact["numUnread"], contact["lastSeenMessageId"]);
+          }
           profileContact.lastMessageTime = DateTime.fromMillisecondsSinceEpoch(1000 * int.parse(contact["lastMsgTime"]));
         } else {
           this._contacts.add(ContactInfoState(
