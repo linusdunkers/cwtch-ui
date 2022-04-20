@@ -297,24 +297,28 @@ class MainActivity: FlutterActivity() {
                 val count: Int = call.argument("count") ?: 1
 
                 result.success(Cwtch.getMessages(profile, conversation.toLong(), indexI.toLong(), count.toLong()))
+                return
             }
             "SendMessage" -> {
                 val profile: String = call.argument("ProfileOnion") ?: ""
                 val conversation: Int = call.argument("conversation") ?: 0
                 val message: String = call.argument("message") ?: ""
                 result.success(Cwtch.sendMessage(profile, conversation.toLong(), message))
+                return
             }
             "SendInvitation" -> {
                 val profile: String = call.argument("ProfileOnion") ?: ""
                 val conversation: Int = call.argument("conversation") ?: 0
                 val target: Int = call.argument("target") ?: 0
                 result.success(Cwtch.sendInvitation(profile, conversation.toLong(), target.toLong()))
+                return
             }
             "ShareFile" -> {
                 val profile: String = call.argument("ProfileOnion") ?: ""
                 val conversation: Int = call.argument("conversation") ?: 0
                 val filepath: String = call.argument("filepath") ?: ""
                 result.success(Cwtch.shareFile(profile, conversation.toLong(), filepath))
+                return
             }
 
             "CreateProfile" -> {
@@ -338,18 +342,21 @@ class MainActivity: FlutterActivity() {
                 val conversation: Int = call.argument("conversation") ?: 0
                 val indexI: Int = call.argument("index") ?: 0
                 result.success(Data.Builder().putString("result", Cwtch.getMessage(profile, conversation.toLong(), indexI.toLong())).build())
+                return
             }
             "GetMessageByID" -> {
                 val profile: String = call.argument("ProfileOnion") ?: ""
                 val conversation: Int = call.argument("conversation") ?: 0
                 val id: Int = call.argument("id") ?: 0
                 result.success(Data.Builder().putString("result", Cwtch.getMessageByID(profile, conversation.toLong(), id.toLong())).build())
+                return
             }
             "GetMessageByContentHash" -> {
                 val profile: String = call.argument("ProfileOnion") ?: ""
                 val conversation: Int = call.argument("conversation") ?: 0
                 val contentHash: String = call.argument("contentHash") ?: ""
                 result.success(Data.Builder().putString("result", Cwtch.getMessagesByContentHash(profile, conversation.toLong(), contentHash)).build())
+                return
             }
             "SetMessageAttribute" -> {
                 val profile: String = call.argument("ProfileOnion") ?: ""
@@ -517,8 +524,10 @@ class MainActivity: FlutterActivity() {
                             }
                     }
                 )
+                return
             }
         }
+        result.success(null)
     }
 
     // using onresume/onstop for broadcastreceiver because of extended discussion on https://stackoverflow.com/questions/7439041/how-to-unregister-broadcastreceiver
