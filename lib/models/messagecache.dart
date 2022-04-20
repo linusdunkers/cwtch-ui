@@ -5,6 +5,10 @@ import 'package:flutter/foundation.dart';
 
 import 'message.dart';
 
+// we only count up to 100 unread messages, if more than that we can't accurately resync message cache, just reset
+// https://git.openprivacy.ca/cwtch.im/libcwtch-go/src/branch/trunk/utils/eventHandler.go#L210
+const MaxUnreadBeforeCacheReset = 100;
+
 class MessageInfo {
   late MessageMetadata metadata;
   late String wrapper;
@@ -101,7 +105,7 @@ class MessageCache extends ChangeNotifier {
     // if we find the last seen ID, the diff of unread count is what's unsynced
     for(var i = 0; i < (count+1) && i < cacheByIndex.length; i++) {
       if (this.cacheByIndex[i].messageId == lastSeenId) {
-        // we have
+        // we have found the matching lastSeenId so we can calculate the unsynced as the unread messages before it
         this._indexUnsynced = count - i;
         notifyListeners();
         return;
@@ -149,6 +153,8 @@ class MessageCache extends ChangeNotifier {
   void lockIndexes(int start, int end) {
     for (var i = start; i < end; i++) {
       this.cacheByIndex.insert(i, LocalIndexMessage(null, isLoading: true));
+      // if there are unsynced messages on the index cache it means there are messages at the front, and by the logic in message/ByIndex/get() we will be loading those
+      // there for we can decrement the count as this will be one of them
       if (this._indexUnsynced > 0) {
         this._indexUnsynced--;
       }
