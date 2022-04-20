@@ -96,10 +96,16 @@ Section
 
     WriteUninstaller "$INSTDIR\uninstall.exe"
 
+    # https://nsis.sourceforge.io/Add_uninstall_information_to_Add/Remove_Programs
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Cwtch" \
+                     "DisplayName" "Cwtch"
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Cwtch" \
+                     "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
 SectionEnd
 
 Section "Uninstall"
     RMDir /r /REBOOTOK "$INSTDIR"
 
     DeleteRegKey /ifempty HKCU "Software\Cwtch\installLocation"
+    DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ImageMaker"
 SectionEnd
