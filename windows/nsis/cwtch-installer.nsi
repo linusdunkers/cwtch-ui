@@ -45,23 +45,15 @@ InstallDirRegKey HKCU "Software\Cwtch" "installLocation"
 
 ShowInstDetails show
 
-; Init / make sure isn't running
-; https://nsis.sourceforge.io/Check_whether_your_application_is_running
-
-Function .onInit
-FindProcDLL::FindProc "Cwtch.exe"
-StrCmp $R0 "1" found not_found
-found:
-  MessageBox MB_ICONEXCLAMATION|MB_OK "Cwtch is still running, please exit it before running installer"  /SD IDOK
-  Abort
-not_found:
-
 ; Pages --------
 
 
 !define MUI_WELCOMEPAGE_TITLE "Welcome to the Cwtch installer"
 !define MUI_WELCOMEPAGE_TEXT "Cwtch (pronounced: kutch) is a Welsh word roughly meaning 'a hug that creates a safe space'$\n$\n\
-                              Cwtch is a platform for building consentful, decentralized, untrusted infrastructure using metadata resistant group communication applications. Currently there is a selfnamed instant messaging prototype app that is driving development and testing. Many Further apps are planned as the platform matures."
+                              Cwtch is a platform for building consentful, decentralized, untrusted infrastructure using metadata resistant group communication applications. Currently there is a selfnamed instant messaging prototype app that is driving development and testing. Many Further apps are planned as the platform matures.$\n$\n\
+                              Please close any running copies of Cwtch before installing a new version."
+
+; Detecting if Cwtch is running and reminding the user or closing it appears to require 3rd party plugins that take the form of decade+ old .dlls in zips from a wiki...
 
 !define MUI_FINISHPAGE_TITLE "Enjoy Cwtch"
 !define MUI_FINISHPAGE_RUN $INSTDIR/cwtch.exe
