@@ -330,7 +330,7 @@ class CwtchGomobile implements Cwtch {
   @override
   Future GetDebugInfo() {
     // FIXME: getDebugInfo is less useful for Android so for now
-    // we just assume it will always be called from desktop...
-    throw UnimplementedError();
+    // we don't implement it
+    return Future.value("{}");
   }
 }
