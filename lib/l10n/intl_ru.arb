@@ -1,6 +1,6 @@
 {
     "@@locale": "ru",
-    "@@last_modified": "2022-04-13T22:56:39+02:00",
+    "@@last_modified": "2022-04-21T21:35:58+02:00",
     "okButton": "OK",
     "settingsAndroidPowerReenablePopup": "Cannot re-enable Battery Optimization from within Cwtch. Please go to Android \/ Settings \/ Apps \/ Cwtch \/ Battery and set Usage to 'Optimized'",
     "settingAndroidPowerExemptionDescription": "Optional: Request Android to exempt Cwtch from optimized power management. This will result in better stability at the cost of greater battery use.",
