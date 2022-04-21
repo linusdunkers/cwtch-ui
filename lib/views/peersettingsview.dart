@@ -70,7 +70,7 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
                   textAlign: TextAlign.left,
                   text: TextSpan(
                       text: country,
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10, fontFamily: "monospace"),
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10, fontFamily: "RobotoMono"),
                       children: [TextSpan(text: " ($ip)", style: TextStyle(fontSize: 8, fontWeight: FontWeight.normal))]));
             }).toList(growable: true);
 

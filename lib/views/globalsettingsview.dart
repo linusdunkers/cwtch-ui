@@ -464,7 +464,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                       Visibility(
                         visible: EnvironmentConfig.BUILD_VER == dev_version && !Platform.isAndroid,
                         child: FutureBuilder(
-                          future: Provider.of<FlwtchState>(context).cwtch.GetDebugInfo(),
+                          future: EnvironmentConfig.BUILD_VER != dev_version ||Platform.isAndroid ? null : Provider.of<FlwtchState>(context).cwtch.GetDebugInfo(),
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               return Column(

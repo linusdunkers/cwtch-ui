@@ -38,7 +38,7 @@ class _ProfileImageState extends State<ProfileImage> {
     var file = new File(widget.imagePath);
     var image = Image.file(
       file,
-      cacheWidth: 1920,
+      cacheWidth: (4 * widget.diameter.floor()),
       filterQuality: FilterQuality.medium,
       fit: BoxFit.cover,
       alignment: Alignment.center,
