@@ -110,5 +110,5 @@ Section "Uninstall"
     RMDir /r /REBOOTOK "$INSTDIR"
 
     DeleteRegKey /ifempty HKCU "Software\Cwtch\installLocation"
-    DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ImageMaker"
+    DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Cwtch"
 SectionEnd
