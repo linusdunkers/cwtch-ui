@@ -160,7 +160,13 @@ class CwtchFfi implements Cwtch {
       }
     } else if (Platform.isWindows) {
       cwtchDir = envVars['CWTCH_DIR'] ?? path.join(envVars['UserProfile']!, ".cwtch");
-      bundledTor = "Tor\\Tor\\tor.exe";
+      String currentTor = path.join(Directory.current.absolute.path, "Tor\\Tor\\tor.exe");
+      if (await File(currentTor).exists()) {
+        bundledTor = currentTor;
+      } else {
+        String exeDir = path.dirname(Platform.resolvedExecutable);
+        bundledTor = path.join(exeDir, "Tor\\Tor\\tor.exe");
+      }
     } else if (Platform.isMacOS) {
       cwtchDir = envVars['CWTCH_HOME'] ?? path.join(envVars['HOME']!, "Library/Application Support/Cwtch");
       if (await File("Cwtch.app/Contents/MacOS/Tor/tor.real").exists()) {

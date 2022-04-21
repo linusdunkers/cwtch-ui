@@ -50,7 +50,10 @@ ShowInstDetails show
 
 !define MUI_WELCOMEPAGE_TITLE "Welcome to the Cwtch installer"
 !define MUI_WELCOMEPAGE_TEXT "Cwtch (pronounced: kutch) is a Welsh word roughly meaning 'a hug that creates a safe space'$\n$\n\
-                              Cwtch is a platform for building consentful, decentralized, untrusted infrastructure using metadata resistant group communication applications. Currently there is a selfnamed instant messaging prototype app that is driving development and testing. Many Further apps are planned as the platform matures."
+                              Cwtch is a platform for building consentful, decentralized, untrusted infrastructure using metadata resistant group communication applications. Currently there is a selfnamed instant messaging prototype app that is driving development and testing. Many Further apps are planned as the platform matures.$\n$\n\
+                              Please close any running copies of Cwtch before installing a new version."
+
+; Detecting if Cwtch is running and reminding the user or closing it appears to require 3rd party plugins that take the form of decade+ old .dlls in zips from a wiki...
 
 !define MUI_FINISHPAGE_TITLE "Enjoy Cwtch"
 !define MUI_FINISHPAGE_RUN $INSTDIR/cwtch.exe
@@ -96,10 +99,16 @@ Section
 
     WriteUninstaller "$INSTDIR\uninstall.exe"
 
+    # https://nsis.sourceforge.io/Add_uninstall_information_to_Add/Remove_Programs
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Cwtch" \
+                     "DisplayName" "Cwtch"
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Cwtch" \
+                     "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
 SectionEnd
 
 Section "Uninstall"
     RMDir /r /REBOOTOK "$INSTDIR"
 
     DeleteRegKey /ifempty HKCU "Software\Cwtch\installLocation"
+    DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ImageMaker"
 SectionEnd
