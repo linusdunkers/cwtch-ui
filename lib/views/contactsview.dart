@@ -130,7 +130,10 @@ class _ContactsViewState extends State<ContactsView> {
         floatingActionButton: FloatingActionButton(
           onPressed: _modalAddImportChoice,
           tooltip: AppLocalizations.of(context)!.tooltipAddContact,
-          child: Icon(CwtchIcons.person_add_alt_1_24px, color: Provider.of<Settings>(context).theme.defaultButtonTextColor,),
+          child: Icon(
+            CwtchIcons.person_add_alt_1_24px,
+            color: Provider.of<Settings>(context).theme.defaultButtonTextColor,
+          ),
         ),
         body: showSearchBar || Provider.of<ContactListState>(context).isFiltered ? _buildFilterable() : _buildContactList());
   }

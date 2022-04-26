@@ -73,10 +73,10 @@ class LinuxNotificationsManager implements NotificationsManager {
 
   // Cwtch can install in non flutter supported ways on linux, this code detects where the assets are on Linux
   Future<String> detectLinuxAssetsPath() async {
-    var devStat =  FileStat.stat("assets");
-    var localStat =  FileStat.stat("data/flutter_assets");
-    var homeStat =  FileStat.stat((Platform.environment["HOME"] ?? "") + "/.local/share/cwtch/data/flutter_assets");
-    var rootStat =  FileStat.stat("/usr/share/cwtch/data/flutter_assets");
+    var devStat = FileStat.stat("assets");
+    var localStat = FileStat.stat("data/flutter_assets");
+    var homeStat = FileStat.stat((Platform.environment["HOME"] ?? "") + "/.local/share/cwtch/data/flutter_assets");
+    var rootStat = FileStat.stat("/usr/share/cwtch/data/flutter_assets");
 
     if ((await devStat).type == FileSystemEntityType.directory) {
       return Directory.current.path; //appPath;
@@ -94,7 +94,7 @@ class LinuxNotificationsManager implements NotificationsManager {
     var iconPath = Uri.file(path.join(assetsPath, "assets/knott.png"));
     client.notify(message, appName: "cwtch", appIcon: iconPath.toString(), replacesId: this.previous_id).then((linux_notifications.Notification value) async {
       previous_id = value.id;
-      if ((await value.closeReason) == linux_notifications.NotificationClosedReason.dismissed)  {
+      if ((await value.closeReason) == linux_notifications.NotificationClosedReason.dismissed) {
         this.notificationSelectConvo(profile, conversationId);
       }
     });
@@ -115,9 +115,9 @@ class NotificationPayload {
         convoId = json['convoId'];
 
   Map<String, dynamic> toJson() => {
-    'profileOnion': profileOnion,
-    'convoId': convoId,
-  };
+        'profileOnion': profileOnion,
+        'convoId': convoId,
+      };
 }
 
 // FlutterLocalNotificationsPlugin based NotificationManager that handles MacOS
@@ -138,10 +138,10 @@ class NixNotificationManager implements NotificationsManager {
     final InitializationSettings initializationSettings = InitializationSettings(android: null, iOS: null, macOS: initializationSettingsMacOS, linux: initializationSettingsLinux);
     scheduleMicrotask(() async {
       flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<MacOSFlutterLocalNotificationsPlugin>()?.requestPermissions(
-        alert: true,
-        badge: false,
-        sound: false,
-      );
+            alert: true,
+            badge: false,
+            sound: false,
+          );
 
       await flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: selectNotification);
     });
