@@ -350,4 +350,9 @@ class ProfileInfoState extends ChangeNotifier {
   int cacheMemUsage() {
     return _contacts.cacheMemUsage();
   }
+
+  void downloadReset(String fileKey) {
+    this._downloads.remove(fileKey);
+    notifyListeners();
+  }
 }

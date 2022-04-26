@@ -48,7 +48,7 @@ class FileBubbleState extends State<FileBubble> {
   Widget build(BuildContext context) {
     var fromMe = Provider.of<MessageMetadata>(context).senderHandle == Provider.of<ProfileInfoState>(context).onion;
     var flagStarted = Provider.of<MessageMetadata>(context).attributes["file-downloaded"] == "true";
-    var borderRadiousEh = 15.0;
+    var borderRadius = 15.0;
     var showFileSharing = Provider.of<Settings>(context).isExperimentEnabled(FileSharingExperiment);
     DateTime messageDate = Provider.of<MessageMetadata>(context).timestamp;
 
@@ -56,7 +56,7 @@ class FileBubbleState extends State<FileBubble> {
     var path = Provider.of<ProfileInfoState>(context).downloadFinalPath(widget.fileKey());
 
     // If we haven't stored the filepath in message attributes then save it
-    if (metadata.attributes["filepath"] != null) {
+    if (metadata.attributes["filepath"] != null && metadata.attributes["filepath"].toString().isNotEmpty) {
       path = metadata.attributes["filepath"];
     } else if (path != null && metadata.attributes["filepath"] == null) {
       Provider.of<FlwtchState>(context).cwtch.SetMessageAttribute(metadata.profileOnion, metadata.conversationIdentifier, 0, metadata.messageID, "filepath", path);
@@ -72,6 +72,21 @@ class FileBubbleState extends State<FileBubble> {
         if (myFile == null) {
           setState(() {
             myFile = new File(path!);
+
+            // reset
+            if (myFile?.existsSync() == false) {
+              myFile = null;
+              Provider.of<ProfileInfoState>(context).downloadReset(widget.fileKey());
+              Provider.of<MessageMetadata>(context).attributes["filepath"] = null;
+              Provider.of<MessageMetadata>(context).attributes["file-downloaded"] = "false";
+              Provider.of<MessageMetadata>(context).attributes["file-missing"] = "true";
+              Provider.of<FlwtchState>(context).cwtch.SetMessageAttribute(metadata.profileOnion, metadata.conversationIdentifier, 0, metadata.messageID, "file-downloaded", "false");
+              Provider.of<FlwtchState>(context).cwtch.SetMessageAttribute(metadata.profileOnion, metadata.conversationIdentifier, 0, metadata.messageID, "filepath", "");
+              Provider.of<FlwtchState>(context).cwtch.SetMessageAttribute(metadata.profileOnion, metadata.conversationIdentifier, 0, metadata.messageID, "file-missing", "true");
+            } else {
+              Provider.of<MessageMetadata>(context).attributes["file-missing"] = "false";
+              Provider.of<FlwtchState>(context).cwtch.SetMessageAttribute(metadata.profileOnion, metadata.conversationIdentifier, 0, metadata.messageID, "file-missing", "false");
+            }
           });
         }
       }
@@ -122,7 +137,7 @@ class FileBubbleState extends State<FileBubble> {
                         padding: EdgeInsets.all(1.0),
                         child: Image.file(
                           myFile!,
-                          cacheWidth: 2048,
+                          cacheWidth: (MediaQuery.of(bcontext).size.width * 0.6).floor(),
                           // limit the amount of space the image can decode too, we keep this high-ish to allow quality previews...
                           filterQuality: FilterQuality.medium,
                           fit: BoxFit.scaleDown,
@@ -167,7 +182,9 @@ class FileBubbleState extends State<FileBubble> {
         }
       } else if (!senderIsContact) {
         wdgDecorations = Text(AppLocalizations.of(context)!.msgAddToAccept);
-      } else if (!widget.isAuto) {
+      } else if (!widget.isAuto || Provider.of<MessageMetadata>(context).attributes["file-missing"] == "false") {
+        //Note: we need this second case to account for scenarios where a user deletes the downloaded file, we won't automatically
+        // fetch it again, so we need to offer the user the ability to restart..
         wdgDecorations = Visibility(
             visible: widget.interactive,
             child: Center(
@@ -185,10 +202,10 @@ class FileBubbleState extends State<FileBubble> {
             color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeBackgroundColor : Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor,
             border: Border.all(color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeBackgroundColor : Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor, width: 1),
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(borderRadiousEh),
-              topRight: Radius.circular(borderRadiousEh),
-              bottomLeft: fromMe ? Radius.circular(borderRadiousEh) : Radius.zero,
-              bottomRight: fromMe ? Radius.zero : Radius.circular(borderRadiousEh),
+              topLeft: Radius.circular(borderRadius),
+              topRight: Radius.circular(borderRadius),
+              bottomLeft: fromMe ? Radius.circular(borderRadius) : Radius.zero,
+              bottomRight: fromMe ? Radius.zero : Radius.circular(borderRadius),
             ),
           ),
           child: Padding(

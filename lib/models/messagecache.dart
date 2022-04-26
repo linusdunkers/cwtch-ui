@@ -103,7 +103,7 @@ class MessageCache extends ChangeNotifier {
   void addFrontIndexGap(int count, int lastSeenId) {
     // scan across indexed message the unread count amount (that's the last time UI/BE acked a message)
     // if we find the last seen ID, the diff of unread count is what's unsynced
-    for(var i = 0; i < (count+1) && i < cacheByIndex.length; i++) {
+    for (var i = 0; i < (count + 1) && i < cacheByIndex.length; i++) {
       if (this.cacheByIndex[i].messageId == lastSeenId) {
         // we have found the matching lastSeenId so we can calculate the unsynced as the unread messages before it
         this._indexUnsynced = count - i;
@@ -114,7 +114,7 @@ class MessageCache extends ChangeNotifier {
     // we did not find a matching index, diff to the back end is too great, reset index cache
     resetIndexCache();
   }
-  
+
   int get indexUnsynced => _indexUnsynced;
 
   void resetIndexCache() {

@@ -118,37 +118,37 @@ class MessageBubbleState extends State<MessageBubble> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        Text(AppLocalizations.of(context)!.clickableLinksWarning),
+                        Text(AppLocalizations.of(bcontext)!.clickableLinksWarning),
                         Flex(direction: Axis.horizontal, mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
                           Container(
                             margin: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                             child: ElevatedButton(
-                              child: Text(AppLocalizations.of(context)!.clickableLinksCopy, semanticsLabel: AppLocalizations.of(context)!.clickableLinksCopy),
+                              child: Text(AppLocalizations.of(bcontext)!.clickableLinksCopy, semanticsLabel: AppLocalizations.of(bcontext)!.clickableLinksCopy),
                               onPressed: () {
                                 Clipboard.setData(new ClipboardData(text: link.url));
 
                                 final snackBar = SnackBar(
-                                  content: Text(AppLocalizations.of(context)!.copiedToClipboardNotification),
+                                  content: Text(AppLocalizations.of(bcontext)!.copiedToClipboardNotification),
                                 );
 
                                 Navigator.pop(bcontext);
-                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                ScaffoldMessenger.of(bcontext).showSnackBar(snackBar);
                               },
                             ),
                           ),
                           Container(
                             margin: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                             child: ElevatedButton(
-                              child: Text(AppLocalizations.of(context)!.clickableLinkOpen, semanticsLabel: AppLocalizations.of(context)!.clickableLinkOpen),
+                              child: Text(AppLocalizations.of(bcontext)!.clickableLinkOpen, semanticsLabel: AppLocalizations.of(bcontext)!.clickableLinkOpen),
                               onPressed: () async {
                                 if (await canLaunch(link.url)) {
                                   await launch(link.url);
                                   Navigator.pop(bcontext);
                                 } else {
                                   final snackBar = SnackBar(
-                                    content: Text(AppLocalizations.of(context)!.clickableLinkError),
+                                    content: Text(AppLocalizations.of(bcontext)!.clickableLinkError),
                                   );
-                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                  ScaffoldMessenger.of(bcontext).showSnackBar(snackBar);
                                 }
                               },
                             ),

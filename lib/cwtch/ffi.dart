@@ -215,8 +215,9 @@ class CwtchFfi implements Cwtch {
     // ignore: non_constant_identifier_names
     final StartCwtch = startCwtchC.asFunction<StartCwtchFn>();
 
-    final ut8CwtchDir = cwtchDir.toNativeUtf8();
-    StartCwtch(ut8CwtchDir, ut8CwtchDir.length, bundledTor.toNativeUtf8(), bundledTor.length);
+    final utf8CwtchDir = cwtchDir.toNativeUtf8();
+    StartCwtch(utf8CwtchDir, utf8CwtchDir.length, bundledTor.toNativeUtf8(), bundledTor.length);
+    malloc.free(utf8CwtchDir);
 
     // Spawn an isolate to listen to events from libcwtch-go and then dispatch them when received on main thread to cwtchNotifier
     cwtchIsolate = await Isolate.spawn(_checkAppbusEvents, _receivePort.sendPort);
@@ -326,6 +327,7 @@ class CwtchFfi implements Cwtch {
     String jsonMessage = jsonMessageBytes.toDartString();
     _UnsafeFreePointerAnyUseOfThisFunctionMustBeDoubleApproved(jsonMessageBytes);
     malloc.free(utf8profile);
+
     return jsonMessage;
   }
 
