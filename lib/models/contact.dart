@@ -148,7 +148,7 @@ class ContactInfoState extends ChangeNotifier {
   int get unreadMessages => this._unreadMessages;
 
   set unreadMessages(int newVal) {
-    if (newVal == 0) {
+    if (newVal == 0 && this._unreadMessages != 0) {
       // conversation has been selected, start the countdown for the New Messager marker to be reset
       this._newMarkerClearAt = DateTime.now().add(const Duration(minutes: 2));
     }
