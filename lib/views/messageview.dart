@@ -7,6 +7,7 @@ import 'package:cwtch/models/appstate.dart';
 import 'package:cwtch/models/chatmessage.dart';
 import 'package:cwtch/models/contact.dart';
 import 'package:cwtch/models/message.dart';
+import 'package:cwtch/models/messagecache.dart';
 import 'package:cwtch/models/messages/quotedmessage.dart';
 import 'package:cwtch/models/profile.dart';
 import 'package:cwtch/widgets/malformedbubble.dart';
@@ -24,6 +25,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
+import '../config.dart';
 import '../constants.dart';
 import '../main.dart';
 import '../settings.dart';
@@ -216,14 +218,12 @@ class _MessageViewState extends State<MessageView> {
 
     if (ctrlrCompose.value.text.isNotEmpty && lengthOk) {
       if (Provider.of<AppState>(context, listen: false).selectedConversation != null && Provider.of<AppState>(context, listen: false).selectedIndex != null) {
-        Provider.of<FlwtchState>(context, listen: false)
-            .cwtch
-            .GetMessageByID(Provider.of<AppState>(context, listen: false).selectedProfile!, Provider.of<AppState>(context, listen: false).selectedConversation!,
-                Provider.of<AppState>(context, listen: false).selectedIndex!)
-            .then((data) {
+        var conversationId = Provider.of<AppState>(context, listen: false).selectedConversation!;
+        MessageCache? cache = Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(conversationId)?.messageCache;
+        ById(Provider.of<AppState>(context, listen: false).selectedIndex!).get(Provider.of<FlwtchState>(context, listen: false).cwtch, Provider.of<AppState>(context, listen: false).selectedProfile!, conversationId, cache!)
+            .then((MessageInfo? data) {
           try {
-            var messageWrapper = jsonDecode(data! as String);
-            var bytes1 = utf8.encode(messageWrapper["PeerID"] + messageWrapper['Message']);
+            var bytes1 = utf8.encode(data!.metadata.senderHandle + data.wrapper);
             var digest1 = sha256.convert(bytes1);
             var contentHash = base64Encode(digest1.bytes);
             var quotedMessage = jsonEncode(QuotedMessageStructure(contentHash, ctrlrCompose.value.text));
@@ -232,7 +232,9 @@ class _MessageViewState extends State<MessageView> {
                 .cwtch
                 .SendMessage(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).identifier, jsonEncode(cm))
                 .then(_sendMessageHandler);
-          } catch (e) {}
+          } catch (e) {
+            EnvironmentConfig.debugLog("Exception: reply to message could not be found: " + e.toString());
+          }
           Provider.of<AppState>(context, listen: false).selectedIndex = null;
         });
       } else {

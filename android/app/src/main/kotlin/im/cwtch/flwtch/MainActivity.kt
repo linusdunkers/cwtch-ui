@@ -341,21 +341,21 @@ class MainActivity: FlutterActivity() {
                 val profile: String = call.argument("ProfileOnion") ?: ""
                 val conversation: Int = call.argument("conversation") ?: 0
                 val indexI: Int = call.argument("index") ?: 0
-                result.success(Data.Builder().putString("result", Cwtch.getMessage(profile, conversation.toLong(), indexI.toLong())).build())
+                result.success(Cwtch.getMessage(profile, conversation.toLong(), indexI.toLong()))
                 return
             }
             "GetMessageByID" -> {
                 val profile: String = call.argument("ProfileOnion") ?: ""
                 val conversation: Int = call.argument("conversation") ?: 0
                 val id: Int = call.argument("id") ?: 0
-                result.success(Data.Builder().putString("result", Cwtch.getMessageByID(profile, conversation.toLong(), id.toLong())).build())
+                result.success(Cwtch.getMessageByID(profile, conversation.toLong(), id.toLong()))
                 return
             }
             "GetMessageByContentHash" -> {
                 val profile: String = call.argument("ProfileOnion") ?: ""
                 val conversation: Int = call.argument("conversation") ?: 0
                 val contentHash: String = call.argument("contentHash") ?: ""
-                result.success(Data.Builder().putString("result", Cwtch.getMessagesByContentHash(profile, conversation.toLong(), contentHash)).build())
+                result.success(Cwtch.getMessagesByContentHash(profile, conversation.toLong(), contentHash))
                 return
             }
             "SetMessageAttribute" -> {
