@@ -43,7 +43,6 @@ class ContactInfoState extends ChangeNotifier {
   late DateTime _lastMessageTime;
   late Map<String, GlobalKey<MessageRowState>> keys;
   int _newMarkerMsgId = -1;
-  DateTime _newMarkerClearAt = DateTime.now();
   late MessageCache messageCache;
 
   // todo: a nicer way to model contacts, groups and other "entities"
@@ -145,24 +144,22 @@ class ContactInfoState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void selected() {
+    this._unreadMessages = 0;
+  }
+
+  void unselected() {
+    this._newMarkerMsgId = -1;
+  }
+
   int get unreadMessages => this._unreadMessages;
 
   set unreadMessages(int newVal) {
-    if (newVal == 0 && this._unreadMessages != 0) {
-      // conversation has been selected, start the countdown for the New Messager marker to be reset
-      this._newMarkerClearAt = DateTime.now().add(const Duration(minutes: 2));
-    }
     this._unreadMessages = newVal;
     notifyListeners();
   }
 
   int get newMarkerMsgId {
-    if (DateTime.now().isAfter(this._newMarkerClearAt)) {
-      // perform heresy
-      this._newMarkerMsgId = -1;
-      // no need to notifyListeners() because presumably this getter is
-      // being called from a renderer anyway
-    }
     return this._newMarkerMsgId;
   }
 

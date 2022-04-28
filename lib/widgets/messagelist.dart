@@ -1,6 +1,7 @@
 import 'package:cwtch/models/appstate.dart';
 import 'package:cwtch/models/contact.dart';
 import 'package:cwtch/models/message.dart';
+import 'package:cwtch/models/messagecache.dart';
 import 'package:cwtch/models/profile.dart';
 import 'package:cwtch/widgets/messageloadingbubble.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../main.dart';
 import '../settings.dart';
 
 class MessageList extends StatefulWidget {
@@ -22,6 +24,13 @@ class MessageList extends StatefulWidget {
 class _MessageListState extends State<MessageList> {
   @override
   Widget build(BuildContext outerContext) {
+    // On Android we can have unsynced messages at the front of the index from when the UI was asleep, if there are some, kick off sync of those first
+    if (Provider.of<ContactInfoState>(outerContext).messageCache.indexUnsynced != 0) {
+      var conversationId = Provider.of<AppState>(context, listen: false).selectedConversation!;
+      MessageCache? cache = Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(conversationId)?.messageCache;
+      ByIndex(Provider.of<AppState>(context, listen: false).selectedIndex!).loadUnsynced(Provider.of<FlwtchState>(context, listen: false).cwtch, Provider.of<AppState>(context, listen: false).selectedProfile!, conversationId, cache!);
+    }
+
     var initi = Provider.of<AppState>(outerContext, listen: false).initialScrollIndex;
     bool isP2P = !Provider.of<ContactInfoState>(context).isGroup;
     bool isGroupAndSyncing = Provider.of<ContactInfoState>(context).isGroup == true && Provider.of<ContactInfoState>(context).status == "Authenticated";
