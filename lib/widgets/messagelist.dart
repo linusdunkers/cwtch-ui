@@ -25,10 +25,10 @@ class _MessageListState extends State<MessageList> {
   @override
   Widget build(BuildContext outerContext) {
     // On Android we can have unsynced messages at the front of the index from when the UI was asleep, if there are some, kick off sync of those first
-    if (Provider.of<ContactInfoState>(outerContext).messageCache.indexUnsynced != 0) {
-      var conversationId = Provider.of<AppState>(context, listen: false).selectedConversation!;
-      MessageCache? cache = Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(conversationId)?.messageCache;
-      ByIndex(Provider.of<AppState>(context, listen: false).selectedIndex!).loadUnsynced(Provider.of<FlwtchState>(context, listen: false).cwtch, Provider.of<AppState>(context, listen: false).selectedProfile!, conversationId, cache!);
+    if (Provider.of<ContactInfoState>(context).messageCache.indexUnsynced != 0) {
+      var conversationId = Provider.of<AppState>(outerContext, listen: false).selectedConversation!;
+      MessageCache? cache = Provider.of<ProfileInfoState>(outerContext, listen: false).contactList.getContact(conversationId)?.messageCache;
+      ByIndex(0).loadUnsynced(Provider.of<FlwtchState>(context, listen: false).cwtch, Provider.of<AppState>(outerContext, listen: false).selectedProfile!, conversationId, cache!);
     }
 
     var initi = Provider.of<AppState>(outerContext, listen: false).initialScrollIndex;

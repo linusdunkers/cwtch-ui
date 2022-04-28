@@ -101,8 +101,6 @@ class MessageCache extends ChangeNotifier {
   // On android reconnect, if backend supplied message count > UI message count, add the differnce to the front of the index
   void addFrontIndexGap(int count) {
     this._indexUnsynced = count;
-    // TODO: needed? maybe not? since after totalmessatges and profile will notify
-    //notifyListeners();
   }
 
   int get indexUnsynced => _indexUnsynced;

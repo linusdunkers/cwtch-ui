@@ -168,6 +168,16 @@ class _MessageViewState extends State<MessageView> {
 
   Future<bool> _onWillPop() async {
     Provider.of<ContactInfoState>(context, listen: false).unreadMessages = 0;
+
+    var previouslySelected = Provider.of<AppState>(context, listen: false).selectedConversation;
+    if (previouslySelected != null) {
+      Provider
+          .of<ProfileInfoState>(context, listen: false)
+          .contactList
+          .getContact(previouslySelected)!
+          .unselected();
+    }
+
     Provider.of<AppState>(context, listen: false).selectedConversation = null;
     return true;
   }
