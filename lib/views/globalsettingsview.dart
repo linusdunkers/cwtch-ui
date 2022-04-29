@@ -107,20 +107,22 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                       ListTile(
                           title: Text(AppLocalizations.of(context)!.settingLanguage, style: TextStyle(color: settings.current().mainTextColor)),
                           leading: Icon(CwtchIcons.change_language, color: settings.current().mainTextColor),
-                          trailing: DropdownButton(
-                              value: Provider.of<Settings>(context).locale.languageCode,
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  settings.switchLocale(Locale(newValue!));
-                                  saveSettings(context);
-                                });
-                              },
-                              items: AppLocalizations.supportedLocales.map<DropdownMenuItem<String>>((Locale value) {
-                                return DropdownMenuItem<String>(
-                                  value: value.languageCode,
-                                  child: Text(getLanguageFull(context, value.languageCode)),
-                                );
-                              }).toList())),
+                          trailing: Container(
+                              width: MediaQuery.of(context).size.width / 4,
+                              child: DropdownButton(
+                                  value: Provider.of<Settings>(context).locale.languageCode,
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      settings.switchLocale(Locale(newValue!));
+                                      saveSettings(context);
+                                    });
+                                  },
+                                  items: AppLocalizations.supportedLocales.map<DropdownMenuItem<String>>((Locale value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value.languageCode,
+                                      child: Text(getLanguageFull(context, value.languageCode)),
+                                    );
+                                  }).toList()))),
                       SwitchListTile(
                         title: Text(AppLocalizations.of(context)!.settingTheme, style: TextStyle(color: settings.current().mainTextColor)),
                         value: settings.current().mode == mode_light,
@@ -140,39 +142,43 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                       ),
                       ListTile(
                         title: Text(AppLocalizations.of(context)!.themeColorLabel),
-                        trailing: DropdownButton<String>(
-                            key: Key("DropdownTheme"),
-                            isDense: true,
-                            value: Provider.of<Settings>(context).theme.theme,
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                settings.setTheme(newValue!, settings.theme.mode);
-                                saveSettings(context);
-                              });
-                            },
-                            items: themes.keys.map<DropdownMenuItem<String>>((String themeId) {
-                              return DropdownMenuItem<String>(
-                                value: themeId,
-                                child: Text(getThemeName(context, themeId)), //"ddi_$themeId", key: Key("ddi_$themeId")),
-                              );
-                            }).toList()),
+                        trailing: Container(
+                            width: MediaQuery.of(context).size.width / 4,
+                            child: DropdownButton<String>(
+                                key: Key("DropdownTheme"),
+                                isDense: true,
+                                value: Provider.of<Settings>(context).theme.theme,
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    settings.setTheme(newValue!, settings.theme.mode);
+                                    saveSettings(context);
+                                  });
+                                },
+                                items: themes.keys.map<DropdownMenuItem<String>>((String themeId) {
+                                  return DropdownMenuItem<String>(
+                                    value: themeId,
+                                    child: Text(getThemeName(context, themeId)), //"ddi_$themeId", key: Key("ddi_$themeId")),
+                                  );
+                                }).toList())),
                         leading: Icon(CwtchIcons.change_theme, color: settings.current().mainTextColor),
                       ),
                       ListTile(
                           title: Text(AppLocalizations.of(context)!.settingUIColumnPortrait, style: TextStyle(color: settings.current().mainTextColor)),
                           leading: Icon(Icons.table_chart, color: settings.current().mainTextColor),
-                          trailing: DropdownButton(
-                              value: settings.uiColumnModePortrait.toString(),
-                              onChanged: (String? newValue) {
-                                settings.uiColumnModePortrait = Settings.uiColumnModeFromString(newValue!);
-                                saveSettings(context);
-                              },
-                              items: Settings.uiColumnModeOptions(false).map<DropdownMenuItem<String>>((DualpaneMode value) {
-                                return DropdownMenuItem<String>(
-                                  value: value.toString(),
-                                  child: Text(Settings.uiColumnModeToString(value, context)),
-                                );
-                              }).toList())),
+                          trailing: Container(
+                              width: MediaQuery.of(context).size.width / 4,
+                              child: DropdownButton(
+                                  value: settings.uiColumnModePortrait.toString(),
+                                  onChanged: (String? newValue) {
+                                    settings.uiColumnModePortrait = Settings.uiColumnModeFromString(newValue!);
+                                    saveSettings(context);
+                                  },
+                                  items: Settings.uiColumnModeOptions(false).map<DropdownMenuItem<String>>((DualpaneMode value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value.toString(),
+                                      child: Text(Settings.uiColumnModeToString(value, context)),
+                                    );
+                                  }).toList()))),
                       ListTile(
                           title: Text(
                             AppLocalizations.of(context)!.settingUIColumnLandscape,
@@ -183,22 +189,24 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                           leading: Icon(Icons.table_chart, color: settings.current().mainTextColor),
                           trailing: Container(
                               width: MediaQuery.of(context).size.width / 4,
-                              child: DropdownButton(
-                                  isExpanded: true,
-                                  value: settings.uiColumnModeLandscape.toString(),
-                                  onChanged: (String? newValue) {
-                                    settings.uiColumnModeLandscape = Settings.uiColumnModeFromString(newValue!);
-                                    saveSettings(context);
-                                  },
-                                  items: Settings.uiColumnModeOptions(true).map<DropdownMenuItem<String>>((DualpaneMode value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value.toString(),
-                                      child: Text(
-                                        Settings.uiColumnModeToString(value, context),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    );
-                                  }).toList()))),
+                              child: Container(
+                                  width: MediaQuery.of(context).size.width / 4,
+                                  child: DropdownButton(
+                                      isExpanded: true,
+                                      value: settings.uiColumnModeLandscape.toString(),
+                                      onChanged: (String? newValue) {
+                                        settings.uiColumnModeLandscape = Settings.uiColumnModeFromString(newValue!);
+                                        saveSettings(context);
+                                      },
+                                      items: Settings.uiColumnModeOptions(true).map<DropdownMenuItem<String>>((DualpaneMode value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value.toString(),
+                                          child: Text(
+                                            Settings.uiColumnModeToString(value, context),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        );
+                                      }).toList())))),
                       SwitchListTile(
                         title: Text(AppLocalizations.of(context)!.streamerModeLabel, style: TextStyle(color: settings.current().mainTextColor)),
                         subtitle: Text(AppLocalizations.of(context)!.descriptionStreamerMode),
@@ -238,21 +246,23 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                       ListTile(
                         title: Text(AppLocalizations.of(context)!.notificationPolicySettingLabel),
                         subtitle: Text(AppLocalizations.of(context)!.notificationPolicySettingDescription),
-                        trailing: DropdownButton(
-                            value: settings.notificationPolicy,
-                            onChanged: (NotificationPolicy? newValue) {
-                              settings.notificationPolicy = newValue!;
-                              saveSettings(context);
-                            },
-                            items: NotificationPolicy.values.map<DropdownMenuItem<NotificationPolicy>>((NotificationPolicy value) {
-                              return DropdownMenuItem<NotificationPolicy>(
-                                value: value,
-                                child: Text(
-                                  Settings.notificationPolicyToString(value, context),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              );
-                            }).toList()),
+                        trailing: Container(
+                            width: MediaQuery.of(context).size.width / 4,
+                            child: DropdownButton(
+                                value: settings.notificationPolicy,
+                                onChanged: (NotificationPolicy? newValue) {
+                                  settings.notificationPolicy = newValue!;
+                                  saveSettings(context);
+                                },
+                                items: NotificationPolicy.values.map<DropdownMenuItem<NotificationPolicy>>((NotificationPolicy value) {
+                                  return DropdownMenuItem<NotificationPolicy>(
+                                    value: value,
+                                    child: Text(
+                                      Settings.notificationPolicyToString(value, context),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  );
+                                }).toList())),
                         leading: Icon(CwtchIcons.chat_bubble_empty_24px, color: settings.current().mainTextColor),
                       ),
                       ListTile(
