@@ -176,14 +176,13 @@ class ProfileInfoState extends ChangeNotifier {
         this._unreadMessages += contact["numUnread"] as int;
         if (profileContact != null) {
           profileContact.status = contact["status"];
-          profileContact.totalMessages = contact["numMessages"];
-          profileContact.unreadMessages = contact["numUnread"];
 
-          if (contact["numUnread"] > MaxUnreadBeforeCacheReset || (contact["numUnread"] > 0 && contact["lastSeenMessageId"] == -1)) {
-            profileContact.messageCache.resetIndexCache();
-          } else if (contact["numUnread"] > 0) {
-            profileContact.messageCache.addFrontIndexGap(contact["numUnread"], contact["lastSeenMessageId"]);
+          var newCount = contact["numMessages"];
+          if (newCount != profileContact.totalMessages) {
+            profileContact.messageCache.addFrontIndexGap(newCount - profileContact.totalMessages);
           }
+          profileContact.totalMessages = newCount;
+          profileContact.unreadMessages = contact["numUnread"];
           profileContact.lastMessageTime = DateTime.fromMillisecondsSinceEpoch(1000 * int.parse(contact["lastMsgTime"]));
         } else {
           this._contacts.add(ContactInfoState(

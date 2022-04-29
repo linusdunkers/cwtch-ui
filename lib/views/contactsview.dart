@@ -30,7 +30,15 @@ class ContactsView extends StatefulWidget {
 void selectConversation(BuildContext context, int handle) {
   // requery instead of using contactinfostate directly because sometimes listview gets confused about data that resorts
   var initialIndex = Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(handle)!.unreadMessages;
-  Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(handle)!.unreadMessages = 0;
+  var previouslySelected = Provider.of<AppState>(context, listen: false).selectedConversation;
+  if (previouslySelected != null) {
+    Provider
+        .of<ProfileInfoState>(context, listen: false)
+        .contactList
+        .getContact(previouslySelected)!
+        .unselected();
+  }
+  Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(handle)!.selected();
   // triggers update in Double/TripleColumnView
   Provider.of<AppState>(context, listen: false).initialScrollIndex = initialIndex;
   Provider.of<AppState>(context, listen: false).selectedConversation = handle;

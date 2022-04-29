@@ -18,13 +18,13 @@ class FileMessage extends Message {
   FileMessage(this.metadata, this.content);
 
   @override
-  Widget getWidget(BuildContext context, Key key) {
+  Widget getWidget(BuildContext context, Key key, int index) {
     return ChangeNotifierProvider.value(
         value: this.metadata,
         builder: (bcontext, child) {
           dynamic shareObj = jsonDecode(this.content);
           if (shareObj == null) {
-            return MessageRow(MalformedBubble());
+            return MessageRow(MalformedBubble(), index);
           }
           String nameSuggestion = shareObj['f'] as String;
           String rootHash = shareObj['h'] as String;
@@ -39,10 +39,10 @@ class FileMessage extends Message {
           }
 
           if (!validHash(rootHash, nonce)) {
-            return MessageRow(MalformedBubble());
+            return MessageRow(MalformedBubble(), index);
           }
 
-          return MessageRow(FileBubble(nameSuggestion, rootHash, nonce, fileSize, isAuto: metadata.isAuto), key: key);
+          return MessageRow(FileBubble(nameSuggestion, rootHash, nonce, fileSize, isAuto: metadata.isAuto), index, key: key);
         });
   }
 
@@ -53,14 +53,14 @@ class FileMessage extends Message {
         builder: (bcontext, child) {
           dynamic shareObj = jsonDecode(this.content);
           if (shareObj == null) {
-            return MessageRow(MalformedBubble());
+            return MessageRow(MalformedBubble(), 0);
           }
           String nameSuggestion = shareObj['n'] as String;
           String rootHash = shareObj['h'] as String;
           String nonce = shareObj['n'] as String;
           int fileSize = shareObj['s'] as int;
           if (!validHash(rootHash, nonce)) {
-            return MessageRow(MalformedBubble());
+            return MessageRow(MalformedBubble(), 0);
           }
           return Container(
               alignment: Alignment.center,

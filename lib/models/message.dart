@@ -32,33 +32,34 @@ const GroupConversationHandleLength = 32;
 abstract class Message {
   MessageMetadata getMetadata();
 
-  Widget getWidget(BuildContext context, Key key);
+  Widget getWidget(BuildContext context, Key key, int index);
 
   Widget getPreviewWidget(BuildContext context);
 }
 
-Message compileOverlay(MessageMetadata metadata, String messageData) {
-  try {
-    dynamic message = jsonDecode(messageData);
+Message compileOverlay(MessageInfo messageInfo) {
+
+    try {
+    dynamic message = jsonDecode(messageInfo.wrapper);
     var content = message['d'] as dynamic;
     var overlay = int.parse(message['o'].toString());
 
     switch (overlay) {
       case TextMessageOverlay:
-        return TextMessage(metadata, content);
+        return TextMessage(messageInfo.metadata, content);
       case SuggestContactOverlay:
       case InviteGroupOverlay:
-        return InviteMessage(overlay, metadata, content);
+        return InviteMessage(overlay, messageInfo.metadata, content);
       case QuotedMessageOverlay:
-        return QuotedMessage(metadata, content);
+        return QuotedMessage(messageInfo.metadata, content);
       case FileShareOverlay:
-        return FileMessage(metadata, content);
+        return FileMessage(messageInfo.metadata, content);
       default:
         // Metadata is valid, content is not..
-        return MalformedMessage(metadata);
+        return MalformedMessage(messageInfo.metadata);
     }
   } catch (e) {
-    return MalformedMessage(metadata);
+    return MalformedMessage(messageInfo.metadata);
   }
 }
 
@@ -78,7 +79,7 @@ class ByIndex implements CacheHandler {
 
   Future<MessageInfo?> get(Cwtch cwtch, String profileOnion, int conversationIdentifier, MessageCache cache) async {
     // if in cache, get. But if the cache has unsynced or not in cache, we'll have to do a fetch
-    if (cache.indexUnsynced == 0 && index < cache.cacheByIndex.length) {
+    if (index < cache.cacheByIndex.length) {
       return cache.getByIndex(index);
     }
 
@@ -92,12 +93,6 @@ class ByIndex implements CacheHandler {
       amount += index - start;
     }
 
-    // on android we may have recieved messages on the backend that we didn't process in the UI, get them
-    // override the index chunk setting, the index math is wrong will we fetch these and these are all that should be missing
-    if (cache.indexUnsynced > 0) {
-      start = 0;
-      amount = cache.indexUnsynced;
-    }
 
     // check that we aren't asking for messages beyond stored messages
     if (start + amount >= cache.storageMessageCount) {
@@ -108,6 +103,27 @@ class ByIndex implements CacheHandler {
     }
 
     cache.lockIndexes(start, start + amount);
+    await fetchAndProcess(start, amount, cwtch, profileOnion, conversationIdentifier, cache);
+
+    return cache.getByIndex(index);
+  }
+
+  void loadUnsynced(Cwtch cwtch, String profileOnion, int conversationIdentifier, MessageCache cache) {
+    // return if inadvertently called when no unsynced messages
+    if (cache.indexUnsynced == 0) {
+      return;
+    }
+
+    // otherwise we are going to fetch, so we'll fetch a chunk of messages
+    var start = 0;
+    var amount = cache.indexUnsynced;
+
+    cache.lockIndexes(start, start + amount);
+    fetchAndProcess(start, amount, cwtch, profileOnion, conversationIdentifier, cache);
+    return;
+  }
+
+  Future<void> fetchAndProcess(int start, int amount, Cwtch cwtch, String profileOnion, int conversationIdentifier, MessageCache cache) async {
     var msgs = await cwtch.GetMessages(profileOnion, conversationIdentifier, start, amount);
     int i = 0; // i used to loop through returned messages. if doesn't reach the requested count, we will use it in the finally stanza to error out the remaining asked for messages in the cache
     try {
@@ -124,7 +140,6 @@ class ByIndex implements CacheHandler {
         cache.malformIndexes(start + i, start + amount);
       }
     }
-    return cache.getByIndex(index);
   }
 
   void add(MessageCache cache, MessageInfo messageInfo) {
@@ -208,7 +223,7 @@ Future<Message> messageHandler(BuildContext context, String profileOnion, int co
   MessageInfo? messageInfo = await cacheHandler.get(cwtch, profileOnion, conversationIdentifier, cache);
 
   if (messageInfo != null) {
-    return compileOverlay(messageInfo.metadata, messageInfo.wrapper);
+    return compileOverlay(messageInfo);
   } else {
     return MalformedMessage(malformedMetadata);
   }
