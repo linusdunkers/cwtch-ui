@@ -105,13 +105,6 @@ class MessageCache extends ChangeNotifier {
 
   int get indexUnsynced => _indexUnsynced;
 
-  // TODO: unused? delete?
-  void resetIndexCache() {
-    this._indexUnsynced = 0;
-    cacheByIndex = List.empty(growable: true);
-    notifyListeners();
-  }
-
   MessageInfo? getById(int id) => cache[id];
 
   Future<MessageInfo?> getByIndex(int index) async {

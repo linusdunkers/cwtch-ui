@@ -42,7 +42,7 @@ class ContactInfoState extends ChangeNotifier {
   late int _totalMessages = 0;
   late DateTime _lastMessageTime;
   late Map<String, GlobalKey<MessageRowState>> keys;
-  int _newMarkerMsgId = -1;
+  int _newMarkerMsgIndex = -1;
   late MessageCache messageCache;
 
   // todo: a nicer way to model contacts, groups and other "entities"
@@ -145,11 +145,12 @@ class ContactInfoState extends ChangeNotifier {
   }
 
   void selected() {
+    this._newMarkerMsgIndex = this._unreadMessages-1;
     this._unreadMessages = 0;
   }
 
   void unselected() {
-    this._newMarkerMsgId = -1;
+    this._newMarkerMsgIndex = -1;
   }
 
   int get unreadMessages => this._unreadMessages;
@@ -159,8 +160,8 @@ class ContactInfoState extends ChangeNotifier {
     notifyListeners();
   }
 
-  int get newMarkerMsgId {
-    return this._newMarkerMsgId;
+  int get newMarkerMsgIndex {
+    return this._newMarkerMsgIndex;
   }
 
   int get totalMessages => this._totalMessages;
@@ -240,8 +241,10 @@ class ContactInfoState extends ChangeNotifier {
     if (!selectedConversation) {
       unreadMessages++;
     }
-    if (_newMarkerMsgId == -1) {
-      _newMarkerMsgId = messageID;
+    if (_newMarkerMsgIndex == -1) {
+      _newMarkerMsgIndex = 0;
+    } else {
+      _newMarkerMsgIndex++;
     }
 
     this._lastMessageTime = timestamp;

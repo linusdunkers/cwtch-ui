@@ -32,33 +32,34 @@ const GroupConversationHandleLength = 32;
 abstract class Message {
   MessageMetadata getMetadata();
 
-  Widget getWidget(BuildContext context, Key key);
+  Widget getWidget(BuildContext context, Key key, int index);
 
   Widget getPreviewWidget(BuildContext context);
 }
 
-Message compileOverlay(MessageMetadata metadata, String messageData) {
-  try {
-    dynamic message = jsonDecode(messageData);
+Message compileOverlay(MessageInfo messageInfo) {
+
+    try {
+    dynamic message = jsonDecode(messageInfo.wrapper);
     var content = message['d'] as dynamic;
     var overlay = int.parse(message['o'].toString());
 
     switch (overlay) {
       case TextMessageOverlay:
-        return TextMessage(metadata, content);
+        return TextMessage(messageInfo.metadata, content);
       case SuggestContactOverlay:
       case InviteGroupOverlay:
-        return InviteMessage(overlay, metadata, content);
+        return InviteMessage(overlay, messageInfo.metadata, content);
       case QuotedMessageOverlay:
-        return QuotedMessage(metadata, content);
+        return QuotedMessage(messageInfo.metadata, content);
       case FileShareOverlay:
-        return FileMessage(metadata, content);
+        return FileMessage(messageInfo.metadata, content);
       default:
         // Metadata is valid, content is not..
-        return MalformedMessage(metadata);
+        return MalformedMessage(messageInfo.metadata);
     }
   } catch (e) {
-    return MalformedMessage(metadata);
+    return MalformedMessage(messageInfo.metadata);
   }
 }
 
@@ -222,7 +223,7 @@ Future<Message> messageHandler(BuildContext context, String profileOnion, int co
   MessageInfo? messageInfo = await cacheHandler.get(cwtch, profileOnion, conversationIdentifier, cache);
 
   if (messageInfo != null) {
-    return compileOverlay(messageInfo.metadata, messageInfo.wrapper);
+    return compileOverlay(messageInfo);
   } else {
     return MalformedMessage(malformedMetadata);
   }

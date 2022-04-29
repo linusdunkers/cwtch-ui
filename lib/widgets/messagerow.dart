@@ -18,8 +18,9 @@ import '../settings.dart';
 
 class MessageRow extends StatefulWidget {
   final Widget child;
+  final int index;
 
-  MessageRow(this.child, {Key? key}) : super(key: key);
+  MessageRow(this.child, this.index, {Key? key}) : super(key: key);
 
   @override
   MessageRowState createState() => MessageRowState();
@@ -32,12 +33,9 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
   late Alignment _dragAlignment = Alignment.center;
   Alignment _dragAffinity = Alignment.center;
 
-  late int index;
-
   @override
   void initState() {
     super.initState();
-    index = Provider.of<MessageMetadata>(context, listen: false).messageID;
     _controller = AnimationController(vsync: this);
     _controller.addListener(() {
       setState(() {
@@ -224,8 +222,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
                       children: widgetRow,
                     )))));
 
-    var markMsgId = Provider.of<ContactInfoState>(context).newMarkerMsgId;
-    if (markMsgId == Provider.of<MessageMetadata>(context).messageID) {
+    if (Provider.of<ContactInfoState>(context).newMarkerMsgIndex == widget.index) {
       return Column(crossAxisAlignment: fromMe ? CrossAxisAlignment.end : CrossAxisAlignment.start, children: [Align(alignment: Alignment.center, child: _bubbleNew()), mr]);
     } else {
       return mr;
