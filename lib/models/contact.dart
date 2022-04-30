@@ -242,7 +242,9 @@ class ContactInfoState extends ChangeNotifier {
       unreadMessages++;
     }
     if (_newMarkerMsgIndex == -1) {
-      _newMarkerMsgIndex = 0;
+      if (!selectedConversation) {
+        _newMarkerMsgIndex = 0;
+      }
     } else {
       _newMarkerMsgIndex++;
     }
