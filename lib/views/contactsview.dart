@@ -32,11 +32,7 @@ void selectConversation(BuildContext context, int handle) {
   var initialIndex = Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(handle)!.unreadMessages;
   var previouslySelected = Provider.of<AppState>(context, listen: false).selectedConversation;
   if (previouslySelected != null) {
-    Provider
-        .of<ProfileInfoState>(context, listen: false)
-        .contactList
-        .getContact(previouslySelected)!
-        .unselected();
+    Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(previouslySelected)!.unselected();
   }
   Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(handle)!.selected();
   // triggers update in Double/TripleColumnView

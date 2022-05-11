@@ -38,8 +38,7 @@ abstract class Message {
 }
 
 Message compileOverlay(MessageInfo messageInfo) {
-
-    try {
+  try {
     dynamic message = jsonDecode(messageInfo.wrapper);
     var content = message['d'] as dynamic;
     var overlay = int.parse(message['o'].toString());
@@ -92,7 +91,6 @@ class ByIndex implements CacheHandler {
       start = cache.cacheByIndex.length;
       amount += index - start;
     }
-
 
     // check that we aren't asking for messages beyond stored messages
     if (start + amount >= cache.storageMessageCount) {

@@ -110,6 +110,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                           trailing: Container(
                               width: MediaQuery.of(context).size.width / 4,
                               child: DropdownButton(
+                                  isExpanded: true,
                                   value: Provider.of<Settings>(context).locale.languageCode,
                                   onChanged: (String? newValue) {
                                     setState(() {
@@ -146,7 +147,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                             width: MediaQuery.of(context).size.width / 4,
                             child: DropdownButton<String>(
                                 key: Key("DropdownTheme"),
-                                isDense: true,
+                                isExpanded: true,
                                 value: Provider.of<Settings>(context).theme.theme,
                                 onChanged: (String? newValue) {
                                   setState(() {
@@ -168,6 +169,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                           trailing: Container(
                               width: MediaQuery.of(context).size.width / 4,
                               child: DropdownButton(
+                                  isExpanded: true,
                                   value: settings.uiColumnModePortrait.toString(),
                                   onChanged: (String? newValue) {
                                     settings.uiColumnModePortrait = Settings.uiColumnModeFromString(newValue!);
@@ -249,6 +251,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                         trailing: Container(
                             width: MediaQuery.of(context).size.width / 4,
                             child: DropdownButton(
+                                isExpanded: true,
                                 value: settings.notificationPolicy,
                                 onChanged: (NotificationPolicy? newValue) {
                                   settings.notificationPolicy = newValue!;
