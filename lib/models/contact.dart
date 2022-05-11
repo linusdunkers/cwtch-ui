@@ -145,7 +145,7 @@ class ContactInfoState extends ChangeNotifier {
   }
 
   void selected() {
-    this._newMarkerMsgIndex = this._unreadMessages-1;
+    this._newMarkerMsgIndex = this._unreadMessages - 1;
     this._unreadMessages = 0;
   }
 

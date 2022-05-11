@@ -34,7 +34,8 @@ class TextMessage extends Message {
         value: this.metadata,
         builder: (bcontext, child) {
           return MessageRow(
-            MessageBubble(this.content), index,
+            MessageBubble(this.content),
+            index,
             key: key,
           );
         });

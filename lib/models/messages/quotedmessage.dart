@@ -59,7 +59,8 @@ class QuotedMessage extends Message {
       return ChangeNotifierProvider.value(
           value: this.metadata,
           builder: (bcontext, child) {
-            return MessageRow(QuotedMessageBubble(message["body"], messageHandler(bcontext, metadata.profileOnion, metadata.conversationIdentifier, ByContentHash(message["quotedHash"]))), index, key: key);
+            return MessageRow(QuotedMessageBubble(message["body"], messageHandler(bcontext, metadata.profileOnion, metadata.conversationIdentifier, ByContentHash(message["quotedHash"]))), index,
+                key: key);
           });
     } catch (e) {
       return MalformedBubble();

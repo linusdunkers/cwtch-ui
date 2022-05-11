@@ -171,11 +171,7 @@ class _MessageViewState extends State<MessageView> {
 
     var previouslySelected = Provider.of<AppState>(context, listen: false).selectedConversation;
     if (previouslySelected != null) {
-      Provider
-          .of<ProfileInfoState>(context, listen: false)
-          .contactList
-          .getContact(previouslySelected)!
-          .unselected();
+      Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(previouslySelected)!.unselected();
     }
 
     Provider.of<AppState>(context, listen: false).selectedConversation = null;
@@ -230,7 +226,8 @@ class _MessageViewState extends State<MessageView> {
       if (Provider.of<AppState>(context, listen: false).selectedConversation != null && Provider.of<AppState>(context, listen: false).selectedIndex != null) {
         var conversationId = Provider.of<AppState>(context, listen: false).selectedConversation!;
         MessageCache? cache = Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(conversationId)?.messageCache;
-        ById(Provider.of<AppState>(context, listen: false).selectedIndex!).get(Provider.of<FlwtchState>(context, listen: false).cwtch, Provider.of<AppState>(context, listen: false).selectedProfile!, conversationId, cache!)
+        ById(Provider.of<AppState>(context, listen: false).selectedIndex!)
+            .get(Provider.of<FlwtchState>(context, listen: false).cwtch, Provider.of<AppState>(context, listen: false).selectedProfile!, conversationId, cache!)
             .then((MessageInfo? data) {
           try {
             var bytes1 = utf8.encode(data!.metadata.senderHandle + data.wrapper);
