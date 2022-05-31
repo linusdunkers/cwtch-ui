@@ -140,7 +140,7 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
                             CwtchButtonTextField(
                               controller: TextEditingController(text: Provider.of<ContactInfoState>(context, listen: false).onion),
                               onPressed: _copyOnion,
-                              icon: Icon(Icons.copy),
+                              icon: Icon(CwtchIcons.address_copy_2),
                               tooltip: AppLocalizations.of(context)!.copyBtn,
                             )
                           ]),
