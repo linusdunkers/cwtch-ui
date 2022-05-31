@@ -161,7 +161,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                     child: Text(getThemeName(context, themeId)), //"ddi_$themeId", key: Key("ddi_$themeId")),
                                   );
                                 }).toList())),
-                        leading: Icon(CwtchIcons.change_theme, color: settings.current().mainTextColor),
+                        leading: Icon(Icons.palette, color: settings.current().mainTextColor),
                       ),
                       ListTile(
                           title: Text(AppLocalizations.of(context)!.settingUIColumnPortrait, style: TextStyle(color: settings.current().mainTextColor)),
@@ -188,7 +188,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                             softWrap: true,
                             style: TextStyle(color: settings.current().mainTextColor),
                           ),
-                          leading: Icon(Icons.table_chart, color: settings.current().mainTextColor),
+                          leading: Icon(Icons.stay_primary_landscape, color: settings.current().mainTextColor),
                           trailing: Container(
                               width: MediaQuery.of(context).size.width / 4,
                               child: Container(
@@ -406,7 +406,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                     },
                                     activeTrackColor: settings.theme.defaultButtonActiveColor,
                                     inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
-                                    secondary: Icon(Icons.attach_file, color: settings.current().mainTextColor),
+                                    secondary: Icon(Icons.photo, color: settings.current().mainTextColor),
                                   ),
                                   Visibility(
                                     visible: settings.isExperimentEnabled(ImagePreviewsExperiment) && !Platform.isAndroid,
