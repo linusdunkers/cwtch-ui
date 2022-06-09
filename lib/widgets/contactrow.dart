@@ -83,10 +83,9 @@ class _ContactRowState extends State<ContactRow> {
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(color: contact.isBlocked ? Provider.of<Settings>(context).theme.portraitBlockedTextColor : Provider.of<Settings>(context).theme.mainTextColor)),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(5.0),
+                        Container(
                           child: contact.isInvitation == true
-                              ? Wrap(direction: Axis.vertical, children: <Widget>[
+                              ? Wrap(direction: Axis.horizontal, children: <Widget>[
                                   IconButton(
                                     padding: EdgeInsets.zero,
                                     splashRadius: Material.defaultSplashRadius / 2,
