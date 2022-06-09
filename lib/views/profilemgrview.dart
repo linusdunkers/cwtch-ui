@@ -194,49 +194,66 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
                         padding: EdgeInsets.all(10.0),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
-                            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                              Spacer(),
-                              Expanded(
-                                  child: ElevatedButton(
-                                child: Text(AppLocalizations.of(context)!.addProfileTitle, semanticsLabel: AppLocalizations.of(context)!.addProfileTitle),
-                                onPressed: () {
-                                  _pushAddProfile(context);
-                                },
-                              )),
-                              Spacer()
-                            ]),
                             SizedBox(
                               height: 20,
                             ),
-                            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                              Spacer(),
-                              Expanded(
-                                  child: Tooltip(
-                                      message: AppLocalizations.of(context)!.importProfileTooltip,
-                                      child: ElevatedButton(
-                                        child: Text(AppLocalizations.of(context)!.importProfile, semanticsLabel: AppLocalizations.of(context)!.importProfile),
-                                        onPressed: () {
-                                          // 10GB profiles should be enough for anyone?
-                                          showFilePicker(context, MaxGeneralFileSharingSize, (file) {
-                                            showPasswordDialog(context, AppLocalizations.of(context)!.importProfile, AppLocalizations.of(context)!.importProfile, (password) {
-                                              Navigator.popUntil(context, (route) => route.isFirst);
-                                              Provider.of<FlwtchState>(context, listen: false).cwtch.ImportProfile(file.path, password).then((value) {
-                                                if (value == "") {
-                                                  final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.successfullyImportedProfile.replaceFirst("%profile", file.path)));
-                                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                                } else {
-                                                  final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.failedToImportProfile));
-                                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                                }
-                                              });
+                            Expanded(
+                                child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                minimumSize: Size(double.infinity, 20),
+                                maximumSize: Size(400, 20),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.horizontal(left: Radius.circular(180), right: Radius.circular(180))),
+                              ),
+                              child: Text(
+                                AppLocalizations.of(context)!.addProfileTitle,
+                                semanticsLabel: AppLocalizations.of(context)!.addProfileTitle,
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              onPressed: () {
+                                _pushAddProfile(context);
+                              },
+                            )),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Expanded(
+                                child: Tooltip(
+                                    message: AppLocalizations.of(context)!.importProfileTooltip,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        minimumSize: Size(double.infinity, 20),
+                                        maximumSize: Size(400, 20),
+                                        shape: RoundedRectangleBorder(
+                                            side: BorderSide(color: Provider.of<Settings>(context).theme.defaultButtonActiveColor, width: 2.0),
+                                            borderRadius: BorderRadius.horizontal(left: Radius.circular(180), right: Radius.circular(180))),
+                                        primary: Provider.of<Settings>(context).theme.backgroundMainColor,
+                                      ),
+                                      child:
+                                          Text(AppLocalizations.of(context)!.importProfile, semanticsLabel: AppLocalizations.of(context)!.importProfile, style: TextStyle(fontWeight: FontWeight.bold)),
+                                      onPressed: () {
+                                        // 10GB profiles should be enough for anyone?
+                                        showFilePicker(context, MaxGeneralFileSharingSize, (file) {
+                                          showPasswordDialog(context, AppLocalizations.of(context)!.importProfile, AppLocalizations.of(context)!.importProfile, (password) {
+                                            Navigator.popUntil(context, (route) => route.isFirst);
+                                            Provider.of<FlwtchState>(context, listen: false).cwtch.ImportProfile(file.path, password).then((value) {
+                                              if (value == "") {
+                                                final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.successfullyImportedProfile.replaceFirst("%profile", file.path)));
+                                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                              } else {
+                                                final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.failedToImportProfile));
+                                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                              }
                                             });
-                                          }, () {}, () {});
-                                        },
-                                      ))),
-                              Spacer()
-                            ]),
+                                          });
+                                        }, () {}, () {});
+                                      },
+                                    ))),
+                            SizedBox(
+                              height: 20,
+                            ),
                           ],
                         ))),
               )));

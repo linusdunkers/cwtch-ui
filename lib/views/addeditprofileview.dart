@@ -87,7 +87,7 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                         child: Container(
                             margin: EdgeInsets.all(30),
                             padding: EdgeInsets.all(20),
-                            child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                            child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.center, children: [
                               Visibility(
                                   visible: Provider.of<ProfileInfoState>(context).onion.isNotEmpty,
                                   child: Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
@@ -127,6 +127,9 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                                 badgeEdit: Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment))))
                                   ])),
                               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                SizedBox(
+                                  height: 20,
+                                ),
                                 CwtchLabel(label: AppLocalizations.of(context)!.displayNameLabel),
                                 SizedBox(
                                   height: 20,
@@ -273,64 +276,71 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                               SizedBox(
                                 height: 20,
                               ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Expanded(
-                                    child: ElevatedButton(
-                                      onPressed: _createPressed,
-                                      child: Text(
-                                        Provider.of<ProfileInfoState>(context).onion.isEmpty ? AppLocalizations.of(context)!.addNewProfileBtn : AppLocalizations.of(context)!.saveProfileBtn,
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                              ElevatedButton(
+                                onPressed: _createPressed,
+                                style: ElevatedButton.styleFrom(
+                                  minimumSize: Size(400, 50),
+                                  maximumSize: Size(800, 50),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.horizontal(left: Radius.circular(180), right: Radius.circular(180))),
+                                ),
+                                child: Text(
+                                  Provider.of<ProfileInfoState>(context).onion.isEmpty ? AppLocalizations.of(context)!.addNewProfileBtn : AppLocalizations.of(context)!.saveProfileBtn,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 20,
                               ),
                               Visibility(
                                   visible: Provider.of<ProfileInfoState>(context, listen: false).onion.isNotEmpty,
-                                  child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.end, children: [
-                                    SizedBox(
-                                      height: 20,
-                                    ),
-                                    Tooltip(
-                                        message: AppLocalizations.of(context)!.exportProfileTooltip,
-                                        child: ElevatedButton.icon(
-                                          onPressed: () {
-                                            if (Platform.isAndroid) {
-                                              Provider.of<FlwtchState>(context, listen: false).cwtch.ExportProfile(ctrlrOnion.value.text, ctrlrOnion.value.text + ".tar.gz");
-                                              final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.fileSavedTo + " " + ctrlrOnion.value.text + ".tar.gz"));
-                                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                            } else {
-                                              showCreateFilePicker(context).then((name) {
-                                                if (name != null) {
-                                                  Provider.of<FlwtchState>(context, listen: false).cwtch.ExportProfile(ctrlrOnion.value.text, name);
-                                                  final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.fileSavedTo + " " + name));
-                                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                                }
-                                              });
-                                            }
-                                          },
-                                          icon: Icon(Icons.import_export),
-                                          label: Text(AppLocalizations.of(context)!.exportProfile),
-                                        ))
-                                  ])),
+                                  child: Tooltip(
+                                      message: AppLocalizations.of(context)!.exportProfileTooltip,
+                                      child: ElevatedButton.icon(
+                                        style: ElevatedButton.styleFrom(
+                                          minimumSize: Size(400, 50),
+                                          maximumSize: Size(800, 50),
+                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.horizontal(left: Radius.circular(180), right: Radius.circular(180))),
+                                        ),
+                                        onPressed: () {
+                                          if (Platform.isAndroid) {
+                                            Provider.of<FlwtchState>(context, listen: false).cwtch.ExportProfile(ctrlrOnion.value.text, ctrlrOnion.value.text + ".tar.gz");
+                                            final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.fileSavedTo + " " + ctrlrOnion.value.text + ".tar.gz"));
+                                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                          } else {
+                                            showCreateFilePicker(context).then((name) {
+                                              if (name != null) {
+                                                Provider.of<FlwtchState>(context, listen: false).cwtch.ExportProfile(ctrlrOnion.value.text, name);
+                                                final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.fileSavedTo + " " + name));
+                                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                              }
+                                            });
+                                          }
+                                        },
+                                        icon: Icon(Icons.import_export),
+                                        label: Text(AppLocalizations.of(context)!.exportProfile),
+                                      ))),
+                              SizedBox(
+                                height: 20,
+                              ),
                               Visibility(
                                   visible: Provider.of<ProfileInfoState>(context, listen: false).onion.isNotEmpty,
-                                  child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.end, children: [
-                                    SizedBox(
-                                      height: 20,
-                                    ),
-                                    Tooltip(
-                                        message: AppLocalizations.of(context)!.enterCurrentPasswordForDelete,
-                                        child: ElevatedButton.icon(
-                                          onPressed: () {
-                                            showAlertDialog(context);
-                                          },
-                                          icon: Icon(Icons.delete_forever),
-                                          label: Text(AppLocalizations.of(context)!.deleteBtn),
-                                        ))
-                                  ]))
+                                  child: Tooltip(
+                                      message: AppLocalizations.of(context)!.enterCurrentPasswordForDelete,
+                                      child: ElevatedButton.icon(
+                                        style: ElevatedButton.styleFrom(
+                                          minimumSize: Size(400, 50),
+                                          maximumSize: Size(800, 50),
+                                          shape: RoundedRectangleBorder(
+                                              side: BorderSide(color: Provider.of<Settings>(context).theme.defaultButtonActiveColor, width: 2.0),
+                                              borderRadius: BorderRadius.horizontal(left: Radius.circular(180), right: Radius.circular(180))),
+                                          primary: Provider.of<Settings>(context).theme.backgroundMainColor,
+                                        ),
+                                        onPressed: () {
+                                          showAlertDialog(context);
+                                        },
+                                        icon: Icon(Icons.delete_forever),
+                                        label: Text(AppLocalizations.of(context)!.deleteBtn),
+                                      )))
                             ]))))));
       });
     });

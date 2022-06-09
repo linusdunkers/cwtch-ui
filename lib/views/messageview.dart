@@ -81,7 +81,7 @@ class _MessageViewState extends State<MessageView> {
   @override
   Widget build(BuildContext context) {
     // After leaving a conversation the selected conversation is set to null...
-    if (Provider.of<ContactInfoState>(context).profileOnion == "") {
+    if (Provider.of<ContactInfoState>(context, listen: false).profileOnion == "") {
       return Card(child: Center(child: Text(AppLocalizations.of(context)!.addContactFirst)));
     }
 
