@@ -254,7 +254,7 @@ class _ContactsViewState extends State<ContactsView> {
                 height: 200, // bespoke value courtesy of the [TextField] docs
                 child: Center(
                     child: Padding(
-                        padding: EdgeInsets.all(10.0),
+                        padding: EdgeInsets.all(2.0),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
