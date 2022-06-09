@@ -92,11 +92,7 @@ class _ContactRowState extends State<ContactRow> {
                                       child: TextButton.icon(
                                         label: Text(
                                           AppLocalizations.of(context)!.tooltipAcceptContactRequest,
-                                          style: TextStyle(decoration: TextDecoration.underline),
                                         ),
-                                        style: ButtonStyle(
-                                            backgroundColor: MaterialStateProperty.all(Provider.of<Settings>(context).theme.backgroundPaneColor),
-                                            foregroundColor: MaterialStateProperty.all(Provider.of<Settings>(context).theme.mainTextColor)),
                                         icon: Icon(
                                           Icons.favorite,
                                           size: 16,
