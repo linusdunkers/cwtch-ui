@@ -260,6 +260,9 @@ class _ContactsViewState extends State<ContactsView> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisSize: MainAxisSize.max,
                           children: <Widget>[
+                            SizedBox(
+                              height: 20,
+                            ),
                             Expanded(
                                 child: Tooltip(
                                     message: AppLocalizations.of(context)!.tooltipAddContact,
@@ -273,6 +276,7 @@ class _ContactsViewState extends State<ContactsView> {
                                         AppLocalizations.of(context)!.addContact,
                                         semanticsLabel: AppLocalizations.of(context)!.addContact,
                                         textAlign: TextAlign.center,
+                                        style: TextStyle(fontWeight: FontWeight.bold),
                                       ),
                                       onPressed: () {
                                         _pushAddContact(false);
@@ -290,7 +294,12 @@ class _ContactsViewState extends State<ContactsView> {
                                       maximumSize: Size.fromWidth(400),
                                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.horizontal(left: Radius.circular(180), right: Radius.circular(180))),
                                     ),
-                                    child: Text(AppLocalizations.of(context)!.addServerTitle, semanticsLabel: AppLocalizations.of(context)!.addServerTitle, textAlign: TextAlign.center),
+                                    child: Text(
+                                      AppLocalizations.of(context)!.addServerTitle,
+                                      semanticsLabel: AppLocalizations.of(context)!.addServerTitle,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(fontWeight: FontWeight.bold),
+                                    ),
                                     onPressed: groupsEnabled
                                         ? () {
                                             _pushAddContact(false);
@@ -310,13 +319,21 @@ class _ContactsViewState extends State<ContactsView> {
                                         maximumSize: Size.fromWidth(400),
                                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.horizontal(left: Radius.circular(180), right: Radius.circular(180))),
                                       ),
-                                      child: Text(AppLocalizations.of(context)!.createGroupTitle, semanticsLabel: AppLocalizations.of(context)!.createGroupTitle, textAlign: TextAlign.center),
+                                      child: Text(
+                                        AppLocalizations.of(context)!.createGroupTitle,
+                                        semanticsLabel: AppLocalizations.of(context)!.createGroupTitle,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(fontWeight: FontWeight.bold),
+                                      ),
                                       onPressed: groupsEnabled
                                           ? () {
                                               _pushAddContact(true);
                                             }
                                           : null,
                                     ))),
+                            SizedBox(
+                              height: 20,
+                            ),
                           ],
                         ))),
               )));
