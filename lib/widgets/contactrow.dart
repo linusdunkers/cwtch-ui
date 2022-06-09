@@ -80,44 +80,45 @@ class _ContactRowState extends State<ContactRow> {
                         Visibility(
                           visible: !Provider.of<Settings>(context).streamerMode,
                           child: Text(contact.onion,
+                              overflow: TextOverflow.ellipsis,
                               style: TextStyle(color: contact.isBlocked ? Provider.of<Settings>(context).theme.portraitBlockedTextColor : Provider.of<Settings>(context).theme.mainTextColor)),
-                        )
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: contact.isInvitation == true
+                              ? Wrap(direction: Axis.vertical, children: <Widget>[
+                                  IconButton(
+                                    padding: EdgeInsets.zero,
+                                    splashRadius: Material.defaultSplashRadius / 2,
+                                    iconSize: 16,
+                                    icon: Icon(
+                                      Icons.favorite,
+                                      color: Provider.of<Settings>(context).theme.mainTextColor,
+                                    ),
+                                    tooltip: AppLocalizations.of(context)!.tooltipAcceptContactRequest,
+                                    onPressed: _btnApprove,
+                                  ),
+                                  IconButton(
+                                    padding: EdgeInsets.zero,
+                                    splashRadius: Material.defaultSplashRadius / 2,
+                                    iconSize: 16,
+                                    icon: Icon(Icons.delete, color: Provider.of<Settings>(context).theme.mainTextColor),
+                                    tooltip: AppLocalizations.of(context)!.tooltipRejectContactRequest,
+                                    onPressed: _btnReject,
+                                  )
+                                ])
+                              : (contact.isBlocked != null && contact.isBlocked
+                                  ? IconButton(
+                                      padding: EdgeInsets.zero,
+                                      splashRadius: Material.defaultSplashRadius / 2,
+                                      iconSize: 16,
+                                      icon: Icon(Icons.block, color: Provider.of<Settings>(context).theme.mainTextColor),
+                                      onPressed: () {},
+                                    )
+                                  : Text(dateToNiceString(contact.lastMessageTime))),
+                        ),
                       ],
                     ))),
-            Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: contact.isInvitation == true
-                  ? Wrap(direction: Axis.vertical, children: <Widget>[
-                      IconButton(
-                        padding: EdgeInsets.zero,
-                        splashRadius: Material.defaultSplashRadius / 2,
-                        iconSize: 16,
-                        icon: Icon(
-                          Icons.favorite,
-                          color: Provider.of<Settings>(context).theme.mainTextColor,
-                        ),
-                        tooltip: AppLocalizations.of(context)!.tooltipAcceptContactRequest,
-                        onPressed: _btnApprove,
-                      ),
-                      IconButton(
-                        padding: EdgeInsets.zero,
-                        splashRadius: Material.defaultSplashRadius / 2,
-                        iconSize: 16,
-                        icon: Icon(Icons.delete, color: Provider.of<Settings>(context).theme.mainTextColor),
-                        tooltip: AppLocalizations.of(context)!.tooltipRejectContactRequest,
-                        onPressed: _btnReject,
-                      )
-                    ])
-                  : (contact.isBlocked != null && contact.isBlocked
-                      ? IconButton(
-                          padding: EdgeInsets.zero,
-                          splashRadius: Material.defaultSplashRadius / 2,
-                          iconSize: 16,
-                          icon: Icon(Icons.block, color: Provider.of<Settings>(context).theme.mainTextColor),
-                          onPressed: () {},
-                        )
-                      : Text(dateToNiceString(contact.lastMessageTime))),
-            ),
           ]),
           onTap: () {
             selectConversation(context, contact.identifier);
