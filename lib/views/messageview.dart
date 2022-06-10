@@ -43,6 +43,7 @@ class _MessageViewState extends State<MessageView> {
   int selectedContact = -1;
   ItemPositionsListener scrollListener = ItemPositionsListener.create();
   File? imagePreview;
+  bool showDown = false;
 
   @override
   void initState() {
@@ -53,6 +54,15 @@ class _MessageViewState extends State<MessageView> {
         Provider.of<AppState>(context, listen: false).initialScrollIndex = 0;
         Provider.of<AppState>(context, listen: false).unreadMessagesBelow = false;
       }
+
+
+      if (scrollListener.itemPositions.value.length != 0 &&
+          !scrollListener.itemPositions.value.any((element) => element.index == 0)) {
+        showDown = true;
+      } else {
+        showDown = false;
+      }
+
     });
     super.initState();
   }
@@ -127,7 +137,7 @@ class _MessageViewState extends State<MessageView> {
         onWillPop: _onWillPop,
         child: Scaffold(
           backgroundColor: Provider.of<Settings>(context).theme.backgroundMainColor,
-          floatingActionButton: appState.unreadMessagesBelow
+          floatingActionButton: showDown
               ? FloatingActionButton(
                   child: Icon(Icons.arrow_downward, color: Provider.of<Settings>(context).current().defaultButtonTextColor),
                   onPressed: () {
