@@ -30,7 +30,6 @@ class _MessageListState extends State<MessageList> {
       ByIndex(0).loadUnsynced(Provider.of<FlwtchState>(context, listen: false).cwtch, Provider.of<AppState>(outerContext, listen: false).selectedProfile!, conversationId, cache!);
     }
     var initi = Provider.of<AppState>(outerContext, listen: false).initialScrollIndex;
-
     bool isP2P = !Provider.of<ContactInfoState>(context).isGroup;
     bool isGroupAndSyncing = Provider.of<ContactInfoState>(context).isGroup == true && Provider.of<ContactInfoState>(context).status == "Authenticated";
     bool isGroupAndSynced = Provider.of<ContactInfoState>(context).isGroup && Provider.of<ContactInfoState>(context).status == "Synced";

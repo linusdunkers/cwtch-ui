@@ -55,14 +55,11 @@ class _MessageViewState extends State<MessageView> {
         Provider.of<AppState>(context, listen: false).unreadMessagesBelow = false;
       }
 
-
-      if (scrollListener.itemPositions.value.length != 0 &&
-          !scrollListener.itemPositions.value.any((element) => element.index == 0)) {
+      if (scrollListener.itemPositions.value.length != 0 && !scrollListener.itemPositions.value.any((element) => element.index == 0)) {
         showDown = true;
       } else {
         showDown = false;
       }
-
     });
     super.initState();
   }
