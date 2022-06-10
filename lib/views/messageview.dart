@@ -138,8 +138,16 @@ class _MessageViewState extends State<MessageView> {
                   })
               : null,
           appBar: AppBar(
-            // setting leading to null makes it do the default behaviour; container() hides it
-            leading: Provider.of<Settings>(context).uiColumns(appState.isLandscape(context)).length > 1 ? Container() : null,
+            // setting leading(Width) to null makes it do the default behaviour; container() hides it
+            leadingWidth: Provider.of<Settings>(context).uiColumns(appState.isLandscape(context)).length > 1 ? 0 : null,
+            leading: Provider.of<Settings>(context).uiColumns(appState.isLandscape(context)).length > 1
+                ? Container(
+                    padding: EdgeInsets.zero,
+                    margin: EdgeInsets.zero,
+                    width: 0,
+                    height: 0,
+                  )
+                : null,
             title: Row(children: [
               ProfileImage(
                 imagePath: Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment)
