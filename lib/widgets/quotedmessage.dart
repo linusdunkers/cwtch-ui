@@ -1,7 +1,9 @@
+import 'package:cwtch/controllers/open_link_modal.dart';
 import 'package:cwtch/models/appstate.dart';
 import 'package:cwtch/models/contact.dart';
 import 'package:cwtch/models/message.dart';
 import 'package:cwtch/models/profile.dart';
+import 'package:cwtch/third_party/linkify/flutter_linkify.dart';
 import 'package:cwtch/views/contactsview.dart';
 import 'package:cwtch/widgets/malformedbubble.dart';
 import 'package:cwtch/widgets/messageloadingbubble.dart';
@@ -45,12 +47,29 @@ class QuotedMessageBubbleState extends State<QuotedMessageBubble> {
     var wdgSender = SelectableText(senderDisplayStr,
         style: TextStyle(fontSize: 9.0, color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor));
 
-    var wdgMessage = SelectableText(
-      widget.body + '\u202F',
+    var showClickableLinks = Provider.of<Settings>(context).isExperimentEnabled(ClickableLinksExperiment);
+    var formatMessages = Provider.of<Settings>(context).isExperimentEnabled(FormattingExperiment);
+
+    var wdgMessage = SelectableLinkify(
+      text: widget.body + '\u202F',
+      // TODO: onOpen breaks the "selectable" functionality. Maybe something to do with gesture handler?
+      options: LinkifyOptions(messageFormatting: formatMessages, parseLinks: showClickableLinks, looseUrl: true, defaultToHttps: true),
+      linkifiers: [UrlLinkifier()],
+      onOpen: showClickableLinks
+          ? (link) {
+              modalOpenLink(context, link);
+            }
+          : null,
+      //key: Key(myKey),
       focusNode: _focus,
       style: TextStyle(
         color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor,
       ),
+      linkStyle: TextStyle(color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor),
+      codeStyle: TextStyle(
+          // note: these colors are flipped
+          color: fromMe ? Provider.of<Settings>(context).theme.messageFromOtherTextColor : Provider.of<Settings>(context).theme.messageFromMeTextColor,
+          backgroundColor: fromMe ? Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor : Provider.of<Settings>(context).theme.messageFromMeBackgroundColor),
       textAlign: TextAlign.left,
       textWidthBasis: TextWidthBasis.longestLine,
     );
