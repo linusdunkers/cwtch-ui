@@ -312,6 +312,182 @@ class MaterialLocalizationLu extends MaterialLocalizations {
   @override
   String get viewLicensesButtonLabel => 'LIZENZEN ANZEIGEN';
 
+  // ***** NEW *****
+
+  @override
+  String get keyboardKeyAlt => 'Datum';
+
+  @override
+  String get keyboardKeyAltGraph => 'Datum';
+
+  @override
+  String get keyboardKeyBackspace => 'Datum';
+
+  @override
+  String get keyboardKeyCapsLock => 'Datum';
+
+  @override
+  String get keyboardKeyChannelDown => 'Datum';
+
+  @override
+  String get keyboardKeyChannelUp => 'Datum';
+
+  @override
+  String get keyboardKeyControl => 'Datum';
+
+  @override
+  String get keyboardKeyDelete => 'Datum';
+
+  @override
+  String get keyboardKeyEisu => 'Datum';
+
+  @override
+  String get keyboardKeyEject => 'Datum';
+
+  @override
+  String get keyboardKeyEnd => 'Datum';
+
+  @override
+  String get keyboardKeyEscape => 'Datum';
+
+  @override
+  String get keyboardKeyFn => 'Datum';
+
+  @override
+  String get keyboardKeyHangulMode => 'Datum';
+
+  @override
+  String get keyboardKeyHanjaMode => 'Datum';
+
+  @override
+  String get keyboardKeyHankaku => 'Datum';
+
+  @override
+  String get keyboardKeyHiragana => 'Datum';
+
+  @override
+  String get keyboardKeyHiraganaKatakana => 'Datum';
+
+  @override
+  String get keyboardKeyHome => 'Datum';
+
+  @override
+  String get keyboardKeyInsert => 'Datum';
+
+  @override
+  String get keyboardKeyKanaMode => 'Datum';
+
+  @override
+  String get keyboardKeyKanjiMode => 'Datum';
+
+  @override
+  String get keyboardKeyKatakana => 'Datum';
+
+  @override
+  String get keyboardKeyMeta => 'Datum';
+
+  @override
+  String get keyboardKeyMetaMacOs => 'Datum';
+
+  @override
+  String get keyboardKeyMetaWindows => 'Datum';
+
+  @override
+  String get keyboardKeyNumLock => 'Datum';
+
+  @override
+  String get keyboardKeyNumpad1 => 'Datum';
+
+  @override
+  String get keyboardKeyNumpad2 => 'Datum';
+
+  @override
+  String get keyboardKeyNumpad3 => 'Datum';
+
+  @override
+  String get keyboardKeyNumpad4 => 'Datum';
+
+  @override
+  String get keyboardKeyNumpad5 => 'Datum';
+
+  @override
+  String get keyboardKeyNumpad6 => 'Datum';
+
+  @override
+  String get keyboardKeyNumpad7 => 'Datum';
+
+  @override
+  String get keyboardKeyNumpad8 => 'Datum';
+
+  @override
+  String get keyboardKeyNumpad9 => 'Datum';
+
+  @override
+  String get keyboardKeyNumpad0 => 'Datum';
+
+  @override
+  String get keyboardKeyNumpadAdd => 'Datum';
+
+  @override
+  String get keyboardKeyNumpadComma => 'Datum';
+
+  @override
+  String get keyboardKeyNumpadDecimal => 'Datum';
+
+  @override
+  String get keyboardKeyNumpadDivide => 'Datum';
+
+  @override
+  String get keyboardKeyNumpadEnter => 'Datum';
+
+  @override
+  String get keyboardKeyNumpadEqual => 'Datum';
+
+  @override
+  String get keyboardKeyNumpadMultiply => 'Datum';
+
+  @override
+  String get keyboardKeyNumpadParenLeft => 'Datum';
+
+  @override
+  String get keyboardKeyNumpadParenRight => 'Datum';
+
+  @override
+  String get keyboardKeyNumpadSubtract => 'Datum';
+
+  @override
+  String get keyboardKeyPageDown => 'Datum';
+
+  @override
+  String get keyboardKeyPageUp => 'Datum';
+
+  @override
+  String get keyboardKeyPower => 'Datum';
+
+  @override
+  String get keyboardKeyPowerOff => 'Datum';
+
+  @override
+  String get keyboardKeyPrintScreen => 'Datum';
+
+  @override
+  String get keyboardKeyRomaji => 'Datum';
+
+  @override
+  String get keyboardKeyScrollLock => 'Datum';
+
+  @override
+  String get keyboardKeySelect => 'Datum';
+
+  @override
+  String get keyboardKeySpace => 'Datum';
+
+  @override
+  String get keyboardKeyZenkaku => 'Datum';
+
+  @override
+  String get keyboardKeyZenkakuHankaku => 'Datum';
+
   @override
   String aboutListTileTitle(String applicationName) {
     return aboutListTileTitleRaw.replaceFirst("$applicationName", applicationName);
