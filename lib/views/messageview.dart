@@ -42,7 +42,6 @@ class _MessageViewState extends State<MessageView> {
   final focusNode = FocusNode();
   int selectedContact = -1;
   ItemPositionsListener scrollListener = ItemPositionsListener.create();
-  ItemScrollController scrollController = ItemScrollController();
   File? imagePreview;
 
   @override
@@ -134,7 +133,7 @@ class _MessageViewState extends State<MessageView> {
                   onPressed: () {
                     Provider.of<AppState>(context, listen: false).initialScrollIndex = 0;
                     Provider.of<AppState>(context, listen: false).unreadMessagesBelow = false;
-                    scrollController.scrollTo(index: 0, duration: Duration(milliseconds: 600));
+                    Provider.of<ContactInfoState>(context).messageScrollController.scrollTo(index: 0, duration: Duration(milliseconds: 600));
                   })
               : null,
           appBar: AppBar(
@@ -172,7 +171,6 @@ class _MessageViewState extends State<MessageView> {
           body: Padding(
               padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 108.0),
               child: MessageList(
-                scrollController,
                 scrollListener,
               )),
           bottomSheet: _buildComposeBox(),

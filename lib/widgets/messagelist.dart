@@ -13,9 +13,8 @@ import '../main.dart';
 import '../settings.dart';
 
 class MessageList extends StatefulWidget {
-  ItemScrollController scrollController;
   ItemPositionsListener scrollListener;
-  MessageList(this.scrollController, this.scrollListener);
+  MessageList(this.scrollListener);
 
   @override
   _MessageListState createState() => _MessageListState();
