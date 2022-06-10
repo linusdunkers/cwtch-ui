@@ -1,6 +1,7 @@
 import 'package:cwtch/widgets/messagerow.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import 'message.dart';
 import 'messagecache.dart';
@@ -44,6 +45,7 @@ class ContactInfoState extends ChangeNotifier {
   late Map<String, GlobalKey<MessageRowState>> keys;
   int _newMarkerMsgIndex = -1;
   late MessageCache messageCache;
+  ItemScrollController messageScrollController = new ItemScrollController();
 
   // todo: a nicer way to model contacts, groups and other "entities"
   late bool _isGroup;

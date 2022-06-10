@@ -169,7 +169,12 @@ class _MessageViewState extends State<MessageView> {
             ]),
             actions: appBarButtons,
           ),
-          body: Padding(padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 108.0), child: MessageList(scrollController, scrollListener)),
+          body: Padding(
+              padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 108.0),
+              child: MessageList(
+                scrollController,
+                scrollListener,
+              )),
           bottomSheet: _buildComposeBox(),
         ));
   }

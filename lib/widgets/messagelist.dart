@@ -30,8 +30,8 @@ class _MessageListState extends State<MessageList> {
       MessageCache? cache = Provider.of<ProfileInfoState>(outerContext, listen: false).contactList.getContact(conversationId)?.messageCache;
       ByIndex(0).loadUnsynced(Provider.of<FlwtchState>(context, listen: false).cwtch, Provider.of<AppState>(outerContext, listen: false).selectedProfile!, conversationId, cache!);
     }
-
     var initi = Provider.of<AppState>(outerContext, listen: false).initialScrollIndex;
+
     bool isP2P = !Provider.of<ContactInfoState>(context).isGroup;
     bool isGroupAndSyncing = Provider.of<ContactInfoState>(context).isGroup == true && Provider.of<ContactInfoState>(context).status == "Authenticated";
     bool isGroupAndSynced = Provider.of<ContactInfoState>(context).isGroup && Provider.of<ContactInfoState>(context).status == "Synced";
@@ -82,7 +82,7 @@ class _MessageListState extends State<MessageList> {
                       child: loadMessages
                           ? ScrollablePositionedList.builder(
                               itemPositionsListener: widget.scrollListener,
-                              itemScrollController: widget.scrollController,
+                              itemScrollController: Provider.of<ContactInfoState>(outerContext).messageScrollController,
                               initialScrollIndex: initi > 4 ? initi - 4 : 0,
                               itemCount: Provider.of<ContactInfoState>(outerContext).totalMessages,
                               reverse: true, // NOTE: There seems to be a bug in flutter that corrects the mouse wheel scroll, but not the drag direction...

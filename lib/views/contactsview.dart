@@ -29,20 +29,21 @@ class ContactsView extends StatefulWidget {
 // selectConversation can be called from anywhere to set the active conversation
 void selectConversation(BuildContext context, int handle) {
   // requery instead of using contactinfostate directly because sometimes listview gets confused about data that resorts
-  var initialIndex = Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(handle)!.unreadMessages;
   var previouslySelected = Provider.of<AppState>(context, listen: false).selectedConversation;
   if (previouslySelected != null) {
     Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(previouslySelected)!.unselected();
   }
   Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(handle)!.selected();
   // triggers update in Double/TripleColumnView
-  Provider.of<AppState>(context, listen: false).initialScrollIndex = initialIndex;
+  var unread = Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(handle)!.unreadMessages;
+  Provider.of<AppState>(context, listen: false).initialScrollIndex = unread;
   Provider.of<AppState>(context, listen: false).selectedConversation = handle;
   Provider.of<AppState>(context, listen: false).selectedIndex = null;
   Provider.of<AppState>(context, listen: false).hoveredIndex = -1;
   // if in singlepane mode, push to the stack
   var isLandscape = Provider.of<AppState>(context, listen: false).isLandscape(context);
   if (Provider.of<Settings>(context, listen: false).uiColumns(isLandscape).length == 1) _pushMessageView(context, handle);
+
   // Set last message seen time in backend
   Provider.of<FlwtchState>(context, listen: false)
       .cwtch
