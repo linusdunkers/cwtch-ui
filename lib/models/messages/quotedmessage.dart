@@ -8,10 +8,6 @@ import 'package:cwtch/widgets/quotedmessage.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-import '../../main.dart';
-import '../messagecache.dart';
-import '../profile.dart';
-
 class QuotedMessageStructure {
   final String quotedHash;
   final String body;

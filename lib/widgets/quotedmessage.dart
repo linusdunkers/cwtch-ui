@@ -1,6 +1,10 @@
+import 'package:cwtch/controllers/open_link_modal.dart';
+import 'package:cwtch/models/appstate.dart';
 import 'package:cwtch/models/contact.dart';
 import 'package:cwtch/models/message.dart';
 import 'package:cwtch/models/profile.dart';
+import 'package:cwtch/third_party/linkify/flutter_linkify.dart';
+import 'package:cwtch/views/contactsview.dart';
 import 'package:cwtch/widgets/malformedbubble.dart';
 import 'package:cwtch/widgets/messageloadingbubble.dart';
 import 'package:flutter/material.dart';
@@ -43,12 +47,29 @@ class QuotedMessageBubbleState extends State<QuotedMessageBubble> {
     var wdgSender = SelectableText(senderDisplayStr,
         style: TextStyle(fontSize: 9.0, color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor));
 
-    var wdgMessage = SelectableText(
-      widget.body + '\u202F',
+    var showClickableLinks = Provider.of<Settings>(context).isExperimentEnabled(ClickableLinksExperiment);
+    var formatMessages = Provider.of<Settings>(context).isExperimentEnabled(FormattingExperiment);
+
+    var wdgMessage = SelectableLinkify(
+      text: widget.body + '\u202F',
+      // TODO: onOpen breaks the "selectable" functionality. Maybe something to do with gesture handler?
+      options: LinkifyOptions(messageFormatting: formatMessages, parseLinks: showClickableLinks, looseUrl: true, defaultToHttps: true),
+      linkifiers: [UrlLinkifier()],
+      onOpen: showClickableLinks
+          ? (link) {
+              modalOpenLink(context, link);
+            }
+          : null,
+      //key: Key(myKey),
       focusNode: _focus,
       style: TextStyle(
         color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor,
       ),
+      linkStyle: TextStyle(color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor),
+      codeStyle: TextStyle(
+          // note: these colors are flipped
+          color: fromMe ? Provider.of<Settings>(context).theme.messageFromOtherTextColor : Provider.of<Settings>(context).theme.messageFromMeTextColor,
+          backgroundColor: fromMe ? Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor : Provider.of<Settings>(context).theme.messageFromMeBackgroundColor),
       textAlign: TextAlign.left,
       textWidthBasis: TextWidthBasis.longestLine,
     );
@@ -61,14 +82,23 @@ class QuotedMessageBubbleState extends State<QuotedMessageBubble> {
             var qMessage = (snapshot.data! as Message);
             // Swap the background color for quoted tweets..
             var qTextColor = fromMe ? Provider.of<Settings>(context).theme.messageFromOtherTextColor : Provider.of<Settings>(context).theme.messageFromMeTextColor;
-            return Container(
-                margin: EdgeInsets.all(5),
-                padding: EdgeInsets.all(5),
-                color: fromMe ? Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor : Provider.of<Settings>(context).theme.messageFromMeBackgroundColor,
-                child: Wrap(runAlignment: WrapAlignment.spaceEvenly, alignment: WrapAlignment.spaceEvenly, runSpacing: 1.0, crossAxisAlignment: WrapCrossAlignment.center, children: [
-                  Center(widthFactor: 1, child: Padding(padding: EdgeInsets.all(10.0), child: Icon(Icons.reply, size: 32, color: qTextColor))),
-                  Center(widthFactor: 1.0, child: DefaultTextStyle(child: qMessage.getPreviewWidget(context), style: TextStyle(color: qTextColor)))
-                ]));
+            return MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                    onTap: () {
+                      var index = Provider.of<ContactInfoState>(context, listen: false).messageCache.cacheByHash[qMessage.getMetadata().contenthash];
+                      var totalMessages = Provider.of<ContactInfoState>(context, listen: false).totalMessages;
+                      // we have to reverse here because the list itself is reversed...
+                      Provider.of<ContactInfoState>(context).messageScrollController.scrollTo(index: totalMessages - index!, duration: Duration(milliseconds: 100));
+                    },
+                    child: Container(
+                        margin: EdgeInsets.all(5),
+                        padding: EdgeInsets.all(5),
+                        color: fromMe ? Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor : Provider.of<Settings>(context).theme.messageFromMeBackgroundColor,
+                        child: Wrap(runAlignment: WrapAlignment.spaceEvenly, alignment: WrapAlignment.spaceEvenly, runSpacing: 1.0, crossAxisAlignment: WrapCrossAlignment.center, children: [
+                          Center(widthFactor: 1, child: Padding(padding: EdgeInsets.all(10.0), child: Icon(Icons.reply, size: 32, color: qTextColor))),
+                          Center(widthFactor: 1.0, child: DefaultTextStyle(child: qMessage.getPreviewWidget(context), style: TextStyle(color: qTextColor)))
+                        ]))));
           } catch (e) {
             print(e);
             return MalformedBubble();

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cwtch/models/message.dart';
 import 'package:cwtch/models/messages/malformedmessage.dart';
 import 'package:cwtch/widgets/malformedbubble.dart';
@@ -19,7 +21,7 @@ class TextMessage extends Message {
     return ChangeNotifierProvider.value(
         value: this.metadata,
         builder: (bcontext, child) {
-          return SelectableText(this.content);
+          return Text(this.content.substring(0, min(this.content.length, 50)));
         });
   }
 

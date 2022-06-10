@@ -42,8 +42,8 @@ class _MessageViewState extends State<MessageView> {
   final focusNode = FocusNode();
   int selectedContact = -1;
   ItemPositionsListener scrollListener = ItemPositionsListener.create();
-  ItemScrollController scrollController = ItemScrollController();
   File? imagePreview;
+  bool showDown = false;
 
   @override
   void initState() {
@@ -53,6 +53,12 @@ class _MessageViewState extends State<MessageView> {
           scrollListener.itemPositions.value.any((element) => element.index == 0)) {
         Provider.of<AppState>(context, listen: false).initialScrollIndex = 0;
         Provider.of<AppState>(context, listen: false).unreadMessagesBelow = false;
+      }
+
+      if (scrollListener.itemPositions.value.length != 0 && !scrollListener.itemPositions.value.any((element) => element.index == 0)) {
+        showDown = true;
+      } else {
+        showDown = false;
       }
     });
     super.initState();
@@ -128,13 +134,13 @@ class _MessageViewState extends State<MessageView> {
         onWillPop: _onWillPop,
         child: Scaffold(
           backgroundColor: Provider.of<Settings>(context).theme.backgroundMainColor,
-          floatingActionButton: appState.unreadMessagesBelow
+          floatingActionButton: showDown
               ? FloatingActionButton(
                   child: Icon(Icons.arrow_downward, color: Provider.of<Settings>(context).current().defaultButtonTextColor),
                   onPressed: () {
                     Provider.of<AppState>(context, listen: false).initialScrollIndex = 0;
                     Provider.of<AppState>(context, listen: false).unreadMessagesBelow = false;
-                    scrollController.scrollTo(index: 0, duration: Duration(milliseconds: 600));
+                    Provider.of<ContactInfoState>(context).messageScrollController.scrollTo(index: 0, duration: Duration(milliseconds: 600));
                   })
               : null,
           appBar: AppBar(
@@ -169,7 +175,11 @@ class _MessageViewState extends State<MessageView> {
             ]),
             actions: appBarButtons,
           ),
-          body: Padding(padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 108.0), child: MessageList(scrollController, scrollListener)),
+          body: Padding(
+              padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 108.0),
+              child: MessageList(
+                scrollListener,
+              )),
           bottomSheet: _buildComposeBox(),
         ));
   }
