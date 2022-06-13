@@ -3,11 +3,8 @@ import 'dart:io';
 import 'package:cwtch/models/appstate.dart';
 import 'package:cwtch/models/contact.dart';
 import 'package:cwtch/models/profile.dart';
-import 'package:cwtch/models/profileservers.dart';
 import 'package:cwtch/views/contactsview.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:cwtch/views/messageview.dart';
 import 'package:cwtch/widgets/profileimage.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -156,7 +153,7 @@ class _ContactRowState extends State<ContactRow> {
       return AppLocalizations.of(context)!.conversationNotificationPolicyNever;
     }
     // If the last message was over a day ago, just state the date
-    if (DateTime.now().difference(date).inDays > 1) {
+    if (DateTime.now().difference(date).inDays > 0) {
       return DateFormat.yMd(Platform.localeName).format(date.toLocal());
     }
     // Otherwise just state the time.
