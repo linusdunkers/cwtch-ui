@@ -25,8 +25,9 @@ class FileBubble extends StatefulWidget {
   final int fileSize;
   final bool interactive;
   final bool isAuto;
+  final bool isPreview;
 
-  FileBubble(this.nameSuggestion, this.rootHash, this.nonce, this.fileSize, {this.isAuto = false, this.interactive = true});
+  FileBubble(this.nameSuggestion, this.rootHash, this.nonce, this.fileSize, {this.isAuto = false, this.interactive = true, this.isPreview = false});
 
   @override
   FileBubbleState createState() => FileBubbleState();
@@ -42,6 +43,22 @@ class FileBubbleState extends State<FileBubble> {
   @override
   void initState() {
     super.initState();
+  }
+
+  Widget getPreview(context) {
+    return Image.file(
+      myFile!,
+      cacheWidth: (MediaQuery.of(context).size.width * 0.6).floor(),
+      // limit the amount of space the image can decode too, we keep this high-ish to allow quality previews...
+      filterQuality: FilterQuality.medium,
+      fit: BoxFit.scaleDown,
+      alignment: Alignment.center,
+      height: MediaQuery.of(context).size.height * 0.30,
+      isAntiAlias: false,
+      errorBuilder: (context, error, stackTrace) {
+        return MalformedBubble();
+      },
+    );
   }
 
   @override
@@ -109,6 +126,12 @@ class FileBubbleState extends State<FileBubble> {
         senderDisplayStr = Provider.of<MessageMetadata>(context).senderHandle;
       }
     }
+
+    // we don't preview a non downloaded file...
+    if (widget.isPreview && myFile != null) {
+      return getPreview(context);
+    }
+
     return LayoutBuilder(builder: (bcontext, constraints) {
       var wdgSender = Visibility(
           visible: widget.interactive,
@@ -133,21 +156,7 @@ class FileBubbleState extends State<FileBubble> {
               child: MouseRegion(
                   cursor: SystemMouseCursors.click,
                   child: GestureDetector(
-                    child: Padding(
-                        padding: EdgeInsets.all(1.0),
-                        child: Image.file(
-                          myFile!,
-                          cacheWidth: (MediaQuery.of(bcontext).size.width * 0.6).floor(),
-                          // limit the amount of space the image can decode too, we keep this high-ish to allow quality previews...
-                          filterQuality: FilterQuality.medium,
-                          fit: BoxFit.scaleDown,
-                          alignment: Alignment.center,
-                          height: MediaQuery.of(bcontext).size.height * 0.30,
-                          isAntiAlias: false,
-                          errorBuilder: (context, error, stackTrace) {
-                            return MalformedBubble();
-                          },
-                        )),
+                    child: Padding(padding: EdgeInsets.all(1.0), child: getPreview(context)),
                     onTap: () {
                       pop(bcontext, myFile!, wdgMessage);
                     },
