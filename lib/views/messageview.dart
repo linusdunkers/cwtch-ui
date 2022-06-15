@@ -324,11 +324,9 @@ class _MessageViewState extends State<MessageView> {
         padding: EdgeInsets.all(8),
         child: SelectableLinkify(
           text: ctrlrCompose.text + '\n',
-          // TODO: onOpen breaks the "selectable" functionality. Maybe something to do with gesture handler?
           options: LinkifyOptions(messageFormatting: true, parseLinks: showClickableLinks, looseUrl: true, defaultToHttps: true),
           linkifiers: [UrlLinkifier()],
           onOpen: showClickableLinks ? null : null,
-          //key: Key(myKey),
           style: TextStyle(
             color: Provider.of<Settings>(context).theme.messageFromMeTextColor,
             fontSize: 16,
@@ -361,10 +359,12 @@ class _MessageViewState extends State<MessageView> {
       color: Provider.of<Settings>(context).theme.backgroundMainColor,
       padding: EdgeInsets.all(2),
       margin: EdgeInsets.all(2),
+
+      // 164 minimum height + 16px for every line of text so the entire message is displayed when previewed.
       height: 164 + ((ctrlrCompose.text.split("\n").length - 1) * 16),
       child: Column(
         children: [
-          Row(mainAxisAlignment: MainAxisAlignment.start, children: [preview]),
+          Row(mainAxisAlignment: MainAxisAlignment.start, mainAxisSize: MainAxisSize.max, children: [preview]),
           Container(
               decoration: BoxDecoration(border: Border(top: BorderSide(color: Provider.of<Settings>(context).theme.defaultButtonActiveColor))),
               child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [wdgMessage])),
