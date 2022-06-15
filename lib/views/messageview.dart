@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui';
 import 'package:crypto/crypto.dart';
 import 'package:cwtch/cwtch/cwtch.dart';
 import 'package:cwtch/cwtch_icons_icons.dart';
@@ -10,6 +11,7 @@ import 'package:cwtch/models/message.dart';
 import 'package:cwtch/models/messagecache.dart';
 import 'package:cwtch/models/messages/quotedmessage.dart';
 import 'package:cwtch/models/profile.dart';
+import 'package:cwtch/third_party/linkify/flutter_linkify.dart';
 import 'package:cwtch/widgets/malformedbubble.dart';
 import 'package:cwtch/widgets/messageloadingbubble.dart';
 import 'package:cwtch/widgets/profileimage.dart';
@@ -44,6 +46,7 @@ class _MessageViewState extends State<MessageView> {
   ItemPositionsListener scrollListener = ItemPositionsListener.create();
   File? imagePreview;
   bool showDown = false;
+  bool showPreview = false;
 
   @override
   void initState() {
@@ -91,6 +94,7 @@ class _MessageViewState extends State<MessageView> {
       return Card(child: Center(child: Text(AppLocalizations.of(context)!.addContactFirst)));
     }
 
+    var showMessageFormattingPreview = Provider.of<Settings>(context).isExperimentEnabled(FormattingExperiment);
     var showFileSharing = Provider.of<Settings>(context).isExperimentEnabled(FileSharingExperiment);
     var appBarButtons = <Widget>[];
     if (Provider.of<ContactInfoState>(context).isOnline()) {
@@ -176,11 +180,11 @@ class _MessageViewState extends State<MessageView> {
             actions: appBarButtons,
           ),
           body: Padding(
-              padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 108.0),
+              padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 182.0),
               child: MessageList(
                 scrollListener,
               )),
-          bottomSheet: _buildComposeBox(),
+          bottomSheet: showPreview && showMessageFormattingPreview ? _buildPreviewBox() : _buildComposeBox(),
         ));
   }
 
@@ -313,64 +317,216 @@ class _MessageViewState extends State<MessageView> {
     Provider.of<FlwtchState>(context, listen: false).cwtch.SetConversationAttribute(profileOnion, identifier, LastMessageSeenTimeKey, DateTime.now().toIso8601String());
   }
 
-  Widget _buildComposeBox() {
-    bool isOffline = Provider.of<ContactInfoState>(context).isOnline() == false;
-    bool isGroup = Provider.of<ContactInfoState>(context).isGroup;
+  Widget _buildPreviewBox() {
+    var showClickableLinks = Provider.of<Settings>(context).isExperimentEnabled(ClickableLinksExperiment);
 
-    var charLength = ctrlrCompose.value.text.characters.length;
-    var expectedLength = ctrlrCompose.value.text.length;
-    var numberOfBytesMoreThanChar = (expectedLength - charLength);
+    var wdgMessage = Padding(
+        padding: EdgeInsets.all(8),
+        child: SelectableLinkify(
+          text: ctrlrCompose.text + '\n',
+          // TODO: onOpen breaks the "selectable" functionality. Maybe something to do with gesture handler?
+          options: LinkifyOptions(messageFormatting: true, parseLinks: showClickableLinks, looseUrl: true, defaultToHttps: true),
+          linkifiers: [UrlLinkifier()],
+          onOpen: showClickableLinks ? null : null,
+          //key: Key(myKey),
+          style: TextStyle(
+            color: Provider.of<Settings>(context).theme.messageFromMeTextColor,
+            fontSize: 16,
+          ),
+          linkStyle: TextStyle(
+            color: Provider.of<Settings>(context).theme.messageFromMeTextColor,
+            fontSize: 16,
+          ),
+          codeStyle: TextStyle(
+              // note: these colors are flipped
+              fontSize: 16,
+              color: Provider.of<Settings>(context).theme.messageFromOtherTextColor,
+              backgroundColor: Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor),
+          textAlign: TextAlign.left,
+          textWidthBasis: TextWidthBasis.longestLine,
+        ));
+
+    var showMessageFormattingPreview = Provider.of<Settings>(context).isExperimentEnabled(FormattingExperiment);
+    var preview = showMessageFormattingPreview
+        ? IconButton(
+            icon: Icon(Icons.text_fields),
+            onPressed: () {
+              setState(() {
+                showPreview = false;
+              });
+            })
+        : Container();
 
     var composeBox = Container(
       color: Provider.of<Settings>(context).theme.backgroundMainColor,
       padding: EdgeInsets.all(2),
       margin: EdgeInsets.all(2),
-      height: 100,
-      child: Row(
-        children: <Widget>[
-          Expanded(
-              child: Container(
-                  decoration: BoxDecoration(border: Border(top: BorderSide(color: Provider.of<Settings>(context).theme.defaultButtonActiveColor))),
-                  child: RawKeyboardListener(
-                      focusNode: FocusNode(),
-                      onKey: handleKeyPress,
-                      child: Padding(
-                        padding: EdgeInsets.all(8),
-                        child: TextFormField(
-                            key: Key('txtCompose'),
-                            controller: ctrlrCompose,
-                            focusNode: focusNode,
-                            autofocus: !Platform.isAndroid,
-                            textInputAction: TextInputAction.newline,
-                            keyboardType: TextInputType.multiline,
-                            enableIMEPersonalizedLearning: false,
-                            minLines: 1,
-                            maxLength: (isGroup ? GroupMessageLengthMax : P2PMessageLengthMax) - numberOfBytesMoreThanChar,
-                            maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                            maxLines: null,
-                            onFieldSubmitted: _sendMessage,
-                            enabled: true, // always allow editing...
-                            onChanged: (String x) {
-                              setState(() {
-                                // we need to force a rerender here to update the max length count
-                              });
-                            },
-                            decoration: InputDecoration(
-                                hintText: isOffline ? "" : AppLocalizations.of(context)!.placeholderEnterMessage,
-                                hintStyle: TextStyle(color: Provider.of<Settings>(context).theme.sendHintTextColor),
-                                enabledBorder: InputBorder.none,
-                                focusedBorder: InputBorder.none,
-                                enabled: true,
-                                suffixIcon: ElevatedButton(
-                                  key: Key("btnSend"),
-                                  style: ElevatedButton.styleFrom(padding: EdgeInsets.all(0.0), shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(45.0))),
-                                  child: Icon(CwtchIcons.send_24px, size: 24, color: Provider.of<Settings>(context).theme.defaultButtonTextColor),
-                                  onPressed: isOffline ? null : _sendMessage,
-                                ))),
-                      )))),
+      height: 164 + ((ctrlrCompose.text.split("\n").length - 1) * 16),
+      child: Column(
+        children: [
+          Row(mainAxisAlignment: MainAxisAlignment.start, children: [preview]),
+          Container(
+              decoration: BoxDecoration(border: Border(top: BorderSide(color: Provider.of<Settings>(context).theme.defaultButtonActiveColor))),
+              child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [wdgMessage])),
         ],
       ),
     );
+    return Container(
+        color: Provider.of<Settings>(context).theme.backgroundMainColor, child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [composeBox]));
+  }
+
+  Widget _buildComposeBox() {
+    bool isOffline = Provider.of<ContactInfoState>(context).isOnline() == false;
+    bool isGroup = Provider.of<ContactInfoState>(context).isGroup;
+    var showToolbar = Provider.of<Settings>(context).isExperimentEnabled(FormattingExperiment);
+    var charLength = ctrlrCompose.value.text.characters.length;
+    var expectedLength = ctrlrCompose.value.text.length;
+    var numberOfBytesMoreThanChar = (expectedLength - charLength);
+
+    var bold = IconButton(
+        icon: Icon(Icons.format_bold),
+        onPressed: () {
+          setState(() {
+            var selected = ctrlrCompose.selection.textInside(ctrlrCompose.text);
+            var selection = ctrlrCompose.selection;
+            var start = ctrlrCompose.selection.start;
+            var end = ctrlrCompose.selection.end;
+            ctrlrCompose.text = ctrlrCompose.text.replaceRange(start, end, "**" + selected + "**");
+            ctrlrCompose.selection = selection.copyWith(baseOffset: selection.start + 2, extentOffset: selection.start + 2);
+          });
+        });
+
+    var italic = IconButton(
+        icon: Icon(Icons.format_italic),
+        onPressed: () {
+          setState(() {
+            var selected = ctrlrCompose.selection.textInside(ctrlrCompose.text);
+            var selection = ctrlrCompose.selection;
+            var start = ctrlrCompose.selection.start;
+            var end = ctrlrCompose.selection.end;
+            ctrlrCompose.text = ctrlrCompose.text.replaceRange(start, end, "*" + selected + "*");
+            ctrlrCompose.selection = selection.copyWith(baseOffset: selection.start + 1, extentOffset: selection.start + 1);
+          });
+        });
+
+    var code = IconButton(
+        icon: Icon(Icons.code),
+        onPressed: () {
+          setState(() {
+            var selected = ctrlrCompose.selection.textInside(ctrlrCompose.text);
+            var selection = ctrlrCompose.selection;
+            var start = ctrlrCompose.selection.start;
+            var end = ctrlrCompose.selection.end;
+            ctrlrCompose.text = ctrlrCompose.text.replaceRange(start, end, "`" + selected + "`");
+            ctrlrCompose.selection = selection.copyWith(baseOffset: selection.start + 1, extentOffset: selection.start + 1);
+          });
+        });
+
+    var superscript = IconButton(
+        icon: Icon(Icons.superscript),
+        onPressed: () {
+          setState(() {
+            var selected = ctrlrCompose.selection.textInside(ctrlrCompose.text);
+            var selection = ctrlrCompose.selection;
+            var start = ctrlrCompose.selection.start;
+            var end = ctrlrCompose.selection.end;
+            ctrlrCompose.text = ctrlrCompose.text.replaceRange(start, end, "^" + selected + "^");
+            ctrlrCompose.selection = selection.copyWith(baseOffset: selection.start + 1, extentOffset: selection.start + 1);
+          });
+        });
+
+    var subscript = IconButton(
+        icon: Icon(Icons.subscript),
+        onPressed: () {
+          setState(() {
+            var selected = ctrlrCompose.selection.textInside(ctrlrCompose.text);
+            var selection = ctrlrCompose.selection;
+            var start = ctrlrCompose.selection.start;
+            var end = ctrlrCompose.selection.end;
+            ctrlrCompose.text = ctrlrCompose.text.replaceRange(start, end, "_" + selected + "_");
+            ctrlrCompose.selection = selection.copyWith(baseOffset: selection.start + 1, extentOffset: selection.start + 1);
+          });
+        });
+
+    var strikethrough = IconButton(
+        icon: Icon(Icons.format_strikethrough),
+        onPressed: () {
+          setState(() {
+            var selected = ctrlrCompose.selection.textInside(ctrlrCompose.text);
+            var selection = ctrlrCompose.selection;
+            var start = ctrlrCompose.selection.start;
+            var end = ctrlrCompose.selection.end;
+            ctrlrCompose.text = ctrlrCompose.text.replaceRange(start, end, "~~" + selected + "~~");
+            ctrlrCompose.selection = selection.copyWith(baseOffset: selection.start + 2, extentOffset: selection.start + 2);
+          });
+        });
+
+    var preview = IconButton(
+        icon: Icon(Icons.text_format),
+        onPressed: () {
+          setState(() {
+            showPreview = true;
+          });
+        });
+
+    var vline = Padding(
+        padding: EdgeInsets.symmetric(vertical: 1, horizontal: 2),
+        child: Container(height: 16, width: 1, decoration: BoxDecoration(color: Provider.of<Settings>(context).theme.messageFromMeTextColor)));
+
+    var formattingToolbar = Container(
+        decoration: BoxDecoration(color: Provider.of<Settings>(context).theme.defaultButtonActiveColor),
+        child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [bold, italic, code, superscript, subscript, strikethrough, vline, preview]));
+
+    var textField = Container(
+        decoration: BoxDecoration(border: Border(top: BorderSide(color: Provider.of<Settings>(context).theme.defaultButtonActiveColor))),
+        child: RawKeyboardListener(
+            focusNode: FocusNode(),
+            onKey: handleKeyPress,
+            child: Padding(
+              padding: EdgeInsets.all(8),
+              child: TextFormField(
+                  key: Key('txtCompose'),
+                  controller: ctrlrCompose,
+                  focusNode: focusNode,
+                  autofocus: !Platform.isAndroid,
+                  textInputAction: TextInputAction.newline,
+                  keyboardType: TextInputType.multiline,
+                  enableIMEPersonalizedLearning: false,
+                  minLines: 1,
+                  maxLength: (isGroup ? GroupMessageLengthMax : P2PMessageLengthMax) - numberOfBytesMoreThanChar,
+                  maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                  maxLines: 3,
+                  onFieldSubmitted: _sendMessage,
+                  enabled: true, // always allow editing...
+
+                  onChanged: (String x) {
+                    setState(() {
+                      // we need to force a rerender here to update the max length count
+                    });
+                  },
+                  decoration: InputDecoration(
+                      hintText: isOffline ? "" : AppLocalizations.of(context)!.placeholderEnterMessage,
+                      hintStyle: TextStyle(color: Provider.of<Settings>(context).theme.sendHintTextColor),
+                      enabledBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      enabled: true,
+                      suffixIcon: ElevatedButton(
+                        key: Key("btnSend"),
+                        style: ElevatedButton.styleFrom(padding: EdgeInsets.all(0.0), shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(45.0))),
+                        child: Icon(CwtchIcons.send_24px, size: 24, color: Provider.of<Settings>(context).theme.defaultButtonTextColor),
+                        onPressed: isOffline ? null : _sendMessage,
+                      ))),
+            )));
+
+    var textEditChildren;
+    if (showToolbar) {
+      textEditChildren = [formattingToolbar, textField];
+    } else {
+      textEditChildren = [textField];
+    }
+
+    var composeBox =
+        Container(color: Provider.of<Settings>(context).theme.backgroundMainColor, padding: EdgeInsets.all(2), margin: EdgeInsets.all(2), height: 164, child: Column(children: textEditChildren));
 
     var children;
     if (Provider.of<AppState>(context).selectedConversation != null && Provider.of<AppState>(context).selectedIndex != null) {
@@ -419,7 +575,7 @@ class _MessageViewState extends State<MessageView> {
       children = [composeBox];
     }
 
-    return Container(color: Provider.of<Settings>(context).theme.backgroundMainColor, child: Column(mainAxisSize: MainAxisSize.min, children: children));
+    return Container(color: Provider.of<Settings>(context).theme.backgroundMainColor, child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: children));
   }
 
   // Send the message if enter is pressed without the shift key...
