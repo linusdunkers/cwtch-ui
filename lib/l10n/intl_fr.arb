@@ -1,6 +1,7 @@
 {
     "@@locale": "fr",
-    "@@last_modified": "2022-04-21T21:35:58+02:00",
+    "@@last_modified": "2022-06-15T19:44:34+02:00",
+    "acceptGroupBtn": "Accepter",
     "settingAndroidPowerExemptionDescription": "Android applique par défaut un profil de gestion de l'énergie \"optimisé\" aux applications, ce qui peut entraîner leur arrêt ou leur suppression. Demandez à Android d'exempter Cwtch de ce profil pour une meilleure stabilité mais une plus grande consommation d'énergie.",
     "settingsAndroidPowerReenablePopup": "Impossible de réactiver l'optimisation de la batterie à partir de Cwtch. Veuillez aller dans Android \/ Paramètres \/ Apps \/ Cwtch \/ Batterie et régler l'utilisation sur 'Optimisé'.",
     "okButton": "OK",
@@ -12,7 +13,6 @@
     "clickableLinksCopy": "Copier l'URL",
     "clickableLinkOpen": "Ouvrir l'URL",
     "clickableLinkError": "Erreur rencontrée lors de la tentative d'ouverture de l'URL",
-    "acceptGroupBtn": "Accepter",
     "successfullyImportedProfile": "Profil importé avec succès : %profile",
     "shuttingDownApp": "Fermeture...",
     "importProfileTooltip": "Utilisez une sauvegarde Cwtch chiffrée pour importer un profil créé dans une autre instance de Cwtch.",
