@@ -64,6 +64,8 @@ class FileMessage extends Message {
           }
           return Container(
               alignment: Alignment.center,
+              width: 50,
+              height: 50,
               child: FileBubble(
                 nameSuggestion,
                 rootHash,
@@ -71,6 +73,7 @@ class FileMessage extends Message {
                 fileSize,
                 isAuto: metadata.isAuto,
                 interactive: false,
+                isPreview: true,
               ));
         });
   }

@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:cwtch/models/message.dart';
-import 'package:cwtch/models/messages/malformedmessage.dart';
 import 'package:cwtch/widgets/malformedbubble.dart';
 import 'package:cwtch/widgets/messagerow.dart';
 import 'package:cwtch/widgets/quotedmessage.dart';
@@ -30,8 +29,14 @@ class QuotedMessage extends Message {
         value: this.metadata,
         builder: (bcontext, child) {
           try {
-            dynamic message = jsonDecode(this.content);
-            return Text(message["body"]);
+            dynamic message = jsonDecode(
+              this.content,
+            );
+            var content = message["body"];
+            return Text(
+              content,
+              overflow: TextOverflow.ellipsis,
+            );
           } catch (e) {
             return MalformedBubble();
           }

@@ -7,6 +7,7 @@ import 'package:cwtch/third_party/linkify/flutter_linkify.dart';
 import 'package:cwtch/views/contactsview.dart';
 import 'package:cwtch/widgets/malformedbubble.dart';
 import 'package:cwtch/widgets/messageloadingbubble.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -94,10 +95,18 @@ class QuotedMessageBubbleState extends State<QuotedMessageBubble> {
                     child: Container(
                         margin: EdgeInsets.all(5),
                         padding: EdgeInsets.all(5),
+                        clipBehavior: Clip.antiAlias,
+                        decoration: BoxDecoration(),
+                        height: 75,
                         color: fromMe ? Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor : Provider.of<Settings>(context).theme.messageFromMeBackgroundColor,
-                        child: Wrap(runAlignment: WrapAlignment.spaceEvenly, alignment: WrapAlignment.spaceEvenly, runSpacing: 1.0, crossAxisAlignment: WrapCrossAlignment.center, children: [
-                          Center(widthFactor: 1, child: Padding(padding: EdgeInsets.all(10.0), child: Icon(Icons.reply, size: 32, color: qTextColor))),
-                          Center(widthFactor: 1.0, child: DefaultTextStyle(child: qMessage.getPreviewWidget(context), style: TextStyle(color: qTextColor)))
+                        child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start, children: [
+                          Padding(padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0), child: Icon(Icons.reply, size: 32, color: qTextColor)),
+                          DefaultTextStyle(
+                            textWidthBasis: TextWidthBasis.parent,
+                            child: qMessage.getPreviewWidget(context),
+                            style: TextStyle(color: qTextColor),
+                            overflow: TextOverflow.fade,
+                          )
                         ]))));
           } catch (e) {
             print(e);

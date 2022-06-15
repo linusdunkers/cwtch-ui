@@ -21,7 +21,10 @@ class TextMessage extends Message {
     return ChangeNotifierProvider.value(
         value: this.metadata,
         builder: (bcontext, child) {
-          return Text(this.content.substring(0, min(this.content.length, 50)));
+          return Text(
+            this.content,
+            overflow: TextOverflow.ellipsis,
+          );
         });
   }
 
