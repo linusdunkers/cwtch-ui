@@ -347,6 +347,7 @@ class _MessageViewState extends State<MessageView> {
     var showMessageFormattingPreview = Provider.of<Settings>(context).isExperimentEnabled(FormattingExperiment);
     var preview = showMessageFormattingPreview
         ? IconButton(
+            tooltip: AppLocalizations.of(context)!.tooltipBackToMessageEditing,
             icon: Icon(Icons.text_fields),
             onPressed: () {
               setState(() {
@@ -385,6 +386,7 @@ class _MessageViewState extends State<MessageView> {
 
     var bold = IconButton(
         icon: Icon(Icons.format_bold),
+        tooltip: AppLocalizations.of(context)!.tooltipBoldText,
         onPressed: () {
           setState(() {
             var selected = ctrlrCompose.selection.textInside(ctrlrCompose.text);
@@ -398,6 +400,7 @@ class _MessageViewState extends State<MessageView> {
 
     var italic = IconButton(
         icon: Icon(Icons.format_italic),
+        tooltip: AppLocalizations.of(context)!.tooltipItalicize,
         onPressed: () {
           setState(() {
             var selected = ctrlrCompose.selection.textInside(ctrlrCompose.text);
@@ -411,6 +414,7 @@ class _MessageViewState extends State<MessageView> {
 
     var code = IconButton(
         icon: Icon(Icons.code),
+        tooltip: AppLocalizations.of(context)!.tooltipCode,
         onPressed: () {
           setState(() {
             var selected = ctrlrCompose.selection.textInside(ctrlrCompose.text);
@@ -424,6 +428,7 @@ class _MessageViewState extends State<MessageView> {
 
     var superscript = IconButton(
         icon: Icon(Icons.superscript),
+        tooltip: AppLocalizations.of(context)!.tooltipSuperscript,
         onPressed: () {
           setState(() {
             var selected = ctrlrCompose.selection.textInside(ctrlrCompose.text);
@@ -437,6 +442,7 @@ class _MessageViewState extends State<MessageView> {
 
     var subscript = IconButton(
         icon: Icon(Icons.subscript),
+        tooltip: AppLocalizations.of(context)!.tooltipSubscript,
         onPressed: () {
           setState(() {
             var selected = ctrlrCompose.selection.textInside(ctrlrCompose.text);
@@ -450,6 +456,7 @@ class _MessageViewState extends State<MessageView> {
 
     var strikethrough = IconButton(
         icon: Icon(Icons.format_strikethrough),
+        tooltip: AppLocalizations.of(context)!.tooltipStrikethrough,
         onPressed: () {
           setState(() {
             var selected = ctrlrCompose.selection.textInside(ctrlrCompose.text);
@@ -463,6 +470,7 @@ class _MessageViewState extends State<MessageView> {
 
     var preview = IconButton(
         icon: Icon(Icons.text_format),
+        tooltip: AppLocalizations.of(context)!.tooltipPreviewFormatting,
         onPressed: () {
           setState(() {
             showPreview = true;
