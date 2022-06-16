@@ -156,6 +156,8 @@ class _ContactsViewState extends State<ContactsView> {
         splashRadius: Material.defaultSplashRadius / 2,
         onPressed: () {
           Clipboard.setData(new ClipboardData(text: Provider.of<ProfileInfoState>(context, listen: false).onion));
+          final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.copiedToClipboardNotification));
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }));
 
     // Manage known Servers
