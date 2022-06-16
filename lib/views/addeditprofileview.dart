@@ -348,7 +348,8 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
 
   void _copyOnion() {
     Clipboard.setData(new ClipboardData(text: Provider.of<ProfileInfoState>(context, listen: false).onion));
-    // TODO Toast
+    final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.copiedToClipboardNotification));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   void _createPressed() async {

@@ -61,6 +61,8 @@ class _ServerRowState extends State<ServerRow> {
                 icon: Icon(CwtchIcons.address_copy_2, color: Provider.of<Settings>(context).current().mainTextColor),
                 onPressed: () {
                   Clipboard.setData(new ClipboardData(text: server.serverBundle));
+                  final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.copiedToClipboardNotification));
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 },
               ),
 
