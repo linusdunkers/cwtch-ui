@@ -315,178 +315,178 @@ class MaterialLocalizationLu extends MaterialLocalizations {
   // ***** NEW *****
 
   @override
-  String get keyboardKeyAlt => 'Datum';
+  String get keyboardKeyAlt => 'Alt';
 
   @override
-  String get keyboardKeyAltGraph => 'Datum';
+  String get keyboardKeyAltGraph => 'AltGr';
 
   @override
-  String get keyboardKeyBackspace => 'Datum';
+  String get keyboardKeyBackspace => 'Backspace';
 
   @override
-  String get keyboardKeyCapsLock => 'Datum';
+  String get keyboardKeyCapsLock => 'Caps Lock';
 
   @override
-  String get keyboardKeyChannelDown => 'Datum';
+  String get keyboardKeyChannelDown => 'Kanal Erof';
 
   @override
-  String get keyboardKeyChannelUp => 'Datum';
+  String get keyboardKeyChannelUp => 'Kanal Up';
 
   @override
-  String get keyboardKeyControl => 'Datum';
+  String get keyboardKeyControl => 'Ctrl';
 
   @override
-  String get keyboardKeyDelete => 'Datum';
+  String get keyboardKeyDelete => 'Del';
 
   @override
-  String get keyboardKeyEisu => 'Datum';
+  String get keyboardKeyEisu => 'Eisū';
 
   @override
-  String get keyboardKeyEject => 'Datum';
+  String get keyboardKeyEject => 'Eject';
 
   @override
-  String get keyboardKeyEnd => 'Datum';
+  String get keyboardKeyEnd => 'End';
 
   @override
-  String get keyboardKeyEscape => 'Datum';
+  String get keyboardKeyEscape => 'Esc';
 
   @override
-  String get keyboardKeyFn => 'Datum';
+  String get keyboardKeyFn => 'Fn';
 
   @override
-  String get keyboardKeyHangulMode => 'Datum';
+  String get keyboardKeyHangulMode => 'Hangul Mode';
 
   @override
-  String get keyboardKeyHanjaMode => 'Datum';
+  String get keyboardKeyHanjaMode => 'Hanja Mode';
 
   @override
-  String get keyboardKeyHankaku => 'Datum';
+  String get keyboardKeyHankaku => 'Hankaku';
 
   @override
-  String get keyboardKeyHiragana => 'Datum';
+  String get keyboardKeyHiragana => 'Hiragana';
 
   @override
-  String get keyboardKeyHiraganaKatakana => 'Datum';
+  String get keyboardKeyHiraganaKatakana => 'Hiragana Katakana';
 
   @override
-  String get keyboardKeyHome => 'Datum';
+  String get keyboardKeyHome => 'Home';
 
   @override
-  String get keyboardKeyInsert => 'Datum';
+  String get keyboardKeyInsert => 'Insert';
 
   @override
-  String get keyboardKeyKanaMode => 'Datum';
+  String get keyboardKeyKanaMode => 'Kana Mode';
 
   @override
-  String get keyboardKeyKanjiMode => 'Datum';
+  String get keyboardKeyKanjiMode => 'Kanji Mode';
 
   @override
-  String get keyboardKeyKatakana => 'Datum';
+  String get keyboardKeyKatakana => 'Katakana';
 
   @override
-  String get keyboardKeyMeta => 'Datum';
+  String get keyboardKeyMeta => 'Meta';
 
   @override
-  String get keyboardKeyMetaMacOs => 'Datum';
+  String get keyboardKeyMetaMacOs => 'Command';
 
   @override
-  String get keyboardKeyMetaWindows => 'Datum';
+  String get keyboardKeyMetaWindows => 'Win';
 
   @override
-  String get keyboardKeyNumLock => 'Datum';
+  String get keyboardKeyNumLock => 'Num Lock';
 
   @override
-  String get keyboardKeyNumpad1 => 'Datum';
+  String get keyboardKeyNumpad0 => 'Num 0';
 
   @override
-  String get keyboardKeyNumpad2 => 'Datum';
+  String get keyboardKeyNumpad1 => 'Num 1';
 
   @override
-  String get keyboardKeyNumpad3 => 'Datum';
+  String get keyboardKeyNumpad2 => 'Num 2';
 
   @override
-  String get keyboardKeyNumpad4 => 'Datum';
+  String get keyboardKeyNumpad3 => 'Num 3';
 
   @override
-  String get keyboardKeyNumpad5 => 'Datum';
+  String get keyboardKeyNumpad4 => 'Num 4';
 
   @override
-  String get keyboardKeyNumpad6 => 'Datum';
+  String get keyboardKeyNumpad5 => 'Num 5';
 
   @override
-  String get keyboardKeyNumpad7 => 'Datum';
+  String get keyboardKeyNumpad6 => 'Num 6';
 
   @override
-  String get keyboardKeyNumpad8 => 'Datum';
+  String get keyboardKeyNumpad7 => 'Num 7';
 
   @override
-  String get keyboardKeyNumpad9 => 'Datum';
+  String get keyboardKeyNumpad8 => 'Num 8';
 
   @override
-  String get keyboardKeyNumpad0 => 'Datum';
+  String get keyboardKeyNumpad9 => 'Num 9';
 
   @override
-  String get keyboardKeyNumpadAdd => 'Datum';
+  String get keyboardKeyNumpadAdd => 'Num +';
 
   @override
-  String get keyboardKeyNumpadComma => 'Datum';
+  String get keyboardKeyNumpadComma => 'Num ,';
 
   @override
-  String get keyboardKeyNumpadDecimal => 'Datum';
+  String get keyboardKeyNumpadDecimal => 'Num .';
 
   @override
-  String get keyboardKeyNumpadDivide => 'Datum';
+  String get keyboardKeyNumpadDivide => 'Num /';
 
   @override
-  String get keyboardKeyNumpadEnter => 'Datum';
+  String get keyboardKeyNumpadEnter => 'Num Enter';
 
   @override
-  String get keyboardKeyNumpadEqual => 'Datum';
+  String get keyboardKeyNumpadEqual => 'Num =';
 
   @override
-  String get keyboardKeyNumpadMultiply => 'Datum';
+  String get keyboardKeyNumpadMultiply => 'Num *';
 
   @override
-  String get keyboardKeyNumpadParenLeft => 'Datum';
+  String get keyboardKeyNumpadParenLeft => 'Num (';
 
   @override
-  String get keyboardKeyNumpadParenRight => 'Datum';
+  String get keyboardKeyNumpadParenRight => 'Num )';
 
   @override
-  String get keyboardKeyNumpadSubtract => 'Datum';
+  String get keyboardKeyNumpadSubtract => 'Num -';
 
   @override
-  String get keyboardKeyPageDown => 'Datum';
+  String get keyboardKeyPageDown => 'PgDown';
 
   @override
-  String get keyboardKeyPageUp => 'Datum';
+  String get keyboardKeyPageUp => 'PgUp';
 
   @override
-  String get keyboardKeyPower => 'Datum';
+  String get keyboardKeyPower => 'Power';
 
   @override
-  String get keyboardKeyPowerOff => 'Datum';
+  String get keyboardKeyPowerOff => 'Power Off';
 
   @override
-  String get keyboardKeyPrintScreen => 'Datum';
+  String get keyboardKeyPrintScreen => 'Print Screen';
 
   @override
-  String get keyboardKeyRomaji => 'Datum';
+  String get keyboardKeyRomaji => 'Romaji';
 
   @override
-  String get keyboardKeyScrollLock => 'Datum';
+  String get keyboardKeyScrollLock => 'Scroll Lock';
 
   @override
-  String get keyboardKeySelect => 'Datum';
+  String get keyboardKeySelect => 'Select';
 
   @override
-  String get keyboardKeySpace => 'Datum';
+  String get keyboardKeySpace => 'Spasie';
 
   @override
-  String get keyboardKeyZenkaku => 'Datum';
+  String get keyboardKeyZenkaku => 'Zenkaku';
 
   @override
-  String get keyboardKeyZenkakuHankaku => 'Datum';
+  String get keyboardKeyZenkakuHankaku => 'Zenkaku Hankaku';
 
   @override
   String aboutListTileTitle(String applicationName) {
