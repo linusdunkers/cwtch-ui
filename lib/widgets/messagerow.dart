@@ -12,6 +12,7 @@ import 'package:cwtch/widgets/profileimage.dart';
 import 'package:flutter/physics.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../main.dart';
 import '../settings.dart';
@@ -274,6 +275,8 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
       // Can't happen
     } else {
       selectConversation(context, id);
+      var contactIndex = Provider.of<ProfileInfoState>(context, listen: false).contactList.filteredList().indexWhere((element) => element.identifier == id);
+      Provider.of<ProfileInfoState>(context, listen: false).contactListScrollController.jumpTo(index: contactIndex);
     }
   }
 

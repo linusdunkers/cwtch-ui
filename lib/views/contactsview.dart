@@ -36,8 +36,7 @@ void selectConversation(BuildContext context, int handle) {
     Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(previouslySelected)!.unselected();
   }
   Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(handle)!.selected();
-  var contactIndex = Provider.of<ProfileInfoState>(context, listen: false).contactList.filteredList().indexWhere((element) => element.identifier == handle);
-  Provider.of<ProfileInfoState>(context, listen: false).contactListScrollController.scrollTo(index: contactIndex, duration: Duration(milliseconds: 500));
+
   // triggers update in Double/TripleColumnView
   Provider.of<AppState>(context, listen: false).initialScrollIndex = unread;
   Provider.of<AppState>(context, listen: false).selectedConversation = handle;
@@ -216,9 +215,19 @@ class _ContactsViewState extends State<ContactsView> {
       );
     });
 
+    var initialScroll =
+        Provider.of<ProfileInfoState>(context, listen: false).contactList.filteredList().indexWhere((element) => element.identifier == Provider.of<AppState>(context).selectedConversation);
+    if (initialScroll < 0) {
+      initialScroll = 0;
+    }
+
     var contactList = ScrollablePositionedList.separated(
       itemScrollController: Provider.of<ProfileInfoState>(context).contactListScrollController,
-      itemCount: tiles.length,
+      itemCount: Provider.of<ContactListState>(context).num,
+      initialScrollIndex: initialScroll,
+      shrinkWrap: true,
+      physics: BouncingScrollPhysics(),
+      semanticChildCount: Provider.of<ContactListState>(context).num,
       itemBuilder: (context, index) {
         return tiles.elementAt(index);
       },

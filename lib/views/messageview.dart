@@ -144,7 +144,7 @@ class _MessageViewState extends State<MessageView> {
                   onPressed: () {
                     Provider.of<AppState>(context, listen: false).initialScrollIndex = 0;
                     Provider.of<AppState>(context, listen: false).unreadMessagesBelow = false;
-                    Provider.of<ContactInfoState>(context).messageScrollController.scrollTo(index: 0, duration: Duration(milliseconds: 600));
+                    Provider.of<ContactInfoState>(context, listen: false).messageScrollController.scrollTo(index: 0, duration: Duration(milliseconds: 600));
                   })
               : null,
           appBar: AppBar(
