@@ -96,17 +96,19 @@ class QuotedMessageBubbleState extends State<QuotedMessageBubble> {
                         margin: EdgeInsets.all(5),
                         padding: EdgeInsets.all(5),
                         clipBehavior: Clip.antiAlias,
-                        decoration: BoxDecoration(),
+                        decoration: BoxDecoration(
+                          color: fromMe ? Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor : Provider.of<Settings>(context).theme.messageFromMeBackgroundColor,
+                        ),
                         height: 75,
-                        color: fromMe ? Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor : Provider.of<Settings>(context).theme.messageFromMeBackgroundColor,
                         child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start, children: [
                           Padding(padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0), child: Icon(Icons.reply, size: 32, color: qTextColor)),
-                          DefaultTextStyle(
+                          Flexible(
+                              child: DefaultTextStyle(
                             textWidthBasis: TextWidthBasis.parent,
                             child: qMessage.getPreviewWidget(context),
                             style: TextStyle(color: qTextColor),
                             overflow: TextOverflow.fade,
-                          )
+                          ))
                         ]))));
           } catch (e) {
             print(e);
