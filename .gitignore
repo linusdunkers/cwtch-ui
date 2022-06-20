@@ -40,10 +40,17 @@ app.*.symbols
 # Obfuscation related
 app.*.map.json
 
+# Tor
+data-dir*
+
+
+# Compiled Libs
 linux/tor
 linux/libCwtch.so
 android/cwtch/cwtch.aar
 android/app/src/main/jniLibs/*/libtor.so
+libCwtch.dylib
+
 coverage
 test/failures
 .gradle

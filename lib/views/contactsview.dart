@@ -12,6 +12,7 @@ import 'package:cwtch/widgets/profileimage.dart';
 import 'package:cwtch/widgets/textfield.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import '../main.dart';
 import '../settings.dart';
 import 'addcontactview.dart';
@@ -35,6 +36,7 @@ void selectConversation(BuildContext context, int handle) {
     Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(previouslySelected)!.unselected();
   }
   Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(handle)!.selected();
+
   // triggers update in Double/TripleColumnView
   Provider.of<AppState>(context, listen: false).initialScrollIndex = unread;
   Provider.of<AppState>(context, listen: false).selectedConversation = handle;
@@ -86,29 +88,35 @@ class _ContactsViewState extends State<ContactsView> {
         endDrawerEnableOpenDragGesture: false,
         drawerEnableOpenDragGesture: false,
         appBar: AppBar(
-          leading: Row(children: [
-            IconButton(
-              icon: Icon(Icons.arrow_back),
-              tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-              onPressed: () {
-                Provider.of<ProfileInfoState>(context, listen: false).recountUnread();
-                Provider.of<AppState>(context, listen: false).selectedProfile = "";
-                Navigator.of(context).pop();
-              },
-            ),
-            StreamBuilder<bool>(
-                stream: Provider.of<AppState>(context).getUnreadProfileNotifyStream(),
-                builder: (BuildContext context, AsyncSnapshot<bool> unreadCountSnapshot) {
-                  int unreadCount = Provider.of<ProfileListState>(context).generateUnreadCount(Provider.of<AppState>(context).selectedProfile ?? "");
+          leading: Stack(children: [
+            Align(
+                alignment: Alignment.center,
+                child: IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+                  onPressed: () {
+                    Provider.of<ProfileInfoState>(context, listen: false).recountUnread();
+                    Provider.of<AppState>(context, listen: false).selectedProfile = "";
+                    Navigator.of(context).pop();
+                  },
+                )),
+            Positioned(
+              bottom: 5.0,
+              right: 5.0,
+              child: StreamBuilder<bool>(
+                  stream: Provider.of<AppState>(context).getUnreadProfileNotifyStream(),
+                  builder: (BuildContext context, AsyncSnapshot<bool> unreadCountSnapshot) {
+                    int unreadCount = Provider.of<ProfileListState>(context).generateUnreadCount(Provider.of<AppState>(context).selectedProfile ?? "");
 
-                  return Visibility(
-                      visible: unreadCount > 0,
-                      child: CircleAvatar(
-                        radius: 10.0,
-                        backgroundColor: Provider.of<Settings>(context).theme.portraitProfileBadgeColor,
-                        child: Text(unreadCount > 99 ? "99+" : unreadCount.toString(), style: TextStyle(color: Provider.of<Settings>(context).theme.portraitProfileBadgeTextColor, fontSize: 8.0)),
-                      ));
-                }),
+                    return Visibility(
+                        visible: unreadCount > 0,
+                        child: CircleAvatar(
+                          radius: 10.0,
+                          backgroundColor: Provider.of<Settings>(context).theme.portraitProfileBadgeColor,
+                          child: Text(unreadCount > 99 ? "99+" : unreadCount.toString(), style: TextStyle(color: Provider.of<Settings>(context).theme.portraitProfileBadgeTextColor, fontSize: 8.0)),
+                        ));
+                  }),
+            )
           ]),
           title: RepaintBoundary(
               child: Row(children: [
@@ -207,11 +215,28 @@ class _ContactsViewState extends State<ContactsView> {
       );
     });
 
-    final divided = ListTile.divideTiles(
-      context: context,
-      tiles: tiles,
-    ).toList();
-    return RepaintBoundary(child: ListView(children: divided));
+    var initialScroll =
+        Provider.of<ProfileInfoState>(context, listen: false).contactList.filteredList().indexWhere((element) => element.identifier == Provider.of<AppState>(context).selectedConversation);
+    if (initialScroll < 0) {
+      initialScroll = 0;
+    }
+
+    var contactList = ScrollablePositionedList.separated(
+      itemScrollController: Provider.of<ProfileInfoState>(context).contactListScrollController,
+      itemCount: Provider.of<ContactListState>(context).num,
+      initialScrollIndex: initialScroll,
+      shrinkWrap: true,
+      physics: BouncingScrollPhysics(),
+      semanticChildCount: Provider.of<ContactListState>(context).num,
+      itemBuilder: (context, index) {
+        return tiles.elementAt(index);
+      },
+      separatorBuilder: (BuildContext context, int index) {
+        return Divider(height: 1);
+      },
+    );
+
+    return RepaintBoundary(child: contactList);
   }
 
   void _pushAddContact(bool newGroup) {

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:cwtch/models/remoteserver.dart';
 import 'package:flutter/widgets.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import 'contact.dart';
 import 'contactlist.dart';
@@ -20,7 +21,7 @@ class ProfileInfoState extends ChangeNotifier {
   bool _online = false;
   Map<String, FileDownloadProgress> _downloads = Map<String, FileDownloadProgress>();
   Map<String, int> _downloadTriggers = Map<String, int>();
-
+  ItemScrollController contactListScrollController = new ItemScrollController();
   // assume profiles are encrypted...this will be set to false
   // in the constructor if the profile is encrypted with the defacto password.
   bool _encrypted = true;

@@ -21,7 +21,7 @@ class ContactListState extends ChangeNotifier {
   }
 
   List<ContactInfoState> filteredList() {
-    if (!isFiltered) return contacts;
+    if (!isFiltered) return _contacts;
     return _contacts.where((ContactInfoState c) => c.onion.toLowerCase().startsWith(_filter) || (c.nickname.toLowerCase().contains(_filter))).toList();
   }
 
