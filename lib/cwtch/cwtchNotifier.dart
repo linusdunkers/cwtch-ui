@@ -176,7 +176,6 @@ class CwtchNotifier {
           seenMessageCallback!(data["ProfileOnion"]!, identifier, DateTime.now().toUtc());
         }
 
-        print("New Message from peer...");
         if (notification == "SimpleEvent") {
           notificationManager.notify(notificationSimple ?? "New Message", "", 0);
         } else if (notification == "ContactInfo") {
