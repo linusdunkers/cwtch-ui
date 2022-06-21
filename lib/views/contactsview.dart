@@ -54,11 +54,11 @@ void selectConversation(BuildContext context, int handle) {
 
 void _pushMessageView(BuildContext context, int handle) {
   var profileOnion = Provider.of<ProfileInfoState>(context, listen: false).onion;
+
   Navigator.of(context).push(
-    MaterialPageRoute<void>(
-      builder: (BuildContext builderContext) {
-        // assert we have an actual profile...
-        // We need to listen for updates to the profile in order to update things like invitation message bubbles.
+    PageRouteBuilder(
+      settings: RouteSettings(name: "messages"),
+      pageBuilder: (builderContext, a1, a2) {
         var profile = Provider.of<FlwtchState>(builderContext).profs.getProfile(profileOnion)!;
         return MultiProvider(
           providers: [
@@ -68,6 +68,8 @@ void _pushMessageView(BuildContext context, int handle) {
           builder: (context, child) => MessageView(),
         );
       },
+      transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
+      transitionDuration: Duration(milliseconds: 200),
     ),
   );
 }
@@ -243,29 +245,37 @@ class _ContactsViewState extends State<ContactsView> {
     // close modal
     Navigator.popUntil(context, (route) => route.settings.name == "conversations");
 
-    // open add contact  / create group pane
-    Navigator.of(context).push(MaterialPageRoute<void>(
-      builder: (BuildContext bcontext) {
-        return MultiProvider(
-          providers: [
-            ChangeNotifierProvider.value(value: Provider.of<ProfileInfoState>(context)),
-          ],
-          child: AddContactView(newGroup: newGroup),
-        );
-      },
-    ));
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        settings: RouteSettings(name: "addcontact"),
+        pageBuilder: (builderContext, a1, a2) {
+          return MultiProvider(
+            providers: [
+              ChangeNotifierProvider.value(value: Provider.of<ProfileInfoState>(context)),
+            ],
+            child: AddContactView(newGroup: newGroup),
+          );
+        },
+        transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
+        transitionDuration: Duration(milliseconds: 200),
+      ),
+    );
   }
 
   void _pushServers() {
     var profile = Provider.of<ProfileInfoState>(context);
-    Navigator.of(context).push(MaterialPageRoute<void>(
-      builder: (BuildContext context) {
-        return MultiProvider(
-          providers: [ChangeNotifierProvider(create: (context) => profile), Provider.value(value: Provider.of<FlwtchState>(context))],
-          child: ProfileServersView(),
-        );
-      },
-    ));
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        pageBuilder: (bcontext, a1, a2) {
+          return MultiProvider(
+            providers: [ChangeNotifierProvider(create: (context) => profile), Provider.value(value: Provider.of<FlwtchState>(context))],
+            child: ProfileServersView(),
+          );
+        },
+        transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
+        transitionDuration: Duration(milliseconds: 200),
+      ),
+    );
   }
 
   void _modalAddImportChoice() {

@@ -205,19 +205,31 @@ class _MessageViewState extends State<MessageView> {
     var contactInfoState = Provider.of<ContactInfoState>(context, listen: false);
 
     if (Provider.of<ContactInfoState>(context, listen: false).isGroup == true) {
-      Navigator.of(context).push(MaterialPageRoute<void>(builder: (BuildContext bcontext) {
-        return MultiProvider(
-          providers: [ChangeNotifierProvider.value(value: profileInfoState), ChangeNotifierProvider.value(value: contactInfoState)],
-          child: GroupSettingsView(),
-        );
-      }));
+      Navigator.of(context).push(
+        PageRouteBuilder(
+          pageBuilder: (builderContext, a1, a2) {
+            return MultiProvider(
+              providers: [ChangeNotifierProvider.value(value: profileInfoState), ChangeNotifierProvider.value(value: contactInfoState)],
+              child: GroupSettingsView(),
+            );
+          },
+          transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
+          transitionDuration: Duration(milliseconds: 200),
+        ),
+      );
     } else {
-      Navigator.of(context).push(MaterialPageRoute<void>(builder: (BuildContext bcontext) {
-        return MultiProvider(
-          providers: [ChangeNotifierProvider.value(value: profileInfoState), ChangeNotifierProvider.value(value: contactInfoState)],
-          child: PeerSettingsView(),
-        );
-      }));
+      Navigator.of(context).push(
+        PageRouteBuilder(
+          pageBuilder: (builderContext, a1, a2) {
+            return MultiProvider(
+              providers: [ChangeNotifierProvider.value(value: profileInfoState), ChangeNotifierProvider.value(value: contactInfoState)],
+              child: PeerSettingsView(),
+            );
+          },
+          transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
+          transitionDuration: Duration(milliseconds: 200),
+        ),
+      );
     }
   }
 

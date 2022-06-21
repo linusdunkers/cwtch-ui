@@ -91,22 +91,6 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
                               tooltip: AppLocalizations.of(context)!.saveBtn,
                             )
                           ]),
-
-                          // Address Copy Button
-                          Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                            SizedBox(
-                              height: 20,
-                            ),
-                            CwtchLabel(label: AppLocalizations.of(context)!.groupAddr),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            CwtchTextField(
-                              controller: ctrlrGroupAddr,
-                              hintText: '',
-                              validator: (value) {},
-                            )
-                          ]),
                           Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
                             SizedBox(
                               height: 20,

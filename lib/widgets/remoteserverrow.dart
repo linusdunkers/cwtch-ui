@@ -68,14 +68,19 @@ class _RemoteServerRowState extends State<RemoteServerRow> {
                 )),
               ]),
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute<void>(
+                Navigator.of(context).push(
+                  PageRouteBuilder(
                     settings: RouteSettings(name: "remoteserverview"),
-                    builder: (BuildContext context) {
+                    pageBuilder: (bcontext, a1, a2) {
                       return MultiProvider(
                         providers: [Provider.value(value: profile), ChangeNotifierProvider(create: (context) => server), Provider.value(value: Provider.of<FlwtchState>(context))],
                         child: RemoteServerView(),
                       );
-                    }));
+                    },
+                    transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
+                    transitionDuration: Duration(milliseconds: 200),
+                  ),
+                );
               }));
     });
   }

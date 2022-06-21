@@ -223,9 +223,9 @@ class FlwtchState extends State<Flwtch> with WindowListener {
     Provider.of<AppState>(navKey.currentContext!, listen: false).selectedConversation = convoId;
 
     Navigator.of(navKey.currentContext!).push(
-      MaterialPageRoute<void>(
+      PageRouteBuilder(
         settings: RouteSettings(name: "conversations"),
-        builder: (BuildContext buildcontext) {
+        pageBuilder: (c, a1, a2) {
           return OrientationBuilder(builder: (orientationBuilderContext, orientation) {
             return MultiProvider(
                 providers: [ChangeNotifierProvider<ProfileInfoState>.value(value: profile), ChangeNotifierProvider<ContactListState>.value(value: profile.contactList)],
@@ -236,6 +236,8 @@ class FlwtchState extends State<Flwtch> with WindowListener {
                 });
           });
         },
+        transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
+        transitionDuration: Duration(milliseconds: 200),
       ),
     );
   }

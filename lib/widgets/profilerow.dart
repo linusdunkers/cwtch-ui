@@ -85,9 +85,9 @@ class _ProfileRowState extends State<ProfileRow> {
 
   void _pushContactList(ProfileInfoState profile, bool isLandscape) {
     Navigator.of(context).push(
-      MaterialPageRoute<void>(
+      PageRouteBuilder(
         settings: RouteSettings(name: "conversations"),
-        builder: (BuildContext buildcontext) {
+        pageBuilder: (c, a1, a2) {
           return OrientationBuilder(builder: (orientationBuilderContext, orientation) {
             return MultiProvider(
                 providers: [ChangeNotifierProvider<ProfileInfoState>.value(value: profile), ChangeNotifierProvider<ContactListState>.value(value: profile.contactList)],
@@ -98,24 +98,29 @@ class _ProfileRowState extends State<ProfileRow> {
                 });
           });
         },
+        transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
+        transitionDuration: Duration(milliseconds: 200),
       ),
     );
   }
 
   void _pushEditProfile({onion: "", displayName: "", profileImage: "", encrypted: true}) {
-    Provider.of<ErrorHandler>(context, listen: false).reset();
-    Navigator.of(context).push(MaterialPageRoute<void>(
-      builder: (BuildContext bcontext) {
-        var profile = Provider.of<FlwtchState>(bcontext).profs.getProfile(onion)!;
-        return MultiProvider(
-          providers: [
-            ChangeNotifierProvider<ProfileInfoState>.value(
-              value: profile,
-            ),
-          ],
-          builder: (context, widget) => AddEditProfileView(),
-        );
-      },
-    ));
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        pageBuilder: (bcontext, a1, a2) {
+          var profile = Provider.of<FlwtchState>(bcontext).profs.getProfile(onion)!;
+          return MultiProvider(
+            providers: [
+              ChangeNotifierProvider<ProfileInfoState>.value(
+                value: profile,
+              ),
+            ],
+            builder: (context, widget) => AddEditProfileView(),
+          );
+        },
+        transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
+        transitionDuration: Duration(milliseconds: 200),
+      ),
+    );
   }
 }
