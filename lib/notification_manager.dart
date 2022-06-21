@@ -10,6 +10,8 @@ import 'package:desktop_notifications/desktop_notifications.dart' as linux_notif
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_local_notifications_linux/flutter_local_notifications_linux.dart';
 import 'package:flutter_local_notifications_linux/src/model/hint.dart';
+import 'package:flutter_local_notifications_linux/src/model/icon.dart';
+
 
 import 'package:path/path.dart' as path;
 
@@ -55,21 +57,32 @@ class WindowsNotificationManager implements NotificationsManager {
   }
 }
 
-// LinuxNotificationsManager uses the desktop_notifications package to implement
-// the standard dbus-powered linux desktop notifications.
-class LinuxNotificationsManager implements NotificationsManager {
-  int previous_id = 0;
-  late linux_notifications.NotificationsClient client;
-  late Future<void> Function(String, int) notificationSelectConvo;
-  late String assetsPath;
+class NotificationPayload {
+  late String profileOnion;
+  late int convoId;
 
-  LinuxNotificationsManager(Future<void> Function(String, int) notificationSelectConvo) {
-    this.client = linux_notifications.NotificationsClient();
-    this.notificationSelectConvo = notificationSelectConvo;
-    scheduleMicrotask(() async {
-      assetsPath = await detectLinuxAssetsPath();
-    });
+  NotificationPayload(String po, int cid) {
+    profileOnion = po;
+    convoId = cid;
   }
+
+  NotificationPayload.fromJson(Map<String, dynamic> json)
+      : profileOnion = json['profileOnion'],
+        convoId = json['convoId'];
+
+  Map<String, dynamic> toJson() => {
+        'profileOnion': profileOnion,
+        'convoId': convoId,
+      };
+}
+
+// FlutterLocalNotificationsPlugin based NotificationManager that handles MacOS and Linux
+// TODO: Windows support is being worked on, check back and migrate to that too when it lands
+class NixNotificationManager implements NotificationsManager {
+  late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  late Future<void> Function(String, int) notificationSelectConvo;
+  late String linuxAssetsPath;
+
 
   // Cwtch can install in non flutter supported ways on linux, this code detects where the assets are on Linux
   Future<String> detectLinuxAssetsPath() async {
@@ -90,53 +103,26 @@ class LinuxNotificationsManager implements NotificationsManager {
     return "";
   }
 
-  Future<void> notify(String message, String profile, int conversationId) async {
-    var iconPath = Uri.file(path.join(assetsPath, "assets/knott.png"));
-    client.notify(message, appName: "cwtch", appIcon: iconPath.toString(), replacesId: this.previous_id).then((linux_notifications.Notification value) async {
-      previous_id = value.id;
-      if ((await value.closeReason) == linux_notifications.NotificationClosedReason.dismissed) {
-        this.notificationSelectConvo(profile, conversationId);
-      }
-    });
-  }
-}
-
-class NotificationPayload {
-  late String profileOnion;
-  late int convoId;
-
-  NotificationPayload(String po, int cid) {
-    profileOnion = po;
-    convoId = cid;
-  }
-
-  NotificationPayload.fromJson(Map<String, dynamic> json)
-      : profileOnion = json['profileOnion'],
-        convoId = json['convoId'];
-
-  Map<String, dynamic> toJson() => {
-        'profileOnion': profileOnion,
-        'convoId': convoId,
-      };
-}
-
-// FlutterLocalNotificationsPlugin based NotificationManager that handles MacOS
-// Todo: work with author to allow settings of asset_path so we can use this for Linux and deprecate the LinuxNotificationManager
-// Todo: it can also handle Android, do we want to migrate away from our manual solution?
-class NixNotificationManager implements NotificationsManager {
-  late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
-  late Future<void> Function(String, int) notificationSelectConvo;
-
   NixNotificationManager(Future<void> Function(String, int) notificationSelectConvo) {
     this.notificationSelectConvo = notificationSelectConvo;
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-    final MacOSInitializationSettings initializationSettingsMacOS = MacOSInitializationSettings(defaultPresentSound: false);
-    final LinuxInitializationSettings initializationSettingsLinux =
-        LinuxInitializationSettings(defaultActionName: 'Open notification', defaultIcon: AssetsLinuxIcon('assets/knott.png'), defaultSuppressSound: true);
-
-    final InitializationSettings initializationSettings = InitializationSettings(android: null, iOS: null, macOS: initializationSettingsMacOS, linux: initializationSettingsLinux);
     scheduleMicrotask(() async {
+
+      if (Platform.isLinux) {
+        linuxAssetsPath = await detectLinuxAssetsPath();
+      } else {
+        linuxAssetsPath = "";
+      }
+
+      final MacOSInitializationSettings initializationSettingsMacOS = MacOSInitializationSettings(defaultPresentSound: false);
+      var linuxIcon = FilePathLinuxIcon( path.join(linuxAssetsPath, 'assets/knott.png'));
+
+      final LinuxInitializationSettings initializationSettingsLinux =
+      LinuxInitializationSettings(defaultActionName: 'Open notification', defaultIcon: linuxIcon, defaultSuppressSound: true);
+
+      final InitializationSettings initializationSettings = InitializationSettings(android: null, iOS: null, macOS: initializationSettingsMacOS, linux: initializationSettingsLinux);
+
       flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<MacOSFlutterLocalNotificationsPlugin>()?.requestPermissions(
             alert: true,
             badge: false,
@@ -150,7 +136,8 @@ class NixNotificationManager implements NotificationsManager {
   Future<void> notify(String message, String profile, int conversationId) async {
     if (!globalAppState.focus) {
       // Warning: Only use title field on Linux, body field will render links as clickable
-      await flutterLocalNotificationsPlugin.show(0, message, '', NotificationDetails(linux: LinuxNotificationDetails(suppressSound: true, category: LinuxNotificationCategory.imReceived())),
+      await flutterLocalNotificationsPlugin.show(0, message, '',
+          NotificationDetails(linux: LinuxNotificationDetails(suppressSound: true, category: LinuxNotificationCategory.imReceived(), icon: FilePathLinuxIcon(path.join(linuxAssetsPath, 'assets/knott.png')))),
           payload: jsonEncode(NotificationPayload(profile, conversationId)));
     }
   }
@@ -168,7 +155,7 @@ class NixNotificationManager implements NotificationsManager {
 NotificationsManager newDesktopNotificationsManager(Future<void> Function(String profileOnion, int convoId) notificationSelectConvo) {
   if (Platform.isLinux && !Platform.isAndroid) {
     try {
-      return LinuxNotificationsManager(notificationSelectConvo);
+      return NixNotificationManager(notificationSelectConvo);
     } catch (e) {
       EnvironmentConfig.debugLog("Failed to create LinuxNotificationManager. Switching off notifications.");
     }

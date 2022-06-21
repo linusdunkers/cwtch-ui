@@ -536,10 +536,15 @@ class MainActivity: FlutterActivity() {
         Log.i("MainActivity.kt", "onResume")
         if (myReceiver == null) {
             Log.i("MainActivity.kt", "onResume registering local broadcast receiver / event bus forwarder")
-            val mc = MethodChannel(flutterEngine?.dartExecutor?.binaryMessenger, CWTCH_EVENTBUS)
-            val filter = IntentFilter("im.cwtch.flwtch.broadcast.SERVICE_EVENT_BUS")
-            myReceiver = MyBroadcastReceiver(mc)
-            LocalBroadcastManager.getInstance(applicationContext).registerReceiver(myReceiver!!, filter)
+            val bm = flutterEngine?.dartExecutor?.binaryMessenger;
+            if (bm != null) {
+                val mc = MethodChannel(bm, CWTCH_EVENTBUS)
+
+                val filter = IntentFilter("im.cwtch.flwtch.broadcast.SERVICE_EVENT_BUS")
+                myReceiver = MyBroadcastReceiver(mc)
+                LocalBroadcastManager.getInstance(applicationContext)
+                    .registerReceiver(myReceiver!!, filter)
+            }
         }
 
         // ReconnectCwtchForeground which will resync counters and settings...
