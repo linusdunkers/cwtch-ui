@@ -52,6 +52,12 @@ class RemoteServerInfoState extends ChangeNotifier {
   void updateSyncProgressFor(DateTime point) {
     var range = lastPreSyncMessagTime.toUtc().difference(DateTime.now().toUtc());
     var pointFromStart = lastPreSyncMessagTime.toUtc().difference(point.toUtc());
+    if (!pointFromStart.isNegative) { // ! is Negative cus all the duration's we're calculating incidently are negative
+      // this message is from before we think we should be syncing with the server
+      // Can be because of a new server or a full resync, either way, use this (oldest message) as our lastPreSyncMessageTime
+      this.lastPreSyncMessagTime = point;
+      pointFromStart = lastPreSyncMessagTime.toUtc().difference(point.toUtc());
+    }
     syncProgress = pointFromStart.inSeconds / range.inSeconds;
     notifyListeners();
   }
