@@ -141,17 +141,21 @@ class _ServersView extends State<ServersView> {
   }
 
   void _pushAddServer() {
-    Navigator.of(context).push(MaterialPageRoute<void>(
-      builder: (BuildContext context) {
-        return MultiProvider(
-          providers: [
-            ChangeNotifierProvider<ServerInfoState>(
-              create: (_) => ServerInfoState(onion: "", serverBundle: "", description: "", autoStart: true, running: false, isEncrypted: true),
-            )
-          ],
-          child: AddEditServerView(),
-        );
-      },
-    ));
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        pageBuilder: (bcontext, a1, a2) {
+          return MultiProvider(
+            providers: [
+              ChangeNotifierProvider<ServerInfoState>(
+                create: (_) => ServerInfoState(onion: "", serverBundle: "", description: "", autoStart: true, running: false, isEncrypted: true),
+              )
+            ],
+            child: AddEditServerView(),
+          );
+        },
+        transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
+        transitionDuration: Duration(milliseconds: 200),
+      ),
+    );
   }
 }

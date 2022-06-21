@@ -130,53 +130,71 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
   }
 
   void _pushGlobalSettings() {
-    Navigator.of(context).push(MaterialPageRoute<void>(
-      builder: (BuildContext context) {
-        return Provider(
-          create: (_) => Provider.of<FlwtchState>(context, listen: false),
-          child: GlobalSettingsView(),
-        );
-      },
-    ));
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        pageBuilder: (bcontext, a1, a2) {
+          return Provider(
+            create: (_) => Provider.of<FlwtchState>(bcontext, listen: false),
+            child: GlobalSettingsView(),
+          );
+        },
+        transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
+        transitionDuration: Duration(milliseconds: 200),
+      ),
+    );
   }
 
   void _pushServers() {
-    Navigator.of(context).push(MaterialPageRoute<void>(
-      settings: RouteSettings(name: "servers"),
-      builder: (BuildContext context) {
-        return MultiProvider(
-          providers: [Provider.value(value: Provider.of<FlwtchState>(context))],
-          child: ServersView(),
-        );
-      },
-    ));
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        settings: RouteSettings(name: "servers"),
+        pageBuilder: (bcontext, a1, a2) {
+          return MultiProvider(
+            providers: [Provider.value(value: Provider.of<FlwtchState>(context))],
+            child: ServersView(),
+          );
+        },
+        transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
+        transitionDuration: Duration(milliseconds: 200),
+      ),
+    );
   }
 
   void _pushTorStatus() {
-    Navigator.of(context).push(MaterialPageRoute<void>(
-      builder: (BuildContext context) {
-        return MultiProvider(
-          providers: [Provider.value(value: Provider.of<FlwtchState>(context))],
-          child: TorStatusView(),
-        );
-      },
-    ));
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        settings: RouteSettings(name: "torconfig"),
+        pageBuilder: (bcontext, a1, a2) {
+          return MultiProvider(
+            providers: [Provider.value(value: Provider.of<FlwtchState>(context))],
+            child: TorStatusView(),
+          );
+        },
+        transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
+        transitionDuration: Duration(milliseconds: 200),
+      ),
+    );
   }
 
   void _pushAddProfile(bcontext, {onion: ""}) {
     Navigator.popUntil(bcontext, (route) => route.isFirst);
-    Navigator.of(bcontext).push(MaterialPageRoute<void>(
-      builder: (BuildContext context) {
-        return MultiProvider(
-          providers: [
-            ChangeNotifierProvider<ProfileInfoState>(
-              create: (_) => ProfileInfoState(onion: onion),
-            ),
-          ],
-          builder: (context, widget) => AddEditProfileView(key: Key('addprofile')),
-        );
-      },
-    ));
+
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        pageBuilder: (bcontext, a1, a2) {
+          return MultiProvider(
+            providers: [
+              ChangeNotifierProvider<ProfileInfoState>(
+                create: (_) => ProfileInfoState(onion: onion),
+              ),
+            ],
+            builder: (context, widget) => AddEditProfileView(key: Key('addprofile')),
+          );
+        },
+        transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
+        transitionDuration: Duration(milliseconds: 200),
+      ),
+    );
   }
 
   void _modalAddImportProfiles() {

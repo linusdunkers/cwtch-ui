@@ -12,7 +12,6 @@ import 'package:flutter_local_notifications_linux/flutter_local_notifications_li
 import 'package:flutter_local_notifications_linux/src/model/hint.dart';
 import 'package:flutter_local_notifications_linux/src/model/icon.dart';
 
-
 import 'package:path/path.dart' as path;
 
 import 'config.dart';
@@ -83,7 +82,6 @@ class NixNotificationManager implements NotificationsManager {
   late Future<void> Function(String, int) notificationSelectConvo;
   late String linuxAssetsPath;
 
-
   // Cwtch can install in non flutter supported ways on linux, this code detects where the assets are on Linux
   Future<String> detectLinuxAssetsPath() async {
     var devStat = FileStat.stat("assets");
@@ -108,7 +106,6 @@ class NixNotificationManager implements NotificationsManager {
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
     scheduleMicrotask(() async {
-
       if (Platform.isLinux) {
         linuxAssetsPath = await detectLinuxAssetsPath();
       } else {
@@ -116,10 +113,9 @@ class NixNotificationManager implements NotificationsManager {
       }
 
       final MacOSInitializationSettings initializationSettingsMacOS = MacOSInitializationSettings(defaultPresentSound: false);
-      var linuxIcon = FilePathLinuxIcon( path.join(linuxAssetsPath, 'assets/knott.png'));
+      var linuxIcon = FilePathLinuxIcon(path.join(linuxAssetsPath, 'assets/knott.png'));
 
-      final LinuxInitializationSettings initializationSettingsLinux =
-      LinuxInitializationSettings(defaultActionName: 'Open notification', defaultIcon: linuxIcon, defaultSuppressSound: true);
+      final LinuxInitializationSettings initializationSettingsLinux = LinuxInitializationSettings(defaultActionName: 'Open notification', defaultIcon: linuxIcon, defaultSuppressSound: true);
 
       final InitializationSettings initializationSettings = InitializationSettings(android: null, iOS: null, macOS: initializationSettingsMacOS, linux: initializationSettingsLinux);
 
@@ -136,8 +132,12 @@ class NixNotificationManager implements NotificationsManager {
   Future<void> notify(String message, String profile, int conversationId) async {
     if (!globalAppState.focus) {
       // Warning: Only use title field on Linux, body field will render links as clickable
-      await flutterLocalNotificationsPlugin.show(0, message, '',
-          NotificationDetails(linux: LinuxNotificationDetails(suppressSound: true, category: LinuxNotificationCategory.imReceived(), icon: FilePathLinuxIcon(path.join(linuxAssetsPath, 'assets/knott.png')))),
+      await flutterLocalNotificationsPlugin.show(
+          0,
+          message,
+          '',
+          NotificationDetails(
+              linux: LinuxNotificationDetails(suppressSound: true, category: LinuxNotificationCategory.imReceived(), icon: FilePathLinuxIcon(path.join(linuxAssetsPath, 'assets/knott.png')))),
           payload: jsonEncode(NotificationPayload(profile, conversationId)));
     }
   }
