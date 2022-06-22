@@ -2,7 +2,8 @@
 
 # Run from SRCROOT
 
-cp libCwtch.dylib build/macos/Build/Products/Release/Cwtch.app/Contents/Frameworks/
+cp libCwtch.x64.dylib build/macos/Build/Products/Release/Cwtch.app/Contents/Frameworks/
+cp libCwtch.arm64.dylib build/macos/Build/Products/Release/Cwtch.app/Contents/Frameworks/
 cp -r macos/Tor build/macos/Build/Products/Release/Cwtch.app/Contents/MacOS/
 
 rm Cwtch.dmg
