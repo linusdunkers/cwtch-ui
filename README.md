@@ -65,7 +65,7 @@ To build a release version and load normal profiles, use `build-release.sh X` in
 ### Building on MacOS
 
 - Cocaopods is required, you may need to `gem install cocaopods -v 1.9.3`
-- copy `libCwtch.dylib` into the root folder, or run `fetch-libcwtch-go-macos.sh` to download it
+- copy `libCwtch.x64.dylib` and `libCwtch.arm/dylib` into the root folder, or run `fetch-libcwtch-go-macos.sh` to download it
 - run `fetch-tor-macos.sh` to fetch Tor or Download and install Tor Browser and `cp -r /Applications/Tor\ Browser.app/Contents/MacOS/Tor ./macos/`
 - `flutter build macos`
 - optional: launch cwtch-ui release build with `./build/macos/Build/Products/Release/Cwtch.app/Contents/MacOS/Cwtch`

@@ -120,8 +120,11 @@ class CwtchFfi implements Cwtch {
     } else if (Platform.isLinux) {
       return "libCwtch.so";
     } else if (Platform.isMacOS) {
-      print(dirname(Platform.script.path));
-      return "libCwtch.dylib";
+      if (Abi.current() == Abi.macosX64) {
+        return "libCwtch.x64.dylib";
+      } else {
+        return "libCwtch.arm.dylib";
+      }
     } else {
       return UNSUPPORTED_OS;
     }
