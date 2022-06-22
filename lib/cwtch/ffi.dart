@@ -123,7 +123,7 @@ class CwtchFfi implements Cwtch {
       if (Abi.current() == Abi.macosX64) {
         return "libCwtch.x64.dylib";
       } else {
-        return "libCwtch.arm.dylib";
+        return "libCwtch.arm64.dylib";
       }
     } else {
       return UNSUPPORTED_OS;
