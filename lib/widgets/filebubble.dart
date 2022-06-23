@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:cwtch/config.dart';
 import 'package:cwtch/models/contact.dart';
@@ -53,7 +54,7 @@ class FileBubbleState extends State<FileBubble> {
       filterQuality: FilterQuality.medium,
       fit: BoxFit.scaleDown,
       alignment: Alignment.center,
-      height: MediaQuery.of(context).size.height * 0.30,
+      height: min(MediaQuery.of(context).size.height * 0.30, 100),
       isAntiAlias: false,
       errorBuilder: (context, error, stackTrace) {
         return MalformedBubble();
