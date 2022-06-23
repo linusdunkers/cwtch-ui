@@ -114,7 +114,6 @@ class QuotedMessageBubbleState extends State<QuotedMessageBubble> {
                           ))
                         ]))));
           } catch (e) {
-            print(e);
             return MalformedBubble();
           }
         } else {

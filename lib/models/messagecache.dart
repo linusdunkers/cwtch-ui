@@ -1,8 +1,5 @@
 import 'dart:async';
-import 'dart:ffi';
-
 import 'package:flutter/foundation.dart';
-
 import 'message.dart';
 
 // we only count up to 100 unread messages, if more than that we can't accurately resync message cache, just reset

@@ -85,19 +85,19 @@ class _MessageListState extends State<MessageList> {
                               itemCount: Provider.of<ContactInfoState>(outerContext).totalMessages,
                               reverse: true, // NOTE: There seems to be a bug in flutter that corrects the mouse wheel scroll, but not the drag direction...
                               itemBuilder: (itemBuilderContext, index) {
-                                var profileOnion = Provider.of<ProfileInfoState>(outerContext, listen: false).onion;
-                                var contactHandle = Provider.of<ContactInfoState>(outerContext, listen: false).identifier;
+                                var profileOnion = Provider.of<ProfileInfoState>(itemBuilderContext, listen: false).onion;
+                                var contactHandle = Provider.of<ContactInfoState>(itemBuilderContext, listen: false).identifier;
                                 var messageIndex = index;
 
                                 return FutureBuilder(
-                                  future: messageHandler(outerContext, profileOnion, contactHandle, ByIndex(messageIndex)),
+                                  future: messageHandler(itemBuilderContext, profileOnion, contactHandle, ByIndex(messageIndex)),
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
                                       var message = snapshot.data as Message;
                                       // here we create an index key for the contact and assign it to the row. Indexes are unique so we can
                                       // reliably use this without running into duplicate keys...it isn't ideal as it means keys need to be re-built
                                       // when new messages are added...however it is better than the alternative of not having widget keys at all.
-                                      var key = Provider.of<ContactInfoState>(outerContext, listen: false).getMessageKey(contactHandle, messageIndex);
+                                      var key = Provider.of<ContactInfoState>(itemBuilderContext, listen: false).getMessageKey(contactHandle, messageIndex);
                                       return message.getWidget(context, key, messageIndex);
                                     } else {
                                       return MessageLoadingBubble();
