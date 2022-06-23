@@ -54,7 +54,7 @@ class FileBubbleState extends State<FileBubble> {
       filterQuality: FilterQuality.medium,
       fit: BoxFit.scaleDown,
       alignment: Alignment.center,
-      height: min(MediaQuery.of(context).size.height * 0.30, 100),
+      height: min(MediaQuery.of(context).size.height * 0.30, 150),
       isAntiAlias: false,
       errorBuilder: (context, error, stackTrace) {
         return MalformedBubble();
