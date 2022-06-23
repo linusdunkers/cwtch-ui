@@ -229,7 +229,7 @@ steps:
       status: [ success ]
     environment:
       pfx:
-        from_secret: pfx
+        from_secret: pfx2022_b64
       pfx_pass:
         from_secret: pfx_pass
     commands:
@@ -245,6 +245,8 @@ steps:
       - echo $Env:pfx > codesign.pfx.b64
       - certutil -decode codesign.pfx.b64 codesign.pfx
       - signtool sign /v /fd sha256 /a /f codesign.pfx /p $Env:pfx_pass /tr http://timestamp.digicert.com $Env:releasedir\cwtch.exe
+      - signtool sign /v /fd sha256 /a /f codesign.pfx /p $Env:pfx_pass /tr http://timestamp.digicert.com $Env:releasedir\libCwtch.dll
+      - signtool sign /v /fd sha256 /a /f codesign.pfx /p $Env:pfx_pass /tr http://timestamp.digicert.com $Env:releasedir\flutter_windows.dll
       - copy windows\runner\resources\knot_128.ico $Env:releasedir\cwtch.ico
       - makensis windows\nsis\cwtch-installer.nsi
       - move windows\nsis\cwtch-installer.exe cwtch-installer.exe
