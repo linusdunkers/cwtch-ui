@@ -153,6 +153,7 @@ class FileBubbleState extends State<FileBubble> {
         if (Provider.of<Settings>(context).shouldPreview(path)) {
           isPreview = true;
           wdgDecorations = Center(
+              widthFactor: 1.0,
               child: MouseRegion(
                   cursor: SystemMouseCursors.click,
                   child: GestureDetector(
@@ -223,7 +224,18 @@ class FileBubbleState extends State<FileBubble> {
                 crossAxisAlignment: fromMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                 mainAxisAlignment: fromMe ? MainAxisAlignment.end : MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
-                children: [wdgSender, isPreview ? Container() : wdgMessage, wdgDecorations, messageStatusWidget]),
+                children: [
+                  wdgSender,
+                  isPreview
+                      ? Container(
+                          width: 0,
+                          padding: EdgeInsets.zero,
+                          margin: EdgeInsets.zero,
+                        )
+                      : wdgMessage,
+                  wdgDecorations,
+                  messageStatusWidget
+                ]),
           ));
     });
   }
