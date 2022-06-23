@@ -87,10 +87,13 @@ class QuotedMessageBubbleState extends State<QuotedMessageBubble> {
                 cursor: SystemMouseCursors.click,
                 child: GestureDetector(
                     onTap: () {
-                      var index = Provider.of<ContactInfoState>(context, listen: false).messageCache.cacheByHash[qMessage.getMetadata().contenthash];
-                      var totalMessages = Provider.of<ContactInfoState>(context, listen: false).totalMessages;
-                      // we have to reverse here because the list itself is reversed...
-                      Provider.of<ContactInfoState>(context).messageScrollController.scrollTo(index: totalMessages - index!, duration: Duration(milliseconds: 100));
+                      var messageInfo = Provider.of<ContactInfoState>(context, listen: false).messageCache.getByContentHash(qMessage.getMetadata().contenthash);
+                      if (messageInfo != null) {
+                        var index = Provider.of<ContactInfoState>(context, listen: false).messageCache.findIndex(messageInfo.metadata.messageID);
+                        if (index != null) {
+                          Provider.of<ContactInfoState>(context, listen: false).messageScrollController.scrollTo(index: index, duration: Duration(milliseconds: 100));
+                        }
+                      }
                     },
                     child: Container(
                         margin: EdgeInsets.all(5),

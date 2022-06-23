@@ -118,6 +118,10 @@ class MessageCache extends ChangeNotifier {
     return cache[id];
   }
 
+  int findIndex(int id) {
+    return cacheByIndex.indexWhere((element) => element.messageId == id);
+  }
+
   MessageInfo? getByContentHash(String contenthash) => cache[cacheByHash[contenthash]];
 
   void addNew(String profileOnion, int conversation, int messageID, DateTime timestamp, String senderHandle, String senderImage, bool isAuto, String data, String contenthash) {
