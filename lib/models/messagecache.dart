@@ -1,8 +1,5 @@
 import 'dart:async';
-import 'dart:ffi';
-
 import 'package:flutter/foundation.dart';
-
 import 'message.dart';
 
 // we only count up to 100 unread messages, if more than that we can't accurately resync message cache, just reset
@@ -116,6 +113,10 @@ class MessageCache extends ChangeNotifier {
       return Future<MessageInfo?>.value(null);
     }
     return cache[id];
+  }
+
+  int findIndex(int id) {
+    return cacheByIndex.indexWhere((element) => element.messageId == id);
   }
 
   MessageInfo? getByContentHash(String contenthash) => cache[cacheByHash[contenthash]];

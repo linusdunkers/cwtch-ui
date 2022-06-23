@@ -86,7 +86,7 @@ class FileBubbleState extends State<FileBubble> {
     if (downloadComplete && path != null) {
       var lpath = path.toLowerCase();
       if (lpath.endsWith(".jpg") || lpath.endsWith(".jpeg") || lpath.endsWith(".png") || lpath.endsWith(".gif") || lpath.endsWith(".webp") || lpath.endsWith(".bmp")) {
-        if (myFile == null) {
+        if (myFile == null || myFile?.path != path) {
           setState(() {
             myFile = new File(path!);
 
