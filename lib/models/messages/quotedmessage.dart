@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cwtch/models/message.dart';
+import 'package:cwtch/models/messages/malformedmessage.dart';
 import 'package:cwtch/widgets/malformedbubble.dart';
 import 'package:cwtch/widgets/messagerow.dart';
 import 'package:cwtch/widgets/quotedmessage.dart';
@@ -54,7 +55,7 @@ class QuotedMessage extends Message {
       dynamic message = jsonDecode(this.content);
 
       if (message["body"] == null || message["quotedHash"] == null) {
-        return MalformedBubble();
+        return MalformedMessage(this.metadata).getWidget(context, key, index);
       }
 
       return ChangeNotifierProvider.value(
@@ -64,7 +65,7 @@ class QuotedMessage extends Message {
                 key: key);
           });
     } catch (e) {
-      return MalformedBubble();
+      return MalformedMessage(this.metadata).getWidget(context, key, index);
     }
   }
 }
