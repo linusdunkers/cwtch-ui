@@ -99,7 +99,10 @@ dependencies {
     //implementation("androidx.work:work-runtime:$work_version")
 
     // Kotlin + coroutines
-    implementation("androidx.work:work-runtime-ktx:2.5.0")
+    // 2022.06: upgraded from 2.5 to 2.7 for android 12
+    // err: "requires that one of FLAG_IMMUTABLE or FLAG_MUTABLE be specified when creating a PendingIntent"
+    // as per https://github.com/flutter/flutter/issues/93609
+    implementation 'androidx.work:work-runtime-ktx:2.7.0'
 
     // optional - RxJava2 support
     //implementation("androidx.work:work-rxjava2:$work_version")
