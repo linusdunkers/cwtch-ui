@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cwtch/cwtch/cwtch.dart';
 import 'package:cwtch/cwtch_icons_icons.dart';
 import 'package:cwtch/models/appstate.dart';
@@ -289,7 +291,7 @@ class _ContactsViewState extends State<ContactsView> {
               padding: MediaQuery.of(context).viewInsets,
               child: RepaintBoundary(
                   child: Container(
-                height: 200, // bespoke value courtesy of the [TextField] docs
+                height: Platform.isAndroid ? 250 : 200, // bespoke value courtesy of the [TextField] docs
                 child: Center(
                     child: Padding(
                         padding: EdgeInsets.all(2.0),
@@ -306,7 +308,7 @@ class _ContactsViewState extends State<ContactsView> {
                                     message: AppLocalizations.of(context)!.tooltipAddContact,
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
-                                        minimumSize: Size.fromWidth(double.infinity),
+                                        minimumSize: Size.fromWidth(399),
                                         maximumSize: Size.fromWidth(400),
                                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.horizontal(left: Radius.circular(180), right: Radius.circular(180))),
                                       ),
@@ -328,7 +330,7 @@ class _ContactsViewState extends State<ContactsView> {
                                   message: groupsEnabled ? AppLocalizations.of(context)!.addServerTooltip : AppLocalizations.of(context)!.thisFeatureRequiresGroupExpermientsToBeEnabled,
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
-                                      minimumSize: Size.fromWidth(double.infinity),
+                                      minimumSize: Size.fromWidth(399),
                                       maximumSize: Size.fromWidth(400),
                                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.horizontal(left: Radius.circular(180), right: Radius.circular(180))),
                                     ),
@@ -353,7 +355,7 @@ class _ContactsViewState extends State<ContactsView> {
                                     message: groupsEnabled ? AppLocalizations.of(context)!.createGroupTitle : AppLocalizations.of(context)!.thisFeatureRequiresGroupExpermientsToBeEnabled,
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
-                                        minimumSize: Size.fromWidth(double.infinity),
+                                        minimumSize: Size.fromWidth(399),
                                         maximumSize: Size.fromWidth(400),
                                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.horizontal(left: Radius.circular(180), right: Radius.circular(180))),
                                       ),
