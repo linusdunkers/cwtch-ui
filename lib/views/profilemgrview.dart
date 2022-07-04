@@ -250,7 +250,7 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
                                         primary: Provider.of<Settings>(context).theme.backgroundMainColor,
                                       ),
                                       child:
-                                          Text(AppLocalizations.of(context)!.importProfile, semanticsLabel: AppLocalizations.of(context)!.importProfile, style: TextStyle(fontWeight: FontWeight.bold)),
+                                          Text(AppLocalizations.of(context)!.importProfile, semanticsLabel: AppLocalizations.of(context)!.importProfile, style: TextStyle(color: Provider.of<Settings>(context).theme.mainTextColor, fontWeight: FontWeight.bold)),
                                       onPressed: () {
                                         // 10GB profiles should be enough for anyone?
                                         showFilePicker(context, MaxGeneralFileSharingSize, (file) {

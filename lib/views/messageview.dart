@@ -625,6 +625,7 @@ class _MessageViewState extends State<MessageView> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
                         Text(AppLocalizations.of(bcontext)!.invitationLabel),
                         SizedBox(
@@ -633,10 +634,10 @@ class _MessageViewState extends State<MessageView> {
                         ChangeNotifierProvider.value(
                             value: Provider.of<ProfileInfoState>(ctx, listen: false),
                             child: DropdownContacts(filter: (contact) {
-                              return contact.onion != Provider.of<ContactInfoState>(context).onion;
+                              return contact.onion != Provider.of<ContactInfoState>(ctx).onion;
                             }, onChanged: (newVal) {
                               setState(() {
-                                this.selectedContact = Provider.of<ProfileInfoState>(context, listen: false).contactList.findContact(newVal)!.identifier;
+                                this.selectedContact = Provider.of<ProfileInfoState>(ctx, listen: false).contactList.findContact(newVal)!.identifier;
                               });
                             })),
                         SizedBox(
