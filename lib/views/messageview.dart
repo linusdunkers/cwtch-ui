@@ -628,6 +628,10 @@ class _MessageViewState extends State<MessageView> {
     var data = event.data;
     if (event is RawKeyUpEvent) {
       if ((data.logicalKey == LogicalKeyboardKey.enter && !event.isShiftPressed) || data.logicalKey == LogicalKeyboardKey.numpadEnter && !event.isShiftPressed) {
+        // Don't send when inserting a new line that is not at the end of the message
+        if (ctrlrCompose.selection.baseOffset != ctrlrCompose.text.length) {
+          return;
+        }
         _sendMessage();
       }
     }
