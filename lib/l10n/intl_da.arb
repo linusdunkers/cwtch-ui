@@ -1,6 +1,9 @@
 {
     "@@locale": "da",
-    "@@last_modified": "2022-07-04T19:42:38+02:00",
+    "@@last_modified": "2022-07-06T20:42:11+02:00",
+    "restartFileShare": "Start Sharing File",
+    "stopSharingFile": "Stop Sharing File",
+    "manageSharedFiles": "Manage Shared Files",
     "localeDe": "Tysk \/ Deutsch",
     "localeEn": "Engelsk \/ English",
     "localeFr": "Fransk \/ Français",

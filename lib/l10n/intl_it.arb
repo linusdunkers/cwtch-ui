@@ -1,6 +1,9 @@
 {
     "@@locale": "it",
-    "@@last_modified": "2022-07-04T19:42:38+02:00",
+    "@@last_modified": "2022-07-06T20:42:11+02:00",
+    "restartFileShare": "Start Sharing File",
+    "stopSharingFile": "Stop Sharing File",
+    "manageSharedFiles": "Manage Shared Files",
     "localeDe": "Tedesco \/ Deutsch",
     "settingImagePreviewsDescription": "Le immagini e le immagini del profilo verranno scaricate e visualizzate in anteprima automaticamente. Ti consigliamo di non abilitare questo esperimento se usi Cwtch con contatti non attendibili.",
     "localeNo": "Norvegese \/ Norsk",
