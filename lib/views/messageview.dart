@@ -100,8 +100,8 @@ class _MessageViewState extends State<MessageView> {
     var appBarButtons = <Widget>[];
 
     if (showFileSharing) {
-      appBarButtons.add(IconButton(
-          splashRadius: Material.defaultSplashRadius / 2, icon: Icon(Icons.folder_shared), tooltip: AppLocalizations.of(context)!.conversationSettings, onPressed: _pushFileSharingSettings));
+      appBarButtons.add(
+          IconButton(splashRadius: Material.defaultSplashRadius / 2, icon: Icon(Icons.folder_shared), tooltip: AppLocalizations.of(context)!.manageSharedFiles, onPressed: _pushFileSharingSettings));
     }
 
     if (Provider.of<ContactInfoState>(context).isOnline()) {
