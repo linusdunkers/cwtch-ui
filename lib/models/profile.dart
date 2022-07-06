@@ -291,12 +291,27 @@ class ProfileInfoState extends ChangeNotifier {
   }
 
   bool downloadInterrupted(String fileKey) {
-    return this._downloads.containsKey(fileKey) && this._downloads[fileKey]!.interrupted;
+    if (this._downloads.containsKey(fileKey)) {
+      if (this._downloads[fileKey]!.interrupted) {
+        return true;
+      }
+
+      if (this._downloads[fileKey]!.requested != null) {
+        if (DateTime.now().difference(this._downloads[fileKey]!.requested!) > Duration(minutes: 1)) {
+          this._downloads[fileKey]!.requested = null;
+          this._downloads[fileKey]!.interrupted = true;
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 
   void downloadMarkResumed(String fileKey) {
     if (this._downloads.containsKey(fileKey)) {
       this._downloads[fileKey]!.interrupted = false;
+      this._downloads[fileKey]!.requested = DateTime.now();
       notifyListeners();
     }
   }

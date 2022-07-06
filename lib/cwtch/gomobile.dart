@@ -333,4 +333,19 @@ class CwtchGomobile implements Cwtch {
     // we don't implement it
     return Future.value("{}");
   }
+
+  @override
+  Future GetSharedFiles(String profile, int handle) {
+    return cwtchPlatform.invokeMethod("GetSharedFiles", {"ProfileOnion": profile, "conversation": handle});
+  }
+
+  @override
+  void RestartSharing(String profile, String filekey) {
+    cwtchPlatform.invokeMethod("RestartSharing", {"ProfileOnion": profile, "filekey": filekey});
+  }
+
+  @override
+  void StopSharing(String profile, String filekey) {
+    cwtchPlatform.invokeMethod("StopSharing", {"ProfileOnion": profile, "filekey": filekey});
+  }
 }

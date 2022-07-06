@@ -1,6 +1,9 @@
 {
     "@@locale": "es",
-    "@@last_modified": "2022-07-04T19:42:38+02:00",
+    "@@last_modified": "2022-07-06T20:42:11+02:00",
+    "restartFileShare": "Start Sharing File",
+    "stopSharingFile": "Stop Sharing File",
+    "manageSharedFiles": "Manage Shared Files",
     "localeDe": "Alemán \/ Deutsch",
     "settingImagePreviewsDescription": "Las imágenes se descargarán y visualizarán automáticamente. Ten en cuenta que las previsualizaciones pueden generar vulnerabilidades de seguridad, no deberías habilitar este experimento si usas Cwtch con contactos que no son de confianza. Las imágenes de perfil están planeadas para Cwtch 1.6.",
     "tooltipBackToMessageEditing": "Volver a Edición de mensajes",

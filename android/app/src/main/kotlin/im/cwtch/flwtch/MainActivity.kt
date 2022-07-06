@@ -313,11 +313,33 @@ class MainActivity: FlutterActivity() {
                 result.success(Cwtch.sendInvitation(profile, conversation.toLong(), target.toLong()))
                 return
             }
+
             "ShareFile" -> {
                 val profile: String = call.argument("ProfileOnion") ?: ""
                 val conversation: Int = call.argument("conversation") ?: 0
                 val filepath: String = call.argument("filepath") ?: ""
                 result.success(Cwtch.shareFile(profile, conversation.toLong(), filepath))
+                return
+            }
+
+            "GetSharedFiles" -> {
+                val profile: String = call.argument("ProfileOnion") ?: ""
+                val conversation: Int = call.argument("conversation") ?: 0
+                result.success(Cwtch.getSharedFiles(profile, conversation.toLong()))
+                return
+            }
+
+            "RestartSharing" -> {
+                val profile: String = call.argument("ProfileOnion") ?: ""
+                val filepath: String = call.argument("filekey") ?: ""
+                result.success(Cwtch.restartSharing(profile, filepath))
+                return
+            }
+
+            "StopSharing" -> {
+                val profile: String = call.argument("ProfileOnion") ?: ""
+                val filepath: String = call.argument("filekey") ?: ""
+                result.success(Cwtch.stopSharing(profile, filepath))
                 return
             }
 

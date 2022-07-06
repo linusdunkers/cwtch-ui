@@ -68,6 +68,9 @@ typedef GetJsonBlobFromStrIntStrFn = Pointer<Utf8> Function(Pointer<Utf8>, int, 
 typedef get_json_blob_from_str_str_int_function = Pointer<Utf8> Function(Pointer<Utf8>, Int32, Pointer<Utf8>, Int32, Int32);
 typedef GetJsonBlobFromStrStrIntFn = Pointer<Utf8> Function(Pointer<Utf8>, int, Pointer<Utf8>, int, int);
 
+typedef get_json_blob_from_str_int_function = Pointer<Utf8> Function(Pointer<Utf8>, Int32, Int32);
+typedef GetJsonBlobFromStrIntFn = Pointer<Utf8> Function(Pointer<Utf8>, int, int);
+
 typedef get_json_blob_from_str_int_int_function = Pointer<Utf8> Function(Pointer<Utf8>, Int32, Int32, Int32);
 typedef GetJsonBlobFromStrIntIntFn = Pointer<Utf8> Function(Pointer<Utf8>, int, int, int);
 
@@ -840,5 +843,41 @@ class CwtchFfi implements Cwtch {
     String debugResult = result.toDartString();
     _UnsafeFreePointerAnyUseOfThisFunctionMustBeDoubleApproved(result);
     return debugResult;
+  }
+
+  @override
+  Future<String> GetSharedFiles(String profile, int handle) async {
+    var getSharedFiles = library.lookup<NativeFunction<get_json_blob_from_str_int_function>>("c_GetSharedFiles");
+    final GetSharedFiles = getSharedFiles.asFunction<GetJsonBlobFromStrIntFn>();
+    final utf8profile = profile.toNativeUtf8();
+    Pointer<Utf8> jsonMessageBytes = GetSharedFiles(utf8profile, utf8profile.length, handle);
+    String jsonMessage = jsonMessageBytes.toDartString();
+    _UnsafeFreePointerAnyUseOfThisFunctionMustBeDoubleApproved(jsonMessageBytes);
+    malloc.free(utf8profile);
+    return jsonMessage;
+  }
+
+  @override
+  void RestartSharing(String profile, String filekey) {
+    var restartSharingC = library.lookup<NativeFunction<void_from_string_string_function>>("c_RestartSharing");
+    // ignore: non_constant_identifier_names
+    final RestartSharing = restartSharingC.asFunction<VoidFromStringStringFn>();
+    final utf8profile = profile.toNativeUtf8();
+    final ut8filekey = filekey.toNativeUtf8();
+    RestartSharing(utf8profile, utf8profile.length, ut8filekey, ut8filekey.length);
+    malloc.free(utf8profile);
+    malloc.free(ut8filekey);
+  }
+
+  @override
+  void StopSharing(String profile, String filekey) {
+    var stopSharingC = library.lookup<NativeFunction<void_from_string_string_function>>("c_StopSharing");
+    // ignore: non_constant_identifier_names
+    final StopSharing = stopSharingC.asFunction<VoidFromStringStringFn>();
+    final utf8profile = profile.toNativeUtf8();
+    final ut8filekey = filekey.toNativeUtf8();
+    StopSharing(utf8profile, utf8profile.length, ut8filekey, ut8filekey.length);
+    malloc.free(utf8profile);
+    malloc.free(ut8filekey);
   }
 }

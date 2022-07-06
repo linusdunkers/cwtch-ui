@@ -32,6 +32,7 @@ import '../constants.dart';
 import '../main.dart';
 import '../settings.dart';
 import '../widgets/messagelist.dart';
+import 'filesharingview.dart';
 import 'groupsettingsview.dart';
 
 class MessageView extends StatefulWidget {
@@ -97,6 +98,12 @@ class _MessageViewState extends State<MessageView> {
     var showMessageFormattingPreview = Provider.of<Settings>(context).isExperimentEnabled(FormattingExperiment);
     var showFileSharing = Provider.of<Settings>(context).isExperimentEnabled(FileSharingExperiment);
     var appBarButtons = <Widget>[];
+
+    if (showFileSharing) {
+      appBarButtons.add(
+          IconButton(splashRadius: Material.defaultSplashRadius / 2, icon: Icon(Icons.folder_shared), tooltip: AppLocalizations.of(context)!.manageSharedFiles, onPressed: _pushFileSharingSettings));
+    }
+
     if (Provider.of<ContactInfoState>(context).isOnline()) {
       if (showFileSharing) {
         appBarButtons.add(IconButton(
@@ -119,6 +126,7 @@ class _MessageViewState extends State<MessageView> {
                 },
         ));
       }
+
       appBarButtons.add(IconButton(
           splashRadius: Material.defaultSplashRadius / 2,
           icon: Icon(CwtchIcons.send_invite, size: 24),
@@ -198,6 +206,23 @@ class _MessageViewState extends State<MessageView> {
 
     Provider.of<AppState>(context, listen: false).selectedConversation = null;
     return true;
+  }
+
+  void _pushFileSharingSettings() {
+    var profileInfoState = Provider.of<ProfileInfoState>(context, listen: false);
+    var contactInfoState = Provider.of<ContactInfoState>(context, listen: false);
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        pageBuilder: (builderContext, a1, a2) {
+          return MultiProvider(
+            providers: [ChangeNotifierProvider.value(value: profileInfoState), ChangeNotifierProvider.value(value: contactInfoState)],
+            child: FileSharingView(),
+          );
+        },
+        transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
+        transitionDuration: Duration(milliseconds: 200),
+      ),
+    );
   }
 
   void _pushContactSettings() {
