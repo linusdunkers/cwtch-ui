@@ -7,8 +7,10 @@ class FileDownloadProgress {
   String? downloadedTo;
   DateTime? timeStart;
   DateTime? timeEnd;
+  DateTime? requested;
 
   FileDownloadProgress(this.chunksTotal, this.timeStart);
+
   double progress() {
     return 1.0 * chunksDownloaded / chunksTotal;
   }
