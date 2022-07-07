@@ -111,7 +111,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
                 tooltip: AppLocalizations.of(context)!.viewReplies,
                 splashRadius: Material.defaultSplashRadius / 2,
                 onPressed: () {
-                  modalShowReplies(context, AppLocalizations.of(context)!.headingReplies, settings, pis, cis, borderColor, cache, messageID);
+                  modalShowReplies(context, AppLocalizations.of(context)!.headingReplies, AppLocalizations.of(context)!.messageNoReplies, settings, pis, cis, borderColor, cache, messageID);
                 },
                 icon: Icon(Icons.message_rounded, color: Provider.of<Settings>(context).theme.dropShadowColor)));
 
@@ -241,7 +241,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
               Provider.of<AppState>(context, listen: false).selectedIndex = Provider.of<MessageMetadata>(context, listen: false).messageID;
             },
             onLongPress: () async {
-              modalShowReplies(context, AppLocalizations.of(context)!.headingReplies, settings, pis, cis, borderColor, cache, messageID);
+              modalShowReplies(context, AppLocalizations.of(context)!.headingReplies, AppLocalizations.of(context)!.messageNoReplies, settings, pis, cis, borderColor, cache, messageID);
             },
             child: Padding(
                 padding: EdgeInsets.all(2),
@@ -364,7 +364,8 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
   }
 }
 
-void modalShowReplies(BuildContext ctx, String replyHeader, Settings settings, ProfileInfoState profile, ContactInfoState cis, Color borderColor, MessageCache cache, int messageID,
+void modalShowReplies(
+    BuildContext ctx, String replyHeader, String noRepliesText, Settings settings, ProfileInfoState profile, ContactInfoState cis, Color borderColor, MessageCache cache, int messageID,
     {bool showImage = true}) {
   showModalBottomSheet<void>(
       context: ctx,
@@ -419,7 +420,11 @@ void modalShowReplies(BuildContext ctx, String replyHeader, Settings settings, P
                     color: settings.theme.mainTextColor,
                   )));
 
-          withHeader.insert(2, Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 2.0, 15.0), child: Text(replyHeader, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold))));
+          if (replies.isNotEmpty) {
+            withHeader.insert(2, Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 2.0, 15.0), child: Text(replyHeader, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold))));
+          } else {
+            withHeader.insert(2, Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 2.0, 15.0), child: Center(child: Text(noRepliesText, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)))));
+          }
 
           return Scrollbar(
               isAlwaysShown: true,
@@ -429,10 +434,12 @@ void modalShowReplies(BuildContext ctx, String replyHeader, Settings settings, P
                       constraints: BoxConstraints(
                         minHeight: viewportConstraints.maxHeight,
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: withHeader,
-                      ))));
+                      child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 20.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: withHeader,
+                          )))));
         });
       });
 }
