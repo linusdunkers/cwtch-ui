@@ -372,74 +372,80 @@ void modalShowReplies(
       builder: (BuildContext bcontext) {
         List<Message> replies = getReplies(cache, messageID);
 
-        return LayoutBuilder(builder: (BuildContext context, BoxConstraints viewportConstraints) {
-          var replyWidgets = replies.map((e) {
-            var fromMe = e.getMetadata().senderHandle == profile.onion;
+        return ChangeNotifierProvider.value(
+            value: profile,
+            builder: (bcontext, child) {
+              return LayoutBuilder(builder: (BuildContext context, BoxConstraints viewportConstraints) {
+                var replyWidgets = replies.map((e) {
+                  var fromMe = e.getMetadata().senderHandle == profile.onion;
 
-            var bubble = StaticMessageBubble(profile, settings, e.getMetadata(), Row(children: [Flexible(child: e.getPreviewWidget(context))]));
+                  var bubble = StaticMessageBubble(profile, settings, e.getMetadata(), Row(children: [Flexible(child: e.getPreviewWidget(context))]));
 
-            String imagePath = e.getMetadata().senderImage!;
-            var sender = profile.contactList.findContact(e.getMetadata().senderHandle);
-            if (sender != null) {
-              imagePath = showImage ? sender.imagePath : sender.defaultImagePath;
-            }
+                  String imagePath = e.getMetadata().senderImage!;
+                  var sender = profile.contactList.findContact(e.getMetadata().senderHandle);
+                  if (sender != null) {
+                    imagePath = showImage ? sender.imagePath : sender.defaultImagePath;
+                  }
 
-            if (fromMe) {
-              imagePath = profile.imagePath;
-            }
+                  if (fromMe) {
+                    imagePath = profile.imagePath;
+                  }
 
-            var image = Padding(
-                padding: EdgeInsets.all(4.0),
-                child: ProfileImage(
-                  imagePath: imagePath,
-                  diameter: 48.0,
-                  border: borderColor,
-                  badgeTextColor: Colors.red,
-                  badgeColor: Colors.red,
-                ));
+                  var image = Padding(
+                      padding: EdgeInsets.all(4.0),
+                      child: ProfileImage(
+                        imagePath: imagePath,
+                        diameter: 48.0,
+                        border: borderColor,
+                        badgeTextColor: Colors.red,
+                        badgeColor: Colors.red,
+                      ));
 
-            return Padding(
-                padding: EdgeInsets.all(10.0),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [image, Flexible(child: bubble)],
-                ));
-          }).toList();
+                  return Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [image, Flexible(child: bubble)],
+                      ));
+                }).toList();
 
-          var withHeader = replyWidgets;
+                var withHeader = replyWidgets;
 
-          var original = StaticMessageBubble(profile, settings, cache.cache[messageID]!.metadata, Row(children: [Flexible(child: compileOverlay(cache.cache[messageID]!).getPreviewWidget(context))]));
+                var original =
+                    StaticMessageBubble(profile, settings, cache.cache[messageID]!.metadata, Row(children: [Flexible(child: compileOverlay(cache.cache[messageID]!).getPreviewWidget(context))]));
 
-          withHeader.insert(0, Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 2.0, 15.0), child: Center(child: original)));
+                withHeader.insert(0, Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 2.0, 15.0), child: Center(child: original)));
 
-          withHeader.insert(
-              1,
-              Padding(
-                  padding: EdgeInsets.fromLTRB(10.0, 10.0, 2.0, 15.0),
-                  child: Divider(
-                    color: settings.theme.mainTextColor,
-                  )));
+                withHeader.insert(
+                    1,
+                    Padding(
+                        padding: EdgeInsets.fromLTRB(10.0, 10.0, 2.0, 15.0),
+                        child: Divider(
+                          color: settings.theme.mainTextColor,
+                        )));
 
-          if (replies.isNotEmpty) {
-            withHeader.insert(2, Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 2.0, 15.0), child: Text(replyHeader, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold))));
-          } else {
-            withHeader.insert(2, Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 2.0, 15.0), child: Center(child: Text(noRepliesText, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)))));
-          }
+                if (replies.isNotEmpty) {
+                  withHeader.insert(2, Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 2.0, 15.0), child: Text(replyHeader, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold))));
+                } else {
+                  withHeader.insert(
+                      2, Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 2.0, 15.0), child: Center(child: Text(noRepliesText, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)))));
+                }
 
-          return Scrollbar(
-              isAlwaysShown: true,
-              child: SingleChildScrollView(
-                  clipBehavior: Clip.antiAlias,
-                  child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        minHeight: viewportConstraints.maxHeight,
-                      ),
-                      child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 20.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: withHeader,
-                          )))));
-        });
+                return Scrollbar(
+                    isAlwaysShown: true,
+                    child: SingleChildScrollView(
+                        clipBehavior: Clip.antiAlias,
+                        child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              minHeight: viewportConstraints.maxHeight,
+                            ),
+                            child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 20.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: withHeader,
+                                )))));
+              });
+            });
       });
 }
