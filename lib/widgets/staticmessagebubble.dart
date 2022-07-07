@@ -56,14 +56,14 @@ class StaticMessageBubbleState extends State<StaticMessageBubble> {
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(borderRadiousEh),
                       topRight: Radius.circular(borderRadiousEh),
-                      bottomLeft:  Radius.zero,
+                      bottomLeft: Radius.zero,
                       bottomRight: Radius.circular(borderRadiousEh),
                     ),
                   ),
                   child: Padding(
                       padding: EdgeInsets.all(9.0),
                       child: Column(
-                          crossAxisAlignment:  CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
                           children: [wdgSender, widget.child, wdgDecorations])))));

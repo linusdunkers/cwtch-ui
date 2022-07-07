@@ -240,6 +240,9 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
               _runAnimation(details.velocity.pixelsPerSecond, size);
               Provider.of<AppState>(context, listen: false).selectedIndex = Provider.of<MessageMetadata>(context, listen: false).messageID;
             },
+            onLongPress: () async {
+              modalShowReplies(context, AppLocalizations.of(context)!.headingReplies, settings, pis, cis, borderColor, cache, messageID);
+            },
             child: Padding(
                 padding: EdgeInsets.all(2),
                 child: Align(
@@ -404,23 +407,19 @@ void modalShowReplies(BuildContext ctx, String replyHeader, Settings settings, P
 
           var withHeader = replyWidgets;
 
-          var original =  StaticMessageBubble(profile, settings, cache.cache[messageID]!.metadata, Row(children: [Flexible(child: compileOverlay(cache.cache[messageID]!).getPreviewWidget(context))]));
+          var original = StaticMessageBubble(profile, settings, cache.cache[messageID]!.metadata, Row(children: [Flexible(child: compileOverlay(cache.cache[messageID]!).getPreviewWidget(context))]));
 
-          withHeader.insert(0,
-              Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 2.0, 15.0), child: Center(child: original)));
+          withHeader.insert(0, Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 2.0, 15.0), child: Center(child: original)));
 
-
-          withHeader.insert(1,
-              Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 2.0, 15.0),
+          withHeader.insert(
+              1,
+              Padding(
+                  padding: EdgeInsets.fromLTRB(10.0, 10.0, 2.0, 15.0),
                   child: Divider(
                     color: settings.theme.mainTextColor,
-                  ))
-          );
+                  )));
 
-          withHeader.insert(2,
-                Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 2.0, 15.0), child: Text(replyHeader, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold))));
-
-
+          withHeader.insert(2, Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 2.0, 15.0), child: Text(replyHeader, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold))));
 
           return Scrollbar(
               isAlwaysShown: true,
