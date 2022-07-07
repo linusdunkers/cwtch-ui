@@ -7,6 +7,7 @@ import 'package:cwtch/models/contact.dart';
 import 'package:cwtch/models/message.dart';
 import 'package:cwtch/models/profile.dart';
 import 'package:cwtch/views/contactsview.dart';
+import 'package:cwtch/widgets/staticmessagebubble.dart';
 import 'package:flutter/material.dart';
 import 'package:cwtch/widgets/profileimage.dart';
 import 'package:flutter/physics.dart';
@@ -15,6 +16,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../main.dart';
+import '../models/messagecache.dart';
 import '../settings.dart';
 
 class MessageRow extends StatefulWidget {
@@ -74,7 +76,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
       }
     }
 
-    Widget wdgIcons = Platform.isAndroid
+    Widget wdgReply = Platform.isAndroid
         ? SizedBox.shrink()
         : Visibility(
             visible: EnvironmentConfig.TEST_MODE || Provider.of<AppState>(context).hoveredIndex == Provider.of<MessageMetadata>(context).messageID,
@@ -90,13 +92,37 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
                 },
                 icon: Icon(Icons.reply, color: Provider.of<Settings>(context).theme.dropShadowColor)));
 
+    var settings = Provider.of<Settings>(context);
+    var pis = Provider.of<ProfileInfoState>(context);
+    var cis = Provider.of<ContactInfoState>(context);
+    var borderColor = Provider.of<Settings>(context).theme.portraitOnlineBorderColor;
+    var messageID = Provider.of<MessageMetadata>(context).messageID;
+    var cache = Provider.of<ContactInfoState>(context).messageCache;
+
+    Widget wdgSeeReplies = Platform.isAndroid
+        ? SizedBox.shrink()
+        : Visibility(
+            visible: EnvironmentConfig.TEST_MODE || Provider.of<AppState>(context).hoveredIndex == Provider.of<MessageMetadata>(context).messageID,
+            maintainSize: true,
+            maintainAnimation: true,
+            maintainState: true,
+            maintainInteractivity: false,
+            child: IconButton(
+                tooltip: AppLocalizations.of(context)!.viewReplies,
+                splashRadius: Material.defaultSplashRadius / 2,
+                onPressed: () {
+                  modalShowReplies(context, AppLocalizations.of(context)!.headingReplies, settings, pis, cis, borderColor, cache, messageID);
+                },
+                icon: Icon(Icons.message_rounded, color: Provider.of<Settings>(context).theme.dropShadowColor)));
+
     Widget wdgSpacer = Flexible(flex: 1, child: SizedBox(width: Platform.isAndroid ? 20 : 60, height: 10));
     var widgetRow = <Widget>[];
 
     if (fromMe) {
       widgetRow = <Widget>[
         wdgSpacer,
-        wdgIcons,
+        wdgSeeReplies,
+        wdgReply,
         actualMessage,
       ];
     } else if (isBlocked && !showBlockedMessage) {
@@ -143,7 +169,8 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
                             });
                           })),
                 ]))),
-        wdgIcons,
+        wdgReply,
+        wdgSeeReplies,
         wdgSpacer,
       ];
     } else {
@@ -179,7 +206,8 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
       widgetRow = <Widget>[
         wdgPortrait,
         actualMessage,
-        wdgIcons,
+        wdgReply,
+        wdgSeeReplies,
         wdgSpacer,
       ];
     }
@@ -331,4 +359,81 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
       },
     );
   }
+}
+
+void modalShowReplies(BuildContext ctx, String replyHeader, Settings settings, ProfileInfoState profile, ContactInfoState cis, Color borderColor, MessageCache cache, int messageID,
+    {bool showImage = true}) {
+  showModalBottomSheet<void>(
+      context: ctx,
+      builder: (BuildContext bcontext) {
+        List<Message> replies = getReplies(cache, messageID);
+
+        return LayoutBuilder(builder: (BuildContext context, BoxConstraints viewportConstraints) {
+          var replyWidgets = replies.map((e) {
+            var fromMe = e.getMetadata().senderHandle == profile.onion;
+
+            var bubble = StaticMessageBubble(profile, settings, e.getMetadata(), Row(children: [Flexible(child: e.getPreviewWidget(context))]));
+
+            String imagePath = e.getMetadata().senderImage!;
+            var sender = profile.contactList.findContact(e.getMetadata().senderHandle);
+            if (sender != null) {
+              imagePath = showImage ? sender.imagePath : sender.defaultImagePath;
+            }
+
+            if (fromMe) {
+              imagePath = profile.imagePath;
+            }
+
+            var image = Padding(
+                padding: EdgeInsets.all(4.0),
+                child: ProfileImage(
+                  imagePath: imagePath,
+                  diameter: 48.0,
+                  border: borderColor,
+                  badgeTextColor: Colors.red,
+                  badgeColor: Colors.red,
+                ));
+
+            return Padding(
+                padding: EdgeInsets.all(10.0),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [image, Flexible(child: bubble)],
+                ));
+          }).toList();
+
+          var withHeader = replyWidgets;
+
+          var original =  StaticMessageBubble(profile, settings, cache.cache[messageID]!.metadata, Row(children: [Flexible(child: compileOverlay(cache.cache[messageID]!).getPreviewWidget(context))]));
+
+          withHeader.insert(0,
+              Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 2.0, 15.0), child: Center(child: original)));
+
+
+          withHeader.insert(1,
+              Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 2.0, 15.0),
+                  child: Divider(
+                    color: settings.theme.mainTextColor,
+                  ))
+          );
+
+          withHeader.insert(2,
+                Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 2.0, 15.0), child: Text(replyHeader, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold))));
+
+
+
+          return Scrollbar(
+              isAlwaysShown: true,
+              child: SingleChildScrollView(
+                  clipBehavior: Clip.antiAlias,
+                  child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: viewportConstraints.maxHeight,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: withHeader,
+                      ))));
+        });
+      });
 }

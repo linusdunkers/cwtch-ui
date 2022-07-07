@@ -201,6 +201,42 @@ class ByContentHash implements CacheHandler {
   }
 }
 
+List<Message> getReplies(MessageCache cache, int messageIdentifier) {
+  List<Message> replies = List.empty(growable: true);
+
+  try {
+    MessageInfo original = cache.cache[messageIdentifier]!;
+    String hash = original.metadata.contenthash;
+
+    cache.cache.forEach((key, messageInfo) {
+      // only bother searching for identifiers that came *after*
+      if (key > messageIdentifier) {
+        try {
+          dynamic message = jsonDecode(messageInfo.wrapper);
+          var content = message['d'] as dynamic;
+          dynamic qmessage = jsonDecode(content);
+          if (qmessage["body"] == null || qmessage["quotedHash"] == null) {
+            return;
+          }
+          if (qmessage["quotedHash"] == hash) {
+            replies.add(compileOverlay(messageInfo));
+          }
+        } catch (e) {
+          // ignore
+        }
+      }
+    });
+  } catch (e) {
+    EnvironmentConfig.debugLog("message handler exception on get from cache: $e");
+  }
+
+  replies.sort((a, b) {
+    return a.getMetadata().messageID.compareTo(b.getMetadata().messageID);
+  });
+
+  return replies;
+}
+
 Future<Message> messageHandler(BuildContext context, String profileOnion, int conversationIdentifier, CacheHandler cacheHandler) async {
   var malformedMetadata = MessageMetadata(profileOnion, conversationIdentifier, 0, DateTime.now(), "", "", "", <String, String>{}, false, true, false, "");
   var cwtch = Provider.of<FlwtchState>(context, listen: false).cwtch;
