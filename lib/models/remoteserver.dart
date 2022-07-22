@@ -1,3 +1,4 @@
+import 'package:cwtch/config.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'contact.dart';
@@ -13,7 +14,7 @@ class RemoteServerInfoState extends ChangeNotifier {
   DateTime lastPreSyncMessagTime = new DateTime(2020);
 
   RemoteServerInfoState(this.onion, this.identifier, this.description, this._status, {lastPreSyncMessageTime, mostRecentMessageTime}) {
-    if (_status == "Authenticated") {
+    if (_status == "Authenticated" || _status == "Synced") {
       this.lastPreSyncMessagTime = lastPreSyncMessageTime;
       updateSyncProgressFor(mostRecentMessageTime);
     }
