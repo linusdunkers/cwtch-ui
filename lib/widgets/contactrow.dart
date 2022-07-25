@@ -19,7 +19,6 @@ class ContactRow extends StatefulWidget {
 }
 
 class _ContactRowState extends State<ContactRow> {
-
   bool isHover = false;
 
   @override
@@ -127,19 +126,22 @@ class _ContactRowState extends State<ContactRow> {
                         ),
                       ],
                     ))),
-
-              Visibility(visible: Platform.isAndroid || (!Platform.isAndroid && isHover) || contact.pinned, child:
-                IconButton(
-                  tooltip: contact.pinned ? AppLocalizations.of(context)!.tooltipUnpinConversation  :AppLocalizations.of(context)!.tooltipPinConversation ,
-                  icon: Icon(contact.pinned ? Icons.push_pin : Icons.push_pin_outlined,
-                    color: Provider.of<Settings>(context).theme.mainTextColor,),
+            Visibility(
+                // only allow pinning for non-blocked and accepted conversations,
+                visible: contact.isAccepted() && (Platform.isAndroid || (!Platform.isAndroid && isHover) || contact.pinned),
+                child: IconButton(
+                  tooltip: contact.pinned ? AppLocalizations.of(context)!.tooltipUnpinConversation : AppLocalizations.of(context)!.tooltipPinConversation,
+                  icon: Icon(
+                    contact.pinned ? Icons.push_pin : Icons.push_pin_outlined,
+                    color: Provider.of<Settings>(context).theme.mainTextColor,
+                  ),
                   onPressed: () {
-                      if (contact.pinned) {
-                        contact.unpin(context);
-                      } else {
-                        contact.pin(context);
-                      }
-                      Provider.of<ContactListState>(context, listen: false).resort();
+                    if (contact.pinned) {
+                      contact.unpin(context);
+                    } else {
+                      contact.pin(context);
+                    }
+                    Provider.of<ContactListState>(context, listen: false).resort();
                   },
                 ))
           ]),

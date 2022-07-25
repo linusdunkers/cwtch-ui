@@ -73,7 +73,7 @@ class ContactInfoState extends ChangeNotifier {
       server,
       archived = false,
       notificationPolicy = "ConversationNotificationPolicy.Default",
-        pinned = false}) {
+      pinned = false}) {
     this._nickname = nickname;
     this._isGroup = isGroup;
     this._accepted = accepted;
@@ -301,7 +301,7 @@ class ContactInfoState extends ChangeNotifier {
   void pin(context) {
     _pinned = true;
     var profileHandle = Provider.of<ProfileInfoState>(context, listen: false).onion;
-    Provider.of<FlwtchState>(context,listen: false).cwtch.SetConversationAttribute(profileHandle, identifier, "profile.pinned", "true");
+    Provider.of<FlwtchState>(context, listen: false).cwtch.SetConversationAttribute(profileHandle, identifier, "profile.pinned", "true");
     notifyListeners();
   }
 
@@ -309,9 +309,13 @@ class ContactInfoState extends ChangeNotifier {
   // Requires caller tree to contain a FlwtchState and ProfileInfoState provider.
   void unpin(context) {
     _pinned = false;
-    var profileHandle = Provider.of<ProfileInfoState>(context,listen: false).onion;
-    Provider.of<FlwtchState>(context,listen: false).cwtch.SetConversationAttribute(profileHandle, identifier, "profile.pinned", "false");
+    var profileHandle = Provider.of<ProfileInfoState>(context, listen: false).onion;
+    Provider.of<FlwtchState>(context, listen: false).cwtch.SetConversationAttribute(profileHandle, identifier, "profile.pinned", "false");
     notifyListeners();
   }
 
+  // returns true only if the conversation has been accepted, and has not been blocked
+  bool isAccepted() {
+    return _accepted && !_blocked;
+  }
 }
