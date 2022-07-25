@@ -1,6 +1,9 @@
 {
     "@@locale": "lb",
-    "@@last_modified": "2022-07-07T22:32:20+02:00",
+    "@@last_modified": "2022-07-21T19:54:08+02:00",
+    "tooltipUnpinConversation": "Unpin conversation from the top of \"Conversations\"",
+    "tooltipPinConversation": "Pin conversation to the top of \"Conversations\"",
+    "replyingTo": "Replying to %1",
     "fileDownloadUnavailable": "This file appears unavailable for download. The sender may have disabled downloads for this file.",
     "messageNoReplies": "There are no replies to this message.",
     "headingReplies": "Replies",

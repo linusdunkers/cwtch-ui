@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cwtch/models/appstate.dart';
 import 'package:cwtch/models/contact.dart';
+import 'package:cwtch/models/contactlist.dart';
 import 'package:cwtch/models/profile.dart';
 import 'package:cwtch/views/contactsview.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,9 @@ class ContactRow extends StatefulWidget {
 }
 
 class _ContactRowState extends State<ContactRow> {
+
+  bool isHover = false;
+
   @override
   Widget build(BuildContext context) {
     var contact = Provider.of<ContactInfoState>(context);
@@ -123,9 +127,29 @@ class _ContactRowState extends State<ContactRow> {
                         ),
                       ],
                     ))),
+
+              Visibility(visible: Platform.isAndroid || (!Platform.isAndroid && isHover) || contact.pinned, child:
+                IconButton(
+                  tooltip: contact.pinned ? AppLocalizations.of(context)!.tooltipUnpinConversation  :AppLocalizations.of(context)!.tooltipPinConversation ,
+                  icon: Icon(contact.pinned ? Icons.push_pin : Icons.push_pin_outlined,
+                    color: Provider.of<Settings>(context).theme.mainTextColor,),
+                  onPressed: () {
+                      if (contact.pinned) {
+                        contact.unpin(context);
+                      } else {
+                        contact.pin(context);
+                      }
+                      Provider.of<ContactListState>(context, listen: false).resort();
+                  },
+                ))
           ]),
           onTap: () {
             selectConversation(context, contact.identifier);
+          },
+          onHover: (onHover) {
+            setState(() {
+              isHover = onHover;
+            });
           },
         ));
   }

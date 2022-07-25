@@ -67,6 +67,7 @@ class ProfileInfoState extends ChangeNotifier {
             server: contact["groupServer"],
             archived: contact["isArchived"] == true,
             lastMessageTime: DateTime.fromMillisecondsSinceEpoch(1000 * int.parse(contact["lastMsgTime"])),
+            pinned: contact["attributes"]?["local.profile.pinned"] == "true",
             notificationPolicy: contact["notificationPolicy"] ?? "ConversationNotificationPolicy.Default");
       }));
 
