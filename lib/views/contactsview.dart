@@ -227,11 +227,11 @@ class _ContactsViewState extends State<ContactsView> {
 
     var contactList = ScrollablePositionedList.separated(
       itemScrollController: Provider.of<ProfileInfoState>(context).contactListScrollController,
-      itemCount: Provider.of<ContactListState>(context).num,
+      itemCount: Provider.of<ContactListState>(context).numFiltered,
       initialScrollIndex: initialScroll,
       shrinkWrap: true,
       physics: BouncingScrollPhysics(),
-      semanticChildCount: Provider.of<ContactListState>(context).num,
+      semanticChildCount: Provider.of<ContactListState>(context).numFiltered,
       itemBuilder: (context, index) {
         return tiles.elementAt(index);
       },
