@@ -59,6 +59,16 @@ abstract class Cwtch {
 
   // ignore: non_constant_identifier_names
   Future<dynamic> ShareFile(String profile, int handle, String filepath);
+
+  // ignore: non_constant_identifier_names
+  Future<dynamic> GetSharedFiles(String profile, int handle);
+
+  // ignore: non_constant_identifier_names
+  void RestartSharing(String profile, String filekey);
+
+  // ignore: non_constant_identifier_names
+  void StopSharing(String profile, String filekey);
+
   // ignore: non_constant_identifier_names
   void DownloadFile(String profile, int handle, String filepath, String manifestpath, String filekey);
   // android-only

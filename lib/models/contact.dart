@@ -1,6 +1,9 @@
+import 'package:cwtch/main.dart';
+import 'package:cwtch/models/profile.dart';
 import 'package:cwtch/widgets/messagerow.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import 'message.dart';
@@ -51,6 +54,7 @@ class ContactInfoState extends ChangeNotifier {
   late bool _isGroup;
   String? _server;
   late bool _archived;
+  late bool _pinned;
 
   String? _acnCircuit;
 
@@ -68,7 +72,8 @@ class ContactInfoState extends ChangeNotifier {
       lastMessageTime,
       server,
       archived = false,
-      notificationPolicy = "ConversationNotificationPolicy.Default"}) {
+      notificationPolicy = "ConversationNotificationPolicy.Default",
+        pinned = false}) {
     this._nickname = nickname;
     this._isGroup = isGroup;
     this._accepted = accepted;
@@ -84,6 +89,7 @@ class ContactInfoState extends ChangeNotifier {
     this._archived = archived;
     this._notificationPolicy = notificationPolicyFromString(notificationPolicy);
     this.messageCache = new MessageCache(_totalMessages);
+    this._pinned = pinned;
     keys = Map<String, GlobalKey<MessageRowState>>();
   }
 
@@ -285,4 +291,27 @@ class ContactInfoState extends ChangeNotifier {
     }
     return ConversationNotificationPolicy.Never;
   }
+
+  bool get pinned {
+    return _pinned;
+  }
+
+  // Pin the conversation to the top of the conversation list
+  // Requires caller tree to contain a FlwtchState and ProfileInfoState provider.
+  void pin(context) {
+    _pinned = true;
+    var profileHandle = Provider.of<ProfileInfoState>(context, listen: false).onion;
+    Provider.of<FlwtchState>(context,listen: false).cwtch.SetConversationAttribute(profileHandle, identifier, "profile.pinned", "true");
+    notifyListeners();
+  }
+
+  // Unpin the conversation from the top of the conversation list
+  // Requires caller tree to contain a FlwtchState and ProfileInfoState provider.
+  void unpin(context) {
+    _pinned = false;
+    var profileHandle = Provider.of<ProfileInfoState>(context,listen: false).onion;
+    Provider.of<FlwtchState>(context,listen: false).cwtch.SetConversationAttribute(profileHandle, identifier, "profile.pinned", "false");
+    notifyListeners();
+  }
+
 }

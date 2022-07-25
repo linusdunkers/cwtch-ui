@@ -206,7 +206,7 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
               padding: MediaQuery.of(context).viewInsets,
               child: RepaintBoundary(
                   child: Container(
-                height: 200, // bespoke value courtesy of the [TextField] docs
+                height: Platform.isAndroid ? 250 : 200, // bespoke value courtesy of the [TextField] docs
                 child: Center(
                     child: Padding(
                         padding: EdgeInsets.all(10.0),
@@ -221,7 +221,7 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
                             Expanded(
                                 child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                minimumSize: Size(double.infinity, 20),
+                                minimumSize: Size(399, 20),
                                 maximumSize: Size(400, 20),
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.horizontal(left: Radius.circular(180), right: Radius.circular(180))),
                               ),
@@ -242,15 +242,16 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
                                     message: AppLocalizations.of(context)!.importProfileTooltip,
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
-                                        minimumSize: Size(double.infinity, 20),
+                                        minimumSize: Size(399, 20),
                                         maximumSize: Size(400, 20),
                                         shape: RoundedRectangleBorder(
                                             side: BorderSide(color: Provider.of<Settings>(context).theme.defaultButtonActiveColor, width: 2.0),
                                             borderRadius: BorderRadius.horizontal(left: Radius.circular(180), right: Radius.circular(180))),
                                         primary: Provider.of<Settings>(context).theme.backgroundMainColor,
                                       ),
-                                      child:
-                                          Text(AppLocalizations.of(context)!.importProfile, semanticsLabel: AppLocalizations.of(context)!.importProfile, style: TextStyle(fontWeight: FontWeight.bold)),
+                                      child: Text(AppLocalizations.of(context)!.importProfile,
+                                          semanticsLabel: AppLocalizations.of(context)!.importProfile,
+                                          style: TextStyle(color: Provider.of<Settings>(context).theme.mainTextColor, fontWeight: FontWeight.bold)),
                                       onPressed: () {
                                         // 10GB profiles should be enough for anyone?
                                         showFilePicker(context, MaxGeneralFileSharingSize, (file) {
@@ -287,7 +288,7 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
               padding: MediaQuery.of(context).viewInsets,
               child: RepaintBoundary(
                   child: Container(
-                height: 200, // bespoke value courtesy of the [TextField] docs
+                height: Platform.isAndroid ? 250 : 200, // bespoke value courtesy of the [TextField] docs
                 child: Center(
                     child: Padding(
                         padding: EdgeInsets.all(10.0),

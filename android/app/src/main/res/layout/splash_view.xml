@@ -13,6 +13,7 @@
         app:lottie_autoPlay="true"
         app:lottie_rawRes="@raw/cwtch_animated_logo_op"
         app:lottie_loop="true"
-        app:lottie_speed="1.00" />
+        app:lottie_speed="1.00"
+        app:lottie_enableMergePathsForKitKatAndAbove="true" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

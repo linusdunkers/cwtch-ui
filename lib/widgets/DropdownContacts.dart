@@ -29,6 +29,7 @@ class _DropdownContactsState extends State<DropdownContacts> {
   @override
   Widget build(BuildContext context) {
     return DropdownButton(
+        isExpanded: true, // magic property
         value: this.selected,
         items: Provider.of<ProfileInfoState>(context, listen: false).contactList.contacts.where(widget.filter).map<DropdownMenuItem<String>>((ContactInfoState contact) {
           return DropdownMenuItem<String>(value: contact.onion, child: Text(contact.nickname));

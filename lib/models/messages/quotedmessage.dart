@@ -36,7 +36,6 @@ class QuotedMessage extends Message {
             var content = message["body"];
             return Text(
               content,
-              overflow: TextOverflow.ellipsis,
             );
           } catch (e) {
             return MalformedBubble();

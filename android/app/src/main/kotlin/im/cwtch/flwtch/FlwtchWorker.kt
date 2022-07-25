@@ -1,25 +1,27 @@
 package im.cwtch.flwtch
 
-import android.app.*
-import android.os.Environment
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.work.*
+import androidx.work.CoroutineWorker
+import androidx.work.ForegroundInfo
+import androidx.work.WorkerParameters
 import cwtch.Cwtch
 import io.flutter.FlutterInjector
 import org.json.JSONObject
-
 import java.nio.file.Files
 import java.nio.file.Paths
-import java.nio.file.StandardCopyOption
-import android.net.Uri
 
 class FlwtchWorker(context: Context, parameters: WorkerParameters) :
         CoroutineWorker(context, parameters) {
@@ -82,6 +84,10 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
 
                     Log.i(TAG, "startCwtch success, starting coroutine AppbusEvent loop...")
                     val downloadIDs = mutableMapOf<String, Int>()
+                    var flags = PendingIntent.FLAG_UPDATE_CURRENT
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        flags = flags or PendingIntent.FLAG_IMMUTABLE
+                    }
                     while (true) {
                         try {
                             val evt = MainActivity.AppbusEvent(Cwtch.getAppBusEvent())
@@ -109,12 +115,11 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                                             intent.action = Intent.ACTION_RUN
                                             intent.putExtra("EventType", "NotificationClicked")
                                         }
-
                                         val newNotification = NotificationCompat.Builder(applicationContext, channelId)
                                                 .setContentTitle("Cwtch")
                                                 .setContentText(notificationSimple ?: "New Message")
                                                 .setSmallIcon(R.mipmap.knott_transparent)
-                                                .setContentIntent(PendingIntent.getActivity(applicationContext, 1, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT))
+                                                .setContentIntent(PendingIntent.getActivity(applicationContext, 1, clickIntent, flags))
                                                 .setAutoCancel(true)
                                                 .build()
 
@@ -147,7 +152,7 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                                                         ?: "New Message From %1").replace("%1", data.getString("Nick")))
                                                 .setLargeIcon(BitmapFactory.decodeStream(fh))
                                                 .setSmallIcon(R.mipmap.knott_transparent)
-                                                .setContentIntent(PendingIntent.getActivity(applicationContext, 1, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT))
+                                                .setContentIntent(PendingIntent.getActivity(applicationContext, 1, clickIntent, flags))
                                                 .setAutoCancel(true)
                                                 .build()
 
@@ -265,6 +270,10 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
             intent.action = Intent.ACTION_RUN
             intent.putExtra("EventType", "ShutdownClicked")
         }
+        var flags = PendingIntent.FLAG_UPDATE_CURRENT
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            flags = flags or PendingIntent.FLAG_IMMUTABLE
+        }
 
         val notification = NotificationCompat.Builder(applicationContext, channelId)
                 .setContentTitle(title)
@@ -274,7 +283,7 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                 .setOngoing(true)
                 // Add the cancel action to the notification which can
                 // be used to cancel the worker
-                .addAction(android.R.drawable.ic_delete, cancel, PendingIntent.getActivity(applicationContext, 2, cancelIntent, PendingIntent.FLAG_UPDATE_CURRENT))
+                .addAction(android.R.drawable.ic_delete, cancel, PendingIntent.getActivity(applicationContext, 2, cancelIntent, flags))
                 .build()
 
         return ForegroundInfo(101, notification)

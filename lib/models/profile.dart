@@ -67,6 +67,7 @@ class ProfileInfoState extends ChangeNotifier {
             server: contact["groupServer"],
             archived: contact["isArchived"] == true,
             lastMessageTime: DateTime.fromMillisecondsSinceEpoch(1000 * int.parse(contact["lastMsgTime"])),
+            pinned: contact["attributes"]?["local.profile.pinned"] == "true",
             notificationPolicy: contact["notificationPolicy"] ?? "ConversationNotificationPolicy.Default");
       }));
 
@@ -291,12 +292,27 @@ class ProfileInfoState extends ChangeNotifier {
   }
 
   bool downloadInterrupted(String fileKey) {
-    return this._downloads.containsKey(fileKey) && this._downloads[fileKey]!.interrupted;
+    if (this._downloads.containsKey(fileKey)) {
+      if (this._downloads[fileKey]!.interrupted) {
+        return true;
+      }
+
+      if (this._downloads[fileKey]!.requested != null) {
+        if (DateTime.now().difference(this._downloads[fileKey]!.requested!) > Duration(minutes: 1)) {
+          this._downloads[fileKey]!.requested = null;
+          this._downloads[fileKey]!.interrupted = true;
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 
   void downloadMarkResumed(String fileKey) {
     if (this._downloads.containsKey(fileKey)) {
       this._downloads[fileKey]!.interrupted = false;
+      this._downloads[fileKey]!.requested = DateTime.now();
       notifyListeners();
     }
   }

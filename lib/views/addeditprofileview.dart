@@ -279,8 +279,8 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                               ElevatedButton(
                                 onPressed: _createPressed,
                                 style: ElevatedButton.styleFrom(
-                                  minimumSize: Size(400, 50),
-                                  maximumSize: Size(800, 50),
+                                  minimumSize: Size(400, 75),
+                                  maximumSize: Size(800, 75),
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.horizontal(left: Radius.circular(180), right: Radius.circular(180))),
                                 ),
                                 child: Text(
@@ -297,8 +297,8 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                       message: AppLocalizations.of(context)!.exportProfileTooltip,
                                       child: ElevatedButton.icon(
                                         style: ElevatedButton.styleFrom(
-                                          minimumSize: Size(400, 50),
-                                          maximumSize: Size(800, 50),
+                                          minimumSize: Size(400, 75),
+                                          maximumSize: Size(800, 75),
                                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.horizontal(left: Radius.circular(180), right: Radius.circular(180))),
                                         ),
                                         onPressed: () {
@@ -328,8 +328,8 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                       message: AppLocalizations.of(context)!.enterCurrentPasswordForDelete,
                                       child: ElevatedButton.icon(
                                         style: ElevatedButton.styleFrom(
-                                          minimumSize: Size(400, 50),
-                                          maximumSize: Size(800, 50),
+                                          minimumSize: Size(400, 75),
+                                          maximumSize: Size(800, 75),
                                           shape: RoundedRectangleBorder(
                                               side: BorderSide(color: Provider.of<Settings>(context).theme.defaultButtonActiveColor, width: 2.0),
                                               borderRadius: BorderRadius.horizontal(left: Radius.circular(180), right: Radius.circular(180))),

@@ -51,6 +51,9 @@ class ContactListState extends ChangeNotifier {
       // return -1 = a first in list
       // return 1 = b first in list
 
+      // pinned contacts first
+      if (a.pinned != true && b.pinned == true) return 1;
+      if (a.pinned == true && b.pinned != true) return -1;
       // blocked contacts last
       if (a.isBlocked == true && b.isBlocked != true) return 1;
       if (a.isBlocked != true && b.isBlocked == true) return -1;
