@@ -1,0 +1,17 @@
+# https://stackoverflow.com/questions/48509114/how-to-create-a-working-trusted-and-or-self-signed-certificate-for-a-windows-10
+# https://docs.microsoft.com/en-us/powershell/module/pki/new-selfsignedcertificate?view=windowsserver2022-ps
+
+
+# -FriendlyName
+#   Specifies a friendly name for the new certificate.
+#  -CertStoreLocation cert:\CurrentUser\My
+#    So we don't need elevated privs
+New-SelfSignedCertificate -Type CodeSigningCert -Subject "CN=Open Privacy Research Society,O=Open Privacy Research Society,0=Open Privacy Research Society,C=CA,ST=British Columbia,L=Vancouver" -TextExtension @("2.5.29.19={text}false") -KeyUsage DigitalSignature -KeyLength 4096  -NotAfter (Get-Date).AddMonths(33) -FriendlyName OPCodeCert  -CertStoreLocation cert:\CurrentUser\My
+
+> Thumbprint                                Subject
+> ----------                                -------
+> xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  CN="Open Privacy Research Society,O=Open Privacy Research Society,0=Open Privacy Research Society,C=CA,ST=British Columbia,L=Vancouver"
+
+$pwd = ConvertTo-SecureString -String <Your Password> -Force -AsPlainText
+
+Export-PfxCertificate -cert "cert:\CurrentUser\My\<Certificate Thumbprint>" -FilePath opcodecertselfsign2022.pfx -Password $pwd
