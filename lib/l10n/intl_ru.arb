@@ -1,6 +1,8 @@
 {
     "@@locale": "ru",
-    "@@last_modified": "2022-07-21T19:54:08+02:00",
+    "@@last_modified": "2022-07-30T00:18:33+02:00",
+    "localeTr": "Турецкий \/ Türk",
+    "localeIt": "Итальянский \/ Italiano",
     "tooltipUnpinConversation": "Unpin conversation from the top of \"Conversations\"",
     "tooltipPinConversation": "Pin conversation to the top of \"Conversations\"",
     "replyingTo": "Replying to %1",
@@ -27,7 +29,6 @@
     "localeDa": "Датский язык \/ Dansk",
     "settingImagePreviewsDescription": "Автоматическая загрузка изображений. Обратите внимание, что предварительный просмотр изображений часто может использоваться для взлома или деаномизации. Не используйте данную функцию если Вы контактируете с ненадежными контактами.",
     "localePt": "Португальский язык \/ Portuguesa",
-    "localeIt": "Итальянский \/ Italiana",
     "tooltipBackToMessageEditing": "Назад к редактированию сообщений",
     "tooltipItalicize": "Курсив",
     "tooltipCode": "Код \/ Монопространство",

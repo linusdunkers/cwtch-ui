@@ -574,6 +574,9 @@ String getLanguageFull(context, String languageCode) {
   if (languageCode == "da") {
     return AppLocalizations.of(context)!.localeDa;
   }
+  if (languageCode == "tr") {
+    return AppLocalizations.of(context)!.localeTr;
+  }
   return languageCode;
 }
 

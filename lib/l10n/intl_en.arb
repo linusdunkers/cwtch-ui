@@ -1,6 +1,8 @@
 {
     "@@locale": "en",
-    "@@last_modified": "2022-07-21T19:54:08+02:00",
+    "@@last_modified": "2022-07-30T00:18:33+02:00",
+    "localeIt": "Italian \/ Italiano",
+    "localeTr": "Turkish \/ Türk",
     "tooltipUnpinConversation": "Unpin conversation from the top of \"Conversations\"",
     "tooltipPinConversation": "Pin conversation to the top of \"Conversations\"",
     "replyingTo": "Replying to %1",
@@ -23,7 +25,6 @@
     "localeDa": "Danish \/ Dansk",
     "localePt": "Portuguese \/ Portuguesa",
     "localeFr": "French \/ Français",
-    "localeIt": "Italian \/ Italiana",
     "localeCy": "Welsh \/ Cymraeg",
     "settingImagePreviewsDescription": "Images and Profile Pictures will be downloaded and previewed automatically. We recommend that you do not enable this Experiment if you use Cwtch with untrusted contacts.",
     "tooltipPreviewFormatting": "Preview Message Formatting",

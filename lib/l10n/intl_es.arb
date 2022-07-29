@@ -1,6 +1,8 @@
 {
     "@@locale": "es",
-    "@@last_modified": "2022-07-21T19:54:08+02:00",
+    "@@last_modified": "2022-07-30T00:18:33+02:00",
+    "localeTr": "Turco \/ Türk",
+    "localeIt": "Italiano \/ Italiano",
     "tooltipUnpinConversation": "Unpin conversation from the top of \"Conversations\"",
     "tooltipPinConversation": "Pin conversation to the top of \"Conversations\"",
     "replyingTo": "Replying to %1",
@@ -46,7 +48,6 @@
     "localeEs": "Español \/ Español",
     "localeRU": "Ruso \/ Русский",
     "localePl": "Polaco \/ Polski",
-    "localeIt": "Italiano \/ Italiana",
     "localeLb": "Luxemburgués \/ Lëtzebuergesch",
     "localeEn": "Inglés \/ English",
     "localeDa": "Danés \/ Dansk",
