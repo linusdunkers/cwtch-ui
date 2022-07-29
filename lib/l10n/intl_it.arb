@@ -1,6 +1,8 @@
 {
     "@@locale": "it",
-    "@@last_modified": "2022-07-21T19:54:08+02:00",
+    "@@last_modified": "2022-07-30T00:18:33+02:00",
+    "localeTr": "Turco \/ Türk",
+    "localeIt": "Italiano \/ Italiano",
     "tooltipUnpinConversation": "Unpin conversation from the top of \"Conversations\"",
     "tooltipPinConversation": "Pin conversation to the top of \"Conversations\"",
     "fileDownloadUnavailable": "Questo file non sembra disponibile per il download. Il mittente potrebbe aver disabilitato i download per questo file.",
@@ -15,7 +17,6 @@
     "settingImagePreviewsDescription": "Le immagini e le immagini del profilo verranno scaricate e visualizzate in anteprima automaticamente. Ti consigliamo di non abilitare questo esperimento se usi Cwtch con contatti non attendibili.",
     "localeNo": "Norvegese \/ Norsk",
     "localeCy": "Gallese \/ Cymraeg",
-    "localeIt": "Italiano \/ Italiano",
     "localeFr": "Francese \/ Français",
     "localePl": "Polacco \/ Polski",
     "localePt": "Portoghese \/ Portuguesa",
