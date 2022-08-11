@@ -63,8 +63,16 @@ class Settings extends ChangeNotifier {
   String _customTorAuth = "";
   bool _useTorCache = false;
   String _torCacheDir = "";
+  bool _useSemanticDebugger = false;
 
   String get torCacheDir => _torCacheDir;
+
+  set useSemanticDebugger(bool newval) {
+    this._useSemanticDebugger = newval;
+    notifyListeners();
+  }
+
+  bool get useSemanticDebugger => _useSemanticDebugger;
 
   void setTheme(String themeId, String mode) {
     theme = getTheme(themeId, mode);
