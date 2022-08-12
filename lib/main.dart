@@ -132,6 +132,7 @@ class FlwtchState extends State<Flwtch> with WindowListener {
             ],
             supportedLocales: AppLocalizations.supportedLocales,
             title: 'Cwtch',
+            showSemanticsDebugger: settings.useSemanticDebugger,
             theme: mkThemeData(settings),
             home: (!appState.cwtchInit || appState.modalState != ModalState.none) ? SplashView() : ProfileMgrView(),
           ),

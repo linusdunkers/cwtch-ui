@@ -473,6 +473,24 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                             )
                           ]),
                       Visibility(
+                          visible: EnvironmentConfig.BUILD_VER == dev_version && !Platform.isAndroid,
+                          child: SwitchListTile(
+                            title: Text("Show Semantic Debugger", style: TextStyle(color: settings.current().mainTextColor)),
+                            subtitle: Text("Show Accessibility Debugging View"),
+                            value: settings.useSemanticDebugger,
+                            onChanged: (bool value) {
+                              if (value) {
+                                settings.useSemanticDebugger = value;
+                              } else {
+                                settings.useSemanticDebugger = value;
+                              }
+                              saveSettings(context);
+                            },
+                            activeTrackColor: settings.theme.defaultButtonActiveColor,
+                            inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
+                            secondary: Icon(Icons.settings_accessibility, color: settings.current().mainTextColor),
+                          )),
+                      Visibility(
                         visible: EnvironmentConfig.BUILD_VER == dev_version && !Platform.isAndroid,
                         child: FutureBuilder(
                           future: EnvironmentConfig.BUILD_VER != dev_version || Platform.isAndroid ? null : Provider.of<FlwtchState>(context).cwtch.GetDebugInfo(),

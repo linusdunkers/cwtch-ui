@@ -1,0 +1,16 @@
+Cwtch (/kʊtʃ/ - a Welsh word roughly translating to “a hug that creates a safe place”) is a decentralized,
+ privacy-preserving, multi-party messaging protocol that can be used to build metadata resistant applications.
+
+- Decentralized and Open: There is no “Cwtch service” or “Cwtch network”. Participants in Cwtch
+can host their own safe spaces, or lend their infrastructure to others seeking a safe space.
+The Cwtch protocol is open, and anyone is free to build bots, services and user interfaces and
+integrate and interact with Cwtch.
+
+- Privacy Preserving: All communication in Cwtch is end-to-end encrypted and takes place over Tor v3
+onion services.
+
+ - Metadata Resistant: Cwtch has been designed such that no information is exchanged or available to
+anyone without their explicit consent, including on-the-wire messages and protocol metadata.
+
+For more information on how Cwtch works and a guide to metadata resistant communication please
+checkout the Cwtch Handbook: https://docs.cwtch.im/
