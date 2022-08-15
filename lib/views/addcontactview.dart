@@ -36,6 +36,9 @@ class _AddContactViewState extends State<AddContactView> {
   final ctrlrContact = TextEditingController(text: "");
   final ctrlrGroupName = TextEditingController(text: "");
   String server = "";
+  // flutter textfield onChange often fires twice and since we need contexts, we can't easily use a controler/listener
+  String lastContactValue = "";
+
 
   @override
   Widget build(BuildContext context) {
@@ -144,34 +147,41 @@ class _AddContactViewState extends State<AddContactView> {
                       ),
                       CwtchTextField(
                         testKey: Key("txtAddP2P"),
+                        key: Key("txtAddP2P"),
                         controller: ctrlrContact,
                         validator: (value) {
                           if (value == "") {
                             return null;
                           }
-                          if (globalErrorHandler.invalidImportStringError) {
+                          if (globalErrorHandler.importBundleError) {
                             return AppLocalizations.of(context)!.invalidImportString;
-                          } else if (globalErrorHandler.contactAlreadyExistsError) {
-                            return AppLocalizations.of(context)!.contactAlreadyExists;
-                          } else if (globalErrorHandler.explicitAddContactSuccess) {}
+                          } else if (globalErrorHandler.importBundleSuccess) { return null; }
                           return null;
                         },
                         onChanged: (String importBundle) async {
-                          var profileOnion = Provider.of<ProfileInfoState>(bcontext, listen: false).onion;
-                          Provider.of<FlwtchState>(bcontext, listen: false).cwtch.ImportBundle(profileOnion, importBundle.replaceFirst("cwtch:", ""));
+                          if (lastContactValue != importBundle) {
+                            lastContactValue = importBundle;
+                            var profileOnion = Provider
+                                .of<ProfileInfoState>(bcontext, listen: false)
+                                .onion;
+                            Provider
+                                .of<FlwtchState>(bcontext, listen: false)
+                                .cwtch
+                                .ImportBundle(profileOnion, importBundle.replaceFirst("cwtch:", ""));
 
-                          Future.delayed(const Duration(milliseconds: 500), () {
-                            if (globalErrorHandler.importBundleSuccess) {
-                              // TODO: This isn't ideal, but because onChange can be fired during this future check
-                              // and because the context can change after being popped we have this kind of double assertion...
-                              // There is probably a better pattern to handle this...
-                              if (AppLocalizations.of(bcontext) != null) {
-                                final snackBar = SnackBar(content: Text(AppLocalizations.of(bcontext)!.successfullAddedContact + importBundle));
-                                ScaffoldMessenger.of(bcontext).showSnackBar(snackBar);
-                                Navigator.popUntil(bcontext, (route) => route.settings.name == "conversations");
+                            Future.delayed(const Duration(milliseconds: 500), () {
+                              if (globalErrorHandler.importBundleSuccess) {
+                                // TODO: This isn't ideal, but because onChange can be fired during this future check
+                                // and because the context can change after being popped we have this kind of double assertion...
+                                // There is probably a better pattern to handle this...
+                                if (AppLocalizations.of(bcontext) != null) {
+                                  final snackBar = SnackBar(content: Text(AppLocalizations.of(bcontext)!.successfullAddedContact + importBundle));
+                                  ScaffoldMessenger.of(bcontext).showSnackBar(snackBar);
+                                  Navigator.popUntil(bcontext, (route) => route.settings.name == "conversations");
+                                }
                               }
-                            }
-                          });
+                            });
+                          }
                         },
                         hintText: '',
                       )
