@@ -91,7 +91,7 @@ abstract class Cwtch {
   void CreateGroup(String profile, String server, String groupName);
 
   // ignore: non_constant_identifier_names
-  void ImportBundle(String profile, String bundle);
+  Future<dynamic> ImportBundle(String profile, String bundle);
   // ignore: non_constant_identifier_names
   void SetProfileAttribute(String profile, String key, String val);
   // ignore: non_constant_identifier_names

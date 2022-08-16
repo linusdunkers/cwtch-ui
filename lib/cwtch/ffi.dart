@@ -505,15 +505,18 @@ class CwtchFfi implements Cwtch {
 
   @override
   // ignore: non_constant_identifier_names
-  void ImportBundle(String profileOnion, String bundle) {
-    var importBundle = library.lookup<NativeFunction<string_string_to_void_function>>("c_ImportBundle");
+  Future<dynamic> ImportBundle(String profileOnion, String bundle) async {
+    var importBundle = library.lookup<NativeFunction<string_string_to_string_function>>("c_ImportBundle");
     // ignore: non_constant_identifier_names
-    final ImportBundle = importBundle.asFunction<VoidFromStringStringFn>();
+    final ImportBundle = importBundle.asFunction<StringFromStringStringFn>();
     final u1 = profileOnion.toNativeUtf8();
     final u2 = bundle.toNativeUtf8();
-    ImportBundle(u1, u1.length, u2, u2.length);
+    Pointer<Utf8> responsePtr = ImportBundle(u1, u1.length, u2, u2.length);
+    String response = responsePtr.toDartString();
+    _UnsafeFreePointerAnyUseOfThisFunctionMustBeDoubleApproved(responsePtr);
     malloc.free(u1);
     malloc.free(u2);
+    return response;
   }
 
   @override

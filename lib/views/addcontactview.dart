@@ -38,6 +38,7 @@ class _AddContactViewState extends State<AddContactView> {
   String server = "";
   // flutter textfield onChange often fires twice and since we need contexts, we can't easily use a controler/listener
   String lastContactValue = "";
+  bool failedImport = false;
 
 
   @override
@@ -153,9 +154,9 @@ class _AddContactViewState extends State<AddContactView> {
                           if (value == "") {
                             return null;
                           }
-                          if (globalErrorHandler.importBundleError) {
+                          if (failedImport) {
                             return AppLocalizations.of(context)!.invalidImportString;
-                          } else if (globalErrorHandler.importBundleSuccess) { return null; }
+                          }
                           return null;
                         },
                         onChanged: (String importBundle) async {
@@ -167,20 +168,18 @@ class _AddContactViewState extends State<AddContactView> {
                             Provider
                                 .of<FlwtchState>(bcontext, listen: false)
                                 .cwtch
-                                .ImportBundle(profileOnion, importBundle.replaceFirst("cwtch:", ""));
-
-                            Future.delayed(const Duration(milliseconds: 500), () {
-                              if (globalErrorHandler.importBundleSuccess) {
-                                // TODO: This isn't ideal, but because onChange can be fired during this future check
-                                // and because the context can change after being popped we have this kind of double assertion...
-                                // There is probably a better pattern to handle this...
-                                if (AppLocalizations.of(bcontext) != null) {
-                                  final snackBar = SnackBar(content: Text(AppLocalizations.of(bcontext)!.successfullAddedContact + importBundle));
-                                  ScaffoldMessenger.of(bcontext).showSnackBar(snackBar);
-                                  Navigator.popUntil(bcontext, (route) => route.settings.name == "conversations");
-                                }
-                              }
-                            });
+                                .ImportBundle(profileOnion, importBundle.replaceFirst("cwtch:", "")).then((result) {
+                                  if (result == "importBundle.success") {
+                                    failedImport = false;
+                                    if (AppLocalizations.of(bcontext) != null) {
+                                      final snackBar = SnackBar(content: Text(AppLocalizations.of(bcontext)!.successfullAddedContact + importBundle));
+                                      ScaffoldMessenger.of(bcontext).showSnackBar(snackBar);
+                                      Navigator.popUntil(bcontext, (route) => route.settings.name == "conversations");
+                                    }
+                                  } else {
+                                    failedImport = true;
+                                  }
+                                });
                           }
                         },
                         hintText: '',
