@@ -442,7 +442,7 @@ class MainActivity: FlutterActivity() {
             "ImportBundle" -> {
                 val profile: String = call.argument("ProfileOnion") ?: ""
                 val bundle: String = call.argument("bundle") ?: ""
-                Cwtch.importBundle(profile, bundle)
+                result.success(Cwtch.importBundle(profile, bundle))
             }
             "CreateGroup" -> {
                 val profile: String = call.argument("ProfileOnion") ?: ""

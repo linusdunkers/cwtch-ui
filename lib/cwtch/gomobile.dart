@@ -190,8 +190,8 @@ class CwtchGomobile implements Cwtch {
 
   @override
   // ignore: non_constant_identifier_names
-  void ImportBundle(String profileOnion, String bundle) {
-    cwtchPlatform.invokeMethod("ImportBundle", {"ProfileOnion": profileOnion, "bundle": bundle});
+  Future<dynamic> ImportBundle(String profileOnion, String bundle) {
+    return cwtchPlatform.invokeMethod("ImportBundle", {"ProfileOnion": profileOnion, "bundle": bundle});
   }
 
   @override
