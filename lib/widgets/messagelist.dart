@@ -32,15 +32,18 @@ class _MessageListState extends State<MessageList> {
     var initi = Provider.of<AppState>(outerContext, listen: false).initialScrollIndex;
     bool isP2P = !Provider.of<ContactInfoState>(context).isGroup;
     bool isGroupAndSyncing = Provider.of<ContactInfoState>(context).isGroup == true && Provider.of<ContactInfoState>(context).status == "Authenticated";
-    bool isGroupAndSynced = Provider.of<ContactInfoState>(context).isGroup && Provider.of<ContactInfoState>(context).status == "Synced";
-    bool isGroupAndNotAuthenticated = Provider.of<ContactInfoState>(context).isGroup && Provider.of<ContactInfoState>(context).status != "Authenticated";
+
+    // Older checks, no longer used, kept for reference.
+    //bool isGroupAndSynced = Provider.of<ContactInfoState>(context).isGroup && Provider.of<ContactInfoState>(context).status == "Synced";
+    //bool isGroupAndNotAuthenticated = Provider.of<ContactInfoState>(context).isGroup && Provider.of<ContactInfoState>(context).status != "Authenticated";
 
     bool showEphemeralWarning = (isP2P && Provider.of<ContactInfoState>(context).savePeerHistory != "SaveHistory");
     bool showOfflineWarning = Provider.of<ContactInfoState>(context).isOnline() == false;
     bool showSyncing = isGroupAndSyncing;
     bool showMessageWarning = showEphemeralWarning || showOfflineWarning || showSyncing;
-    // Only load historical messages when the conversation is with a p2p contact OR the conversation is a server and *not* syncing.
-    bool loadMessages = isP2P || (isGroupAndSynced || isGroupAndNotAuthenticated);
+    // We used to only load historical messages when the conversation is with a p2p contact OR the conversation is a server and *not* syncing.
+    // With the message cache in place this is no longer necessary
+    bool loadMessages = true;
 
     return RepaintBoundary(
         child: Container(
