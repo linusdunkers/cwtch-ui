@@ -57,6 +57,7 @@ class ContactInfoState extends ChangeNotifier {
   late bool _pinned;
 
   String? _acnCircuit;
+  String? _messageDraft;
 
   ContactInfoState(this.profileOnion, this.identifier, this.onion,
       {nickname = "",
@@ -93,11 +94,13 @@ class ContactInfoState extends ChangeNotifier {
     keys = Map<String, GlobalKey<MessageRowState>>();
   }
 
-  String get nickname => this._nickname;
+  String get nickname => this._nickname + (this._messageDraft != null && this._messageDraft != "" ? "*" : "");
 
   String get savePeerHistory => this._savePeerHistory;
 
   String? get acnCircuit => this._acnCircuit;
+
+  String? get messageDraft => this._messageDraft;
 
   set acnCircuit(String? acnCircuit) {
     this._acnCircuit = acnCircuit;
@@ -149,6 +152,11 @@ class ContactInfoState extends ChangeNotifier {
 
   set status(String newVal) {
     this._status = newVal;
+    notifyListeners();
+  }
+
+  set messageDraft(String? newVal) {
+    this._messageDraft = newVal;
     notifyListeners();
   }
 

@@ -65,6 +65,7 @@ class _MessageViewState extends State<MessageView> {
         showDown = false;
       }
     });
+    ctrlrCompose.text = Provider.of<ContactInfoState>(context, listen: false).messageDraft ?? "";
     super.initState();
   }
 
@@ -348,6 +349,7 @@ class _MessageViewState extends State<MessageView> {
       );
     }
 
+    Provider.of<ContactInfoState>(context, listen: false).messageDraft = null;
     ctrlrCompose.clear();
     focusNode.requestFocus();
 
@@ -545,6 +547,7 @@ class _MessageViewState extends State<MessageView> {
                   enabled: true, // always allow editing...
 
                   onChanged: (String x) {
+                    Provider.of<ContactInfoState>(context, listen: false).messageDraft = x;
                     setState(() {
                       // we need to force a rerender here to update the max length count
                     });
