@@ -40,7 +40,6 @@ class _AddContactViewState extends State<AddContactView> {
   String lastContactValue = "";
   bool failedImport = false;
 
-
   @override
   Widget build(BuildContext context) {
     //  if we haven't picked a server yet, pick the first one in the list...
@@ -162,24 +161,19 @@ class _AddContactViewState extends State<AddContactView> {
                         onChanged: (String importBundle) async {
                           if (lastContactValue != importBundle) {
                             lastContactValue = importBundle;
-                            var profileOnion = Provider
-                                .of<ProfileInfoState>(bcontext, listen: false)
-                                .onion;
-                            Provider
-                                .of<FlwtchState>(bcontext, listen: false)
-                                .cwtch
-                                .ImportBundle(profileOnion, importBundle.replaceFirst("cwtch:", "")).then((result) {
-                                  if (result == "importBundle.success") {
-                                    failedImport = false;
-                                    if (AppLocalizations.of(bcontext) != null) {
-                                      final snackBar = SnackBar(content: Text(AppLocalizations.of(bcontext)!.successfullAddedContact + importBundle));
-                                      ScaffoldMessenger.of(bcontext).showSnackBar(snackBar);
-                                      Navigator.popUntil(bcontext, (route) => route.settings.name == "conversations");
-                                    }
-                                  } else {
-                                    failedImport = true;
-                                  }
-                                });
+                            var profileOnion = Provider.of<ProfileInfoState>(bcontext, listen: false).onion;
+                            Provider.of<FlwtchState>(bcontext, listen: false).cwtch.ImportBundle(profileOnion, importBundle.replaceFirst("cwtch:", "")).then((result) {
+                              if (result == "importBundle.success") {
+                                failedImport = false;
+                                if (AppLocalizations.of(bcontext) != null) {
+                                  final snackBar = SnackBar(content: Text(AppLocalizations.of(bcontext)!.successfullAddedContact + importBundle));
+                                  ScaffoldMessenger.of(bcontext).showSnackBar(snackBar);
+                                  Navigator.popUntil(bcontext, (route) => route.settings.name == "conversations");
+                                }
+                              } else {
+                                failedImport = true;
+                              }
+                            });
                           }
                         },
                         hintText: '',

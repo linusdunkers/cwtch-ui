@@ -37,12 +37,11 @@ class _ContactRowState extends State<ContactRow> {
           ));
     }
 
-    return Card(
-        clipBehavior: Clip.antiAlias,
-        color: Provider.of<AppState>(context).selectedConversation == contact.identifier ? Provider.of<Settings>(context).theme.backgroundHilightElementColor : null,
-        borderOnForeground: true,
-        margin: EdgeInsets.all(0.0),
-        child: InkWell(
+    return InkWell(
+      enableFeedback: true,
+      splashFactory: InkSplash.splashFactory,
+      child: Ink(
+          color: Provider.of<AppState>(context).selectedConversation == contact.identifier ? Provider.of<Settings>(context).theme.backgroundHilightElementColor : Colors.transparent,
           child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             Padding(
               padding: const EdgeInsets.all(6.0), //border size
@@ -144,16 +143,20 @@ class _ContactRowState extends State<ContactRow> {
                     Provider.of<ContactListState>(context, listen: false).resort();
                   },
                 ))
-          ]),
-          onTap: () {
-            selectConversation(context, contact.identifier);
-          },
-          onHover: (onHover) {
-            setState(() {
-              isHover = onHover;
-            });
-          },
-        ));
+          ])),
+      onTap: () {
+        setState(() {
+          selectConversation(context, contact.identifier);
+        });
+      },
+      onHover: (hover) {
+        if (isHover != hover) {
+          setState(() {
+            isHover = hover;
+          });
+        }
+      },
+    );
   }
 
   void _btnApprove() {

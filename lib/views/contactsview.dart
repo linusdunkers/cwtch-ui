@@ -31,6 +31,9 @@ class ContactsView extends StatefulWidget {
 
 // selectConversation can be called from anywhere to set the active conversation
 void selectConversation(BuildContext context, int handle) {
+  if (handle == Provider.of<AppState>(context, listen: false).selectedConversation) {
+    return;
+  }
   // requery instead of using contactinfostate directly because sometimes listview gets confused about data that resorts
   var unread = Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(handle)!.unreadMessages;
   var previouslySelected = Provider.of<AppState>(context, listen: false).selectedConversation;
@@ -122,8 +125,7 @@ class _ContactsViewState extends State<ContactsView> {
                   }),
             )
           ]),
-          title: RepaintBoundary(
-              child: Row(children: [
+          title: Row(children: [
             ProfileImage(
               imagePath: Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment)
                   ? Provider.of<ProfileInfoState>(context).imagePath
@@ -141,7 +143,7 @@ class _ContactsViewState extends State<ContactsView> {
             Expanded(
                 child: Text("%1 » %2".replaceAll("%1", Provider.of<ProfileInfoState>(context).nickname).replaceAll("%2", AppLocalizations.of(context)!.titleManageContacts),
                     overflow: TextOverflow.ellipsis, style: TextStyle(color: Provider.of<Settings>(context).current().mainTextColor))),
-          ])),
+          ]),
           actions: getActions(context),
         ),
         floatingActionButton: FloatingActionButton(
@@ -215,7 +217,7 @@ class _ContactsViewState extends State<ContactsView> {
           ChangeNotifierProvider.value(value: contact),
           ChangeNotifierProvider.value(value: Provider.of<ProfileInfoState>(context).serverList),
         ],
-        builder: (context, child) => RepaintBoundary(child: ContactRow()),
+        builder: (context, child) => ContactRow(),
       );
     });
 
@@ -240,7 +242,7 @@ class _ContactsViewState extends State<ContactsView> {
       },
     );
 
-    return RepaintBoundary(child: contactList);
+    return contactList;
   }
 
   void _pushAddContact(bool newGroup) {

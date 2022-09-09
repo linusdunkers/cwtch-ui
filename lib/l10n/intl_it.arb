@@ -1,6 +1,9 @@
 {
     "@@locale": "it",
-    "@@last_modified": "2022-07-30T00:18:33+02:00",
+    "@@last_modified": "2022-09-06T20:59:50+02:00",
+    "acquiredTicketsFromServer": "Antispam Challenge Complete",
+    "acquiringTicketsFromServer": "Performing Antispam Challenge",
+    "errorDownloadDirectoryDoesNotExist": "Filesharing cannot be enabled because the Download Folder has not been set, or is set to a folder that does not exist.",
     "localeTr": "Turco \/ Türk",
     "localeIt": "Italiano \/ Italiano",
     "tooltipUnpinConversation": "Unpin conversation from the top of \"Conversations\"",

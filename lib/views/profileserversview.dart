@@ -50,7 +50,7 @@ class _ProfileServersView extends State<ProfileServersView> {
               (RemoteServerInfoState server) {
                 return ChangeNotifierProvider<RemoteServerInfoState>.value(
                   value: server,
-                  builder: (context, child) => RepaintBoundary(child: RemoteServerRow()),
+                  builder: (context, child) => RemoteServerRow(),
                 );
               },
             );

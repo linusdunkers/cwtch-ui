@@ -56,6 +56,7 @@ class ContactInfoState extends ChangeNotifier {
   late bool _archived;
   late bool _pinned;
 
+  int _antispamTickets = 0;
   String? _acnCircuit;
   String? _messageDraft;
 
@@ -100,7 +101,16 @@ class ContactInfoState extends ChangeNotifier {
 
   String? get acnCircuit => this._acnCircuit;
 
+
   String? get messageDraft => this._messageDraft;
+
+  set antispamTickets(int antispamTickets) {
+    this._antispamTickets = antispamTickets;
+    notifyListeners();
+  }
+
+  int get antispamTickets => this._antispamTickets;
+
 
   set acnCircuit(String? acnCircuit) {
     this._acnCircuit = acnCircuit;

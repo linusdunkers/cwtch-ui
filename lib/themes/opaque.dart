@@ -174,7 +174,6 @@ ThemeData mkThemeData(Settings opaque) {
                 ? opaque.current().defaultButtonDisabledColor
                 : null),
         enableFeedback: true,
-        splashFactory: InkRipple.splashFactory,
         padding: MaterialStateProperty.all(EdgeInsets.all(20)),
         shape: MaterialStateProperty.all(RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(6.0),

@@ -618,4 +618,8 @@ class MaterialLocalizationLu extends MaterialLocalizations {
     // TODO: implement timeOfDayFormat
     throw UnimplementedError();
   }
+
+  @override
+  // TODO: implement menuBarMenuLabel
+  String get menuBarMenuLabel => throw UnimplementedError();
 }
