@@ -1,6 +1,10 @@
 {
     "@@locale": "es",
-    "@@last_modified": "2022-09-09T21:46:36+02:00",
+    "@@last_modified": "2022-09-09T23:36:56+02:00",
+    "experimentQRCodeDescription": "QR Code support allows sharing data (such as profile identity) by QR Codes",
+    "enableExperimentQRCode": "QR Codes",
+    "shareMenuQRCode": "Show QR Code",
+    "shareProfileMenuTooltop": "Share profile via...",
     "tooltipPinConversation": "Fija la conversación en la parte superior de \"Conversaciones\"",
     "errorDownloadDirectoryDoesNotExist": "No se puede habilitar el uso compartido de archivos porque la carpeta de descarga no se ha configurado o se configuró en una carpeta que no existe.",
     "acquiringTicketsFromServer": "Realizando Desafío Antispam",

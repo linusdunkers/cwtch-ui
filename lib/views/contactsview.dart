@@ -19,8 +19,11 @@ import '../main.dart';
 import '../settings.dart';
 import 'addcontactview.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 import 'messageview.dart';
+
+enum ShareMenu { copyCode, qrcode }
 
 class ContactsView extends StatefulWidget {
   const ContactsView({Key? key}) : super(key: key);
@@ -163,16 +166,53 @@ class _ContactsViewState extends State<ContactsView> {
       actions.add(Tooltip(message: AppLocalizations.of(context)!.blockUnknownConnectionsEnabledDescription, child: Icon(CwtchIcons.block_unknown)));
     }
 
-    // Copy profile onion
-    actions.add(IconButton(
+    if (Provider.of<Settings>(context, listen: false).isExperimentEnabled(QRCodeExperiment)) {
+      actions.add(PopupMenuButton<ShareMenu>(
         icon: Icon(CwtchIcons.address_copy_2),
-        tooltip: AppLocalizations.of(context)!.copyAddress,
+        tooltip: AppLocalizations.of(context)!.shareProfileMenuTooltop,
         splashRadius: Material.defaultSplashRadius / 2,
-        onPressed: () {
-          Clipboard.setData(new ClipboardData(text: Provider.of<ProfileInfoState>(context, listen: false).onion));
-          final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.copiedToClipboardNotification));
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        }));
+        onSelected: (ShareMenu item) {
+          switch(item) {
+            case ShareMenu.copyCode:
+              {
+                Clipboard.setData(new ClipboardData(text: Provider
+                    .of<ProfileInfoState>(context, listen: false)
+                    .onion));
+                final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.copiedToClipboardNotification));
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              }
+              break;
+            case ShareMenu.qrcode: {
+              _showQRCode("cwtch:" + Provider.of<ProfileInfoState>(context, listen: false).onion);
+            }
+            break;
+          }
+        },
+        itemBuilder: (BuildContext context) => <PopupMenuEntry<ShareMenu>>[
+          PopupMenuItem<ShareMenu>(
+            value: ShareMenu.copyCode,
+            child: Text(AppLocalizations.of(context)!.copyAddress),
+          ),
+          PopupMenuItem<ShareMenu>(
+            value: ShareMenu.qrcode,
+            child: Text(AppLocalizations.of(context)!.shareMenuQRCode),
+          ),
+        ],
+      ));
+    } else {
+      actions.add(IconButton(
+          icon: Icon(CwtchIcons.address_copy_2),
+          tooltip: AppLocalizations.of(context)!.copyAddress,
+          splashRadius: Material.defaultSplashRadius / 2,
+          onPressed: () {
+            Clipboard.setData(new ClipboardData(text: Provider
+                .of<ProfileInfoState>(context, listen: false)
+                .onion));
+            final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.copiedToClipboardNotification));
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }));
+    }
+
 
     // Manage known Servers
     if (Provider.of<Settings>(context, listen: false).isExperimentEnabled(TapirGroupsExperiment) || Provider.of<Settings>(context, listen: false).isExperimentEnabled(ServerManagementExperiment)) {
@@ -381,4 +421,25 @@ class _ContactsViewState extends State<ContactsView> {
               )));
         });
   }
+
+  void _showQRCode(String profile_code) {
+    showModalBottomSheet<dynamic>(
+        context: context,
+        builder: (BuildContext context) {
+          return Wrap( children: <Widget>[
+          Center( child:
+          QrImage(
+                data: profile_code,
+                version: QrVersions.auto,
+                size: 400.0,
+                backgroundColor: Provider.of<Settings>(context).theme.backgroundPaneColor,
+                foregroundColor: Provider.of<Settings>(context).theme.mainTextColor,
+                gapless: false,
+                ),
+          )]);
+
+          },
+    );
+  }
+
 }
