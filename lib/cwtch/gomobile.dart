@@ -294,7 +294,7 @@ class CwtchGomobile implements Cwtch {
   }
 
   @override
-  String defaultDownloadPath() {
+  String? defaultDownloadPath() {
     return this.androidHomeDirectoryStr;
   }
 

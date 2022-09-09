@@ -121,7 +121,7 @@ abstract class Cwtch {
   Future<void> Shutdown();
 
   // non-ffi
-  String defaultDownloadPath();
+  String? defaultDownloadPath();
 
   bool isL10nInit();
 

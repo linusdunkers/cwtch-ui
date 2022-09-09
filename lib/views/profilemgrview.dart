@@ -340,7 +340,7 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
           (ProfileInfoState profile) {
             return ChangeNotifierProvider<ProfileInfoState>.value(
               value: profile,
-              builder: (context, child) => RepaintBoundary(child: ProfileRow()),
+              builder: (context, child) => ProfileRow(),
             );
           },
         );

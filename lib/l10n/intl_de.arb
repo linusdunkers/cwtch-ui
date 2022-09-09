@@ -1,8 +1,11 @@
 {
     "@@locale": "de",
-    "@@last_modified": "2022-07-30T00:18:33+02:00",
-    "localeTr": "Türkisch \/ Türk",
+    "@@last_modified": "2022-09-06T20:59:50+02:00",
+    "acquiredTicketsFromServer": "Antispam Challenge Complete",
+    "acquiringTicketsFromServer": "Performing Antispam Challenge",
     "localeIt": "Italienisch \/ Italiano",
+    "errorDownloadDirectoryDoesNotExist": "Die Dateifreigabe kann nicht aktiviert werden, da der Download-Ordner nicht festgelegt wurde oder auf einen nicht vorhandenen Ordner festgelegt ist.",
+    "localeTr": "Türkisch \/ Türk",
     "viewReplies": "Antworten auf diese Nachricht anzeigen",
     "manageSharedFiles": "Freigegebene Dateien verwalten",
     "tooltipPinConversation": "Konversation oben in \"Konversationen\" anheften",

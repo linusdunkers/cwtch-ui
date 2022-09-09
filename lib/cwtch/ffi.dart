@@ -762,9 +762,13 @@ class CwtchFfi implements Cwtch {
   }
 
   @override
-  String defaultDownloadPath() {
+  String? defaultDownloadPath() {
     Map<String, String> envVars = Platform.environment;
-    return path.join(envVars[Platform.isWindows ? 'UserProfile' : 'HOME']!, "Downloads");
+    String nominalPath = path.join(envVars[Platform.isWindows ? 'UserProfile' : 'HOME']!, "Downloads");
+    if (Directory(nominalPath).existsSync() == false) {
+      return null;
+    }
+    return nominalPath;
   }
 
   @override

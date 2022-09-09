@@ -169,14 +169,36 @@ class _MessageViewState extends State<MessageView> {
                 : null,
             title: Row(children: [
               ProfileImage(
-                imagePath: Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment)
-                    ? Provider.of<ContactInfoState>(context).imagePath
-                    : Provider.of<ContactInfoState>(context).defaultImagePath,
-                diameter: 42,
-                border: Provider.of<Settings>(context).current().portraitOnlineBorderColor,
-                badgeTextColor: Colors.red,
-                badgeColor: Colors.red,
-              ),
+                  imagePath: Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment)
+                      ? Provider.of<ContactInfoState>(context).imagePath
+                      : Provider.of<ContactInfoState>(context).defaultImagePath,
+                  diameter: 42,
+                  border: Provider.of<Settings>(context).current().portraitOnlineBorderColor,
+                  badgeTextColor: Colors.red,
+                  badgeColor: Provider.of<Settings>(context).theme.portraitContactBadgeColor,
+                  badgeIcon: Provider.of<ContactInfoState>(context).isGroup
+                      ? (Tooltip(
+                          message: Provider.of<ContactInfoState>(context).isOnline() ? Provider.of<ContactInfoState>(context).antispamTickets == 0
+                              ? AppLocalizations.of(context)!.acquiringTicketsFromServer
+                              : AppLocalizations.of(context)!.acquiredTicketsFromServer
+                              : AppLocalizations.of(context)!.serverConnectivityDisconnected,
+                          child: Provider.of<ContactInfoState>(context).isOnline() ?  Provider.of<ContactInfoState>(context).antispamTickets == 0
+                              ? Icon(
+                                  Icons.schedule_send,
+                                  size: 10.0,
+                                  semanticLabel: AppLocalizations.of(context)!.acquiringTicketsFromServer,
+                                  color: Provider.of<Settings>(context).theme.portraitContactBadgeTextColor,
+                                )
+                              : Icon(
+                                  Icons.send,
+                                  color: Provider.of<Settings>(context).theme.portraitContactBadgeTextColor,
+                                  size: 10.0,
+                                ) : Icon(
+                            CwtchIcons.onion_off,
+                            color: Provider.of<Settings>(context).theme.portraitContactBadgeTextColor,
+                            size: 10.0,
+                          )))
+                      : null),
               SizedBox(
                 width: 10,
               ),
@@ -329,6 +351,12 @@ class _MessageViewState extends State<MessageView> {
   }
 
   void _sendMessageHandler(dynamic messageJson) {
+    if (Provider.of<ContactInfoState>(context, listen: false).antispamTickets == 0) {
+      final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.acquiringTicketsFromServer));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      return;
+    }
+
     var profileOnion = Provider.of<ContactInfoState>(context, listen: false).profileOnion;
     var identifier = Provider.of<ContactInfoState>(context, listen: false).identifier;
     var profile = Provider.of<ProfileInfoState>(context, listen: false);
@@ -561,8 +589,14 @@ class _MessageViewState extends State<MessageView> {
                       suffixIcon: ElevatedButton(
                         key: Key("btnSend"),
                         style: ElevatedButton.styleFrom(padding: EdgeInsets.all(0.0), shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(45.0))),
-                        child: Icon(CwtchIcons.send_24px, size: 24, color: Provider.of<Settings>(context).theme.defaultButtonTextColor),
-                        onPressed: isOffline ? null : _sendMessage,
+                        child: Tooltip(
+                            message: isOffline
+                                ? AppLocalizations.of(context)!.serverNotSynced
+                                : Provider.of<ContactInfoState>(context, listen: false).antispamTickets == 0
+                                    ? AppLocalizations.of(context)!.acquiringTicketsFromServer
+                                    : AppLocalizations.of(context)!.sendMessage,
+                            child: Icon(CwtchIcons.send_24px, size: 24, color: Provider.of<Settings>(context).theme.defaultButtonTextColor)),
+                        onPressed: isOffline || Provider.of<ContactInfoState>(context, listen: false).antispamTickets == 0 ? null : _sendMessage,
                       ))),
             )));
 

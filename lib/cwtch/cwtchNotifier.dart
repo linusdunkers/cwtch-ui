@@ -309,6 +309,14 @@ class CwtchNotifier {
       case "UpdateServerInfo":
         profileCN.getProfile(data["ProfileOnion"])?.replaceServers(data["ServerList"]);
         break;
+      case "TokenManagerInfo":
+        List<dynamic> associatedGroups = jsonDecode(data["Data"]);
+        int count = int.parse(data["ServerTokenCount"]);
+        associatedGroups.forEach((identifier) {
+          profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(int.parse(identifier.toString()))!.antispamTickets = count;
+        });
+        EnvironmentConfig.debugLog("update server token count for ${associatedGroups}, $count");
+        break;
       case "NewGroup":
         String invite = data["GroupInvite"].toString();
         if (invite.startsWith("torv3")) {

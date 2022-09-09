@@ -17,7 +17,8 @@ class ProfileImage extends StatefulWidget {
       required this.badgeTextColor,
       this.maskOut = false,
       this.tooltip = "",
-      this.badgeEdit = false});
+      this.badgeEdit = false,
+      this.badgeIcon = null});
   final double diameter;
   final String imagePath;
   final Color border;
@@ -27,6 +28,7 @@ class ProfileImage extends StatefulWidget {
   final bool maskOut;
   final bool badgeEdit;
   final String tooltip;
+  final Widget? badgeIcon;
 
   @override
   _ProfileImageState createState() => _ProfileImageState();
@@ -81,7 +83,7 @@ class _ProfileImageState extends State<ProfileImage> {
                   padding: const EdgeInsets.all(2.0), //border size
                   child: ClipOval(clipBehavior: Clip.antiAlias, child: widget.tooltip == "" ? image : Tooltip(message: widget.tooltip, child: image))))),
       Visibility(
-          visible: widget.badgeEdit || widget.badgeCount > 0,
+          visible: widget.badgeIcon != null || widget.badgeEdit || widget.badgeCount > 0,
           child: Positioned(
             bottom: 0.0,
             right: 0.0,
@@ -93,7 +95,7 @@ class _ProfileImageState extends State<ProfileImage> {
                       Icons.edit,
                       color: widget.badgeTextColor,
                     )
-                  : Text(widget.badgeCount > 99 ? "99+" : widget.badgeCount.toString(), style: TextStyle(color: widget.badgeTextColor, fontSize: 8.0)),
+                  : (widget.badgeIcon != null ? widget.badgeIcon : Text(widget.badgeCount > 99 ? "99+" : widget.badgeCount.toString(), style: TextStyle(color: widget.badgeTextColor, fontSize: 8.0))),
             ),
           )),
     ]));

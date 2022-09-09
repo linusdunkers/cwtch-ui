@@ -393,7 +393,12 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                 value: settings.isExperimentEnabled(FileSharingExperiment),
                                 onChanged: (bool value) {
                                   if (value) {
-                                    settings.enableExperiment(FileSharingExperiment);
+                                    if (checkDownloadDirectory(context, settings)) {
+                                      settings.enableExperiment(FileSharingExperiment);
+                                    } else {
+                                      settings.disableExperiment(FileSharingExperiment);
+                                      settings.disableExperiment(ImagePreviewsExperiment);
+                                    }
                                   } else {
                                     settings.disableExperiment(FileSharingExperiment);
                                     settings.disableExperiment(ImagePreviewsExperiment);
@@ -413,8 +418,11 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                     value: settings.isExperimentEnabled(ImagePreviewsExperiment),
                                     onChanged: (bool value) {
                                       if (value) {
-                                        settings.enableExperiment(ImagePreviewsExperiment);
-                                        settings.downloadPath = Provider.of<FlwtchState>(context, listen: false).cwtch.defaultDownloadPath();
+                                        if (checkDownloadDirectory(context, settings)) {
+                                          settings.enableExperiment(ImagePreviewsExperiment);
+                                        } else {
+                                          settings.disableExperiment(ImagePreviewsExperiment);
+                                        }
                                       } else {
                                         settings.disableExperiment(ImagePreviewsExperiment);
                                       }
@@ -536,6 +544,30 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
         return alert;
       },
     );
+  }
+}
+
+bool checkDownloadDirectory(context, settings) {
+  bool showError = false;
+  if (settings.downloadPath != "") {
+  } else {
+    // check if the default download path exists
+    var path = Provider.of<FlwtchState>(context, listen: false).cwtch.defaultDownloadPath();
+    if (path != null) {
+      settings.downloadPath = path;
+    } else {
+      showError = true;
+    }
+  }
+
+  if (!showError && Directory(settings.downloadPath).existsSync()) {
+    return true;
+  } else {
+    final snackBar = SnackBar(
+      content: Text(AppLocalizations.of(context)!.errorDownloadDirectoryDoesNotExist),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    return false;
   }
 }
 
