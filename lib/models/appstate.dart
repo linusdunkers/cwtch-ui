@@ -42,6 +42,7 @@ class AppState extends ChangeNotifier {
 
   String? get selectedProfile => _selectedProfile;
   set selectedProfile(String? newVal) {
+    this._selectedConversation = null;
     this._selectedProfile = newVal;
     notifyListeners();
   }
