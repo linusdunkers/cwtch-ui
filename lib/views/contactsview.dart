@@ -166,7 +166,8 @@ class _ContactsViewState extends State<ContactsView> {
       actions.add(Tooltip(message: AppLocalizations.of(context)!.blockUnknownConnectionsEnabledDescription, child: Icon(CwtchIcons.block_unknown)));
     }
 
-    actions.add(PopupMenuButton<ShareMenu>(
+    if (Provider.of<Settings>(context, listen: false).isExperimentEnabled(QRCodeExperiment)) {
+      actions.add(PopupMenuButton<ShareMenu>(
         icon: Icon(CwtchIcons.address_copy_2),
         tooltip: AppLocalizations.of(context)!.shareProfileMenuTooltop,
         splashRadius: Material.defaultSplashRadius / 2,
@@ -196,8 +197,22 @@ class _ContactsViewState extends State<ContactsView> {
             value: ShareMenu.qrcode,
             child: Text(AppLocalizations.of(context)!.shareMenuQRCode),
           ),
-          ],
-    ));
+        ],
+      ));
+    } else {
+      actions.add(IconButton(
+          icon: Icon(CwtchIcons.address_copy_2),
+          tooltip: AppLocalizations.of(context)!.copyAddress,
+          splashRadius: Material.defaultSplashRadius / 2,
+          onPressed: () {
+            Clipboard.setData(new ClipboardData(text: Provider
+                .of<ProfileInfoState>(context, listen: false)
+                .onion));
+            final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.copiedToClipboardNotification));
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }));
+    }
+
 
     // Manage known Servers
     if (Provider.of<Settings>(context, listen: false).isExperimentEnabled(TapirGroupsExperiment) || Provider.of<Settings>(context, listen: false).isExperimentEnabled(ServerManagementExperiment)) {

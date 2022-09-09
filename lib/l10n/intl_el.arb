@@ -1,6 +1,8 @@
 {
     "@@locale": "el",
-    "@@last_modified": "2022-09-09T22:56:43+02:00",
+    "@@last_modified": "2022-09-09T23:36:56+02:00",
+    "experimentQRCodeDescription": "QR Code support allows sharing data (such as profile identity) by QR Codes",
+    "enableExperimentQRCode": "QR Codes",
     "shareMenuQRCode": "Show QR Code",
     "shareProfileMenuTooltop": "Share profile via...",
     "acquiredTicketsFromServer": "Antispam Challenge Complete",

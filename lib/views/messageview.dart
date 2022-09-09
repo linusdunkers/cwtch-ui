@@ -294,9 +294,11 @@ class _MessageViewState extends State<MessageView> {
 
     // Do this after we trim to preserve enter-behaviour...
     bool isOffline = Provider.of<ContactInfoState>(context, listen: false).isOnline() == false;
-    if (isOffline) {
+    bool performingAntiSpam =  Provider.of<ContactInfoState>(context).antispamTickets == 0;
+    if (isOffline || performingAntiSpam) {
       return;
     }
+
 
     var isGroup = Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(Provider.of<AppState>(context, listen: false).selectedConversation!)!.isGroup;
 

@@ -468,6 +468,24 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                             inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
                             secondary: Icon(Icons.link, color: settings.current().mainTextColor),
                           )),
+                      Visibility(
+                          visible: settings.experimentsEnabled,
+                          child: SwitchListTile(
+                            title: Text(AppLocalizations.of(context)!.enableExperimentQRCode, style: TextStyle(color: settings.current().mainTextColor)),
+                            subtitle: Text(AppLocalizations.of(context)!.experimentQRCodeDescription),
+                            value: settings.isExperimentEnabled(QRCodeExperiment),
+                            onChanged: (bool value) {
+                              if (value) {
+                                settings.enableExperiment(QRCodeExperiment);
+                              } else {
+                                settings.disableExperiment(QRCodeExperiment);
+                              }
+                              saveSettings(context);
+                            },
+                            activeTrackColor: settings.theme.defaultButtonActiveColor,
+                            inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
+                            secondary: Icon(Icons.qr_code, color: settings.current().mainTextColor),
+                          )),
                       AboutListTile(
                           icon: appIcon,
                           applicationIcon: Padding(padding: EdgeInsets.all(5), child: Icon(CwtchIcons.cwtch_knott)),

@@ -15,6 +15,7 @@ const FileSharingExperiment = "filesharing";
 const ImagePreviewsExperiment = "filesharing-images";
 const ClickableLinksExperiment = "clickable-links";
 const FormattingExperiment = "message-formatting";
+const QRCodeExperiment = "qrcode-support";
 
 enum DualpaneMode {
   Single,
