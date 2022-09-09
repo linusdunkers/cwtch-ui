@@ -1,6 +1,6 @@
 {
     "@@locale": "fr",
-    "@@last_modified": "2022-09-06T20:59:50+02:00",
+    "@@last_modified": "2022-09-09T21:46:36+02:00",
     "acquiredTicketsFromServer": "Antispam Challenge Complete",
     "acquiringTicketsFromServer": "Performing Antispam Challenge",
     "errorDownloadDirectoryDoesNotExist": "Le partage de fichiers ne peut pas être activé car le dossier de téléchargement n'a pas été défini ou est défini sur un dossier qui n'existe pas.",
