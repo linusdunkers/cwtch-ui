@@ -1,6 +1,7 @@
 {
     "@@locale": "lb",
-    "@@last_modified": "2022-09-09T23:36:56+02:00",
+    "@@last_modified": "2022-09-10T17:07:27+02:00",
+    "localeNl": "Dutch \/ Dutch",
     "experimentQRCodeDescription": "QR Code support allows sharing data (such as profile identity) by QR Codes",
     "enableExperimentQRCode": "QR Codes",
     "shareMenuQRCode": "Show QR Code",

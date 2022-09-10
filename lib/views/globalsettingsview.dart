@@ -645,6 +645,9 @@ String getLanguageFull(context, String languageCode) {
   if (languageCode == "tr") {
     return AppLocalizations.of(context)!.localeTr;
   }
+  if (languageCode == "nl") {
+    return AppLocalizations.of(context)!.localeNl;
+  }
   return languageCode;
 }
 

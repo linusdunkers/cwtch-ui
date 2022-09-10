@@ -178,26 +178,29 @@ class _MessageViewState extends State<MessageView> {
                   badgeColor: Provider.of<Settings>(context).theme.portraitContactBadgeColor,
                   badgeIcon: Provider.of<ContactInfoState>(context).isGroup
                       ? (Tooltip(
-                          message: Provider.of<ContactInfoState>(context).isOnline() ? Provider.of<ContactInfoState>(context).antispamTickets == 0
-                              ? AppLocalizations.of(context)!.acquiringTicketsFromServer
-                              : AppLocalizations.of(context)!.acquiredTicketsFromServer
+                          message: Provider.of<ContactInfoState>(context).isOnline()
+                              ? Provider.of<ContactInfoState>(context).antispamTickets == 0
+                                  ? AppLocalizations.of(context)!.acquiringTicketsFromServer
+                                  : AppLocalizations.of(context)!.acquiredTicketsFromServer
                               : AppLocalizations.of(context)!.serverConnectivityDisconnected,
-                          child: Provider.of<ContactInfoState>(context).isOnline() ?  Provider.of<ContactInfoState>(context).antispamTickets == 0
-                              ? Icon(
-                                  Icons.schedule_send,
-                                  size: 10.0,
-                                  semanticLabel: AppLocalizations.of(context)!.acquiringTicketsFromServer,
-                                  color: Provider.of<Settings>(context).theme.portraitContactBadgeTextColor,
-                                )
+                          child: Provider.of<ContactInfoState>(context).isOnline()
+                              ? Provider.of<ContactInfoState>(context).antispamTickets == 0
+                                  ? Icon(
+                                      Icons.schedule_send,
+                                      size: 10.0,
+                                      semanticLabel: AppLocalizations.of(context)!.acquiringTicketsFromServer,
+                                      color: Provider.of<Settings>(context).theme.portraitContactBadgeTextColor,
+                                    )
+                                  : Icon(
+                                      Icons.send,
+                                      color: Provider.of<Settings>(context).theme.portraitContactBadgeTextColor,
+                                      size: 10.0,
+                                    )
                               : Icon(
-                                  Icons.send,
+                                  CwtchIcons.onion_off,
                                   color: Provider.of<Settings>(context).theme.portraitContactBadgeTextColor,
                                   size: 10.0,
-                                ) : Icon(
-                            CwtchIcons.onion_off,
-                            color: Provider.of<Settings>(context).theme.portraitContactBadgeTextColor,
-                            size: 10.0,
-                          )))
+                                )))
                       : null),
               SizedBox(
                 width: 10,
@@ -294,7 +297,7 @@ class _MessageViewState extends State<MessageView> {
 
     // Do this after we trim to preserve enter-behaviour...
     bool isOffline = Provider.of<ContactInfoState>(context, listen: false).isOnline() == false;
-    bool performingAntiSpam =  Provider.of<ContactInfoState>(context).antispamTickets == 0;
+    bool performingAntiSpam = Provider.of<ContactInfoState>(context).antispamTickets == 0;
     bool isGroup = Provider.of<ContactInfoState>(context).isGroup;
     if (isOffline || (isGroup && performingAntiSpam)) {
       return;
