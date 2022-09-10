@@ -295,12 +295,10 @@ class _MessageViewState extends State<MessageView> {
     // Do this after we trim to preserve enter-behaviour...
     bool isOffline = Provider.of<ContactInfoState>(context, listen: false).isOnline() == false;
     bool performingAntiSpam =  Provider.of<ContactInfoState>(context).antispamTickets == 0;
-    if (isOffline || performingAntiSpam) {
+    bool isGroup = Provider.of<ContactInfoState>(context).isGroup;
+    if (isOffline || (isGroup && performingAntiSpam)) {
       return;
     }
-
-
-    var isGroup = Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(Provider.of<AppState>(context, listen: false).selectedConversation!)!.isGroup;
 
     // peers and groups currently have different length constraints (servers can store less)...
     var actualMessageLength = ctrlrCompose.value.text.length;
@@ -353,7 +351,7 @@ class _MessageViewState extends State<MessageView> {
   }
 
   void _sendMessageHandler(dynamic messageJson) {
-    if (Provider.of<ContactInfoState>(context, listen: false).antispamTickets == 0) {
+    if (Provider.of<ContactInfoState>(context).isGroup && Provider.of<ContactInfoState>(context, listen: false).antispamTickets == 0) {
       final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.acquiringTicketsFromServer));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       return;
@@ -593,12 +591,12 @@ class _MessageViewState extends State<MessageView> {
                         style: ElevatedButton.styleFrom(padding: EdgeInsets.all(0.0), shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(45.0))),
                         child: Tooltip(
                             message: isOffline
-                                ? AppLocalizations.of(context)!.serverNotSynced
-                                : Provider.of<ContactInfoState>(context, listen: false).antispamTickets == 0
+                                ? (isGroup ? AppLocalizations.of(context)!.serverNotSynced : AppLocalizations.of(context)!.peerOfflineMessage)
+                                : (isGroup && Provider.of<ContactInfoState>(context, listen: false).antispamTickets == 0)
                                     ? AppLocalizations.of(context)!.acquiringTicketsFromServer
                                     : AppLocalizations.of(context)!.sendMessage,
                             child: Icon(CwtchIcons.send_24px, size: 24, color: Provider.of<Settings>(context).theme.defaultButtonTextColor)),
-                        onPressed: isOffline || Provider.of<ContactInfoState>(context, listen: false).antispamTickets == 0 ? null : _sendMessage,
+                        onPressed: isOffline || (isGroup && Provider.of<ContactInfoState>(context, listen: false).antispamTickets == 0) ? null : _sendMessage,
                       ))),
             )));
 
