@@ -101,7 +101,6 @@ class ContactInfoState extends ChangeNotifier {
 
   String? get acnCircuit => this._acnCircuit;
 
-
   String? get messageDraft => this._messageDraft;
 
   set antispamTickets(int antispamTickets) {
@@ -110,7 +109,6 @@ class ContactInfoState extends ChangeNotifier {
   }
 
   int get antispamTickets => this._antispamTickets;
-
 
   set acnCircuit(String? acnCircuit) {
     this._acnCircuit = acnCircuit;

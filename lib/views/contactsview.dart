@@ -172,20 +172,19 @@ class _ContactsViewState extends State<ContactsView> {
         tooltip: AppLocalizations.of(context)!.shareProfileMenuTooltop,
         splashRadius: Material.defaultSplashRadius / 2,
         onSelected: (ShareMenu item) {
-          switch(item) {
+          switch (item) {
             case ShareMenu.copyCode:
               {
-                Clipboard.setData(new ClipboardData(text: Provider
-                    .of<ProfileInfoState>(context, listen: false)
-                    .onion));
+                Clipboard.setData(new ClipboardData(text: Provider.of<ProfileInfoState>(context, listen: false).onion));
                 final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.copiedToClipboardNotification));
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
               }
               break;
-            case ShareMenu.qrcode: {
-              _showQRCode("cwtch:" + Provider.of<ProfileInfoState>(context, listen: false).onion);
-            }
-            break;
+            case ShareMenu.qrcode:
+              {
+                _showQRCode("cwtch:" + Provider.of<ProfileInfoState>(context, listen: false).onion);
+              }
+              break;
           }
         },
         itemBuilder: (BuildContext context) => <PopupMenuEntry<ShareMenu>>[
@@ -205,14 +204,11 @@ class _ContactsViewState extends State<ContactsView> {
           tooltip: AppLocalizations.of(context)!.copyAddress,
           splashRadius: Material.defaultSplashRadius / 2,
           onPressed: () {
-            Clipboard.setData(new ClipboardData(text: Provider
-                .of<ProfileInfoState>(context, listen: false)
-                .onion));
+            Clipboard.setData(new ClipboardData(text: Provider.of<ProfileInfoState>(context, listen: false).onion));
             final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.copiedToClipboardNotification));
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
           }));
     }
-
 
     // Manage known Servers
     if (Provider.of<Settings>(context, listen: false).isExperimentEnabled(TapirGroupsExperiment) || Provider.of<Settings>(context, listen: false).isExperimentEnabled(ServerManagementExperiment)) {
@@ -424,22 +420,21 @@ class _ContactsViewState extends State<ContactsView> {
 
   void _showQRCode(String profile_code) {
     showModalBottomSheet<dynamic>(
-        context: context,
-        builder: (BuildContext context) {
-          return Wrap( children: <Widget>[
-          Center( child:
-          QrImage(
-                data: profile_code,
-                version: QrVersions.auto,
-                size: 400.0,
-                backgroundColor: Provider.of<Settings>(context).theme.backgroundPaneColor,
-                foregroundColor: Provider.of<Settings>(context).theme.mainTextColor,
-                gapless: false,
-                ),
-          )]);
-
-          },
+      context: context,
+      builder: (BuildContext context) {
+        return Wrap(children: <Widget>[
+          Center(
+            child: QrImage(
+              data: profile_code,
+              version: QrVersions.auto,
+              size: 400.0,
+              backgroundColor: Provider.of<Settings>(context).theme.backgroundPaneColor,
+              foregroundColor: Provider.of<Settings>(context).theme.mainTextColor,
+              gapless: false,
+            ),
+          )
+        ]);
+      },
     );
   }
-
 }
