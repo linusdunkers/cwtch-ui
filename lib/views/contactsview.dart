@@ -168,7 +168,7 @@ class _ContactsViewState extends State<ContactsView> {
 
     if (Provider.of<Settings>(context, listen: false).isExperimentEnabled(QRCodeExperiment)) {
       actions.add(PopupMenuButton<ShareMenu>(
-        icon: Icon(CwtchIcons.address_copy_2),
+        icon: Icon(CwtchIcons.address_copy),
         tooltip: AppLocalizations.of(context)!.shareProfileMenuTooltop,
         splashRadius: Material.defaultSplashRadius / 2,
         onSelected: (ShareMenu item) {
@@ -200,7 +200,7 @@ class _ContactsViewState extends State<ContactsView> {
       ));
     } else {
       actions.add(IconButton(
-          icon: Icon(CwtchIcons.address_copy_2),
+          icon: Icon(CwtchIcons.address_copy),
           tooltip: AppLocalizations.of(context)!.copyAddress,
           splashRadius: Material.defaultSplashRadius / 2,
           onPressed: () {

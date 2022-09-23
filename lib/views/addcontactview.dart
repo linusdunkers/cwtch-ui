@@ -133,7 +133,7 @@ class _AddContactViewState extends State<AddContactView> {
                         onPressed: _copyOnion,
                         readonly: true,
                         icon: Icon(
-                          CwtchIcons.address_copy_2,
+                          CwtchIcons.address_copy,
                           size: 32,
                         ),
                         tooltip: AppLocalizations.of(context)!.copyBtn,

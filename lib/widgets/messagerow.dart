@@ -113,7 +113,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
                 onPressed: () {
                   modalShowReplies(context, AppLocalizations.of(context)!.headingReplies, AppLocalizations.of(context)!.messageNoReplies, settings, pis, cis, borderColor, cache, messageID);
                 },
-                icon: Icon(Icons.message_rounded, color: Provider.of<Settings>(context).theme.dropShadowColor)));
+                icon: Icon(CwtchIcons.view_replies, color: Provider.of<Settings>(context).theme.dropShadowColor)));
 
     Widget wdgSpacer = Flexible(flex: 1, child: SizedBox(width: Platform.isAndroid ? 20 : 60, height: 10));
     var widgetRow = <Widget>[];

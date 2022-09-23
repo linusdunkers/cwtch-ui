@@ -57,7 +57,7 @@ class _FileSharingViewState extends State<FileSharingView> {
                     value: sharedFiles[index]["Active"],
                     activeTrackColor: Provider.of<Settings>(context).theme.defaultButtonColor,
                     inactiveTrackColor: Provider.of<Settings>(context).theme.defaultButtonDisabledColor,
-                    secondary: Icon(CwtchIcons.attach_file_24px, color: Provider.of<Settings>(context).current().mainTextColor),
+                    secondary: Icon(CwtchIcons.attached_file_2, color: Provider.of<Settings>(context).current().mainTextColor),
                     onChanged: (newValue) {
                       setState(() {
                         if (newValue) {

@@ -58,7 +58,7 @@ class _ServerRowState extends State<ServerRow> {
                 enableFeedback: true,
                 splashRadius: Material.defaultSplashRadius / 2,
                 tooltip: AppLocalizations.of(context)!.copyServerKeys,
-                icon: Icon(CwtchIcons.address_copy_2, color: Provider.of<Settings>(context).current().mainTextColor),
+                icon: Icon(CwtchIcons.address_copy, color: Provider.of<Settings>(context).current().mainTextColor),
                 onPressed: () {
                   Clipboard.setData(new ClipboardData(text: server.serverBundle));
                   final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.copiedToClipboardNotification));

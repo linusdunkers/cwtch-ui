@@ -101,15 +101,15 @@ class _MessageViewState extends State<MessageView> {
     var appBarButtons = <Widget>[];
 
     if (showFileSharing) {
-      appBarButtons.add(
-          IconButton(splashRadius: Material.defaultSplashRadius / 2, icon: Icon(Icons.folder_shared), tooltip: AppLocalizations.of(context)!.manageSharedFiles, onPressed: _pushFileSharingSettings));
+      appBarButtons.add(IconButton(
+          splashRadius: Material.defaultSplashRadius / 2, icon: Icon(CwtchIcons.manage_files), tooltip: AppLocalizations.of(context)!.manageSharedFiles, onPressed: _pushFileSharingSettings));
     }
 
     if (Provider.of<ContactInfoState>(context).isOnline()) {
       if (showFileSharing) {
         appBarButtons.add(IconButton(
           splashRadius: Material.defaultSplashRadius / 2,
-          icon: Icon(Icons.attach_file, size: 24, color: Provider.of<Settings>(context).theme.mainTextColor),
+          icon: Icon(CwtchIcons.attached_file_2, size: 26, color: Provider.of<Settings>(context).theme.mainTextColor),
           tooltip: AppLocalizations.of(context)!.tooltipSendFile,
           onPressed: Provider.of<AppState>(context).disableFilePicker
               ? null
@@ -186,20 +186,20 @@ class _MessageViewState extends State<MessageView> {
                           child: Provider.of<ContactInfoState>(context).isOnline()
                               ? Provider.of<ContactInfoState>(context).antispamTickets == 0
                                   ? Icon(
-                                      Icons.schedule_send,
-                                      size: 10.0,
+                                      CwtchIcons.anti_spam_3,
+                                      size: 14.0,
                                       semanticLabel: AppLocalizations.of(context)!.acquiringTicketsFromServer,
                                       color: Provider.of<Settings>(context).theme.portraitContactBadgeTextColor,
                                     )
                                   : Icon(
-                                      Icons.send,
+                                      CwtchIcons.anti_spam_2,
                                       color: Provider.of<Settings>(context).theme.portraitContactBadgeTextColor,
-                                      size: 10.0,
+                                      size: 14.0,
                                     )
                               : Icon(
                                   CwtchIcons.onion_off,
                                   color: Provider.of<Settings>(context).theme.portraitContactBadgeTextColor,
-                                  size: 10.0,
+                                  size: 14.0,
                                 )))
                       : null),
               SizedBox(
