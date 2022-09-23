@@ -34,7 +34,7 @@ dependencies:
   cupertino_icons: ^1.0.0
   ffi: ^1.2.1
   path_provider: ^2.0.0
-  crypto: 3.0.1
+  crypto: ^3.0.2
 
   glob: any
   scrollable_positioned_list: ^0.3.2
@@ -51,6 +51,8 @@ dependencies:
 dev_dependencies:
   msix: ^3.6.2
   build_runner: any
+  flutter_gherkin: ^3.0.0-rc.17
+
 #  integration_test: any
 # Uncomment to update lokalise translations (see README for list of deps to comment out bc incompatibilities)
 #dev_dependencies:
