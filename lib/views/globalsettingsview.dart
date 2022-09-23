@@ -407,7 +407,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                 },
                                 activeTrackColor: settings.theme.defaultButtonColor,
                                 inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
-                                secondary: Icon(Icons.attach_file, color: settings.current().mainTextColor),
+                                secondary: Icon(CwtchIcons.attached_file_2, color: settings.current().mainTextColor),
                               ),
                               Visibility(
                                 visible: settings.isExperimentEnabled(FileSharingExperiment),

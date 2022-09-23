@@ -50,7 +50,6 @@ dependencies:
 
 dev_dependencies:
   msix: ^3.6.2
-  flutter_gherkin: ^3.0.0-rc.9
   build_runner: any
 #  integration_test: any
 # Uncomment to update lokalise translations (see README for list of deps to comment out bc incompatibilities)
@@ -95,9 +94,9 @@ flutter:
     - assets/servers/
 
   fonts:
-    - family:  CwtchIcons
+    - family:  Cwtch
       fonts:
-        - asset: assets/fonts/CwtchIcons.ttf
+        - asset: assets/fonts/Cwtch.ttf
     - family: RobotoMono
       fonts:
           - asset: assets/fonts/RobotoMono-Regular.ttf
