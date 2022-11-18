@@ -111,17 +111,18 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                               width: MediaQuery.of(context).size.width / 4,
                               child: DropdownButton(
                                   isExpanded: true,
-                                  value: Provider.of<Settings>(context).locale.languageCode,
+                                  value: Provider.of<Settings>(context).locale.toString(),
                                   onChanged: (String? newValue) {
                                     setState(() {
-                                      settings.switchLocale(Locale(newValue!));
+                                      EnvironmentConfig.debugLog("setting language: $newValue");
+                                      settings.switchLocaleByCode(newValue!);
                                       saveSettings(context);
                                     });
                                   },
                                   items: AppLocalizations.supportedLocales.map<DropdownMenuItem<String>>((Locale value) {
                                     return DropdownMenuItem<String>(
-                                      value: value.languageCode,
-                                      child: Text(getLanguageFull(context, value.languageCode)),
+                                      value: value.toString(),
+                                      child: Text(getLanguageFull(context, value.languageCode, value.countryCode)),
                                     );
                                   }).toList()))),
                       SwitchListTile(
@@ -599,7 +600,7 @@ String constructVersionString(PackageInfo pinfo) {
 
 /// A slightly verbose way to extract the full language name from
 /// an individual language code. There might be a more efficient way of doing this.
-String getLanguageFull(context, String languageCode) {
+String getLanguageFull(context, String languageCode, String? countryCode) {
   if (languageCode == "en") {
     return AppLocalizations.of(context)!.localeEn;
   }
@@ -608,6 +609,9 @@ String getLanguageFull(context, String languageCode) {
   }
   if (languageCode == "fr") {
     return AppLocalizations.of(context)!.localeFr;
+  }
+  if (languageCode == "pt" && countryCode == "BR") {
+    return AppLocalizations.of(context)!.localePtBr;
   }
   if (languageCode == "pt") {
     return AppLocalizations.of(context)!.localePt;

@@ -1,6 +1,7 @@
 {
     "@@locale": "da",
-    "@@last_modified": "2022-09-15T03:18:37+02:00",
+    "@@last_modified": "2022-11-18T15:19:11+01:00",
+    "localePtBr": "Brazilian Portuguese \/ Português do Brasil",
     "localeNl": "Dutch \/ Dutch",
     "experimentQRCodeDescription": "QR Code support allows sharing data (such as profile identity) by QR Codes",
     "enableExperimentQRCode": "QR Codes",

@@ -111,7 +111,7 @@ class Settings extends ChangeNotifier {
     this.setTheme(settings["Theme"], settings["ThemeMode"] ?? mode_dark);
 
     // Set Locale and notify listeners
-    switchLocale(Locale(settings["Locale"]));
+    switchLocaleByCode(settings["Locale"]);
 
     blockUnknownConnections = settings["BlockUnknownConnections"] ?? false;
     streamerMode = settings["StreamerMode"] ?? false;
@@ -151,6 +151,16 @@ class Settings extends ChangeNotifier {
       packageInfo = newPackageInfo;
       notifyListeners();
     });
+  }
+
+  /// Switch the Locale of the App by Language Code
+  switchLocaleByCode(String languageCode) {
+    var code = languageCode.split("_");
+    if (code.length == 1) {
+      this.switchLocale(Locale(languageCode));
+    } else {
+      this.switchLocale(Locale(code[0],code[1]));
+    }
   }
 
   /// Switch the Locale of the App
@@ -397,7 +407,7 @@ class Settings extends ChangeNotifier {
   /// event bus.
   dynamic asJson() {
     return {
-      "Locale": this.locale.languageCode,
+      "Locale": this.locale.toString(),
       "Theme": theme.theme,
       "ThemeMode": theme.mode,
       "PreviousPid": -1,

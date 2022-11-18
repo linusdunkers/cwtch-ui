@@ -1,6 +1,7 @@
 {
     "@@locale": "tr",
-    "@@last_modified": "2022-09-15T03:18:37+02:00",
+    "@@last_modified": "2022-11-18T15:19:11+01:00",
+    "localePtBr": "Brazilian Portuguese \/ Português do Brasil",
     "experimentQRCodeDescription": "QR Kod desteği profil kimliği gibi verilerin QR Kodla paylaşılmasına olanak tanır",
     "acquiringTicketsFromServer": "Spame Karşı Sınama",
     "acquiredTicketsFromServer": "Spame Karşı Sınama Tamamlandı",
