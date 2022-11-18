@@ -1,5 +1,5 @@
 {
-    "@@locale": "pt",
+    "@@locale": "ptbr",
     "@@last_modified": "2022-09-15T03:18:37+02:00",
     "localeNl": "Dutch \/ Dutch",
     "experimentQRCodeDescription": "O suporte a QR Code permite o compartilhamento de dados (como identidade de perfil) através dos QR Codes",
@@ -32,6 +32,7 @@
     "localeEs": "Spanish \/ Español",
     "localeDa": "Danish \/ Dansk",
     "localePt": "Portuguese \/ Portuguesa",
+    "localePtBr": "Brazilian Portuguese \/ Português do Brasil",
     "localeFr": "French \/ Français",
     "localeCy": "Welsh \/ Cymraeg",
     "settingImagePreviewsDescription": "Imagens e Fotos de Perfil serão baixadas e visualizadas automaticamente. Recomendamos que você não ative esta Experiência se usar Cwtch com contatos não confiáveis.",
