@@ -339,7 +339,7 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                           showAlertDialog(context);
                                         },
                                         icon: Icon(Icons.delete_forever),
-                                        label: Text(AppLocalizations.of(context)!.deleteBtn),
+                                        label: Text(AppLocalizations.of(context)!.deleteBtn, style: TextStyle(color: Provider.of<Settings>(context).theme.defaultButtonActiveColor)),
                                       )))
                             ]))))));
       });
