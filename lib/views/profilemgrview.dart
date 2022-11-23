@@ -336,7 +336,7 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
   Widget _buildProfileManager() {
     return Consumer<ProfileListState>(
       builder: (context, pls, child) {
-        final tiles = pls.profiles.map(
+        var tiles = pls.profiles.map(
           (ProfileInfoState profile) {
             return ChangeNotifierProvider<ProfileInfoState>.value(
               value: profile,
@@ -345,17 +345,70 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
           },
         );
 
+        List<ChangeNotifierProvider<ProfileInfoState>> widgetTiles = tiles.toList(growable: true);
+        widgetTiles.add(ChangeNotifierProvider<ProfileInfoState>.value(
+            value: ProfileInfoState(onion: ""),
+            builder: (context, child) {
+              return Container(
+                  margin: EdgeInsets.only(top: 20),
+                  width: MediaQuery.of(context).size.width,
+                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+                    Tooltip(
+                        message: AppLocalizations.of(context)!.tooltipUnlockProfiles,
+                        child: TextButton.icon(
+                          icon: Icon(CwtchIcons.lock_open_24px, color: Provider.of<Settings>(context).current().mainTextColor),
+                          style: TextButton.styleFrom(
+                            minimumSize: Size(MediaQuery.of(context).size.width * 0.79, 50),
+                            maximumSize: Size(MediaQuery.of(context).size.width * 0.8, 50),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.horizontal(left: Radius.circular(180), right: Radius.circular(180))),
+                          ),
+                          label: Text(
+                            AppLocalizations.of(context)!.unlock,
+                            semanticsLabel: AppLocalizations.of(context)!.unlock,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          onPressed: () {
+                            _modalUnlockProfiles();
+                          },
+                        )),
+                  ]));
+            }));
+
         final divided = ListTile.divideTiles(
           context: context,
-          tiles: tiles,
+          tiles: widgetTiles,
         ).toList();
 
+        // Display the welcome message / unlock profiles button to new accounts
         if (tiles.isEmpty) {
           return Center(
-              child: Text(
-            AppLocalizations.of(context)!.unlockProfileTip,
-            textAlign: TextAlign.center,
-          ));
+              child: Column(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
+            Text(AppLocalizations.of(context)!.unlockProfileTip, textAlign: TextAlign.center),
+            Container(
+                width: MediaQuery.of(context).size.width,
+                margin: EdgeInsets.only(top: 20),
+                child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+                  Tooltip(
+                      message: AppLocalizations.of(context)!.addProfileTitle,
+                      child: TextButton.icon(
+                        icon: Icon(Icons.add, color: Provider.of<Settings>(context).current().mainTextColor),
+                        style: TextButton.styleFrom(
+                          minimumSize: Size(MediaQuery.of(context).size.width * 0.79, 50),
+                          maximumSize: Size(MediaQuery.of(context).size.width * 0.8, 50),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.horizontal(left: Radius.circular(180), right: Radius.circular(180))),
+                        ),
+                        label: Text(
+                          AppLocalizations.of(context)!.addProfileTitle,
+                          semanticsLabel: AppLocalizations.of(context)!.addProfileTitle,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        onPressed: () {
+                          _modalAddImportProfiles();
+                        },
+                      )),
+                ])),
+            widgetTiles[0]
+          ]));
         }
 
         return ListView(children: divided);

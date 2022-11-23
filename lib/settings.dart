@@ -165,7 +165,7 @@ class Settings extends ChangeNotifier {
     if (code.length == 1) {
       this.switchLocale(Locale(languageCode));
     } else {
-      this.switchLocale(Locale(code[0],code[1]));
+      this.switchLocale(Locale(code[0], code[1]));
     }
   }
 
