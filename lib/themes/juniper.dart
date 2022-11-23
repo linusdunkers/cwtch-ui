@@ -1,3 +1,4 @@
+/// A theme dedicated to Juniper
 import 'dart:ui';
 import 'dart:core';
 
