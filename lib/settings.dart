@@ -95,10 +95,16 @@ class Settings extends ChangeNotifier {
       }
     }
 
-    // If message formatting has not explicitly been turned off, then
-    // turn it on by default.
+    // allow message formatting to be turned off even when experiments are
+    // disabled...
     if (experiment == FormattingExperiment) {
-      return true;
+      if (this.experiments.containsKey(FormattingExperiment)) {
+        // If message formatting has not explicitly been turned off, then
+        // turn it on by default (even when experiments are disabled)
+        return this.experiments[experiment]! == true;
+      } else {
+        return true; // enable by default
+      }
     }
 
     return false;
