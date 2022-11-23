@@ -129,21 +129,23 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
                           ]),
 
                           // Address Copy Button
-                          Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                            SizedBox(
-                              height: 20,
-                            ),
-                            CwtchLabel(label: AppLocalizations.of(context)!.addressLabel),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            CwtchButtonTextField(
-                              controller: TextEditingController(text: Provider.of<ContactInfoState>(context, listen: false).onion),
-                              onPressed: _copyOnion,
-                              icon: Icon(CwtchIcons.address_copy),
-                              tooltip: AppLocalizations.of(context)!.copyBtn,
-                            )
-                          ]),
+                          Visibility(
+                              visible: settings.streamerMode == false,
+                              child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                CwtchLabel(label: AppLocalizations.of(context)!.addressLabel),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                CwtchButtonTextField(
+                                  controller: TextEditingController(text: Provider.of<ContactInfoState>(context, listen: false).onion),
+                                  onPressed: _copyOnion,
+                                  icon: Icon(CwtchIcons.address_copy),
+                                  tooltip: AppLocalizations.of(context)!.copyBtn,
+                                )
+                              ])),
                           Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
                             SizedBox(
                               height: 20,
