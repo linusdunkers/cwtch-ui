@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 import 'package:cwtch/cwtch_icons_icons.dart';
 import 'package:cwtch/models/servers.dart';
+import 'package:cwtch/themes/juniper.dart';
 import 'package:cwtch/widgets/folderpicker.dart';
 import 'package:cwtch/themes/cwtch.dart';
 import 'package:cwtch/themes/ghost.dart';
@@ -676,6 +677,8 @@ String getThemeName(context, String theme) {
       return AppLocalizations.of(context)!.themeNameVampire;
     case witch_theme:
       return AppLocalizations.of(context)!.themeNameWitch;
+    case juniper_theme:
+      return "Juniper"; // Juniper is a noun, and doesn't get subject to translation...
   }
   return theme;
 }

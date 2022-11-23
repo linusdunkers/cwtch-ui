@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'dart:core';
 
 import 'package:cwtch/themes/cwtch.dart';
+import 'package:cwtch/themes/juniper.dart';
 import 'package:cwtch/themes/mermaid.dart';
 import 'package:cwtch/themes/neon1.dart';
 import 'package:cwtch/themes/pumpkin.dart';
@@ -21,6 +22,7 @@ const mode_dark = "dark";
 final themes = {
   cwtch_theme: {mode_light: CwtchLight(), mode_dark: CwtchDark()},
   ghost_theme: {mode_light: GhostLight(), mode_dark: GhostDark()},
+  juniper_theme: {mode_light: Juniper(), mode_dark: Juniper()},
   mermaid_theme: {mode_light: MermaidLight(), mode_dark: MermaidDark()},
   midnight_theme: {mode_light: MidnightLight(), mode_dark: MidnightDark()},
   neon1_theme: {mode_light: Neon1Light(), mode_dark: Neon1Dark()},
