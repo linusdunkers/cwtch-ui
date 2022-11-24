@@ -83,12 +83,14 @@ class QuotedMessageBubbleState extends State<QuotedMessageBubble> {
             // If the sender is not us, then we want to give them a nickname...
             String qMessageSender;
 
-            // if we are quoted then display our nickname
+            // if we sent the quoted message then display our nickname
             if (qMessage.getMetadata().senderHandle == Provider.of<ProfileInfoState>(context).onion) {
               qMessageSender = Provider.of<ProfileInfoState>(context).nickname;
             } else {
-              qMessageSender = Provider.of<MessageMetadata>(context).senderHandle;
-              ContactInfoState? contact = Provider.of<ProfileInfoState>(context).contactList.findContact(qMessage.getMetadata().senderHandle);
+              // default to handle
+              qMessageSender = qMessage.getMetadata().senderHandle;
+              // if we have the handle as a contact then replace with the nickname...
+              ContactInfoState? contact = Provider.of<ProfileInfoState>(context).contactList.findContact(qMessageSender);
               if (contact != null) {
                 qMessageSender = contact.nickname;
               }

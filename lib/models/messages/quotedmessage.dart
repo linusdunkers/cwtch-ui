@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cwtch/config.dart';
 import 'package:cwtch/models/message.dart';
 import 'package:cwtch/models/messages/malformedmessage.dart';
 import 'package:cwtch/widgets/malformedbubble.dart';
@@ -7,6 +8,9 @@ import 'package:cwtch/widgets/messagerow.dart';
 import 'package:cwtch/widgets/quotedmessage.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+
+import '../../settings.dart';
+import '../../third_party/linkify/flutter_linkify.dart';
 
 class QuotedMessageStructure {
   final String quotedHash;
@@ -34,9 +38,16 @@ class QuotedMessage extends Message {
               this.content,
             );
             var content = message["body"];
-            return Text(
-              content,
-            );
+            var formatMessages = Provider.of<Settings>(context).isExperimentEnabled(FormattingExperiment);
+            return SelectableLinkify(
+                text: content + '\u202F',
+                options: LinkifyOptions(messageFormatting: formatMessages, parseLinks: false, looseUrl: true, defaultToHttps: true),
+                linkifiers: [UrlLinkifier()],
+                onOpen: null,
+                textAlign: TextAlign.left,
+                style: TextStyle(overflow: TextOverflow.ellipsis),
+                codeStyle: TextStyle(overflow: TextOverflow.ellipsis),
+                textWidthBasis: TextWidthBasis.longestLine);
           } catch (e) {
             return MalformedBubble();
           }

@@ -10,6 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
+import '../../settings.dart';
+import '../../third_party/linkify/flutter_linkify.dart';
+
 class TextMessage extends Message {
   final MessageMetadata metadata;
   final String content;
@@ -21,9 +24,16 @@ class TextMessage extends Message {
     return ChangeNotifierProvider.value(
         value: this.metadata,
         builder: (bcontext, child) {
-          return Text(
-            this.content,
-            overflow: TextOverflow.ellipsis,
+          var formatMessages = Provider.of<Settings>(bcontext).isExperimentEnabled(FormattingExperiment);
+          return SelectableLinkify(
+            text: content + '\u202F',
+            options: LinkifyOptions(messageFormatting: formatMessages, parseLinks: false, looseUrl: true, defaultToHttps: true),
+            linkifiers: [UrlLinkifier()],
+            onOpen: null,
+            textAlign: TextAlign.left,
+            style: TextStyle(overflow: TextOverflow.ellipsis),
+            codeStyle: TextStyle(overflow: TextOverflow.ellipsis),
+            textWidthBasis: TextWidthBasis.longestLine,
           );
         });
   }
