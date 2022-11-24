@@ -25,7 +25,6 @@ class Juniper extends CwtchDark {
   static final Color accent = Color(0xFF9E6A56);
   static final Color accentAlt = Color(0xFF845A48);
 
-
   get theme => juniper_theme;
   get mode => mode_dark;
 

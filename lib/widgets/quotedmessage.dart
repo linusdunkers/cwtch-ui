@@ -1,17 +1,14 @@
 import 'package:cwtch/controllers/open_link_modal.dart';
-import 'package:cwtch/models/appstate.dart';
 import 'package:cwtch/models/contact.dart';
 import 'package:cwtch/models/message.dart';
 import 'package:cwtch/models/profile.dart';
 import 'package:cwtch/third_party/linkify/flutter_linkify.dart';
-import 'package:cwtch/views/contactsview.dart';
 import 'package:cwtch/widgets/malformedbubble.dart';
 import 'package:cwtch/widgets/messageloadingbubble.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../settings.dart';
 import 'messagebubbledecorations.dart';
 
@@ -45,6 +42,7 @@ class QuotedMessageBubbleState extends State<QuotedMessageBubble> {
         senderDisplayStr = Provider.of<MessageMetadata>(context).senderHandle;
       }
     }
+
     var wdgSender = SelectableText(senderDisplayStr,
         style: TextStyle(fontSize: 9.0, color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor));
 
@@ -81,8 +79,28 @@ class QuotedMessageBubbleState extends State<QuotedMessageBubble> {
         if (snapshot.hasData) {
           try {
             var qMessage = (snapshot.data! as Message);
-            // Swap the background color for quoted tweets..
+
+            // If the sender is not us, then we want to give them a nickname...
+            String qMessageSender;
+
+            // if we are quoted then display our nickname
+            if (qMessage.getMetadata().senderHandle == Provider.of<ProfileInfoState>(context).onion) {
+              qMessageSender = Provider.of<ProfileInfoState>(context).nickname;
+            } else {
+              qMessageSender = Provider.of<MessageMetadata>(context).senderHandle;
+              ContactInfoState? contact = Provider.of<ProfileInfoState>(context).contactList.findContact(qMessage.getMetadata().senderHandle);
+              if (contact != null) {
+                qMessageSender = contact.nickname;
+              }
+            }
+
             var qTextColor = fromMe ? Provider.of<Settings>(context).theme.messageFromOtherTextColor : Provider.of<Settings>(context).theme.messageFromMeTextColor;
+
+            var wdgReplyingTo = SelectableText(
+              AppLocalizations.of(context)!.replyingTo.replaceAll("%1", qMessageSender),
+              style: TextStyle(fontSize: 10, color: qTextColor.withOpacity(0.8)),
+            );
+            // Swap the background color for quoted tweets..
             return MouseRegion(
                 cursor: SystemMouseCursors.click,
                 child: GestureDetector(
@@ -103,15 +121,18 @@ class QuotedMessageBubbleState extends State<QuotedMessageBubble> {
                           color: fromMe ? Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor : Provider.of<Settings>(context).theme.messageFromMeBackgroundColor,
                         ),
                         height: 75,
-                        child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start, children: [
-                          Padding(padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0), child: Icon(Icons.reply, size: 32, color: qTextColor)),
-                          Flexible(
-                              child: DefaultTextStyle(
-                            textWidthBasis: TextWidthBasis.parent,
-                            child: qMessage.getPreviewWidget(context),
-                            style: TextStyle(color: qTextColor),
-                            overflow: TextOverflow.fade,
-                          ))
+                        child: Column(children: [
+                          Align(alignment: Alignment.centerLeft, child: wdgReplyingTo),
+                          Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start, children: [
+                            Padding(padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0), child: Icon(Icons.reply, size: 32, color: qTextColor)),
+                            Flexible(
+                                child: DefaultTextStyle(
+                              textWidthBasis: TextWidthBasis.parent,
+                              child: qMessage.getPreviewWidget(context),
+                              style: TextStyle(color: qTextColor),
+                              overflow: TextOverflow.fade,
+                            ))
+                          ])
                         ]))));
           } catch (e) {
             return MalformedBubble();
