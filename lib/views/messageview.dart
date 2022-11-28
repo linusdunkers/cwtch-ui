@@ -568,6 +568,7 @@ class _MessageViewState extends State<MessageView> {
                   focusNode: focusNode,
                   autofocus: !Platform.isAndroid,
                   textInputAction: TextInputAction.newline,
+                  textCapitalization: TextCapitalization.sentences,
                   keyboardType: TextInputType.multiline,
                   enableIMEPersonalizedLearning: false,
                   minLines: 1,
