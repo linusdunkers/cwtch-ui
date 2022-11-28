@@ -358,8 +358,8 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
                         child: TextButton.icon(
                           icon: Icon(CwtchIcons.lock_open_24px, color: Provider.of<Settings>(context).current().mainTextColor),
                           style: TextButton.styleFrom(
-                            minimumSize: Size(MediaQuery.of(context).size.width * 0.79, 50),
-                            maximumSize: Size(MediaQuery.of(context).size.width * 0.8, 50),
+                            minimumSize: Size(MediaQuery.of(context).size.width * 0.79, 80),
+                            maximumSize: Size(MediaQuery.of(context).size.width * 0.8, 80),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.horizontal(left: Radius.circular(180), right: Radius.circular(180))),
                           ),
                           label: Text(
@@ -393,8 +393,8 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
                       child: TextButton.icon(
                         icon: Icon(Icons.add, color: Provider.of<Settings>(context).current().mainTextColor),
                         style: TextButton.styleFrom(
-                          minimumSize: Size(MediaQuery.of(context).size.width * 0.79, 50),
-                          maximumSize: Size(MediaQuery.of(context).size.width * 0.8, 50),
+                          minimumSize: Size(MediaQuery.of(context).size.width * 0.79, 80),
+                          maximumSize: Size(MediaQuery.of(context).size.width * 0.8, 80),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.horizontal(left: Radius.circular(180), right: Radius.circular(180))),
                         ),
                         label: Text(

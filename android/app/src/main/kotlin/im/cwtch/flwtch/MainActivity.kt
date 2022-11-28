@@ -136,30 +136,36 @@ class MainActivity: FlutterActivity() {
                     "filekey" to this.dlToFileKey
             )), ErrorLogResult(""));//placeholder; this Result is never actually invoked
         } else if (requestCode == PREVIEW_EXPORT_REQUEST_CODE) {
-            val targetPath = intent!!.getData().toString()
-            val sourcePath = Paths.get(this.exportFromPath);
-            val targetUri = Uri.parse(targetPath);
-            val os = this.applicationContext.getContentResolver().openOutputStream(targetUri);
-            val bytesWritten = Files.copy(sourcePath, os);
-            Log.d("MainActivity:PREVIEW_EXPORT", "copied " + bytesWritten.toString() + " bytes");
-            if (bytesWritten != 0L) {
-                os?.flush();
-                os?.close();
-                //Files.delete(sourcePath);
+            try {
+                val sourcePath = Paths.get(this.exportFromPath);
+                val targetUri = intent!!.getData();
+                val os = this.applicationContext.getContentResolver().openOutputStream(targetUri!!);
+                val bytesWritten = Files.copy(sourcePath, os);
+                Log.d("MainActivity:PREVIEW_EXPORT", "copied " + bytesWritten.toString() + " bytes");
+                if (bytesWritten != 0L) {
+                    os?.flush();
+                    os?.close();
+                    //Files.delete(sourcePath);
+                }
+            } catch (e: Exception) {
+                Log.d("MainActivity:PREVIEW_EXPORT FAILED", e.toString());
             }
         } else if (requestCode == PROFILE_EXPORT_REQUEST_CODE ) {
-            val targetPath = intent!!.getData().toString()
             val srcFile = StringBuilder().append(this.applicationContext.cacheDir).append("/").append(this.exportFromPath).toString();
-            Log.i("MainActivity:PREVIEW_EXPORT", "exporting previewed file " + srcFile);
-            val sourcePath = Paths.get(srcFile);
-            val targetUri = Uri.parse(targetPath);
-            val os = this.applicationContext.getContentResolver().openOutputStream(targetUri);
-            val bytesWritten = Files.copy(sourcePath, os);
-            Log.d("MainActivity:PREVIEW_EXPORT", "copied " + bytesWritten.toString() + " bytes");
-            if (bytesWritten != 0L) {
-                os?.flush();
-                os?.close();
-                //Files.delete(sourcePath);
+            Log.i("MainActivity:EXPORT_PROFILE", "exporting profile: " + srcFile);
+            try {
+                val sourcePath = Paths.get(srcFile);
+                val targetUri = intent!!.getData();
+                val os = this.applicationContext.getContentResolver().openOutputStream(targetUri!!);
+                val bytesWritten = Files.copy(sourcePath, os);
+                Log.d("MainActivity:EXPORT_PROFILE", "copied " + bytesWritten.toString() + " bytes");
+                if (bytesWritten != 0L) {
+                    os?.flush();
+                    os?.close();
+                    //Files.delete(sourcePath);
+                }
+            } catch (e: Exception) {
+                Log.d("MainActivity:EXPORT_PROFILE FAILED",  e.toString());
             }
         }
     }
@@ -280,6 +286,12 @@ class MainActivity: FlutterActivity() {
                 startActivityForResult(intent, PREVIEW_EXPORT_REQUEST_CODE)
             }
             "ExportProfile" -> {
+
+                val profileOnion: String = call.argument("ProfileOnion") ?: ""
+                val file: String = StringBuilder().append(this.applicationContext.cacheDir).append("/").append(call.argument("file") ?: "").toString()
+                Log.i("FlwtchWorker", "constructing exported file " + file);
+                Cwtch.exportProfile(profileOnion,file)
+
                 this.exportFromPath = argmap["file"] ?: ""
                 val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
                     addCategory(Intent.CATEGORY_OPENABLE)
@@ -516,12 +528,6 @@ class MainActivity: FlutterActivity() {
                 val v: String = call.argument("Val") ?: ""
                 Cwtch.setServerAttribute(serverOnion, key, v)
             }
-            "ExportProfile" -> {
-                val profileOnion: String = call.argument("ProfileOnion") ?: ""
-                val file: String = StringBuilder().append(this.applicationContext.cacheDir).append("/").append(call.argument("file") ?: "").toString()
-                Log.i("FlwtchWorker", "constructing exported file " + file);
-                Cwtch.exportProfile(profileOnion,file)
-            }
             "ImportProfile" -> {
                 val file: String = call.argument("file") ?: ""
                 val pass: String = call.argument("pass") ?: ""
@@ -584,6 +590,7 @@ class MainActivity: FlutterActivity() {
             myReceiver = null;
         }
     }
+
 
     override fun onDestroy() {
         super.onDestroy()
