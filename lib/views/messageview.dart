@@ -297,8 +297,8 @@ class _MessageViewState extends State<MessageView> {
 
     // Do this after we trim to preserve enter-behaviour...
     bool isOffline = Provider.of<ContactInfoState>(context, listen: false).isOnline() == false;
-    bool performingAntiSpam = Provider.of<ContactInfoState>(context).antispamTickets == 0;
-    bool isGroup = Provider.of<ContactInfoState>(context).isGroup;
+    bool performingAntiSpam = Provider.of<ContactInfoState>(context, listen: false).antispamTickets == 0;
+    bool isGroup = Provider.of<ContactInfoState>(context, listen: false).isGroup;
     if (isOffline || (isGroup && performingAntiSpam)) {
       return;
     }
@@ -354,7 +354,7 @@ class _MessageViewState extends State<MessageView> {
   }
 
   void _sendMessageHandler(dynamic messageJson) {
-    if (Provider.of<ContactInfoState>(context).isGroup && Provider.of<ContactInfoState>(context, listen: false).antispamTickets == 0) {
+    if (Provider.of<ContactInfoState>(context, listen: false).isGroup && Provider.of<ContactInfoState>(context, listen: false).antispamTickets == 0) {
       final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.acquiringTicketsFromServer));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       return;
