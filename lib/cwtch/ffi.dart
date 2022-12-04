@@ -153,6 +153,7 @@ class CwtchFfi implements Cwtch {
     String cwtchDir = "";
     if (Platform.isLinux) {
       cwtchDir = envVars['CWTCH_HOME'] ?? path.join(envVars['HOME']!, ".cwtch");
+      home = envVars['HOME'] ?? "";
       if (await File("linux/Tor/tor").exists()) {
         bundledTor = "linux/Tor/tor";
       } else if (await File("lib/Tor/tor").exists()) {
