@@ -1,6 +1,10 @@
 {
     "@@locale": "cy",
-    "@@last_modified": "2022-11-18T15:19:11+01:00",
+    "@@last_modified": "2022-12-05T21:06:07+01:00",
+    "profileEnabledDescription": "Start or stop the profile",
+    "profileAutostartDescription": "Controls if the profile will be automatically launched on startup",
+    "profileEnabled": "Enable",
+    "profileAutostartLabel": "Autostart",
     "localePtBr": "Brazilian Portuguese \/ Português do Brasil",
     "localeNl": "Dutch \/ Dutch",
     "experimentQRCodeDescription": "QR Code support allows sharing data (such as profile identity) by QR Codes",

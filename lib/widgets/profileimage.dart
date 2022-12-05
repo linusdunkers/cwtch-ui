@@ -116,9 +116,9 @@ class _ProfileImageState extends State<ProfileImage> {
                 Center(
 
 
-                child: ImageIcon(
-                  AssetImage("assets/core/negative_heart_512px.png"),
-                  size: widget.diameter / 1.25,
+                child: Icon(
+                  CwtchIcons.negative_heart_24px,
+                  size: widget.diameter / 1.5,
                   color: Provider.of<Settings>(context).theme.portraitOfflineBorderColor,
                 )
 

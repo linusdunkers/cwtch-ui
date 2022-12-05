@@ -174,8 +174,8 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                               Visibility(
                                   visible: Provider.of<ProfileInfoState>(context).onion.isNotEmpty,
                                   child: SwitchListTile(
-                                    title: Text(AppLocalizations.of(context)!.serverEnabled, style: TextStyle(color: Provider.of<Settings>(context).current().mainTextColor)),
-                                    subtitle: Text(AppLocalizations.of(context)!.serverEnabledDescription),
+                                    title: Text(AppLocalizations.of(context)!.profileEnabled, style: TextStyle(color: Provider.of<Settings>(context).current().mainTextColor)),
+                                    subtitle: Text(AppLocalizations.of(context)!.profileEnabledDescription),
                                     value: Provider.of<ProfileInfoState>(context).enabled,
                                     onChanged: (bool value) {
                                       Provider.of<ProfileInfoState>(context).enabled = value;
@@ -192,8 +192,8 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
 
                               // Auto start
                               SwitchListTile(
-                                title: Text(AppLocalizations.of(context)!.serverAutostartLabel, style: TextStyle(color: Provider.of<Settings>(context).current().mainTextColor)),
-                                subtitle: Text(AppLocalizations.of(context)!.serverAutostartDescription),
+                                title: Text(AppLocalizations.of(context)!.profileAutostartLabel, style: TextStyle(color: Provider.of<Settings>(context).current().mainTextColor)),
+                                subtitle: Text(AppLocalizations.of(context)!.profileAutostartDescription),
                                 value: Provider.of<ProfileInfoState>(context).autostart,
                                 onChanged: (bool value) {
                                   Provider.of<ProfileInfoState>(context).autostart = value;
@@ -397,6 +397,7 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
     // match (and are provided if the user has requested an encrypted profile).
     if (_formKey.currentState!.validate()) {
       if (Provider.of<ProfileInfoState>(context, listen: false).onion.isEmpty) {
+        // TODO: save autostart in create flow
         if (usePassword == true) {
           Provider.of<FlwtchState>(context, listen: false).cwtch.CreateProfile(ctrlrNick.value.text, ctrlrPass.value.text);
           Navigator.of(context).pop();
