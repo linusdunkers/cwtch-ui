@@ -364,6 +364,14 @@ class MainActivity: FlutterActivity() {
                 val pass: String = call.argument("pass") ?: ""
                 Cwtch.loadProfiles(pass)
             }
+            "ActivatePeerEngine" -> {
+                val profile: String = call.argument("profile") ?: ""
+                Cwtch.activatePeerEngine(profile)
+            }
+            "DeactivatePeerEngine" -> {
+                val profile: String = call.argument("profile") ?: ""
+                Cwtch.deactivatePeerEngine(profile)
+            }
             "ChangePassword" -> {
                 val profile: String = call.argument("ProfileOnion") ?: ""
                 val pass: String = call.argument("OldPass") ?: ""

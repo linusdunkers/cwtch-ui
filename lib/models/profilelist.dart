@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 
@@ -7,11 +9,11 @@ class ProfileListState extends ChangeNotifier {
   List<ProfileInfoState> _profiles = [];
   int get num => _profiles.length;
 
-  void add(String onion, String name, String picture, String defaultPicture, String contactsJson, String serverJson, bool online, bool encrypted) {
+  void add(String onion, String name, String picture, String defaultPicture, String contactsJson, String serverJson, bool online, bool autostart, bool encrypted) {
     var idx = _profiles.indexWhere((element) => element.onion == onion);
     if (idx == -1) {
       _profiles.add(ProfileInfoState(
-          onion: onion, nickname: name, imagePath: picture, defaultImagePath: defaultPicture, contactsJson: contactsJson, serversJson: serverJson, online: online, encrypted: encrypted));
+          onion: onion, nickname: name, imagePath: picture, defaultImagePath: defaultPicture, contactsJson: contactsJson, serversJson: serverJson, online: online, autostart: autostart,  encrypted: encrypted));
     } else {
       _profiles[idx].updateFrom(onion, name, picture, contactsJson, serverJson, online);
     }

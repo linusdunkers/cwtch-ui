@@ -169,6 +169,45 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                     )
                                   ])),
                               // We only allow setting password types on profile creation
+
+                              // Enabled
+                              Visibility(
+                                  visible: Provider.of<ProfileInfoState>(context).onion.isNotEmpty,
+                                  child: SwitchListTile(
+                                    title: Text(AppLocalizations.of(context)!.serverEnabled, style: TextStyle(color: Provider.of<Settings>(context).current().mainTextColor)),
+                                    subtitle: Text(AppLocalizations.of(context)!.serverEnabledDescription),
+                                    value: Provider.of<ProfileInfoState>(context).enabled,
+                                    onChanged: (bool value) {
+                                      Provider.of<ProfileInfoState>(context).enabled = value;
+                                      if (value) {
+                                        Provider.of<FlwtchState>(context, listen: false).cwtch.ActivatePeerEngine(Provider.of<ProfileInfoState>(context).onion);
+                                      } else {
+                                        Provider.of<FlwtchState>(context, listen: false).cwtch.DeactivatePeerEngine(Provider.of<ProfileInfoState>(context).onion);
+                                      }
+                                    },
+                                    activeTrackColor: Provider.of<Settings>(context).theme.defaultButtonColor,
+                                    inactiveTrackColor: Provider.of<Settings>(context).theme.defaultButtonDisabledColor,
+                                    secondary: Icon(CwtchIcons.negative_heart_24px, color: Provider.of<Settings>(context).current().mainTextColor),
+                                  )),
+
+                              // Auto start
+                              SwitchListTile(
+                                title: Text(AppLocalizations.of(context)!.serverAutostartLabel, style: TextStyle(color: Provider.of<Settings>(context).current().mainTextColor)),
+                                subtitle: Text(AppLocalizations.of(context)!.serverAutostartDescription),
+                                value: Provider.of<ProfileInfoState>(context).autostart,
+                                onChanged: (bool value) {
+                                  Provider.of<ProfileInfoState>(context).autostart = value;
+
+                                  if (!Provider.of<ProfileInfoState>(context).onion.isEmpty) {
+                                    Provider.of<FlwtchState>(context, listen: false).cwtch.SetProfileAttribute(Provider.of<ProfileInfoState>(context).onion, "profile.autostart", value ? "true" : "false");
+                                  }
+                                },
+                                activeTrackColor: Provider.of<Settings>(context).theme.defaultButtonColor,
+                                inactiveTrackColor: Provider.of<Settings>(context).theme.defaultButtonDisabledColor,
+                                secondary: Icon(CwtchIcons.favorite_24dp, color: Provider.of<Settings>(context).current().mainTextColor),
+                              ),
+
+
                               Visibility(
                                   visible: Provider.of<ProfileInfoState>(context).onion.isEmpty,
                                   child: SizedBox(

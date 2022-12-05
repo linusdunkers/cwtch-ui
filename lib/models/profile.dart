@@ -26,6 +26,9 @@ class ProfileInfoState extends ChangeNotifier {
   // in the constructor if the profile is encrypted with the defacto password.
   bool _encrypted = true;
 
+  bool _autostart = true;
+  bool _enabled = false;
+
   ProfileInfoState({
     required this.onion,
     nickname = "",
@@ -35,6 +38,7 @@ class ProfileInfoState extends ChangeNotifier {
     contactsJson = "",
     serversJson = "",
     online = false,
+    autostart = true,
     encrypted = true,
     String,
   }) {
@@ -43,6 +47,11 @@ class ProfileInfoState extends ChangeNotifier {
     this._defaultImagePath = defaultImagePath;
     this._unreadMessages = unreadMessages;
     this._online = online;
+    this._enabled = _enabled;
+    this._autostart = autostart;
+    if (autostart) {
+      this._enabled = true;
+    }
     this._encrypted = encrypted;
 
     _contacts.connectServers(this._servers);
@@ -127,6 +136,20 @@ class ProfileInfoState extends ChangeNotifier {
 
   set imagePath(String newVal) {
     this._imagePath = newVal;
+    notifyListeners();
+  }
+
+  bool get enabled => this._enabled;
+
+  set enabled(bool newVal) {
+    this._enabled = newVal;
+    notifyListeners();
+  }
+
+  bool get autostart => this._autostart;
+
+  set autostart(bool newVal) {
+    this._autostart = newVal;
     notifyListeners();
   }
 

@@ -37,6 +37,7 @@ class _ProfileRowState extends State<ProfileRow> {
                       badgeCount: profile.unreadMessages,
                       badgeColor: Provider.of<Settings>(context).theme.portraitProfileBadgeColor,
                       badgeTextColor: Provider.of<Settings>(context).theme.portraitProfileBadgeTextColor,
+                      disabled: !profile.enabled,
                       diameter: 64.0,
                       imagePath: Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment) ? profile.imagePath : profile.defaultImagePath,
                       border: profile.isOnline ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor : Provider.of<Settings>(context).theme.portraitOfflineBorderColor)),
