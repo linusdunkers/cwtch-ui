@@ -169,6 +169,45 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                     )
                                   ])),
                               // We only allow setting password types on profile creation
+
+                              // Enabled
+                              Visibility(
+                                  visible: Provider.of<ProfileInfoState>(context).onion.isNotEmpty,
+                                  child: SwitchListTile(
+                                    title: Text(AppLocalizations.of(context)!.profileEnabled, style: TextStyle(color: Provider.of<Settings>(context).current().mainTextColor)),
+                                    subtitle: Text(AppLocalizations.of(context)!.profileEnabledDescription),
+                                    value: Provider.of<ProfileInfoState>(context).enabled,
+                                    onChanged: (bool value) {
+                                      Provider.of<ProfileInfoState>(context).enabled = value;
+                                      if (value) {
+                                        Provider.of<FlwtchState>(context, listen: false).cwtch.ActivatePeerEngine(Provider.of<ProfileInfoState>(context).onion);
+                                      } else {
+                                        Provider.of<FlwtchState>(context, listen: false).cwtch.DeactivatePeerEngine(Provider.of<ProfileInfoState>(context).onion);
+                                      }
+                                    },
+                                    activeTrackColor: Provider.of<Settings>(context).theme.defaultButtonColor,
+                                    inactiveTrackColor: Provider.of<Settings>(context).theme.defaultButtonDisabledColor,
+                                    secondary: Icon(CwtchIcons.negative_heart_24px, color: Provider.of<Settings>(context).current().mainTextColor),
+                                  )),
+
+                              // Auto start
+                              SwitchListTile(
+                                title: Text(AppLocalizations.of(context)!.profileAutostartLabel, style: TextStyle(color: Provider.of<Settings>(context).current().mainTextColor)),
+                                subtitle: Text(AppLocalizations.of(context)!.profileAutostartDescription),
+                                value: Provider.of<ProfileInfoState>(context).autostart,
+                                onChanged: (bool value) {
+                                  Provider.of<ProfileInfoState>(context).autostart = value;
+
+                                  if (!Provider.of<ProfileInfoState>(context).onion.isEmpty) {
+                                    Provider.of<FlwtchState>(context, listen: false).cwtch.SetProfileAttribute(Provider.of<ProfileInfoState>(context).onion, "profile.autostart", value ? "true" : "false");
+                                  }
+                                },
+                                activeTrackColor: Provider.of<Settings>(context).theme.defaultButtonColor,
+                                inactiveTrackColor: Provider.of<Settings>(context).theme.defaultButtonDisabledColor,
+                                secondary: Icon(CwtchIcons.favorite_24dp, color: Provider.of<Settings>(context).current().mainTextColor),
+                              ),
+
+
                               Visibility(
                                   visible: Provider.of<ProfileInfoState>(context).onion.isEmpty,
                                   child: SizedBox(
@@ -339,7 +378,7 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                           showAlertDialog(context);
                                         },
                                         icon: Icon(Icons.delete_forever),
-                                        label: Text(AppLocalizations.of(context)!.deleteBtn),
+                                        label: Text(AppLocalizations.of(context)!.deleteBtn, style: TextStyle(color: Provider.of<Settings>(context).theme.defaultButtonActiveColor)),
                                       )))
                             ]))))));
       });
@@ -358,6 +397,7 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
     // match (and are provided if the user has requested an encrypted profile).
     if (_formKey.currentState!.validate()) {
       if (Provider.of<ProfileInfoState>(context, listen: false).onion.isEmpty) {
+        // TODO: save autostart in create flow
         if (usePassword == true) {
           Provider.of<FlwtchState>(context, listen: false).cwtch.CreateProfile(ctrlrNick.value.text, ctrlrPass.value.text);
           Navigator.of(context).pop();

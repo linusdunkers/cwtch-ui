@@ -302,6 +302,24 @@ class CwtchFfi implements Cwtch {
   }
 
   // ignore: non_constant_identifier_names
+  void ActivatePeerEngine(String profile) {
+    var activatePeerEngineC = library.lookup<NativeFunction<string_to_void_function>>("c_ActivatePeerEngine");
+    final ActivatePeerEngine = activatePeerEngineC.asFunction<StringFn>();
+    final ut8profile = profile.toNativeUtf8();
+    ActivatePeerEngine(ut8profile, ut8profile.length);
+    malloc.free(ut8profile);
+  }
+
+  // ignore: non_constant_identifier_names
+  void DeactivatePeerEngine(String profile) {
+    var deactivatePeerEngineC = library.lookup<NativeFunction<string_to_void_function>>("c_ActivatePeerEngine");
+    final DeactivatePeerEngine = deactivatePeerEngineC.asFunction<StringFn>();
+    final ut8profile = profile.toNativeUtf8();
+    DeactivatePeerEngine(ut8profile, ut8profile.length);
+    malloc.free(ut8profile);
+  }
+
+  // ignore: non_constant_identifier_names
   void LoadProfiles(String pass) {
     var loadProfileC = library.lookup<NativeFunction<string_to_void_function>>("c_LoadProfiles");
     // ignore: non_constant_identifier_names

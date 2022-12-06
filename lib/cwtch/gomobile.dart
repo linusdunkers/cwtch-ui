@@ -76,6 +76,16 @@ class CwtchGomobile implements Cwtch {
   }
 
   // ignore: non_constant_identifier_names
+  void ActivatePeerEngine(String profile) {
+    cwtchPlatform.invokeMethod("ActivatePeerEngine", {"profile": profile});
+  }
+
+  // ignore: non_constant_identifier_names
+  void DeactivatePeerEngine(String profile) {
+    cwtchPlatform.invokeMethod("DeactivatePeerEngine", {"profile": profile});
+  }
+
+  // ignore: non_constant_identifier_names
   void LoadProfiles(String pass) {
     cwtchPlatform.invokeMethod("LoadProfiles", {"pass": pass});
   }

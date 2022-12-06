@@ -12,6 +12,12 @@ abstract class Cwtch {
 
   // ignore: non_constant_identifier_names
   void CreateProfile(String nick, String pass);
+
+  // ignore: non_constant_identifier_names
+  void ActivatePeerEngine(String profile);
+  // ignore: non_constant_identifier_names
+  void DeactivatePeerEngine(String profile);
+
   // ignore: non_constant_identifier_names
   void LoadProfiles(String pass);
   // ignore: non_constant_identifier_names
