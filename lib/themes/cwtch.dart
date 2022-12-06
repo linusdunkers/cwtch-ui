@@ -73,7 +73,7 @@ class CwtchDark extends OpaqueThemeType {
   get textfieldBackgroundColor => deepPurple;
   get textfieldBorderColor => deepPurple;
   get textfieldErrorColor => hotPink;
-  get textfieldHintColor => mainTextColor; //TODO pick
+  get textfieldHintColor => mainTextColor;
   get toolbarIconColor => settings; //whiteishPurple;
   get topbarColor => header; //darkGreyPurple;
 }
@@ -97,7 +97,7 @@ class CwtchLight extends OpaqueThemeType {
   get defaultButtonDisabledColor => softGrey;
   get defaultButtonTextColor => whitePurple; // ?
   get dropShadowColor => purple;
-  get hilightElementColor => purple; //darkPurple; // todo shouldn't be this, too dark, makes font unreadable
+  get hilightElementColor => purple;
   get mainTextColor => settings;
   get messageFromMeBackgroundColor => userBubble; //brightPurple;
   get messageFromMeTextColor => font; //mainTextColor;
@@ -117,7 +117,7 @@ class CwtchLight extends OpaqueThemeType {
   get textfieldBackgroundColor => purple;
   get textfieldBorderColor => purple;
   get textfieldErrorColor => hotPink;
-  get textfieldHintColor => font; //TODO pick
+  get textfieldHintColor => font;
   get toolbarIconColor => settings; //darkPurple;
   get topbarColor => header; //softPurple;
 }
