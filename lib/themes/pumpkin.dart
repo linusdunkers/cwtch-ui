@@ -30,15 +30,15 @@ class PumpkinDark extends CwtchDark {
 
   get backgroundMainColor => background; // darkGreyPurple;
   get backgroundPaneColor => header; //darkGreyPurple;
-  get topbarColor => header; //darkGreyPurple;
-  get mainTextColor => font; //whiteishPurple;
   get defaultButtonColor => accent; //hotPink;
-  get textfieldHintColor => mainTextColor; //TODO pick
-  get toolbarIconColor => settings; //whiteishPurple;
+  get mainTextColor => font; //whiteishPurple;
   get messageFromMeBackgroundColor => userBubble; //  mauvePurple;
   get messageFromMeTextColor => font; //whiteishPurple;
   get messageFromOtherBackgroundColor => peerBubble; //deepPurple;
   get messageFromOtherTextColor => font; //whiteishPurple;
+  get textfieldHintColor => mainTextColor;
+  get toolbarIconColor => settings; //whiteishPurple;
+  get topbarColor => header; //darkGreyPurple;
 }
 
 class PumpkinLight extends CwtchLight {
@@ -55,15 +55,16 @@ class PumpkinLight extends CwtchLight {
 
   get backgroundMainColor => background; //whitePurple;
   get backgroundPaneColor => background; //whitePurple;
-  get topbarColor => header; //softPurple;
-  get mainTextColor => settings;
   get defaultButtonColor => accent; // hotPink;
-  get textfieldHintColor => font; //TODO pick
-  get scrollbarDefaultColor => accent;
-  get portraitContactBadgeColor => accent;
-  get toolbarIconColor => settings; //darkPurple;
+  get dropShadowColor => peerBubble;
+  get mainTextColor => settings;
   get messageFromMeBackgroundColor => userBubble; //brightPurple;
   get messageFromMeTextColor => font; //mainTextColor;
   get messageFromOtherBackgroundColor => peerBubble; //purple;
   get messageFromOtherTextColor => font; //darkPurple;
+  get portraitContactBadgeColor => accent;
+  get scrollbarDefaultColor => accent;
+  get textfieldHintColor => font;
+  get toolbarIconColor => settings; //darkPurple;
+  get topbarColor => header; //softPurple;
 }

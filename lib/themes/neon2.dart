@@ -30,18 +30,21 @@ class Neon2Dark extends CwtchDark {
 
   get backgroundMainColor => background; // darkGreyPurple;
   get backgroundPaneColor => header; //darkGreyPurple;
-  get topbarColor => header; //darkGreyPurple;
-  get mainTextColor => font; //whiteishPurple;
   get defaultButtonColor => accent; //hotPink;
-  get textfieldHintColor => mainTextColor; //TODO pick
-  get toolbarIconColor => settings; //whiteishPurple;
+  get mainTextColor => font; //whiteishPurple;
   get messageFromMeBackgroundColor => userBubble; //  mauvePurple;
   get messageFromMeTextColor => font; //whiteishPurple;
   get messageFromOtherBackgroundColor => peerBubble; //deepPurple;
   get messageFromOtherTextColor => font; //whiteishPurple;
+  get scrollbarDefaultColor => accent;
+  get textfieldHintColor => mainTextColor;
+  get toolbarIconColor => settings; //whiteishPurple;
+  get topbarColor => header; //darkGreyPurple;
 }
 
 class Neon2Light extends CwtchLight {
+  static final Color paleGreen = Color(0xFFE7F6F6);
+
   static final Color background = Color(0xFFFFFDFF);
   static final Color header = Color(0xFFD8C7E1);
   static final Color userBubble = Color(0xFFD8C7E1);
@@ -55,15 +58,20 @@ class Neon2Light extends CwtchLight {
 
   get backgroundMainColor => background; //whitePurple;
   get backgroundPaneColor => background; //whitePurple;
-  get topbarColor => header; //softPurple;
-  get mainTextColor => settings;
   get defaultButtonColor => accent; // hotPink;
-  get textfieldHintColor => font; //TODO pick
-  get scrollbarDefaultColor => accent;
-  get portraitContactBadgeColor => accent;
-  get toolbarIconColor => settings; //darkPurple;
+  get dropShadowColor => userBubble;
+  get mainTextColor => settings;
   get messageFromMeBackgroundColor => userBubble; //brightPurple;
   get messageFromMeTextColor => font; //mainTextColor;
   get messageFromOtherBackgroundColor => peerBubble; //purple;
   get messageFromOtherTextColor => font; //darkPurple;
+  get portraitContactBadgeColor => accent;
+  get portraitOfflineBorderColor => peerBubble;
+  get portraitOnlineBorderColor => font;
+  get scrollbarDefaultColor => accent;
+  get textfieldBackgroundColor => paleGreen;
+  get textfieldBorderColor => peerBubble;
+  get textfieldHintColor => font;
+  get toolbarIconColor => settings; //darkPurple;
+  get topbarColor => header; //softPurple;
 }

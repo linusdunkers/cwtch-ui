@@ -17,6 +17,7 @@ OpaqueThemeType GetMidnightTheme(String mode) {
 }
 
 class MidnightDark extends CwtchDark {
+  static final Color accentGray = Color(0xFFE0E0E0);
   static final Color background = Color(0xFF1B1B1B);
   static final Color backgroundAlt = Color(0xFF494949);
   static final Color header = Color(0xFF1B1B1B);
@@ -29,24 +30,26 @@ class MidnightDark extends CwtchDark {
   get theme => midnight_theme;
   get mode => mode_dark;
 
+  get backgroundHilightElementColor => backgroundAlt;
   get backgroundMainColor => background; // darkGreyPurple;
   get backgroundPaneColor => header; //darkGreyPurple;
-  get topbarColor => header; //darkGreyPurple;
-  get mainTextColor => font; //whiteishPurple;
   get defaultButtonColor => accent; //hotPink;
-  get textfieldHintColor => mainTextColor; //TODO pick
-  get toolbarIconColor => settings; //whiteishPurple;
+  get dropShadowColor => accentGray;
+  get mainTextColor => font; //whiteishPurple;
   get messageFromMeBackgroundColor => userBubble; //  mauvePurple;
   get messageFromMeTextColor => font; //whiteishPurple;
   get messageFromOtherBackgroundColor => peerBubble; //deepPurple;
   get messageFromOtherTextColor => font; //whiteishPurple;
+  get scrollbarDefaultColor => accentGray;
   get textfieldBackgroundColor => peerBubble;
   get textfieldBorderColor => userBubble;
-  get backgroundHilightElementColor => backgroundAlt;
+  get textfieldHintColor => mainTextColor;
+  get toolbarIconColor => settings; //whiteishPurple;
+  get topbarColor => header; //darkGreyPurple;
 }
 
 class MidnightLight extends CwtchLight {
-  static final Color background = Color(0xFFFFFDFF);
+  static final Color background = Color(0xFFFBFBFB);//Color(0xFFFFFDFF);
   static final Color header = Color(0xFFE0E0E0);
   static final Color userBubble = Color(0xFFE0E0E0);
   static final Color peerBubble = Color(0xFFBABDBE);
@@ -57,18 +60,21 @@ class MidnightLight extends CwtchLight {
   get theme => midnight_theme;
   get mode => mode_light;
 
+  get backgroundHilightElementColor => peerBubble;
   get backgroundMainColor => background; //whitePurple;
   get backgroundPaneColor => background; //whitePurple;
-  get topbarColor => header; //softPurple;
-  get mainTextColor => settings;
   get defaultButtonColor => accent; // hotPink;
-  get textfieldHintColor => font; //TODO pick
-  get scrollbarDefaultColor => accent;
-  get portraitContactBadgeColor => accent;
-  get toolbarIconColor => settings; //darkPurple;
+  get mainTextColor => settings;
   get messageFromMeBackgroundColor => userBubble; //brightPurple;
   get messageFromMeTextColor => font; //mainTextColor;
   get messageFromOtherBackgroundColor => peerBubble; //purple;
   get messageFromOtherTextColor => font; //darkPurple;
+  get portraitContactBadgeColor => accent;
+  get portraitOfflineBorderColor => peerBubble;
+  get portraitOnlineBorderColor => font;
+  get scrollbarDefaultColor => accent;
   get textfieldBackgroundColor => userBubble;
+  get textfieldHintColor => font;
+  get toolbarIconColor => settings; //darkPurple;
+  get topbarColor => header; //softPurple;
 }

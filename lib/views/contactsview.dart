@@ -85,6 +85,7 @@ void _pushMessageView(BuildContext context, int handle) {
 class _ContactsViewState extends State<ContactsView> {
   late TextEditingController ctrlrFilter;
   bool showSearchBar = false;
+  final scaffoldKey = GlobalKey<ScaffoldMessengerState>();
 
   @override
   void initState() {
@@ -94,7 +95,7 @@ class _ContactsViewState extends State<ContactsView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ScaffoldMessenger(key: scaffoldKey, child: Scaffold(
         endDrawerEnableOpenDragGesture: false,
         drawerEnableOpenDragGesture: false,
         appBar: AppBar(
@@ -157,7 +158,7 @@ class _ContactsViewState extends State<ContactsView> {
             color: Provider.of<Settings>(context).theme.defaultButtonTextColor,
           ),
         ),
-        body: showSearchBar || Provider.of<ContactListState>(context).isFiltered ? _buildFilterable() : _buildContactList());
+        body: showSearchBar || Provider.of<ContactListState>(context).isFiltered ? _buildFilterable() : _buildContactList()));
   }
 
   List<Widget> getActions(context) {
@@ -177,6 +178,7 @@ class _ContactsViewState extends State<ContactsView> {
               {
                 Clipboard.setData(new ClipboardData(text: Provider.of<ProfileInfoState>(context, listen: false).onion));
                 final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.copiedToClipboardNotification));
+
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
               }
               break;
@@ -206,7 +208,8 @@ class _ContactsViewState extends State<ContactsView> {
           onPressed: () {
             Clipboard.setData(new ClipboardData(text: Provider.of<ProfileInfoState>(context, listen: false).onion));
             final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.copiedToClipboardNotification));
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            scaffoldKey.currentState?.showSnackBar(snackBar);
+            //ScaffoldMessenger.of(context).showSnackBar(snackBar);
           }));
     }
 

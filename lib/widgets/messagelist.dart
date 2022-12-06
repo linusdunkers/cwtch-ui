@@ -78,7 +78,7 @@ class _MessageListState extends State<MessageList> {
                                   fit: BoxFit.scaleDown,
                                   alignment: Alignment.center,
                                   image: AssetImage("assets/core/negative_heart_512px.png"),
-                                  colorFilter: ColorFilter.mode(Provider.of<Settings>(context).theme.hilightElementColor, BlendMode.srcIn))),
+                                  colorFilter: ColorFilter.mode(Provider.of<Settings>(context).theme.hilightElementColor.withOpacity(0.15), BlendMode.srcIn))),
                       // Don't load messages for syncing server...
                       child: loadMessages
                           ? ScrollablePositionedList.builder(
