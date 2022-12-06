@@ -26,7 +26,7 @@ class GhostDark extends CwtchDark {
   static final Color peerBubble = darkBlue;
   static final Color font = Colors.white;
   static final Color settings = Color(0xFFFDFFFD);
-  static final Color accent = lightBlue;//Color(0xFFD20070);
+  static final Color accent = lightBlue; //Color(0xFFD20070);
 
   get theme => ghost_theme;
   get mode => mode_dark;

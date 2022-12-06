@@ -199,14 +199,15 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                                   Provider.of<ProfileInfoState>(context).autostart = value;
 
                                   if (!Provider.of<ProfileInfoState>(context).onion.isEmpty) {
-                                    Provider.of<FlwtchState>(context, listen: false).cwtch.SetProfileAttribute(Provider.of<ProfileInfoState>(context).onion, "profile.autostart", value ? "true" : "false");
+                                    Provider.of<FlwtchState>(context, listen: false)
+                                        .cwtch
+                                        .SetProfileAttribute(Provider.of<ProfileInfoState>(context).onion, "profile.autostart", value ? "true" : "false");
                                   }
                                 },
                                 activeTrackColor: Provider.of<Settings>(context).theme.defaultButtonColor,
                                 inactiveTrackColor: Provider.of<Settings>(context).theme.defaultButtonDisabledColor,
                                 secondary: Icon(CwtchIcons.favorite_24dp, color: Provider.of<Settings>(context).current().mainTextColor),
                               ),
-
 
                               Visibility(
                                   visible: Provider.of<ProfileInfoState>(context).onion.isEmpty,
@@ -418,7 +419,9 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
           var profile = Provider.of<ProfileInfoState>(context, listen: false).onion;
           Provider.of<ProfileInfoState>(context, listen: false).nickname = ctrlrNick.value.text;
           Provider.of<FlwtchState>(context, listen: false).cwtch.SetProfileAttribute(profile, "profile.name", ctrlrNick.value.text);
-          Provider.of<FlwtchState>(context, listen: false).cwtch.ChangePassword(profile, ctrlrOldPass.text, ctrlrPass.text, ctrlrPass2.text);
+          // Use default password if the profile is unencrypted
+          var password = Provider.of<ProfileInfoState>(context, listen: false).isEncrypted ? ctrlrOldPass.text : DefaultPassword;
+          Provider.of<FlwtchState>(context, listen: false).cwtch.ChangePassword(profile, password, ctrlrPass.text, ctrlrPass2.text);
 
           EnvironmentConfig.debugLog("waiting for change password response");
           Future.delayed(const Duration(milliseconds: 500), () {
@@ -434,6 +437,8 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
             }
           }).whenComplete(() {
             if (globalErrorHandler.explicitChangePasswordSuccess) {
+              // we need to set the local encrypted status to display correct password forms on this run...
+              Provider.of<ProfileInfoState>(context, listen: false).isEncrypted = true;
               final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.newPassword));
               ScaffoldMessenger.of(context).showSnackBar(snackBar);
               Navigator.pop(context);

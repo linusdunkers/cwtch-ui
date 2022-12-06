@@ -124,6 +124,10 @@ class ProfileInfoState extends ChangeNotifier {
 
   // Check encrypted status for profile info screen
   bool get isEncrypted => this._encrypted;
+  set isEncrypted(bool newValue) {
+    this._encrypted = newValue;
+    notifyListeners();
+  }
 
   String get nickname => this._nickname;
 

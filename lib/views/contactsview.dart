@@ -95,70 +95,73 @@ class _ContactsViewState extends State<ContactsView> {
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldMessenger(key: scaffoldKey, child: Scaffold(
-        endDrawerEnableOpenDragGesture: false,
-        drawerEnableOpenDragGesture: false,
-        appBar: AppBar(
-          leading: Stack(children: [
-            Align(
-                alignment: Alignment.center,
-                child: IconButton(
-                  icon: Icon(Icons.arrow_back),
-                  tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-                  onPressed: () {
-                    Provider.of<ProfileInfoState>(context, listen: false).recountUnread();
-                    Provider.of<AppState>(context, listen: false).selectedProfile = "";
-                    Navigator.of(context).pop();
-                  },
-                )),
-            Positioned(
-              bottom: 5.0,
-              right: 5.0,
-              child: StreamBuilder<bool>(
-                  stream: Provider.of<AppState>(context).getUnreadProfileNotifyStream(),
-                  builder: (BuildContext context, AsyncSnapshot<bool> unreadCountSnapshot) {
-                    int unreadCount = Provider.of<ProfileListState>(context).generateUnreadCount(Provider.of<AppState>(context).selectedProfile ?? "");
+    return ScaffoldMessenger(
+        key: scaffoldKey,
+        child: Scaffold(
+            endDrawerEnableOpenDragGesture: false,
+            drawerEnableOpenDragGesture: false,
+            appBar: AppBar(
+              leading: Stack(children: [
+                Align(
+                    alignment: Alignment.center,
+                    child: IconButton(
+                      icon: Icon(Icons.arrow_back),
+                      tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+                      onPressed: () {
+                        Provider.of<ProfileInfoState>(context, listen: false).recountUnread();
+                        Provider.of<AppState>(context, listen: false).selectedProfile = "";
+                        Navigator.of(context).pop();
+                      },
+                    )),
+                Positioned(
+                  bottom: 5.0,
+                  right: 5.0,
+                  child: StreamBuilder<bool>(
+                      stream: Provider.of<AppState>(context).getUnreadProfileNotifyStream(),
+                      builder: (BuildContext context, AsyncSnapshot<bool> unreadCountSnapshot) {
+                        int unreadCount = Provider.of<ProfileListState>(context).generateUnreadCount(Provider.of<AppState>(context).selectedProfile ?? "");
 
-                    return Visibility(
-                        visible: unreadCount > 0,
-                        child: CircleAvatar(
-                          radius: 10.0,
-                          backgroundColor: Provider.of<Settings>(context).theme.portraitProfileBadgeColor,
-                          child: Text(unreadCount > 99 ? "99+" : unreadCount.toString(), style: TextStyle(color: Provider.of<Settings>(context).theme.portraitProfileBadgeTextColor, fontSize: 8.0)),
-                        ));
-                  }),
-            )
-          ]),
-          title: Row(children: [
-            ProfileImage(
-              imagePath: Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment)
-                  ? Provider.of<ProfileInfoState>(context).imagePath
-                  : Provider.of<ProfileInfoState>(context).defaultImagePath,
-              diameter: 42,
-              border: Provider.of<ProfileInfoState>(context).isOnline
-                  ? Provider.of<Settings>(context).current().portraitOnlineBorderColor
-                  : Provider.of<Settings>(context).current().portraitOfflineBorderColor,
-              badgeTextColor: Colors.red,
-              badgeColor: Colors.red,
+                        return Visibility(
+                            visible: unreadCount > 0,
+                            child: CircleAvatar(
+                              radius: 10.0,
+                              backgroundColor: Provider.of<Settings>(context).theme.portraitProfileBadgeColor,
+                              child:
+                                  Text(unreadCount > 99 ? "99+" : unreadCount.toString(), style: TextStyle(color: Provider.of<Settings>(context).theme.portraitProfileBadgeTextColor, fontSize: 8.0)),
+                            ));
+                      }),
+                )
+              ]),
+              title: Row(children: [
+                ProfileImage(
+                  imagePath: Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment)
+                      ? Provider.of<ProfileInfoState>(context).imagePath
+                      : Provider.of<ProfileInfoState>(context).defaultImagePath,
+                  diameter: 42,
+                  border: Provider.of<ProfileInfoState>(context).isOnline
+                      ? Provider.of<Settings>(context).current().portraitOnlineBorderColor
+                      : Provider.of<Settings>(context).current().portraitOfflineBorderColor,
+                  badgeTextColor: Colors.red,
+                  badgeColor: Colors.red,
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                    child: Text("%1 » %2".replaceAll("%1", Provider.of<ProfileInfoState>(context).nickname).replaceAll("%2", AppLocalizations.of(context)!.titleManageContacts),
+                        overflow: TextOverflow.ellipsis, style: TextStyle(color: Provider.of<Settings>(context).current().mainTextColor))),
+              ]),
+              actions: getActions(context),
             ),
-            SizedBox(
-              width: 10,
+            floatingActionButton: FloatingActionButton(
+              onPressed: _modalAddImportChoice,
+              tooltip: AppLocalizations.of(context)!.tooltipAddContact,
+              child: Icon(
+                CwtchIcons.person_add_alt_1_24px,
+                color: Provider.of<Settings>(context).theme.defaultButtonTextColor,
+              ),
             ),
-            Expanded(
-                child: Text("%1 » %2".replaceAll("%1", Provider.of<ProfileInfoState>(context).nickname).replaceAll("%2", AppLocalizations.of(context)!.titleManageContacts),
-                    overflow: TextOverflow.ellipsis, style: TextStyle(color: Provider.of<Settings>(context).current().mainTextColor))),
-          ]),
-          actions: getActions(context),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: _modalAddImportChoice,
-          tooltip: AppLocalizations.of(context)!.tooltipAddContact,
-          child: Icon(
-            CwtchIcons.person_add_alt_1_24px,
-            color: Provider.of<Settings>(context).theme.defaultButtonTextColor,
-          ),
-        ),
-        body: showSearchBar || Provider.of<ContactListState>(context).isFiltered ? _buildFilterable() : _buildContactList()));
+            body: showSearchBar || Provider.of<ContactListState>(context).isFiltered ? _buildFilterable() : _buildContactList()));
   }
 
   List<Widget> getActions(context) {

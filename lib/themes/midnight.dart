@@ -49,7 +49,7 @@ class MidnightDark extends CwtchDark {
 }
 
 class MidnightLight extends CwtchLight {
-  static final Color background = Color(0xFFFBFBFB);//Color(0xFFFFFDFF);
+  static final Color background = Color(0xFFFBFBFB); //Color(0xFFFFFDFF);
   static final Color header = Color(0xFFE0E0E0);
   static final Color userBubble = Color(0xFFE0E0E0);
   static final Color peerBubble = Color(0xFFBABDBE);

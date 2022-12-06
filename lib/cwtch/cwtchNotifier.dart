@@ -72,7 +72,8 @@ class CwtchNotifier {
         }
         EnvironmentConfig.debugLog("NewPeer $data");
         // if tag != v1-defaultPassword then it is either encrypted OR it is an unencrypted account created during pre-beta...
-        profileCN.add(data["Identity"], data["name"], data["picture"], data["defaultPicture"], data["ContactsJson"], data["ServerList"], data["Online"] == "true", data["autostart"] == "true", data["tag"] != "v1-defaultPassword");
+        profileCN.add(data["Identity"], data["name"], data["picture"], data["defaultPicture"], data["ContactsJson"], data["ServerList"], data["Online"] == "true", data["autostart"] == "true",
+            data["tag"] != "v1-defaultPassword");
         break;
       case "ContactCreated":
         EnvironmentConfig.debugLog("ContactCreated $data");
@@ -310,12 +311,16 @@ class CwtchNotifier {
         profileCN.getProfile(data["ProfileOnion"])?.replaceServers(data["ServerList"]);
         break;
       case "TokenManagerInfo":
-        List<dynamic> associatedGroups = jsonDecode(data["Data"]);
-        int count = int.parse(data["ServerTokenCount"]);
-        associatedGroups.forEach((identifier) {
-          profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(int.parse(identifier.toString()))!.antispamTickets = count;
-        });
-        EnvironmentConfig.debugLog("update server token count for ${associatedGroups}, $count");
+        try {
+          List<dynamic> associatedGroups = jsonDecode(data["Data"]);
+          int count = int.parse(data["ServerTokenCount"]);
+          associatedGroups.forEach((identifier) {
+            profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(int.parse(identifier.toString()))!.antispamTickets = count;
+          });
+          EnvironmentConfig.debugLog("update server token count for ${associatedGroups}, $count");
+        } catch (e) {
+          //  No tokens in data...
+        }
         break;
       case "NewGroup":
         String invite = data["GroupInvite"].toString();

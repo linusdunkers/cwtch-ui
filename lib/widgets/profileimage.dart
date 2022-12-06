@@ -82,15 +82,17 @@ class _ProfileImageState extends State<ProfileImage> {
               width: widget.diameter,
               height: widget.diameter,
               color: widget.border,
-              foregroundDecoration: widget.disabled ? BoxDecoration(
-                color: Provider.of<Settings>(context).theme.portraitBackgroundColor, //Colors.grey,
-                backgroundBlendMode: BlendMode.color, //saturation,
-              ) : null,
+              foregroundDecoration: widget.disabled
+                  ? BoxDecoration(
+                      color: Provider.of<Settings>(context).theme.portraitBackgroundColor, //Colors.grey,
+                      backgroundBlendMode: BlendMode.color, //saturation,
+                    )
+                  : null,
               child: Padding(
                   padding: const EdgeInsets.all(2.0), //border size
                   child: ClipOval(clipBehavior: Clip.antiAlias, child: widget.tooltip == "" ? image : Tooltip(message: widget.tooltip, child: image))))),
-        // badge
-        Visibility(
+      // badge
+      Visibility(
           visible: widget.badgeIcon != null || widget.badgeEdit || widget.badgeCount > 0,
           child: Positioned(
             bottom: 0.0,
@@ -107,22 +109,17 @@ class _ProfileImageState extends State<ProfileImage> {
             ),
           )),
       // disabled center icon
-        Visibility(
-            visible: widget.disabled,
-            child: Container(
-                width: widget.diameter,
-                height: widget.diameter,
-                child:
-                Center(
-
-
-                child: Icon(
-                  CwtchIcons.negative_heart_24px,
-                  size: widget.diameter / 1.5,
-                  color: Provider.of<Settings>(context).theme.portraitOfflineBorderColor,
-                )
-
-            ))),
+      Visibility(
+          visible: widget.disabled,
+          child: Container(
+              width: widget.diameter,
+              height: widget.diameter,
+              child: Center(
+                  child: Icon(
+                CwtchIcons.negative_heart_24px,
+                size: widget.diameter / 1.5,
+                color: Provider.of<Settings>(context).theme.portraitOfflineBorderColor,
+              )))),
     ]));
   }
 }

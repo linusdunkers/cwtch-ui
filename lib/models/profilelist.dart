@@ -13,7 +13,15 @@ class ProfileListState extends ChangeNotifier {
     var idx = _profiles.indexWhere((element) => element.onion == onion);
     if (idx == -1) {
       _profiles.add(ProfileInfoState(
-          onion: onion, nickname: name, imagePath: picture, defaultImagePath: defaultPicture, contactsJson: contactsJson, serversJson: serverJson, online: online, autostart: autostart,  encrypted: encrypted));
+          onion: onion,
+          nickname: name,
+          imagePath: picture,
+          defaultImagePath: defaultPicture,
+          contactsJson: contactsJson,
+          serversJson: serverJson,
+          online: online,
+          autostart: autostart,
+          encrypted: encrypted));
     } else {
       _profiles[idx].updateFrom(onion, name, picture, contactsJson, serverJson, online);
     }
