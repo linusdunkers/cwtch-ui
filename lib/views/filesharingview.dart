@@ -46,6 +46,7 @@ class _FileSharingViewState extends State<FileSharingView> {
               itemScrollController: ItemScrollController(),
               itemCount: sharedFiles.length,
               shrinkWrap: true,
+              reverse: true,
               physics: BouncingScrollPhysics(),
               semanticChildCount: sharedFiles.length,
               itemBuilder: (context, index) {

@@ -28,8 +28,8 @@ final themes = {
   neon1_theme: {mode_light: Neon1Light(), mode_dark: Neon1Dark()},
   neon2_theme: {mode_light: Neon2Light(), mode_dark: Neon2Dark()},
   pumpkin_theme: {mode_light: PumpkinLight(), mode_dark: PumpkinDark()},
-  witch_theme: {mode_light: WitchLight(), mode_dark: WitchDark()},
   vampire_theme: {mode_light: VampireLight(), mode_dark: VampireDark()},
+  witch_theme: {mode_light: WitchLight(), mode_dark: WitchDark()},
 };
 
 OpaqueThemeType getTheme(String themeId, String mode) {
@@ -125,6 +125,7 @@ abstract class OpaqueThemeType {
 
 ThemeData mkThemeData(Settings opaque) {
   return ThemeData(
+    hoverColor: opaque.current().backgroundHilightElementColor.withOpacity(0.5),
     visualDensity: VisualDensity.adaptivePlatformDensity,
     primarySwatch: Colors.red,
     primaryIconTheme: IconThemeData(
