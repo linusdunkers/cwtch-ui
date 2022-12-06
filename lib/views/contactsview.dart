@@ -178,8 +178,7 @@ class _ContactsViewState extends State<ContactsView> {
               {
                 Clipboard.setData(new ClipboardData(text: Provider.of<ProfileInfoState>(context, listen: false).onion));
                 final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.copiedToClipboardNotification));
-
-                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                scaffoldKey.currentState?.showSnackBar(snackBar);
               }
               break;
             case ShareMenu.qrcode:
@@ -209,7 +208,6 @@ class _ContactsViewState extends State<ContactsView> {
             Clipboard.setData(new ClipboardData(text: Provider.of<ProfileInfoState>(context, listen: false).onion));
             final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.copiedToClipboardNotification));
             scaffoldKey.currentState?.showSnackBar(snackBar);
-            //ScaffoldMessenger.of(context).showSnackBar(snackBar);
           }));
     }
 
