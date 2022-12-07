@@ -22,27 +22,31 @@ class FileMessage extends Message {
     return ChangeNotifierProvider.value(
         value: this.metadata,
         builder: (bcontext, child) {
-          dynamic shareObj = jsonDecode(this.content);
-          if (shareObj == null) {
-            return MessageRow(MalformedBubble(), index);
-          }
-          String nameSuggestion = shareObj['f'] as String;
-          String rootHash = shareObj['h'] as String;
-          String nonce = shareObj['n'] as String;
-          int fileSize = shareObj['s'] as int;
-          String fileKey = rootHash + "." + nonce;
-
-          if (metadata.attributes["file-downloaded"] == "true") {
-            if (!Provider.of<ProfileInfoState>(context).downloadKnown(fileKey)) {
-              Provider.of<FlwtchState>(context, listen: false).cwtch.CheckDownloadStatus(Provider.of<ProfileInfoState>(context, listen: false).onion, fileKey);
+          try {
+            dynamic shareObj = jsonDecode(this.content);
+            if (shareObj == null) {
+              return MessageRow(MalformedBubble(), index);
             }
-          }
+            String nameSuggestion = shareObj['f'] as String;
+            String rootHash = shareObj['h'] as String;
+            String nonce = shareObj['n'] as String;
+            int fileSize = shareObj['s'] as int;
+            String fileKey = rootHash + "." + nonce;
 
-          if (!validHash(rootHash, nonce)) {
+            if (metadata.attributes["file-downloaded"] == "true") {
+              if (!Provider.of<ProfileInfoState>(context).downloadKnown(fileKey)) {
+                Provider.of<FlwtchState>(context, listen: false).cwtch.CheckDownloadStatus(Provider.of<ProfileInfoState>(context, listen: false).onion, fileKey);
+              }
+            }
+
+            if (!validHash(rootHash, nonce)) {
+              return MessageRow(MalformedBubble(), index);
+            }
+
+            return MessageRow(FileBubble(nameSuggestion, rootHash, nonce, fileSize, isAuto: metadata.isAuto), index, key: key);
+          } catch (e) {
             return MessageRow(MalformedBubble(), index);
           }
-
-          return MessageRow(FileBubble(nameSuggestion, rootHash, nonce, fileSize, isAuto: metadata.isAuto), index, key: key);
         });
   }
 
