@@ -398,12 +398,11 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
     // match (and are provided if the user has requested an encrypted profile).
     if (_formKey.currentState!.validate()) {
       if (Provider.of<ProfileInfoState>(context, listen: false).onion.isEmpty) {
-        // TODO: save autostart in create flow
         if (usePassword == true) {
-          Provider.of<FlwtchState>(context, listen: false).cwtch.CreateProfile(ctrlrNick.value.text, ctrlrPass.value.text);
+          Provider.of<FlwtchState>(context, listen: false).cwtch.CreateProfile(ctrlrNick.value.text, ctrlrPass.value.text, Provider.of<ProfileInfoState>(context, listen: false).autostart);
           Navigator.of(context).pop();
         } else {
-          Provider.of<FlwtchState>(context, listen: false).cwtch.CreateProfile(ctrlrNick.value.text, DefaultPassword);
+          Provider.of<FlwtchState>(context, listen: false).cwtch.CreateProfile(ctrlrNick.value.text, DefaultPassword, Provider.of<ProfileInfoState>(context, listen: false).autostart);
           Navigator.of(context).pop();
         }
       } else {

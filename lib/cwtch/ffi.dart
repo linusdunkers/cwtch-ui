@@ -290,13 +290,13 @@ class CwtchFfi implements Cwtch {
   }
 
   // ignore: non_constant_identifier_names
-  void CreateProfile(String nick, String pass) {
-    var createProfileC = library.lookup<NativeFunction<void_from_string_string_function>>("c_CreateProfile");
+  void CreateProfile(String nick, String pass, bool autostart) {
+    var createProfileC = library.lookup<NativeFunction<void_from_string_string_byte_function>>("c_CreateProfile");
     // ignore: non_constant_identifier_names
-    final CreateProfile = createProfileC.asFunction<VoidFromStringStringFn>();
+    final CreateProfile = createProfileC.asFunction<VoidFromStringStringByteFn>();
     final utf8nick = nick.toNativeUtf8();
     final ut8pass = pass.toNativeUtf8();
-    CreateProfile(utf8nick, utf8nick.length, ut8pass, ut8pass.length);
+    CreateProfile(utf8nick, utf8nick.length, ut8pass, ut8pass.length, autostart ? 1 : 0);
     malloc.free(utf8nick);
     malloc.free(ut8pass);
   }

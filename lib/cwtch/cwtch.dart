@@ -11,7 +11,7 @@ abstract class Cwtch {
   Future<void> ReconnectCwtchForeground();
 
   // ignore: non_constant_identifier_names
-  void CreateProfile(String nick, String pass);
+  void CreateProfile(String nick, String pass, bool autostart);
 
   // ignore: non_constant_identifier_names
   void ActivatePeerEngine(String profile);
