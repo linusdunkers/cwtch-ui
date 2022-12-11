@@ -27,8 +27,16 @@ class _ServerRowState extends State<ServerRow> {
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               Padding(
                   padding: const EdgeInsets.all(6.0), //border size
-                  child: Icon(CwtchIcons.dns_24px,
-                      color: server.running ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor : Provider.of<Settings>(context).theme.portraitOfflineBorderColor, size: 64)),
+                  child: Row(children: [
+                    Icon(CwtchIcons.dns_24px,
+                        color: server.running ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor : Provider.of<Settings>(context).theme.portraitOfflineBorderColor, size: 64),
+                    Visibility(
+                        visible: !server.running,
+                        child: Icon(
+                          CwtchIcons.negative_heart_24px,
+                          color: Provider.of<Settings>(context).theme.portraitOfflineBorderColor,
+                        )),
+                  ])),
               Expanded(
                   child: Column(
                 children: [
