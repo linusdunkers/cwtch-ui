@@ -41,7 +41,7 @@ dependencies:
   file_picker: ^4.3.2
   file_picker_desktop: ^1.1.1
   url_launcher: ^6.0.18
-  window_manager: ^0.2.5
+  window_manager: ^0.2.8
   # notification plugins
   win_toast: ^0.0.2
   flutter_local_notifications: ^9.6.1

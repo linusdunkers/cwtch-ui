@@ -18,6 +18,7 @@ class _DoubleColumnViewState extends State<DoubleColumnView> {
   @override
   Widget build(BuildContext context) {
     var flwtch = Provider.of<AppState>(context);
+    var selectedConversation = flwtch.selectedConversation;
     var cols = Provider.of<Settings>(context).uiColumns(true);
     return Flex(
       direction: Axis.horizontal,
@@ -30,7 +31,7 @@ class _DoubleColumnViewState extends State<DoubleColumnView> {
         ),
         Flexible(
           flex: cols[1],
-          child: flwtch.selectedConversation == null
+          child: selectedConversation == null
               ? Container(
                   color: Provider.of<Settings>(context).theme.backgroundMainColor,
                   child: Card(
@@ -40,9 +41,10 @@ class _DoubleColumnViewState extends State<DoubleColumnView> {
               : //dev
               MultiProvider(providers: [
                   ChangeNotifierProvider.value(value: Provider.of<ProfileInfoState>(context)),
-                  ChangeNotifierProvider.value(
-                      value: flwtch.selectedConversation != null ? Provider.of<ProfileInfoState>(context).contactList.getContact(flwtch.selectedConversation!)! : ContactInfoState("", -1, "")),
-                ], child: Container(key: Key(flwtch.selectedConversation!.toString()), child: MessageView())),
+                  // there is a potential timing issue here where selectConversation is changes as we move profiles, this will result
+                  // in getContact being null, in that case we replace with an empty Contact Info State
+                  ChangeNotifierProvider.value(value: Provider.of<ProfileInfoState>(context).contactList.getContact(selectedConversation) ?? ContactInfoState("", -1, "")),
+                ], child: Container(key: Key(selectedConversation.toString()), child: MessageView())),
         ),
       ],
     );
