@@ -312,7 +312,7 @@ class CwtchFfi implements Cwtch {
 
   // ignore: non_constant_identifier_names
   void DeactivatePeerEngine(String profile) {
-    var deactivatePeerEngineC = library.lookup<NativeFunction<string_to_void_function>>("c_ActivatePeerEngine");
+    var deactivatePeerEngineC = library.lookup<NativeFunction<string_to_void_function>>("c_DeactivatePeerEngine");
     final DeactivatePeerEngine = deactivatePeerEngineC.asFunction<StringFn>();
     final ut8profile = profile.toNativeUtf8();
     DeactivatePeerEngine(ut8profile, ut8profile.length);
