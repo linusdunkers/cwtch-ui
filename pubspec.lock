@@ -630,7 +630,7 @@ packages:
       name: screen_retriever
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.2"
+    version: "0.1.4"
   scrollable_positioned_list:
     dependency: "direct main"
     description:
@@ -859,7 +859,7 @@ packages:
       name: window_manager
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.5"
+    version: "0.2.8"
   xdg_directories:
     dependency: transitive
     description:
