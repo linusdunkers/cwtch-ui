@@ -241,6 +241,9 @@ class FlwtchState extends State<Flwtch> with WindowListener {
         transitionDuration: Duration(milliseconds: 200),
       ),
     );
+    // On Gnome follows up a clicked notification with a "Cwtch is ready" notification that takes you to the app. AFAICT just because Gnome is bad
+    // https://askubuntu.com/questions/1286206/how-to-skip-the-is-ready-notification-and-directly-open-apps-in-ubuntu-20-4
+    windowManager.focus();
   }
 
   // using windowManager flutter plugin until proper lifecycle management lands in desktop

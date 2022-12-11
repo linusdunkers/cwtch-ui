@@ -75,7 +75,8 @@ class NotificationPayload {
       };
 }
 
-// FlutterLocalNotificationsPlugin based NotificationManager that handles MacOS and Linux
+// FlutterLocalNotificationsPlugin based NotificationManager that handles MacOS <s>and Linux</s>
+// TODO: Upgrade from 9.6 to 12.x but there are breaking changes (including for mac)
 // TODO: Windows support is being worked on, check back and migrate to that too when it lands
 class NixNotificationManager implements NotificationsManager {
   late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
