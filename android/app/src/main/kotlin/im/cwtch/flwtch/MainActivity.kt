@@ -358,7 +358,8 @@ class MainActivity: FlutterActivity() {
             "CreateProfile" -> {
                 val nick: String = call.argument("nick") ?: ""
                 val pass: String = call.argument("pass") ?: ""
-                Cwtch.createProfile(nick, pass)
+                val autostart: Boolean = call.argument("autostart") ?: true
+                Cwtch.createProfile(nick, pass, autostart)
             }
             "LoadProfiles" -> {
                 val pass: String = call.argument("pass") ?: ""

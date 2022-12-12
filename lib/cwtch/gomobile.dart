@@ -71,8 +71,8 @@ class CwtchGomobile implements Cwtch {
   }
 
   // ignore: non_constant_identifier_names
-  void CreateProfile(String nick, String pass) {
-    cwtchPlatform.invokeMethod("CreateProfile", {"nick": nick, "pass": pass});
+  void CreateProfile(String nick, String pass, bool autostart) {
+    cwtchPlatform.invokeMethod("CreateProfile", {"nick": nick, "pass": pass, "autostart": autostart});
   }
 
   // ignore: non_constant_identifier_names
