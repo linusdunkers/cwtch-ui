@@ -172,7 +172,7 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
 
                               // Enabled
                               Visibility(
-                                  visible: Provider.of<ProfileInfoState>(context).onion.isNotEmpty,
+                                  visible: Provider.of<ProfileInfoState>(context).onion.isNotEmpty && !Provider.of<ProfileInfoState>(context).enabled,
                                   child: SwitchListTile(
                                     title: Text(AppLocalizations.of(context)!.profileEnabled, style: TextStyle(color: Provider.of<Settings>(context).current().mainTextColor)),
                                     subtitle: Text(AppLocalizations.of(context)!.profileEnabledDescription),
