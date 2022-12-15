@@ -68,7 +68,7 @@ class MainActivity: FlutterActivity() {
     private val PROFILE_EXPORT_REQUEST_CODE = 236
     private val REQUEST_DOZE_WHITELISTING_CODE:Int = 9
     private var dlToProfile = ""
-    private var dlToHandle = ""
+    private var dlToHandle = 0
     private var dlToFileKey = ""
     private var exportFromPath = ""
 
@@ -128,9 +128,10 @@ class MainActivity: FlutterActivity() {
         if (requestCode == FILEPICKER_REQUEST_CODE) {
             val filePath = intent!!.getData().toString();
             val manifestPath = StringBuilder().append(this.applicationContext.cacheDir).append("/").append(this.dlToFileKey).toString();
+            Log.d("MainActivity:FILEPICKER_REQUEST_CODE", "DownloadableFileCreated");
             handleCwtch(MethodCall("DownloadFile", mapOf(
                     "ProfileOnion" to this.dlToProfile,
-                    "handle" to this.dlToHandle,
+                    "conversation" to this.dlToHandle.toInt(),
                     "filepath" to filePath,
                     "manifestpath" to manifestPath,
                     "filekey" to this.dlToFileKey
@@ -228,7 +229,7 @@ class MainActivity: FlutterActivity() {
         var method = call.method
         // todo change usage patern to match that in FlwtchWorker
         // Unsafe for anything using int args, causes access time attempt to cast to string which will fail
-        val argmap: Map<String, String> = call.arguments as Map<String, String>
+        val argmap: Map<String, String> = call.arguments as Map<String,String>
 
         // the frontend calls Start every time it fires up, but we don't want to *actually* call Cwtch.Start()
         // in case the ForegroundService is still running. in both cases, however, we *do* want to re-register
@@ -255,7 +256,7 @@ class MainActivity: FlutterActivity() {
             }
             "CreateDownloadableFile" -> {
                 this.dlToProfile = argmap["ProfileOnion"] ?: ""
-                this.dlToHandle = argmap["handle"] ?: ""
+                this.dlToHandle =  call.argument("conversation")!!
                 val suggestedName = argmap["filename"] ?: "filename.ext"
                 this.dlToFileKey = argmap["filekey"] ?: ""
                 val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
@@ -358,7 +359,8 @@ class MainActivity: FlutterActivity() {
             "CreateProfile" -> {
                 val nick: String = call.argument("nick") ?: ""
                 val pass: String = call.argument("pass") ?: ""
-                Cwtch.createProfile(nick, pass)
+                val autostart: Boolean = call.argument("autostart") ?: true
+                Cwtch.createProfile(nick, pass, autostart)
             }
             "LoadProfiles" -> {
                 val pass: String = call.argument("pass") ?: ""
@@ -426,6 +428,7 @@ class MainActivity: FlutterActivity() {
             }
 
             "DownloadFile" -> {
+                Log.d("MainActivity.kt", "Cwtch Download File Called...")
                 val profile: String = call.argument("ProfileOnion") ?: ""
                 val conversation: Int = call.argument("conversation") ?: 0
                 val filepath: String = call.argument("filepath") ?: ""

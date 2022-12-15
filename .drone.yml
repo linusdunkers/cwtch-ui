@@ -47,7 +47,7 @@ steps:
   #    #Todo: fix all the lint errors and add `-set_exit_status` above to enforce linting
 
   - name: build-linux
-    image: openpriv/flutter-desktop:linux-fstable-3.3.8
+    image: openpriv/flutter-desktop:linux-fstable-3.3.9
     volumes:
       - name: deps
         path: /root/.pub-cache

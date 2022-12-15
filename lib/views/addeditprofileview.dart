@@ -172,7 +172,7 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
 
                               // Enabled
                               Visibility(
-                                  visible: Provider.of<ProfileInfoState>(context).onion.isNotEmpty,
+                                  visible: Provider.of<ProfileInfoState>(context).onion.isNotEmpty && !Provider.of<ProfileInfoState>(context).enabled,
                                   child: SwitchListTile(
                                     title: Text(AppLocalizations.of(context)!.profileEnabled, style: TextStyle(color: Provider.of<Settings>(context).current().mainTextColor)),
                                     subtitle: Text(AppLocalizations.of(context)!.profileEnabledDescription),
@@ -398,12 +398,11 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
     // match (and are provided if the user has requested an encrypted profile).
     if (_formKey.currentState!.validate()) {
       if (Provider.of<ProfileInfoState>(context, listen: false).onion.isEmpty) {
-        // TODO: save autostart in create flow
         if (usePassword == true) {
-          Provider.of<FlwtchState>(context, listen: false).cwtch.CreateProfile(ctrlrNick.value.text, ctrlrPass.value.text);
+          Provider.of<FlwtchState>(context, listen: false).cwtch.CreateProfile(ctrlrNick.value.text, ctrlrPass.value.text, Provider.of<ProfileInfoState>(context, listen: false).autostart);
           Navigator.of(context).pop();
         } else {
-          Provider.of<FlwtchState>(context, listen: false).cwtch.CreateProfile(ctrlrNick.value.text, DefaultPassword);
+          Provider.of<FlwtchState>(context, listen: false).cwtch.CreateProfile(ctrlrNick.value.text, DefaultPassword, Provider.of<ProfileInfoState>(context, listen: false).autostart);
           Navigator.of(context).pop();
         }
       } else {
