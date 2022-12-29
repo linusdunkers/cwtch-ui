@@ -122,12 +122,15 @@ class Linkify extends StatelessWidget {
       linkifiers: linkifiers,
     );
 
-    return Text.rich(
-      buildTextSpan(
+    return SelectionArea(
+        child: RichText(
+      selectionRegistrar: SelectionContainer.maybeOf(context),
+      text: buildTextSpan(
         elements,
         style: Theme.of(context).textTheme.bodyText2?.merge(style),
         onOpen: onOpen,
         useMouseRegion: true,
+        context: context,
         linkStyle: Theme.of(context)
             .textTheme
             .bodyText2
@@ -148,7 +151,7 @@ class Linkify extends StatelessWidget {
       locale: locale,
       textWidthBasis: textWidthBasis,
       textHeightBehavior: textHeightBehavior,
-    );
+    ));
   }
 }
 
@@ -297,6 +300,7 @@ class SelectableLinkify extends StatelessWidget {
         style: Theme.of(context).textTheme.bodyText2?.merge(style),
         codeStyle: Theme.of(context).textTheme.bodyText2?.merge(codeStyle),
         onOpen: onOpen,
+        context: context,
         linkStyle: Theme.of(context)
             .textTheme
             .bodyText2
@@ -337,11 +341,13 @@ class LinkableSpan extends WidgetSpan {
   LinkableSpan({
     required MouseCursor mouseCursor,
     required InlineSpan inlineSpan,
+    required BuildContext context,
   }) : super(
           child: MouseRegion(
             cursor: mouseCursor,
-            child: Text.rich(
-              inlineSpan,
+            child: RichText(
+              text: inlineSpan,
+              selectionRegistrar: SelectionContainer.maybeOf(context),
             ),
           ),
         );
@@ -354,6 +360,7 @@ TextSpan buildTextSpan(
   TextStyle? linkStyle,
   TextStyle? codeStyle,
   LinkCallback? onOpen,
+  required BuildContext context,
   bool useMouseRegion = false,
 }) {
   return TextSpan(
@@ -361,20 +368,18 @@ TextSpan buildTextSpan(
       (element) {
         if (element is LinkableElement) {
           if (useMouseRegion) {
-            return TooltipSpan(
-                message: element.url,
-                inlineSpan: LinkableSpan(
-                  mouseCursor: SystemMouseCursors.click,
-                  inlineSpan: TextSpan(text: element.text, style: linkStyle, recognizer: onOpen != null ? (TapGestureRecognizer()..onTap = () => onOpen(element)) : null, semanticsLabel: element.text),
-                ));
+            return TextSpan(
+                text: element.text,
+                style: linkStyle,
+                mouseCursor: SystemMouseCursors.click,
+                recognizer: onOpen != null ? (TapGestureRecognizer()..onTap = () => onOpen(element)) : null,
+                semanticsLabel: element.text);
           } else {
-            return TooltipSpan(
-                message: element.url,
-                inlineSpan: TextSpan(
-                  text: element.text,
-                  style: linkStyle,
-                  recognizer: onOpen != null ? (TapGestureRecognizer()..onTap = () => onOpen(element)) : null,
-                ));
+            return TextSpan(
+              text: element.text,
+              style: linkStyle,
+              recognizer: onOpen != null ? (TapGestureRecognizer()..onTap = () => onOpen(element)) : null,
+            );
           }
         } else if (element is BoldElement) {
           return TextSpan(text: element.text.replaceAll("*", ""), style: style?.copyWith(fontWeight: FontWeight.bold), semanticsLabel: element.text);
@@ -428,11 +433,13 @@ class TooltipSpan extends WidgetSpan {
   TooltipSpan({
     required String message,
     required InlineSpan inlineSpan,
+    required BuildContext context,
   }) : super(
           child: Tooltip(
             message: message,
-            child: Text.rich(
-              inlineSpan,
+            child: RichText(
+              text: inlineSpan,
+              selectionRegistrar: SelectionContainer.maybeOf(context),
             ),
           ),
         );

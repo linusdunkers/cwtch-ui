@@ -123,6 +123,7 @@ class FlwtchState extends State<Flwtch> with WindowListener {
             key: Key('app'),
             navigatorKey: navKey,
             locale: settings.locale,
+            showPerformanceOverlay: false,
             localizationsDelegates: <LocalizationsDelegate<dynamic>>[
               AppLocalizations.delegate,
               MaterialLocalizationDelegate(),
