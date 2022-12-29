@@ -215,14 +215,16 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
     var mr = MouseRegion(
         // For desktop...
         onHover: (event) {
-          setState(() {
-            Provider.of<AppState>(context, listen: false).hoveredIndex = Provider.of<MessageMetadata>(context, listen: false).messageID;
-          });
+          if (Provider.of<AppState>(context, listen: false).hoveredIndex != Provider.of<MessageMetadata>(context, listen: false).messageID) {
+            setState(() {
+              Provider.of<AppState>(context, listen: false).hoveredIndex = Provider.of<MessageMetadata>(context, listen: false).messageID;
+            });
+          }
         },
         onExit: (event) {
-          setState(() {
-            Provider.of<AppState>(context, listen: false).hoveredIndex = -1;
-          });
+          // setState(() {
+          //   Provider.of<AppState>(context, listen: false).hoveredIndex = -1;
+          //});
         },
         child: GestureDetector(
             onPanUpdate: (details) {
