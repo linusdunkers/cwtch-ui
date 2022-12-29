@@ -371,6 +371,7 @@ void modalShowReplies(
       context: ctx,
       builder: (BuildContext bcontext) {
         List<Message> replies = getReplies(cache, messageID);
+        ScrollController controller = ScrollController();
 
         return ChangeNotifierProvider.value(
             value: profile,
@@ -432,7 +433,8 @@ void modalShowReplies(
                 }
 
                 return Scrollbar(
-                    isAlwaysShown: true,
+                    trackVisibility: true,
+                    controller: controller,
                     child: SingleChildScrollView(
                         clipBehavior: Clip.antiAlias,
                         child: ConstrainedBox(

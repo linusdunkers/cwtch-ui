@@ -28,6 +28,7 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
   }
 
   final ctrlrNick = TextEditingController(text: "");
+  ScrollController peerSettingsScrollController = ScrollController();
 
   @override
   void initState() {
@@ -83,9 +84,11 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
         }
 
         return Scrollbar(
-            isAlwaysShown: true,
+            trackVisibility: true,
+            controller: peerSettingsScrollController,
             child: SingleChildScrollView(
                 clipBehavior: Clip.antiAlias,
+                controller: peerSettingsScrollController,
                 child: ConstrainedBox(
                     constraints: BoxConstraints(
                       minHeight: viewportConstraints.maxHeight,

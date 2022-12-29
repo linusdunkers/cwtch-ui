@@ -21,6 +21,7 @@ class _TorStatusView extends State<TorStatusView> {
   TextEditingController torSocksPortController = TextEditingController();
   TextEditingController torControlPortController = TextEditingController();
   TextEditingController torConfigController = TextEditingController();
+  ScrollController torScrollContoller = ScrollController();
 
   @override
   void dispose() {
@@ -52,7 +53,8 @@ class _TorStatusView extends State<TorStatusView> {
       return Consumer<TorStatus>(builder: (context, torStatus, child) {
         return LayoutBuilder(builder: (BuildContext context, BoxConstraints viewportConstraints) {
           return Scrollbar(
-              isAlwaysShown: true,
+              trackVisibility: true,
+              controller: torScrollContoller,
               child: SingleChildScrollView(
                   clipBehavior: Clip.antiAlias,
                   child: ConstrainedBox(

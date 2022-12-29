@@ -27,6 +27,7 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
 
   final ctrlrNick = TextEditingController(text: "");
   final ctrlrGroupAddr = TextEditingController(text: "");
+  ScrollController groupSettingsScrollController = ScrollController();
 
   @override
   void initState() {
@@ -55,9 +56,11 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
     return Consumer<Settings>(builder: (context, settings, child) {
       return LayoutBuilder(builder: (BuildContext context, BoxConstraints viewportConstraints) {
         return Scrollbar(
-            isAlwaysShown: true,
+            trackVisibility: true,
+            controller: groupSettingsScrollController,
             child: SingleChildScrollView(
                 clipBehavior: Clip.antiAlias,
+                controller: groupSettingsScrollController,
                 child: ConstrainedBox(
                     constraints: BoxConstraints(
                       minHeight: viewportConstraints.maxHeight,
