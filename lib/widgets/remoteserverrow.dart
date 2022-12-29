@@ -40,9 +40,9 @@ class _RemoteServerRowState extends State<RemoteServerRow> {
                       Visibility(
                           visible: !running,
                           child: Icon(
-                        CwtchIcons.negative_heart_24px,
-                        color: Provider.of<Settings>(context).theme.portraitOfflineBorderColor,
-                      )),
+                            CwtchIcons.negative_heart_24px,
+                            color: Provider.of<Settings>(context).theme.portraitOfflineBorderColor,
+                          )),
                     ])),
                 Expanded(
                     child: Column(

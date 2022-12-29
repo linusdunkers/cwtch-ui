@@ -114,9 +114,12 @@ class _AddContactViewState extends State<AddContactView> {
   /// The Add Peer Tab allows a peer to add a specific non-group peer to their contact lists
   /// We also provide a convenient way to copy their onion.
   Widget addPeerTab(bcontext) {
+    ScrollController controller = ScrollController();
     return Scrollbar(
+        controller: controller,
         child: SingleChildScrollView(
             clipBehavior: Clip.antiAlias,
+            controller: controller,
             child: Container(
                 margin: EdgeInsets.all(30),
                 padding: EdgeInsets.all(20),
@@ -187,10 +190,12 @@ class _AddContactViewState extends State<AddContactView> {
     if (Provider.of<ProfileInfoState>(bcontext).serverList.servers.isEmpty) {
       return Text(AppLocalizations.of(bcontext)!.addServerFirst);
     }
-
+    ScrollController controller = ScrollController();
     return Scrollbar(
+        controller: controller,
         child: SingleChildScrollView(
             clipBehavior: Clip.antiAlias,
+            controller: controller,
             child: Container(
                 margin: EdgeInsets.all(30),
                 padding: EdgeInsets.all(20),

@@ -38,6 +38,7 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
   final ctrlrPass = TextEditingController(text: "");
   final ctrlrPass2 = TextEditingController(text: "");
   final ctrlrOnion = TextEditingController(text: "");
+  ScrollController controller = ScrollController();
   late bool usePassword;
   late bool deleted;
 
@@ -75,8 +76,10 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
     return Consumer<Settings>(builder: (context, theme, child) {
       return LayoutBuilder(builder: (BuildContext context, BoxConstraints viewportConstraints) {
         return Scrollbar(
-            isAlwaysShown: true,
+            trackVisibility: true,
+            controller: controller,
             child: SingleChildScrollView(
+                controller: controller,
                 clipBehavior: Clip.antiAlias,
                 child: ConstrainedBox(
                     constraints: BoxConstraints(
