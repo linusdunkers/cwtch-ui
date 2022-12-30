@@ -36,6 +36,8 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
   static const androidSettingsChangeChannel = const MethodChannel('androidSettingsChanged');
   bool powerExempt = false;
 
+  ScrollController settingsListScrollController = ScrollController();
+
   @override
   void dispose() {
     super.dispose();
@@ -95,9 +97,11 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
         var appIcon = Icon(Icons.info, color: settings.current().mainTextColor);
         return Scrollbar(
             key: Key("SettingsView"),
-            isAlwaysShown: true,
+            trackVisibility: true,
+            controller: settingsListScrollController,
             child: SingleChildScrollView(
                 clipBehavior: Clip.antiAlias,
+                controller: settingsListScrollController,
                 padding: EdgeInsets.all(20),
                 child: ConstrainedBox(
                     constraints: BoxConstraints(

@@ -76,10 +76,13 @@ class _ProfileServersView extends State<ProfileServersView> {
                     )));
 
             return LayoutBuilder(builder: (BuildContext context, BoxConstraints viewportConstraints) {
+              ScrollController controller = ScrollController();
               return Scrollbar(
-                  isAlwaysShown: true,
+                  trackVisibility: true,
+                  controller: controller,
                   child: SingleChildScrollView(
                       clipBehavior: Clip.antiAlias,
+                      controller: controller,
                       child: Container(
                           margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
                           padding: EdgeInsets.fromLTRB(5, 0, 5, 10),

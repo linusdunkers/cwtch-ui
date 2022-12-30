@@ -67,11 +67,14 @@ class _AddEditServerViewState extends State<AddEditServerView> {
   }
 
   Widget _buildSettingsList() {
+    ScrollController controller = ScrollController();
     return Consumer2<ServerInfoState, Settings>(builder: (context, serverInfoState, settings, child) {
       return LayoutBuilder(builder: (BuildContext context, BoxConstraints viewportConstraints) {
         return Scrollbar(
-            isAlwaysShown: true,
+            trackVisibility: true,
+            controller: controller,
             child: SingleChildScrollView(
+                controller: controller,
                 clipBehavior: Clip.antiAlias,
                 child: ConstrainedBox(
                     constraints: BoxConstraints(
