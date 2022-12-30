@@ -59,7 +59,7 @@ class FileMessage extends Message {
           if (shareObj == null) {
             return MessageRow(MalformedBubble(), 0);
           }
-          String nameSuggestion = shareObj['n'] as String;
+          String nameSuggestion = shareObj['f'] as String;
           String rootHash = shareObj['h'] as String;
           String nonce = shareObj['n'] as String;
           int fileSize = shareObj['s'] as int;
@@ -68,8 +68,7 @@ class FileMessage extends Message {
           }
           return Container(
               alignment: Alignment.center,
-              width: 50,
-              height: 50,
+              height: 100,
               child: FileBubble(
                 nameSuggestion,
                 rootHash,

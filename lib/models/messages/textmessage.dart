@@ -28,12 +28,12 @@ class TextMessage extends Message {
           return SelectableLinkify(
             text: content + '\u202F',
             options: LinkifyOptions(messageFormatting: formatMessages, parseLinks: false, looseUrl: true, defaultToHttps: true),
-            linkifiers: [UrlLinkifier()],
+            linkifiers: [],
             onOpen: null,
             textAlign: TextAlign.left,
-            style: TextStyle(overflow: TextOverflow.ellipsis),
+            style: TextStyle(overflow: TextOverflow.fade),
             codeStyle: TextStyle(overflow: TextOverflow.ellipsis),
-            textWidthBasis: TextWidthBasis.longestLine,
+            textWidthBasis: TextWidthBasis.parent,
           );
         });
   }

@@ -333,6 +333,7 @@ class SelectableLinkify extends StatelessWidget {
       cursorHeight: cursorHeight,
       selectionControls: selectionControls,
       onSelectionChanged: onSelectionChanged,
+      style: style,
     );
   }
 }
