@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:cwtch/config.dart';
+import 'package:cwtch/cwtch_icons_icons.dart';
 import 'package:cwtch/models/contact.dart';
 import 'package:cwtch/models/filedownloadprogress.dart';
 import 'package:cwtch/models/message.dart';
@@ -131,6 +132,13 @@ class FileBubbleState extends State<FileBubble> {
     // we don't preview a non downloaded file...
     if (widget.isPreview && myFile != null) {
       return getPreview(context);
+    } else if (widget.isPreview && myFile == null) {
+      return Row(
+        children: [
+          Icon(CwtchIcons.attached_file_2, size: 32, color: Provider.of<Settings>(context).theme.messageFromMeTextColor),
+          Flexible(child: Text(widget.nameSuggestion, style: TextStyle(color: Provider.of<Settings>(context).theme.messageFromMeTextColor)))
+        ],
+      );
     }
 
     return LayoutBuilder(builder: (bcontext, constraints) {
@@ -329,7 +337,7 @@ class FileBubbleState extends State<FileBubble> {
           maxLines: 4,
           textWidthBasis: TextWidthBasis.parent,
         ),
-        leading: Icon(Icons.attach_file, size: 32, color: Provider.of<Settings>(context).theme.messageFromMeTextColor));
+        leading: Icon(CwtchIcons.attached_file_2, size: 32, color: Provider.of<Settings>(context).theme.messageFromMeTextColor));
   }
 
   // Construct an file chrome
@@ -377,7 +385,7 @@ class FileBubbleState extends State<FileBubble> {
         maxLines: 4,
         textWidthBasis: TextWidthBasis.parent,
       ),
-      leading: Icon(Icons.attach_file, size: 32, color: Provider.of<Settings>(context).theme.messageFromOtherTextColor),
+      leading: Icon(CwtchIcons.attached_file_2, size: 32, color: Provider.of<Settings>(context).theme.messageFromOtherTextColor),
       trailing: Visibility(
           visible: speed != "0 B/s",
           child: SelectableText(

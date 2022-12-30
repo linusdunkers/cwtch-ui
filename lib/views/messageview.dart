@@ -149,6 +149,8 @@ class _MessageViewState extends State<MessageView> {
           backgroundColor: Provider.of<Settings>(context).theme.backgroundMainColor,
           floatingActionButton: showDown
               ? FloatingActionButton(
+                  // heroTags need to be unique per screen (important when we pop up and down)...
+                  heroTag: "popDown" + Provider.of<ContactInfoState>(context, listen: false).onion,
                   child: Icon(Icons.arrow_downward, color: Provider.of<Settings>(context).current().defaultButtonTextColor),
                   onPressed: () {
                     Provider.of<AppState>(context, listen: false).initialScrollIndex = 0;

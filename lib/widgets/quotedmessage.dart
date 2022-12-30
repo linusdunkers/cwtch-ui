@@ -125,16 +125,11 @@ class QuotedMessageBubbleState extends State<QuotedMessageBubble> {
                         height: 75,
                         child: Column(children: [
                           Align(alignment: Alignment.centerLeft, child: wdgReplyingTo),
-                          Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start, children: [
+                          Flexible(
+                              child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.center, children: [
                             Padding(padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0), child: Icon(Icons.reply, size: 32, color: qTextColor)),
-                            Flexible(
-                                child: DefaultTextStyle(
-                              textWidthBasis: TextWidthBasis.parent,
-                              child: qMessage.getPreviewWidget(context),
-                              style: TextStyle(color: qTextColor),
-                              overflow: TextOverflow.fade,
-                            ))
-                          ])
+                            Flexible(child: qMessage.getPreviewWidget(context)),
+                          ]))
                         ]))));
           } catch (e) {
             return MalformedBubble();
