@@ -92,9 +92,7 @@ void main() async {
           TestRunSummaryReporter()
             ..setWriteLineFn(print)
             ..setWriteFn(print),
-          JsonReporter(
-
-          ),
+          JsonReporter(),
         ],
         customStepParameterDefinitions: [
           SwitchStateParameter(),

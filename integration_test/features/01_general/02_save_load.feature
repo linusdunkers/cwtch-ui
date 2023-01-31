@@ -14,11 +14,11 @@ Feature: Settings pane opens and can save settings persistently
     And I tap the widget that contains the text "Block Unknown Contacts"
     And I tap the widget that contains the text "Streamer/Presentation Mode"
     And I tap the widget that contains the text "Enable Experiments"
-    And I wait until the text 'Enable Group Chat' is present
+    Then I wait until the text 'Enable Group Chat' is present
     And I tap the widget that contains the text "Enable Group Chat"
     And I tap the widget that contains the text "Hosting Servers"
     And I tap the widget that contains the text "File Sharing"
-    And I wait until the text 'Image Previews and Profile Pictures' is present
+    Then I wait until the text 'Image Previews and Profile Pictures' is present
     And I tap the widget that contains the text "Image Previews and Profile Pictures"
     And I wait until the text 'Download Folder' is present
     And I fill the "DownloadFolderPicker" field with "/this/is/a/test"
