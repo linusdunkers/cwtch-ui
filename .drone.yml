@@ -76,6 +76,7 @@ steps:
       - export LD_LIBRARY_PATH="$PWD/linux/Tor/"
       - tor --version
       - ./run-tests.sh 01_general
+      - cat report.json
 
   - name: test-build-android
     image: cirrusci/flutter:3.3.8
