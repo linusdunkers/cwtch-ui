@@ -9,6 +9,7 @@ import 'dart:io';
 import 'package:cwtch/main.dart' as app;
 import 'package:glob/glob.dart';
 
+import 'gherkin_suite_test.dart';
 import 'hooks/env.dart';
 import 'steps/chat.dart';
 import 'steps/files.dart';
@@ -18,10 +19,11 @@ import 'steps/text.dart';
 import 'steps/utils.dart';
 
 part 'gherkin_suite_test.g.dart';
+
 const REPLACED_BY_SCRIPT = <String>['integration_test/features/**.feature'];
 
 @GherkinTestSuite(executionOrder: ExecutionOrder.alphabetical, featurePaths: REPLACED_BY_SCRIPT)
-void main() {
+void main() async {
   final params = [
     SwitchStateParameter(),
   ];
@@ -56,45 +58,52 @@ void main() {
   ];
 
   var sb = StringBuffer();
-  sb..writeln("## Custom Parameters\n")
-  ..writeln("| name | pattern |")
-  ..writeln("| --- | --- |");
+  sb
+    ..writeln("## Custom Parameters\n")
+    ..writeln("| name | pattern |")
+    ..writeln("| --- | --- |");
   for (var i in params) {
-    sb..write("| ")..write(i.identifier)..write(" | ")..write(i.pattern.toString().replaceFirst("RegExp: pattern=","").replaceFirst(" flags=i","").replaceAll("|", "&#124;"))..writeln(" |");
+    sb
+      ..write("| ")
+      ..write(i.identifier)
+      ..write(" | ")
+      ..write(i.pattern.toString().replaceFirst("RegExp: pattern=", "").replaceFirst(" flags=i", "").replaceAll("|", "&#124;"))
+      ..writeln(" |");
   }
-  sb..writeln("\n## Custom steps\n")
-  ..writeln("| pattern |")
-  ..writeln("| --- |");
+  sb
+    ..writeln("\n## Custom steps\n")
+    ..writeln("| pattern |")
+    ..writeln("| --- |");
   for (var i in steps) {
     sb.writeln(i.pattern.toString().replaceFirst("RegExp: pattern=", "| ").replaceFirst(" flags=", " |").replaceAll("|", "&#124;"));
   }
   var f = File("integration_test/CustomSteps.md");
   f.writeAsString(sb.toString());
 
-  executeTestSuite(
-    FlutterTestConfiguration.DEFAULT([])
-      ..reporters = [
-        StdoutReporter(MessageLevel.error)
-          ..setWriteLineFn(print)
-          ..setWriteFn(print),
-        ProgressReporter()
-          ..setWriteLineFn(print)
-          ..setWriteFn(print),
-        TestRunSummaryReporter()
-          ..setWriteLineFn(print)
-          ..setWriteFn(print),
-        JsonReporter(
-          writeReport: (_, __) => Future<void>.value(),
-        ),
-      ]
-      ..customStepParameterDefinitions = [
-        SwitchStateParameter(),
-      ]
-      ..stepDefinitions = steps
-      ..hooks = [
-        ResetCwtchEnvironment(),
-        AttachScreenshotOnFailedStepHook(),
-      ],
-      (World world) => app.main(),
+  await executeTestSuite(
+    configuration: FlutterTestConfiguration(
+        reporters: [
+          StdoutReporter(MessageLevel.verbose)
+            ..setWriteLineFn(print)
+            ..setWriteFn(print),
+          ProgressReporter()
+            ..setWriteLineFn(print)
+            ..setWriteFn(print),
+          TestRunSummaryReporter()
+            ..setWriteLineFn(print)
+            ..setWriteFn(print),
+          JsonReporter(
+
+          ),
+        ],
+        customStepParameterDefinitions: [
+          SwitchStateParameter(),
+        ],
+        stepDefinitions: steps,
+        hooks: [
+          ResetCwtchEnvironment(),
+          AttachScreenshotOnFailedStepHook(),
+        ]),
+    appMainFunction: (World world) => app.main(),
   );
 }

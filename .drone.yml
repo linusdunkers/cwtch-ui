@@ -60,6 +60,15 @@ steps:
       - tar -czf cwtch-`cat ../VERSION`.tar.gz cwtch
       - rm -r cwtch
 
+  - name: linux-ui-tests
+    image: cirrusci/flutter:3.3.8
+    volumes:
+      - name: deps
+        path: /root/.pub-cache
+    commands:
+      # - flutter config --enable-linux-desktop
+      - ./run-tests.sh 01_general
+
   - name: test-build-android
     image: cirrusci/flutter:3.3.8
     when:

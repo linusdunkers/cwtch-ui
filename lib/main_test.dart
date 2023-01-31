@@ -1,8 +1,11 @@
+import 'package:cwtch/themes/cwtch.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:cwtch/errorHandler.dart';
 import 'package:cwtch/settings.dart';
+import 'package:glob/list_local_fs.dart';
+import 'config.dart';
 import 'licenses.dart';
 import 'main.dart';
 import 'themes/opaque.dart';
@@ -10,16 +13,20 @@ import 'themes/opaque.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-
+import "package:flutter_driver/driver_extension.dart";
 import 'package:flutter_test/flutter_test.dart';
 import 'package:glob/glob.dart';
 
 var globalSettings = Settings(Locale("en", ''), CwtchDark());
 var globalErrorHandler = ErrorHandler();
 
-void main() {
+Future<void> main() async {
+  enableFlutterDriverExtension();
+  print("Cwtch version: ${EnvironmentConfig.BUILD_VER} built on: ${EnvironmentConfig.BUILD_DATE}");
+  WidgetsFlutterBinding.ensureInitialized();
+  print("runApp()");
   LicenseRegistry.addLicense(() => licenses());
-  DiskAssetBundle.loadGlob(['profiles/*.png']).then((assetBundle) {
+  return DiskAssetBundle.loadGlob(['profiles/*.png']).then((assetBundle) {
     runApp(DefaultAssetBundle(
       bundle: assetBundle,
       child: Flwtch(),

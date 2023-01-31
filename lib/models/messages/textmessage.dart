@@ -28,7 +28,7 @@ class TextMessage extends Message {
           return SelectableLinkify(
             text: content + '\u202F',
             options: LinkifyOptions(messageFormatting: formatMessages, parseLinks: false, looseUrl: true, defaultToHttps: true),
-            linkifiers: [],
+            linkifiers: [UrlLinkifier()],
             onOpen: null,
             textAlign: TextAlign.left,
             style: TextStyle(overflow: TextOverflow.fade),

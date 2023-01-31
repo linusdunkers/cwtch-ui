@@ -43,7 +43,8 @@ Future<void> main() async {
   LicenseRegistry.addLicense(() => licenses());
   WidgetsFlutterBinding.ensureInitialized();
   print("runApp()");
-  runApp(Flwtch());
+  print("Testing");
+  return runApp(Flwtch());
 }
 
 class Flwtch extends StatefulWidget {
@@ -65,12 +66,19 @@ class FlwtchState extends State<Flwtch> with WindowListener {
 
   Future<dynamic> shutdownDirect(MethodCall call) async {
     print(call);
-    await cwtch.Shutdown();
+    await cwtch.Shutdown().timeout(Duration(seconds: 1));
     return Future.value({});
   }
 
   @override
   initState() {
+
+    globalSettings = Settings(Locale("en", ''), CwtchDark());
+    globalErrorHandler = ErrorHandler();
+    globalTorStatus = TorStatus();
+    globalAppState = AppState();
+    globalServersList = ServerListState();
+
     print("initState: running...");
     windowManager.addListener(this);
     super.initState();
@@ -187,16 +195,18 @@ class FlwtchState extends State<Flwtch> with WindowListener {
 
   Future<void> shutdown() async {
     globalAppState.SetModalState(ModalState.shutdown);
-    await cwtch.Shutdown();
+    print("shutting down");
+    await cwtch.Shutdown().timeout(Duration(seconds: 1));
     // Wait a few seconds as shutting down things takes a little time..
-    Future.delayed(Duration(seconds: 1)).then((value) {
+    print("done");
+    {
       if (Platform.isAndroid) {
         SystemNavigator.pop();
       } else if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
         print("Exiting...");
         exit(0);
       }
-    });
+    };
   }
 
   // Invoked via notificationClickChannel by MyBroadcastReceiver in MainActivity.kt
@@ -260,9 +270,11 @@ class FlwtchState extends State<Flwtch> with WindowListener {
   }
 
   @override
-  void dispose() async {
+  void dispose() {
     globalAppState.SetModalState(ModalState.shutdown);
-    await cwtch.Shutdown();
+    cwtch.Shutdown().timeout(Duration(seconds: 1), onTimeout: () {
+
+    });
     windowManager.removeListener(this);
     cwtch.dispose();
     super.dispose();
