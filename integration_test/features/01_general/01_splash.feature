@@ -1,7 +1,7 @@
 @env:clean
 Feature: Splash screen displays and then closes
   Scenario: splash screen appears
-    Then I expect the widget 'SplashView' to be present within 1 second
+    Then I expect the widget 'SplashView' to be present within 10 seconds
     Then I expect the widget 'ProfileManagerView' to be present within 10 seconds
     # first-run of cwtch creates expected files and folders
     Then I expect the folder 'integration_test/env/temp' to exist

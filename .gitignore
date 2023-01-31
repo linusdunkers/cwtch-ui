@@ -62,6 +62,8 @@ integration_test/gherkin/
 integration_test/CustomSteps.md
 analysis_options.yaml
 integration_test/env/default/tor
+linux/Tor
+linux/tor.tar.gz
 
 coverage
 test/failures

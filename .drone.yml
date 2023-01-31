@@ -71,6 +71,9 @@ steps:
       - sudo apt-get install --fix-missing -y xvfb
       - export DISPLAY=:99
       - sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
+      - ./fetch-tor.sh
+      - export PATH=$PATH:$PWD/linux/Tor
+      - tor --version
       - ./run-tests.sh 01_general
 
   - name: test-build-android
