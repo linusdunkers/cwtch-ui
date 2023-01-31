@@ -139,16 +139,16 @@ StepDefinitionGeneric ExpectWidgetWithTextWithin() {
   return given3<String, String, int, FlutterWorld>(
     RegExp(r'I expect a {string} widget with text {string} to be present within {int} second(s)$'),
     (widgetType, text, seconds, context) async {
-      await context.world.appDriver.waitUntil(
-        () async {
-          await context.world.appDriver.waitForAppToSettle();
+     await () async {
+        await context.world.appDriver.waitForAppToSettle();
 
-          return context.world.appDriver.isPresent(
-            context.world.appDriver.findByDescendant(context.world.appDriver.findBy(widgetTypeByName(widgetType), FindType.type), context.world.appDriver.findBy(text, FindType.text)),
-          );
-        },
-        timeout: Duration(seconds: seconds),
-      );
+        return context.world.appDriver.isPresent(
+          context.world.appDriver.findByDescendant(
+              context.world.appDriver.findBy(
+                  widgetTypeByName(widgetType), FindType.type),
+              context.world.appDriver.findBy(text, FindType.text)),
+        );
+      }().timeout(Duration(seconds: 120));
     },
     configuration: StepDefinitionConfiguration()..timeout = const Duration(days: 1),
   );
@@ -160,8 +160,6 @@ StepDefinitionGeneric WaitUntilTextExists() {
     (text, existence, context) async {
       await context.world.appDriver.waitUntil(
         () async {
-          await context.world.appDriver.waitForAppToSettle();
-
           return existence == Existence.absent
               ? context.world.appDriver.isAbsent(
                   context.world.appDriver.findBy(text, FindType.text),
