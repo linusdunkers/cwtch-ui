@@ -61,7 +61,7 @@ steps:
       - rm -r cwtch
 
   - name: linux-ui-tests
-    image: cirrusci/flutter:3.3.8
+    image: openpriv/flutter-desktop:linux-fstable-3.3.9
     volumes:
       - name: deps
         path: /root/.pub-cache
