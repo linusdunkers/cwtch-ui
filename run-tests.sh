@@ -5,7 +5,7 @@ sed "s|featurePaths: REPLACED_BY_SCRIPT|featurePaths: <String>[$paths]|" integra
 flutter pub run build_runner clean
 flutter pub run build_runner build --delete-conflicting-outputs
 
-LD_LIBRARY_PATH="./linux/"
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:"./linux/"
 LD_LIBRARY_PATH=$LD_LIBRARY_PATH LOG_FILE=/home/sarah/PARA/projects/cwtch/cwtch.log CWTCH_HOME=$PWD/integration_test/env/temp/ flutter test -d linux --dart-define TEST_MODE=true integration_test/gherkin_suite_test.dart
 #node index2.js
 #if [ "$HEADLESS" = "false" ]; then
