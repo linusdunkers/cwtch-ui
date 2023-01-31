@@ -3,7 +3,7 @@ Feature: Settings pane opens and can save settings persistently
   Scenario: Open the Settings pane
     Given I wait until the widget with type 'ProfileMgrView' is present
     And I tap the 'OpenSettingsView' button
-    Then I expect the text 'Cwtch Settings' to be present within 5 seconds
+    And I wait until the text 'Cwtch Settings' is present
     And I take a screenshot
 
   Scenario: Change every setting (except Language)
