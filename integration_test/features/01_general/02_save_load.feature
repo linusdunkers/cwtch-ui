@@ -16,9 +16,10 @@ Feature: Settings pane opens and can save settings persistently
     And I tap the widget that contains the text "Enable Experiments"
     Then I wait until the text 'Enable Group Chat' is present
     And I tap the widget that contains the text "Enable Group Chat"
+    And I wait for 2 seconds
     And I tap the widget that contains the text "Hosting Servers"
+    And I wait for 2 seconds
     And I tap the widget that contains the text "File Sharing"
-    And I take a screenshot
     Then I wait until the text 'Image Previews and Profile Pictures' is present
     And I tap the widget that contains the text "Image Previews and Profile Pictures"
     And I wait until the text 'Download Folder' is present
