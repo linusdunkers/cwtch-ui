@@ -267,7 +267,7 @@ packages:
     version: "9.6.1"
   flutter_local_notifications_linux:
     dependency: transitive
-    description:cp
+    description:
       name: flutter_local_notifications_linux
       url: "https://pub.dartlang.org"
     source: hosted
