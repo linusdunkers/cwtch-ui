@@ -7,7 +7,7 @@ flutter pub run build_runner build --delete-conflicting-outputs
 
 PATH=$PATH:$PWD/linux/Tor
 LD_LIBRARY_PATH=$LD_LIBRARY_PATH:"$PWD/linux/":"$PWD/linux/Tor/"
-LOG_FILE=/home/sarah/PARA/projects/cwtch/cwtch.log CWTCH_HOME=$PWD/integration_test/env/temp/ flutter test -d linux --dart-define TEST_MODE=true integration_test/gherkin_suite_test.dart
+PATH=$PATH LD_LIBRARY_PATH=$LD_LIBRARY_PATH LOG_FILE=/home/sarah/PARA/projects/cwtch/cwtch.log CWTCH_HOME=$PWD/integration_test/env/temp/ flutter test -d linux --dart-define TEST_MODE=true integration_test/gherkin_suite_test.dart
 #node index2.js
 #if [ "$HEADLESS" = "false" ]; then
 #  xdg-open integration_test/gherkin/reports/cucumber_report.html
