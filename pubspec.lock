@@ -254,7 +254,7 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: "94b6d964689bba2056c4be8adbe2276adb686d56"
+      resolved-ref: "46b9efda9fa85f33429e59c1dd2539f27ffd7888"
       url: "https://git.openprivacy.ca/openprivacy/flutter_gherkin"
     source: git
     version: "3.0.0-rc.17"
@@ -267,7 +267,7 @@ packages:
     version: "9.6.1"
   flutter_local_notifications_linux:
     dependency: transitive
-    description:
+    description:cp
       name: flutter_local_notifications_linux
       url: "https://pub.dartlang.org"
     source: hosted
