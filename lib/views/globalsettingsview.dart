@@ -402,7 +402,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                     if (checkDownloadDirectory(context, settings)) {
                                       settings.enableExperiment(FileSharingExperiment);
                                     } else {
-                                      settings.disableExperiment(FileSharingExperiment);
+                                      settings.enableExperiment(FileSharingExperiment);
                                       settings.disableExperiment(ImagePreviewsExperiment);
                                     }
                                   } else {
