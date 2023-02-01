@@ -69,14 +69,11 @@ steps:
       # - flutter config --enable-linux-desktop
       - sudo apt update
       - sudo apt-get install --fix-missing -y xvfb
-      - export DISPLAY=:99
-      - sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
       - ./fetch-tor.sh
       - export PATH=$PATH:$PWD/linux/Tor
       - export LD_LIBRARY_PATH="$PWD/linux/Tor/"
       - tor --version
-      - ./run-tests.sh 01_general
-      - cat report.json
+      - ./run-tests-headless.sh
 
   - name: test-build-android
     image: cirrusci/flutter:3.3.8
