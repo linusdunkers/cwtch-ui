@@ -73,7 +73,7 @@ steps:
       - export PATH=$PATH:$PWD/linux/Tor
       - export LD_LIBRARY_PATH="$PWD/linux/Tor/"
       - tor --version
-      - ./run-tests-headless.sh
+      - ./run-tests-headless.sh 02_save_load
 
   - name: test-build-android
     image: cirrusci/flutter:3.3.8

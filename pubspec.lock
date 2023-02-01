@@ -254,7 +254,7 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: "46b9efda9fa85f33429e59c1dd2539f27ffd7888"
+      resolved-ref: "9b817676e4ad623a875accaa26097669a9bd2c7c"
       url: "https://git.openprivacy.ca/openprivacy/flutter_gherkin"
     source: git
     version: "3.0.0-rc.17"
