@@ -66,13 +66,10 @@ steps:
       - name: deps
         path: /root/.pub-cache
     commands:
-      # - flutter config --enable-linux-desktop
+      - # todo: add xvfb to openpriv/flutter-desktop:linux-fstable-3.7
       - sudo apt update
       - sudo apt-get install -y xvfb
       - ./fetch-tor.sh
-      - export PATH=$PATH:$PWD/linux/Tor
-      - export LD_LIBRARY_PATH="$PWD/linux/Tor/"
-      - tor --version
       - ./run-tests-headless.sh 02_save_load
 
   - name: test-build-android

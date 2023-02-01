@@ -43,7 +43,6 @@ Future<void> main() async {
   LicenseRegistry.addLicense(() => licenses());
   WidgetsFlutterBinding.ensureInitialized();
   print("runApp()");
-  print("Testing");
   return runApp(Flwtch());
 }
 
@@ -66,7 +65,7 @@ class FlwtchState extends State<Flwtch> with WindowListener {
 
   Future<dynamic> shutdownDirect(MethodCall call) async {
     print(call);
-    await cwtch.Shutdown().timeout(Duration(seconds: 1));
+    cwtch.Shutdown();
     return Future.value({});
   }
 
@@ -196,9 +195,8 @@ class FlwtchState extends State<Flwtch> with WindowListener {
   Future<void> shutdown() async {
     globalAppState.SetModalState(ModalState.shutdown);
     print("shutting down");
-    await cwtch.Shutdown().timeout(Duration(seconds: 1));
+    await cwtch.Shutdown();
     // Wait a few seconds as shutting down things takes a little time..
-    print("done");
     {
       if (Platform.isAndroid) {
         SystemNavigator.pop();
@@ -272,9 +270,7 @@ class FlwtchState extends State<Flwtch> with WindowListener {
   @override
   void dispose() {
     globalAppState.SetModalState(ModalState.shutdown);
-    cwtch.Shutdown().timeout(Duration(seconds: 1), onTimeout: () {
-
-    });
+    cwtch.Shutdown();
     windowManager.removeListener(this);
     cwtch.dispose();
     super.dispose();
