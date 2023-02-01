@@ -64,8 +64,8 @@ class FlwtchState extends State<Flwtch> with WindowListener {
   final GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
 
   Future<dynamic> shutdownDirect(MethodCall call) async {
-    print(call);
-    cwtch.Shutdown();
+    EnvironmentConfig.debugLog("$call");
+    await cwtch.Shutdown();
     return Future.value({});
   }
 
@@ -194,7 +194,7 @@ class FlwtchState extends State<Flwtch> with WindowListener {
 
   Future<void> shutdown() async {
     globalAppState.SetModalState(ModalState.shutdown);
-    print("shutting down");
+    EnvironmentConfig.debugLog("shutting down");
     await cwtch.Shutdown();
     // Wait a few seconds as shutting down things takes a little time..
     {
