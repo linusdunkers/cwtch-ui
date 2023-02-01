@@ -10,6 +10,7 @@ StepDefinitionGeneric TakeScreenshot() {
         final bytes = await context.world.appDriver.screenshot();
         final screenshotData = base64Encode(bytes);
         print("EMBEDDING SCREENSHOT....");
+        print("$screenshotData");
         context.world.attach(screenshotData, 'image/png', 'And I take a screenshot');
       } catch (e, st) {
         print("FAILED TO EMBED??? $e $st");
