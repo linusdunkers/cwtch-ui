@@ -43,7 +43,7 @@ Future<void> main() async {
   LicenseRegistry.addLicense(() => licenses());
   WidgetsFlutterBinding.ensureInitialized();
   print("runApp()");
-  runApp(Flwtch());
+  return runApp(Flwtch());
 }
 
 class Flwtch extends StatefulWidget {
@@ -64,13 +64,20 @@ class FlwtchState extends State<Flwtch> with WindowListener {
   final GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
 
   Future<dynamic> shutdownDirect(MethodCall call) async {
-    print(call);
+    EnvironmentConfig.debugLog("$call");
     await cwtch.Shutdown();
     return Future.value({});
   }
 
   @override
   initState() {
+
+    globalSettings = Settings(Locale("en", ''), CwtchDark());
+    globalErrorHandler = ErrorHandler();
+    globalTorStatus = TorStatus();
+    globalAppState = AppState();
+    globalServersList = ServerListState();
+
     print("initState: running...");
     windowManager.addListener(this);
     super.initState();
@@ -187,16 +194,17 @@ class FlwtchState extends State<Flwtch> with WindowListener {
 
   Future<void> shutdown() async {
     globalAppState.SetModalState(ModalState.shutdown);
+    EnvironmentConfig.debugLog("shutting down");
     await cwtch.Shutdown();
     // Wait a few seconds as shutting down things takes a little time..
-    Future.delayed(Duration(seconds: 1)).then((value) {
+    {
       if (Platform.isAndroid) {
         SystemNavigator.pop();
       } else if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
         print("Exiting...");
         exit(0);
       }
-    });
+    };
   }
 
   // Invoked via notificationClickChannel by MyBroadcastReceiver in MainActivity.kt
@@ -260,9 +268,9 @@ class FlwtchState extends State<Flwtch> with WindowListener {
   }
 
   @override
-  void dispose() async {
+  void dispose() {
     globalAppState.SetModalState(ModalState.shutdown);
-    await cwtch.Shutdown();
+    cwtch.Shutdown();
     windowManager.removeListener(this);
     cwtch.dispose();
     super.dispose();

@@ -41,15 +41,29 @@ app.*.symbols
 app.*.map.json
 
 # Tor
-data-dir*
+*data-dir*
 
+# Test Artificats
+*.log
+flutter_gherkin
+run-tests.env
+report.json
+package.
 
 # Compiled Libs
 linux/tor
 linux/libCwtch.so
 android/cwtch/cwtch.aar
 android/app/src/main/jniLibs/*/libtor.so
-libCwtch.dylib
+*.dylib
+integration_test/gherkin_suite_test.g.dart
+integration_test/gherkin_suite_test.dart
+integration_test/gherkin/
+integration_test/CustomSteps.md
+analysis_options.yaml
+integration_test/env/default/tor
+linux/Tor
+linux/tor.tar.gz
 
 coverage
 test/failures

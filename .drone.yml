@@ -60,6 +60,18 @@ steps:
       - tar -czf cwtch-`cat ../VERSION`.tar.gz cwtch
       - rm -r cwtch
 
+  - name: linux-ui-tests
+    image: openpriv/flutter-desktop:linux-fstable-3.3.9
+    volumes:
+      - name: deps
+        path: /root/.pub-cache
+    commands:
+      - # todo: add xvfb to openpriv/flutter-desktop:linux-fstable-3.7
+      - sudo apt update
+      - sudo apt-get install -y xvfb
+      - ./fetch-tor.sh
+      - ./run-tests-headless.sh 02_save_load
+
   - name: test-build-android
     image: cirrusci/flutter:3.3.8
     when:

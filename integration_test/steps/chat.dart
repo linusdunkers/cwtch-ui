@@ -15,28 +15,20 @@ import 'overrides.dart';
 
 StepDefinitionGeneric ExpectReply() {
   return given3<String, String, int, FlutterWorld>(
-    RegExp(
-        r'I expect to see the message {string} replying to {string} within {int} second(s)$'),
-        (originalMessage, responseMessage, seconds, context) async {
+    RegExp(r'I expect to see the message {string} replying to {string} within {int} second(s)$'),
+    (originalMessage, responseMessage, seconds, context) async {
       await context.world.appDriver.waitUntil(
-            () async {
+        () async {
           await context.world.appDriver.waitForAppToSettle();
 
           return await context.world.appDriver.isPresent(
-              context.world.appDriver.findByDescendant(
-                  context.world.appDriver.findBy(QuotedMessageBubble, FindType.type),
-                  context.world.appDriver.findBy(originalMessage, FindType.text)
-              )
-          ) && await context.world.appDriver.isPresent(
-              context.world.appDriver.findByDescendant(
-                  context.world.appDriver.findBy(QuotedMessageBubble, FindType.type),
-                  context.world.appDriver.findBy(responseMessage, FindType.text)
-              ));
+                  context.world.appDriver.findByDescendant(context.world.appDriver.findBy(QuotedMessageBubble, FindType.type), context.world.appDriver.findBy(originalMessage, FindType.text))) &&
+              await context.world.appDriver.isPresent(
+                  context.world.appDriver.findByDescendant(context.world.appDriver.findBy(QuotedMessageBubble, FindType.type), context.world.appDriver.findBy(responseMessage, FindType.text)));
         },
         timeout: Duration(seconds: seconds),
       );
     },
-    configuration: StepDefinitionConfiguration()
-      ..timeout = const Duration(days: 1),
+    configuration: StepDefinitionConfiguration()..timeout = const Duration(days: 1),
   );
 }

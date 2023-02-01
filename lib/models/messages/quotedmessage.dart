@@ -38,7 +38,7 @@ class QuotedMessage extends Message {
               this.content,
             );
             var content = message["body"];
-            var formatMessages = Provider.of<Settings>(context).isExperimentEnabled(FormattingExperiment);
+            var formatMessages = Provider.of<Settings>(bcontext).isExperimentEnabled(FormattingExperiment);
             return SelectableLinkify(
                 text: content + '\u202F',
                 options: LinkifyOptions(messageFormatting: formatMessages, parseLinks: false, looseUrl: true, defaultToHttps: true),

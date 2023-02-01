@@ -252,9 +252,11 @@ packages:
   flutter_gherkin:
     dependency: "direct dev"
     description:
-      name: flutter_gherkin
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: main
+      resolved-ref: "9b817676e4ad623a875accaa26097669a9bd2c7c"
+      url: "https://git.openprivacy.ca/openprivacy/flutter_gherkin"
+    source: git
     version: "3.0.0-rc.17"
   flutter_local_notifications:
     dependency: "direct main"
