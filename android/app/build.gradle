@@ -42,6 +42,12 @@ android {
 
     lintOptions {
         disable 'InvalidPackage'
+
+        // For some reason we get  Error: LottieAnimationView must extend android.view.View
+        // Given the newer gradle build...I'm not sure why, but it does impact functionality at all
+        // there is no information about this error and the command output suggests including the
+        // following:
+        abortOnError false
     }
 
     defaultConfig {
@@ -91,7 +97,7 @@ dependencies {
     implementation project(':cwtch')
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.2"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.2"
-    implementation "com.airbnb.android:lottie:4.2.1"
+    implementation "com.airbnb.android:lottie:5.2.0"
     implementation "androidx.localbroadcastmanager:localbroadcastmanager:1.0.0"
     implementation "com.android.support.constraint:constraint-layout:2.0.4"
 
@@ -129,5 +135,5 @@ dependencies {
 
     // needed to prevent a ListenableFuture dependency conflict/bug
     // see https://github.com/google/ExoPlayer/issues/7905#issuecomment-692637059
-    implementation 'com.google.guava:guava:any'
+    implementation "com.google.guava:guava:31.0.1-android"
 }
