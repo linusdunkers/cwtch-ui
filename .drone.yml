@@ -8,7 +8,7 @@ clone:
 
 steps:
   - name: clone
-    image: cirrusci/flutter:3.7.1
+    image: openpriv/flutter-desktop:linux-fstable-3.7.1
     environment:
       buildbot_key_b64:
         from_secret: buildbot_key_b64
@@ -24,7 +24,7 @@ steps:
       - git checkout $DRONE_COMMIT
 
   - name: fetch
-    image: cirrusci/flutter:3.7.1
+    image: openpriv/flutter-desktop:linux-fstable-3.7.1
     volumes:
       - name: deps
         path: /root/.pub-cache
@@ -66,14 +66,11 @@ steps:
       - name: deps
         path: /root/.pub-cache
     commands:
-      - # todo: add xvfb to openpriv/flutter-desktop:linux-fstable-3.7
-      - sudo apt update
-      - sudo apt-get install -y xvfb
       - ./fetch-tor.sh
       - ./run-tests-headless.sh 01_general
 
   - name: test-build-android
-    image: cirrusci/flutter:3.7.1
+    image: openpriv/flutter-desktop:linux-fstable-3.7.1
     when:
       event: pull_request
     volumes:
@@ -83,7 +80,7 @@ steps:
       - flutter build apk --debug
 
   - name: build-android
-    image: cirrusci/flutter:3.7.1
+    image: openpriv/flutter-desktop:linux-fstable-3.7.1
     when:
       event: push
     environment:
@@ -107,7 +104,7 @@ steps:
       #- cp build/app/outputs/flutter-apk/app-debug.apk deploy/android
 
   - name: widget-tests
-    image: cirrusci/flutter:3.7.1
+    image:  openpriv/flutter-desktop:linux-fstable-3.7.1
     volumes:
       - name: deps
         path: /root/.pub-cache
