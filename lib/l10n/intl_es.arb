@@ -1,6 +1,7 @@
 {
     "@@locale": "es",
-    "@@last_modified": "2022-12-05T21:06:07+01:00",
+    "@@last_modified": "2023-02-07T01:58:40+01:00",
+    "localeSk": "Slovak \/ Slovák",
     "profileEnabledDescription": "Start or stop the profile",
     "profileAutostartDescription": "Controls if the profile will be automatically launched on startup",
     "profileEnabled": "Enable",
