@@ -154,9 +154,9 @@ class CwtchFfi implements Cwtch {
     if (Platform.isLinux) {
       home = envVars['HOME'] ?? "";
       if (EnvironmentConfig.TEST_MODE) {
-        cwtchDir = envVars['CWTCH_HOME'] ?? path.join(envVars['HOME']!, ".cwtch");
-      } else {
         cwtchDir = envVars['CWTCH_HOME']!;
+      } else {
+        cwtchDir = envVars['CWTCH_HOME'] ?? path.join(envVars['HOME']!, ".cwtch");
       }
 
 
