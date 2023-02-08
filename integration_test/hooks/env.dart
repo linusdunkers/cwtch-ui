@@ -28,15 +28,37 @@ class ResetCwtchEnvironment extends Hook {
   @override
   Future<void> onBeforeScenario(TestConfiguration config, String scenario, Iterable<Tag> tags) async {
     if (tags.any((t) => t.name == "@env:persist")) {
-      await Process.run("mv", ["integration_test/env/temp-persist", "integration_test/env/temp"]);
+      return Process.run("rm", ["-rf", "integration_test/env/temp"]).then((value) {
+        return Process.run("mv",
+            ["integration_test/env/temp-persist", "integration_test/env/temp"])
+            .then((value) {
+          print("copied persist!");
+          return super.onBeforeScenario(config, scenario, tags);
+        });
+      });
     } else if (tags.any((t) => t.name == "@env:aliceandbob1")) {
-      await Process.run("cp", ["-R", "integration_test/env/aliceandbob1", "integration_test/env/temp"]);
+      return Process.run("rm", ["-rf", "integration_test/env/temp"]).then((value) {
+        return Process.run("cp", [
+          "-R",
+          "integration_test/env/aliceandbob1",
+          "integration_test/env/temp"
+        ]).then((value) {
+          print("copied aliceandbob!");
+          return super.onBeforeScenario(config, scenario, tags);
+        });
+      });
     } else if (!(tags.any((t) => t.name == "@env:clean"))) {
       // use the default environment if no @env: tag specified
-      await Process.run("cp", ["-R", "integration_test/env/default", "integration_test/env/temp"]);
-    } else {
-      print("clean environment initialized");
+      return Process.run("rm", ["-rf", "integration_test/env/temp"]).then((value) {
+        return Process.run("cp",
+            ["-R", "integration_test/env/default", "integration_test/env/temp"])
+            .then((value) {
+          print("copied clean!");
+          return super.onBeforeScenario(config, scenario, tags);
+        });
+      });
     }
+    print("potentially dirty environment initialized - clean not specified");
     return super.onBeforeScenario(config, scenario, tags);
   }
 
