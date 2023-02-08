@@ -115,6 +115,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                           trailing: Container(
                               width: MediaQuery.of(context).size.width / 4,
                               child: DropdownButton(
+                                  key: Key("languagelist"),
                                   isExpanded: true,
                                   value: Provider.of<Settings>(context).locale.toString(),
                                   onChanged: (String? newValue) {
@@ -127,7 +128,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                   items: AppLocalizations.supportedLocales.map<DropdownMenuItem<String>>((Locale value) {
                                     return DropdownMenuItem<String>(
                                       value: value.toString(),
-                                      child: Text(getLanguageFull(context, value.languageCode, value.countryCode)),
+                                      child: Text( key: Key("dropdownLanguage" + value.languageCode), getLanguageFull(context, value.languageCode, value.countryCode)),
                                     );
                                   }).toList()))),
                       SwitchListTile(
