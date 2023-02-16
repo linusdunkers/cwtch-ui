@@ -11,6 +11,14 @@ StepDefinitionGeneric TooltipTap() {
   });
 }
 
+StepDefinitionGeneric TooltipTapAny() {
+  return given1<String, FlutterWorld>(RegExp(r'I tap a button with tooltip {string}'), (input1, context) async {
+    final finder = context.world.appDriver.findBy(input1, FindType.tooltip).first;
+    await context.world.appDriver.tap(finder);
+    await context.world.appDriver.waitForAppToSettle();
+  });
+}
+
 StepDefinitionGeneric TorVersionPresent() {
   return given<FlutterWorld>(
     RegExp(r'I expect the Tor version to be present$'),
