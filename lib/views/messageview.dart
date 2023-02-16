@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'dart:ui';
 import 'package:crypto/crypto.dart';
 import 'package:cwtch/cwtch/cwtch.dart';
@@ -208,10 +209,15 @@ class _MessageViewState extends State<MessageView> {
                 width: 10,
               ),
               Expanded(
-                  child: Text(
-                Provider.of<ContactInfoState>(context).nickname,
-                overflow: TextOverflow.ellipsis,
-              ))
+                  child: Container(
+                      height: 24,
+                      clipBehavior: Clip.hardEdge,
+                      decoration: BoxDecoration(),
+                      child: Text(
+                        Provider.of<ContactInfoState>(context).nickname,
+                        overflow: TextOverflow.clip,
+                        maxLines: 1,
+                      )))
             ]),
             actions: appBarButtons,
           ),
@@ -574,7 +580,7 @@ class _MessageViewState extends State<MessageView> {
                   keyboardType: TextInputType.multiline,
                   enableIMEPersonalizedLearning: false,
                   minLines: 1,
-                  maxLength: (isGroup ? GroupMessageLengthMax : P2PMessageLengthMax) - numberOfBytesMoreThanChar,
+                  maxLength: max(1, (isGroup ? GroupMessageLengthMax : P2PMessageLengthMax) - numberOfBytesMoreThanChar),
                   maxLengthEnforcement: MaxLengthEnforcement.enforced,
                   maxLines: 3,
                   onFieldSubmitted: _sendMessage,

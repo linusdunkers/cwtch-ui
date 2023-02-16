@@ -42,8 +42,17 @@ class MessageBubbleState extends State<MessageBubble> {
         senderDisplayStr = Provider.of<MessageMetadata>(context).senderHandle;
       }
     }
-    var wdgSender = SelectableText(senderDisplayStr,
-        style: TextStyle(fontSize: 9.0, color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor));
+    var wdgSender = Container(
+        height: 11,
+        clipBehavior: Clip.hardEdge,
+        decoration: BoxDecoration(),
+        child: SelectableText(senderDisplayStr,
+            maxLines: 1,
+            style: TextStyle(
+              fontSize: 9.0,
+              overflow: TextOverflow.clip,
+              color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor,
+            )));
 
     var wdgMessage = SelectableLinkify(
       text: widget.content + '\u202F',

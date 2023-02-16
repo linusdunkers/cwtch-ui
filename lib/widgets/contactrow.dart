@@ -64,17 +64,22 @@ class _ContactRowState extends State<ContactRow> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          contact.nickname, //(contact.isInvitation ? "invite " : "non-invite ") + (contact.isBlocked ? "blokt" : "nonblokt"),//
+                        Container(
+                            height: 24,
+                            clipBehavior: Clip.hardEdge,
+                            decoration: BoxDecoration(),
+                            child: Text(
+                              contact.nickname, //(contact.isInvitation ? "invite " : "non-invite ") + (contact.isBlocked ? "blokt" : "nonblokt"),//
 
-                          style: TextStyle(
-                              fontSize: Provider.of<Settings>(context).theme.contactOnionTextSize(),
-                              color: contact.isBlocked
-                                  ? Provider.of<Settings>(context).theme.portraitBlockedTextColor
-                                  : Provider.of<Settings>(context).theme.mainTextColor), //Provider.of<FlwtchState>(context).biggerFont,
-                          softWrap: true,
-                          overflow: TextOverflow.visible,
-                        ),
+                              style: TextStyle(
+                                  fontSize: Provider.of<Settings>(context).theme.contactOnionTextSize(),
+                                  color: contact.isBlocked
+                                      ? Provider.of<Settings>(context).theme.portraitBlockedTextColor
+                                      : Provider.of<Settings>(context).theme.mainTextColor), //Provider.of<FlwtchState>(context).biggerFont,
+                              softWrap: true,
+                              overflow: TextOverflow.clip,
+                              maxLines: 1,
+                            )),
                         syncStatus ?? Container(),
                         Visibility(
                           visible: !Provider.of<Settings>(context).streamerMode,

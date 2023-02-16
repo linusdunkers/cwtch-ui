@@ -69,5 +69,4 @@ class ProfileServerListState extends ChangeNotifier {
   }
 
   List<RemoteServerInfoState> get servers => _servers.sublist(0); //todo: copy?? dont want caller able to bypass changenotifier
-
 }

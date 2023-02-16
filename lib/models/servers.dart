@@ -68,7 +68,6 @@ class ServerListState extends ChangeNotifier {
   }
 
   List<ServerInfoState> get servers => _servers.sublist(0); //todo: copy?? dont want caller able to bypass changenotifier
-
 }
 
 class ServerInfoState extends ChangeNotifier {

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -42,37 +43,41 @@ class _CwtchTextFieldState extends State<CwtchTextField> {
   @override
   Widget build(BuildContext context) {
     return Consumer<Settings>(builder: (context, theme, child) {
-      return TextFormField(
-        key: widget.testKey,
-        controller: widget.controller,
-        validator: widget.validator,
-        onChanged: widget.onChanged,
-        autofocus: widget.autofocus,
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        textAlign: widget.number ? TextAlign.end : TextAlign.start,
-        keyboardType: widget.multiLine
-            ? TextInputType.multiline
-            : widget.number
-                ? TextInputType.number
-                : TextInputType.text,
-        inputFormatters: widget.number ? <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly] : null,
-        maxLines: widget.multiLine ? null : 1,
-        scrollController: _scrollController,
-        enableIMEPersonalizedLearning: false,
-        focusNode: _focusNode,
-        decoration: InputDecoration(
-            errorMaxLines: 2,
-            hintText: widget.hintText,
-            floatingLabelBehavior: FloatingLabelBehavior.never,
-            filled: true,
-            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(6.0), borderSide: BorderSide(color: theme.current().textfieldBorderColor, width: 1.0)),
-            focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(6.0), borderSide: BorderSide(color: theme.current().textfieldErrorColor, width: 1.0)),
-            errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(6.0), borderSide: BorderSide(color: theme.current().textfieldErrorColor, width: 1.0)),
-            errorStyle: TextStyle(color: theme.current().textfieldErrorColor, fontWeight: FontWeight.bold, overflow: TextOverflow.visible),
-            fillColor: theme.current().textfieldBackgroundColor,
-            contentPadding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
-            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(6.0), borderSide: BorderSide(color: theme.current().textfieldBorderColor, width: 1.0))),
-      );
+      return Container(
+          clipBehavior: Clip.antiAlias,
+          decoration: BoxDecoration(),
+          child: TextFormField(
+            key: widget.testKey,
+            controller: widget.controller,
+            validator: widget.validator,
+            onChanged: widget.onChanged,
+            autofocus: widget.autofocus,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            textAlign: widget.number ? TextAlign.end : TextAlign.start,
+            keyboardType: widget.multiLine
+                ? TextInputType.multiline
+                : widget.number
+                    ? TextInputType.number
+                    : TextInputType.text,
+            inputFormatters: widget.number ? <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly] : null,
+            maxLines: widget.multiLine ? null : 1,
+            scrollController: _scrollController,
+            enableIMEPersonalizedLearning: false,
+            focusNode: _focusNode,
+            style: TextStyle(overflow: TextOverflow.clip),
+            decoration: InputDecoration(
+                errorMaxLines: 2,
+                hintText: widget.hintText,
+                floatingLabelBehavior: FloatingLabelBehavior.never,
+                filled: true,
+                focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(6.0), borderSide: BorderSide(color: theme.current().textfieldBorderColor, width: 1.0)),
+                focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(6.0), borderSide: BorderSide(color: theme.current().textfieldErrorColor, width: 1.0)),
+                errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(6.0), borderSide: BorderSide(color: theme.current().textfieldErrorColor, width: 1.0)),
+                errorStyle: TextStyle(color: theme.current().textfieldErrorColor, fontWeight: FontWeight.bold, overflow: TextOverflow.visible),
+                fillColor: theme.current().textfieldBackgroundColor,
+                contentPadding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
+                enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(6.0), borderSide: BorderSide(color: theme.current().textfieldBorderColor, width: 1.0))),
+          ));
     });
   }
 }

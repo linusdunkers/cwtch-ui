@@ -46,7 +46,11 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(Provider.of<ContactInfoState>(context).nickname + " " + AppLocalizations.of(context)!.conversationSettings),
+        title: Container(
+            height: 24,
+            clipBehavior: Clip.hardEdge,
+            decoration: BoxDecoration(),
+            child: Text(Provider.of<ContactInfoState>(context).nickname + " " + AppLocalizations.of(context)!.conversationSettings)),
       ),
       body: _buildSettingsList(),
     );

@@ -154,7 +154,6 @@ class NixNotificationManager implements NotificationsManager {
 }
 
 NotificationsManager newDesktopNotificationsManager(Future<void> Function(String profileOnion, int convoId) notificationSelectConvo) {
-
   // We don't want notifications in Dev Mode
   if (EnvironmentConfig.TEST_MODE) {
     return NullNotificationsManager();

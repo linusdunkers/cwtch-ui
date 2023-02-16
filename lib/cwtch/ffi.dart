@@ -159,7 +159,6 @@ class CwtchFfi implements Cwtch {
         cwtchDir = envVars['CWTCH_HOME'] ?? path.join(envVars['HOME']!, ".cwtch");
       }
 
-
       if (await File("linux/Tor/tor").exists()) {
         bundledTor = "linux/Tor/tor";
       } else if (await File("lib/Tor/tor").exists()) {
@@ -788,7 +787,6 @@ class CwtchFfi implements Cwtch {
 
   @override
   String? defaultDownloadPath() {
-
     Map<String, String> envVars = Platform.environment;
     String nominalPath = path.join(envVars[Platform.isWindows ? 'UserProfile' : 'HOME']!, "Downloads");
     if (Directory(nominalPath).existsSync() == false) {

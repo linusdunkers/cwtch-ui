@@ -294,47 +294,50 @@ class SelectableLinkify extends StatelessWidget {
       linkifiers: linkifiers,
     );
 
-    return SelectableText.rich(
-      buildTextSpan(
-        elements,
-        style: Theme.of(context).textTheme.bodyText2?.merge(style),
-        codeStyle: Theme.of(context).textTheme.bodyText2?.merge(codeStyle),
-        onOpen: onOpen,
-        context: context,
-        linkStyle: Theme.of(context)
-            .textTheme
-            .bodyText2
-            ?.merge(style)
-            .copyWith(
-              color: Colors.blueAccent,
-              decoration: TextDecoration.underline,
-            )
-            .merge(linkStyle),
-      ),
-      textAlign: textAlign,
-      textDirection: textDirection,
-      minLines: minLines,
-      maxLines: maxLines,
-      focusNode: focusNode,
-      strutStyle: strutStyle,
-      showCursor: showCursor,
-      textScaleFactor: textScaleFactor,
-      autofocus: autofocus,
-      toolbarOptions: toolbarOptions,
-      cursorWidth: cursorWidth,
-      cursorRadius: cursorRadius,
-      cursorColor: cursorColor,
-      dragStartBehavior: dragStartBehavior,
-      enableInteractiveSelection: enableInteractiveSelection,
-      onTap: onTap,
-      scrollPhysics: scrollPhysics,
-      textWidthBasis: textWidthBasis,
-      textHeightBehavior: textHeightBehavior,
-      cursorHeight: cursorHeight,
-      selectionControls: selectionControls,
-      onSelectionChanged: onSelectionChanged,
-      style: style,
-    );
+    return Container(
+        clipBehavior: Clip.hardEdge,
+        decoration: BoxDecoration(),
+        child: SelectableText.rich(
+          buildTextSpan(
+            elements,
+            style: Theme.of(context).textTheme.bodyText2?.merge(style),
+            codeStyle: Theme.of(context).textTheme.bodyText2?.merge(codeStyle),
+            onOpen: onOpen,
+            context: context,
+            linkStyle: Theme.of(context)
+                .textTheme
+                .bodyText2
+                ?.merge(style)
+                .copyWith(
+                  color: Colors.blueAccent,
+                  decoration: TextDecoration.underline,
+                )
+                .merge(linkStyle),
+          ),
+          textAlign: textAlign,
+          textDirection: textDirection,
+          minLines: minLines,
+          maxLines: maxLines,
+          focusNode: focusNode,
+          strutStyle: strutStyle,
+          showCursor: showCursor,
+          textScaleFactor: textScaleFactor,
+          autofocus: autofocus,
+          toolbarOptions: toolbarOptions,
+          cursorWidth: cursorWidth,
+          cursorRadius: cursorRadius,
+          cursorColor: cursorColor,
+          dragStartBehavior: dragStartBehavior,
+          enableInteractiveSelection: enableInteractiveSelection,
+          onTap: onTap,
+          scrollPhysics: scrollPhysics,
+          textWidthBasis: textWidthBasis,
+          textHeightBehavior: textHeightBehavior,
+          cursorHeight: cursorHeight,
+          selectionControls: selectionControls,
+          onSelectionChanged: onSelectionChanged,
+          style: style,
+        ));
   }
 }
 
