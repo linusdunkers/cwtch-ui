@@ -138,17 +138,6 @@ steps:
       - cd ..
       - scp -r -o StrictHostKeyChecking=no -i ~/id_rsa $DIR buildfiles@build.openprivacy.ca:/home/buildfiles/buildfiles/
 
-  - name: notify-email
-    image: drillster/drone-email
-    pull: if-not-exists
-    settings:
-      host: build.openprivacy.ca
-      port: 25
-      skip_verify: true
-      from: drone@openprivacy.ca
-    when:
-      status: [ failure ]
-
   - name: notify-gogs
     image: openpriv/drone-gogs
     pull: if-not-exists
