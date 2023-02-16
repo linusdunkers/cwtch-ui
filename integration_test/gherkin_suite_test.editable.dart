@@ -52,6 +52,7 @@ void main() async {
     // text
     TorVersionPresent(),
     TooltipTap(),
+    TooltipTapAny(),
     // files
     FolderExists(),
     FileExists(),

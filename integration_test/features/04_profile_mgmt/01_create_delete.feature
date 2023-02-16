@@ -2,8 +2,9 @@
 Feature: Basic Profile Management
     Scenario: Error on Creating a Profile without a Display Name
         Given I wait until the widget with type 'ProfileMgrView' is present
-        And I tap the button with tooltip "Add new profile"
-        Then I expect the text 'Display Name' to be present
+        And I tap a button with tooltip "Add new profile"
+        And I tap the "addNewProfileActual" button
+        And I wait until the text 'Display Name' is present
         And I expect the text 'New Password' to be present
         And I expect the text 'Please enter a display name' to be absent
         Then I tap the "button" widget with label "Add new profile"
@@ -12,12 +13,13 @@ Feature: Basic Profile Management
 
     Scenario: Create Unencrypted Profile
         Given I wait until the widget with type 'ProfileMgrView' is present
-        And I tap the button with tooltip "Add new profile"
-        Then I expect the text 'Display Name' to be present
+        And I tap a button with tooltip "Add new profile"
+        And I tap the "addNewProfileActual" button
+        And I wait until the text 'Display Name' is present
         And I expect the text 'New Password' to be present
         And I take a screenshot
         Then I tap the "passwordCheckBox" widget
-        And I expect the text 'New Password' to be absent
+        And I expect the text 'New Password' to be absent within 2 seconds
         And I take a screenshot
         Then I fill the "displayNameFormElement" field with "Alice (Unencrypted)"
         Then I tap the "button" widget with label "Add new profile"
@@ -33,8 +35,9 @@ Feature: Basic Profile Management
 
     Scenario: Create Encrypted Profile
         Given I wait until the widget with type 'ProfileMgrView' is present
-        And I tap the button with tooltip "Add new profile"
-        Then I expect the text 'Display Name' to be present
+        And I tap a button with tooltip "Add new profile"
+        And I tap the "addNewProfileActual" button
+        And I wait until the text 'Display Name' is present
         And I expect the text 'New Password' to be present
         And I take a screenshot
         Then I fill the "displayNameFormElement" field with "Alice (Encrypted)"
@@ -51,7 +54,7 @@ Feature: Basic Profile Management
     Scenario: Load an Encrypted Profile by Unlocking it with a Password
         Given I wait until the widget with type 'ProfileMgrView' is present
         Then I expect the text 'Enter a password to view your profiles' to be absent
-        And I tap the button with tooltip "Unlock encrypted profiles by entering their password."
+        And I tap a button with tooltip "Unlock encrypted profiles by entering their password."
         Then I expect the text 'Enter a password to view your profiles' to be present
         When I fill the "unlockPasswordProfileElement" field with "password1"
         And I tap the "button" widget with label "Unlock"
@@ -60,7 +63,7 @@ Feature: Basic Profile Management
     Scenario: Load an Encrypted Profile by Unlocking it with a Password and Change the Name
         Given I wait until the widget with type 'ProfileMgrView' is present
         Then I expect the text 'Enter a password to view your profiles' to be absent
-        And I tap the button with tooltip "Unlock encrypted profiles by entering their password."
+        And I tap a button with tooltip "Unlock encrypted profiles by entering their password."
         Then I expect the text 'Enter a password to view your profiles' to be present
         When I fill the "unlockPasswordProfileElement" field with "password1"
         And I tap the "button" widget with label "Unlock"
@@ -75,7 +78,7 @@ Feature: Basic Profile Management
      Scenario: Delete an Encrypted Profile
          Given I wait until the widget with type 'ProfileMgrView' is present
          Then I expect the text 'Enter a password to view your profiles' to be absent
-         And I tap the button with tooltip "Unlock encrypted profiles by entering their password."
+         And I tap a button with tooltip "Unlock encrypted profiles by entering their password."
          Then I expect the text 'Enter a password to view your profiles' to be present
          When I fill the "unlockPasswordProfileElement" field with "password1"
          And I tap the "button" widget with label "Unlock"
@@ -83,8 +86,9 @@ Feature: Basic Profile Management
          And I take a screenshot
          When I tap the "IconButton" widget with tooltip "Edit Profile Carol (Encrypted)"
          Then I expect the text 'Display Name' to be present
+         Then I fill the "currentPasswordFormElement" field with "password1"
          When I tap the button that contains the text "Delete"
-         Then I expect the text "Really Delete Profile" to be present
+         Then I wait for 2 seconds
          When I tap the "button" widget with label "Really Delete Profile"
          And I wait until the widget with type 'ProfileMgrView' is present
          Then I expect a "ProfileRow" widget with text "Carol (Encrypted)" to be absent

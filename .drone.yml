@@ -67,8 +67,8 @@ steps:
         path: /root/.pub-cache
     commands:
       - ./fetch-tor.sh
-      # Run 01_general and 02_global_settings features...
-      - ./run-tests-headless.sh "01_general|02_global_settings"
+      # Run 01_general, 02_global_settings, and 04_profile_mgmt features...
+      - ./run-tests-headless.sh "01_general|02_global_settings|04_profile_mgmt"
 
   - name: test-build-android
     image: openpriv/flutter-desktop:linux-fstable-3.7.1

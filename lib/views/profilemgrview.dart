@@ -226,6 +226,7 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.horizontal(left: Radius.circular(180), right: Radius.circular(180))),
                               ),
                               child: Text(
+                                key:Key("addNewProfileActual"),
                                 AppLocalizations.of(context)!.addProfileTitle,
                                 semanticsLabel: AppLocalizations.of(context)!.addProfileTitle,
                                 style: TextStyle(fontWeight: FontWeight.bold),
