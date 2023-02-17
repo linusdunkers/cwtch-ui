@@ -43,8 +43,12 @@ class QuotedMessageBubbleState extends State<QuotedMessageBubble> {
       }
     }
 
-    var wdgSender = SelectableText(senderDisplayStr,
-        style: TextStyle(fontSize: 9.0, color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor));
+    var wdgSender = Container(
+        height: 11,
+        clipBehavior: Clip.hardEdge,
+        decoration: BoxDecoration(),
+        child: SelectableText(senderDisplayStr,
+            style: TextStyle(fontSize: 9.0, color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor)));
 
     var showClickableLinks = Provider.of<Settings>(context).isExperimentEnabled(ClickableLinksExperiment);
     var formatMessages = Provider.of<Settings>(context).isExperimentEnabled(FormattingExperiment);

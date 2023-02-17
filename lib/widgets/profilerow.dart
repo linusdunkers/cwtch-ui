@@ -44,13 +44,17 @@ class _ProfileRowState extends State<ProfileRow> {
               Expanded(
                   child: Column(
                 children: [
-                  Text(
-                    profile.nickname,
-                    semanticsLabel: profile.nickname,
-                    style: Provider.of<FlwtchState>(context).biggerFont,
-                    softWrap: true,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                  Container(
+                      height: 24,
+                      clipBehavior: Clip.hardEdge,
+                      decoration: BoxDecoration(),
+                      child: Text(
+                        profile.nickname,
+                        semanticsLabel: profile.nickname,
+                        style: Provider.of<FlwtchState>(context).biggerFont,
+                        softWrap: true,
+                        overflow: TextOverflow.ellipsis,
+                      )),
                   Visibility(
                       visible: !Provider.of<Settings>(context).streamerMode,
                       child: ExcludeSemantics(

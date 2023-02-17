@@ -71,7 +71,6 @@ class FlwtchState extends State<Flwtch> with WindowListener {
 
   @override
   initState() {
-
     globalSettings = Settings(Locale("en", ''), CwtchDark());
     globalErrorHandler = ErrorHandler();
     globalTorStatus = TorStatus();
@@ -204,7 +203,8 @@ class FlwtchState extends State<Flwtch> with WindowListener {
         print("Exiting...");
         exit(0);
       }
-    };
+    }
+    ;
   }
 
   // Invoked via notificationClickChannel by MyBroadcastReceiver in MainActivity.kt

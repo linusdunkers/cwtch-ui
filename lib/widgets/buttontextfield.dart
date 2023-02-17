@@ -44,42 +44,47 @@ class _CwtchButtonTextFieldState extends State<CwtchButtonTextField> {
   @override
   Widget build(BuildContext context) {
     return Consumer<Settings>(builder: (context, theme, child) {
-      return TextFormField(
-        key: widget.testKey,
-        controller: widget.controller,
-        readOnly: widget.readonly,
-        showCursor: !widget.readonly,
-        focusNode: _focusNode,
-        enableIMEPersonalizedLearning: false,
-        onChanged: widget.onChanged,
-        decoration: InputDecoration(
-            labelText: widget.labelText,
-            labelStyle: TextStyle(color: theme.current().mainTextColor, backgroundColor: theme.current().textfieldBackgroundColor),
-            suffixIcon: IconButton(
-              onPressed: widget.onPressed,
-              icon: widget.icon,
-              splashRadius: Material.defaultSplashRadius / 2,
-              padding: EdgeInsets.fromLTRB(0.0, 4.0, 2.0, 2.0),
-              tooltip: widget.tooltip,
-              enableFeedback: true,
-              color: theme.current().mainTextColor,
-              highlightColor: theme.current().defaultButtonColor,
-              focusColor: theme.current().defaultButtonActiveColor,
-              splashColor: theme.current().defaultButtonActiveColor,
-            ),
-            floatingLabelBehavior: FloatingLabelBehavior.never,
-            filled: true,
-            fillColor: theme.current().textfieldBackgroundColor,
-            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(6.0), borderSide: BorderSide(color: theme.current().textfieldBorderColor, width: 1.0)),
-            focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(6.0), borderSide: BorderSide(color: theme.current().textfieldErrorColor, width: 1.0)),
-            errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(6.0), borderSide: BorderSide(color: theme.current().textfieldErrorColor, width: 1.0)),
-            errorStyle: TextStyle(
-              color: theme.current().textfieldErrorColor,
-              fontWeight: FontWeight.bold,
-            ),
-            contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(6.0), borderSide: BorderSide(color: theme.current().textfieldBorderColor, width: 1.0))),
-      );
+      return Container(
+          clipBehavior: Clip.antiAlias,
+          decoration: BoxDecoration(),
+          child: TextFormField(
+            key: widget.testKey,
+            controller: widget.controller,
+            readOnly: widget.readonly,
+            showCursor: !widget.readonly,
+            focusNode: _focusNode,
+            enableIMEPersonalizedLearning: false,
+            onChanged: widget.onChanged,
+            maxLines: 1,
+            style: TextStyle(overflow: TextOverflow.clip),
+            decoration: InputDecoration(
+                labelText: widget.labelText,
+                labelStyle: TextStyle(color: theme.current().mainTextColor, backgroundColor: theme.current().textfieldBackgroundColor),
+                suffixIcon: IconButton(
+                  onPressed: widget.onPressed,
+                  icon: widget.icon,
+                  splashRadius: Material.defaultSplashRadius / 2,
+                  padding: EdgeInsets.fromLTRB(0.0, 4.0, 2.0, 2.0),
+                  tooltip: widget.tooltip,
+                  enableFeedback: true,
+                  color: theme.current().mainTextColor,
+                  highlightColor: theme.current().defaultButtonColor,
+                  focusColor: theme.current().defaultButtonActiveColor,
+                  splashColor: theme.current().defaultButtonActiveColor,
+                ),
+                floatingLabelBehavior: FloatingLabelBehavior.never,
+                filled: true,
+                fillColor: theme.current().textfieldBackgroundColor,
+                focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(6.0), borderSide: BorderSide(color: theme.current().textfieldBorderColor, width: 1.0)),
+                focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(6.0), borderSide: BorderSide(color: theme.current().textfieldErrorColor, width: 1.0)),
+                errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(6.0), borderSide: BorderSide(color: theme.current().textfieldErrorColor, width: 1.0)),
+                errorStyle: TextStyle(
+                  color: theme.current().textfieldErrorColor,
+                  fontWeight: FontWeight.bold,
+                ),
+                contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(6.0), borderSide: BorderSide(color: theme.current().textfieldBorderColor, width: 1.0))),
+          ));
     });
   }
 }

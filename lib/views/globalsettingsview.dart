@@ -128,7 +128,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                   items: AppLocalizations.supportedLocales.map<DropdownMenuItem<String>>((Locale value) {
                                     return DropdownMenuItem<String>(
                                       value: value.toString(),
-                                      child: Text( key: Key("dropdownLanguage" + value.languageCode), getLanguageFull(context, value.languageCode, value.countryCode)),
+                                      child: Text(key: Key("dropdownLanguage" + value.languageCode), getLanguageFull(context, value.languageCode, value.countryCode)),
                                     );
                                   }).toList()))),
                       SwitchListTile(

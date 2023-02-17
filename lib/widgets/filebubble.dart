@@ -144,8 +144,12 @@ class FileBubbleState extends State<FileBubble> {
     return LayoutBuilder(builder: (bcontext, constraints) {
       var wdgSender = Visibility(
           visible: widget.interactive,
-          child: SelectableText(senderDisplayStr + '\u202F',
-              style: TextStyle(fontSize: 9.0, color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor)));
+          child: Container(
+              height: 11,
+              clipBehavior: Clip.hardEdge,
+              decoration: BoxDecoration(),
+              child: SelectableText(senderDisplayStr + '\u202F',
+                  style: TextStyle(fontSize: 9.0, color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor))));
       var isPreview = false;
       var wdgMessage = !showFileSharing
           ? Text(AppLocalizations.of(context)!.messageEnableFileSharing)

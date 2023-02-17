@@ -47,7 +47,7 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text(handle + " " + AppLocalizations.of(context)!.conversationSettings),
+        title: Container(height: 24, clipBehavior: Clip.hardEdge, decoration: BoxDecoration(), child: Text(handle + " " + AppLocalizations.of(context)!.conversationSettings)),
       ),
       body: _buildSettingsList(),
     );
