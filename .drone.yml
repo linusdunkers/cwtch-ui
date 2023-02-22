@@ -183,6 +183,7 @@ steps:
     commands:
       #- # force by pass of ssh host key check, less secure
       #- ssh-keyscan -H git.openprivacy.ca >> ..\known_hosts
+      - Invoke-WebRequest -Uri http://git.openprivacy.ca:8000
       - echo $Env:buildbot_key_b64 > ..\id_rsa.b64
       - certutil -decode ..\id_rsa.b64 ..\id_rsa
       - git init
@@ -298,6 +299,7 @@ steps:
       buildbot_key_b64:
         from_secret: buildbot_key_b64
     commands:
+      - curl http://git.openprivacy.ca:8000
       - mkdir ~/.ssh
       - echo $buildbot_key_b64 > ~/.ssh/id_rsa.b64
       - base64 -d ~/.ssh/id_rsa.b64 > ~/.ssh/id_rsa
