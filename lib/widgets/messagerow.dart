@@ -6,6 +6,7 @@ import 'package:cwtch/models/appstate.dart';
 import 'package:cwtch/models/contact.dart';
 import 'package:cwtch/models/message.dart';
 import 'package:cwtch/models/profile.dart';
+import 'package:cwtch/third_party/base32/base32.dart';
 import 'package:cwtch/views/contactsview.dart';
 import 'package:cwtch/widgets/staticmessagebubble.dart';
 import 'package:flutter/material.dart';
@@ -180,6 +181,8 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
       String imagePath = Provider.of<MessageMetadata>(context).senderImage!;
       if (sender != null) {
         imagePath = Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment) ? sender.imagePath : sender.defaultImagePath;
+      } else {
+        imagePath = RandomProfileImage(Provider.of<MessageMetadata>(context).senderHandle);
       }
       Widget wdgPortrait = GestureDetector(
           onTap: !isGroup
@@ -388,6 +391,8 @@ void modalShowReplies(
                   var sender = profile.contactList.findContact(e.getMetadata().senderHandle);
                   if (sender != null) {
                     imagePath = showImage ? sender.imagePath : sender.defaultImagePath;
+                  } else {
+                    imagePath = RandomProfileImage(e.getMetadata().senderHandle);
                   }
 
                   if (fromMe) {
@@ -452,4 +457,62 @@ void modalShowReplies(
               });
             });
       });
+}
+
+// temporary until we do real picture selection
+String RandomProfileImage(String onion) {
+  var choices = [
+    "001-centaur",
+    "002-kraken",
+    "003-dinosaur",
+    "004-tree-1",
+    "005-hand",
+    "006-echidna",
+    "007-robot",
+    "008-mushroom",
+    "009-harpy",
+    "010-phoenix",
+    "011-dragon-1",
+    "012-devil",
+    "013-troll",
+    "014-alien",
+    "015-minotaur",
+    "016-madre-monte",
+    "017-satyr",
+    "018-karakasakozou",
+    "019-pirate",
+    "020-werewolf",
+    "021-scarecrow",
+    "022-valkyrie",
+    "023-curupira",
+    "024-loch-ness-monster",
+    "025-tree",
+    "026-cerberus",
+    "027-gryphon",
+    "028-mermaid",
+    "029-vampire",
+    "030-goblin",
+    "031-yeti",
+    "032-leprechaun",
+    "033-medusa",
+    "034-chimera",
+    "035-elf",
+    "036-hydra",
+    "037-cyclops",
+    "038-pegasus",
+    "039-narwhal",
+    "040-woodcutter",
+    "041-zombie",
+    "042-dragon",
+    "043-frankenstein",
+    "044-witch",
+    "045-fairy",
+    "046-genie",
+    "047-pinocchio",
+    "048-ghost",
+    "049-wizard",
+    "050-unicorn"
+  ];
+  var encoding = base32.decode(onion.toUpperCase());
+  return "assets/profiles/" + choices[encoding[33] % choices.length] + ".png";
 }

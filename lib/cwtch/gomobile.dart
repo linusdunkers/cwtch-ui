@@ -358,4 +358,15 @@ class CwtchGomobile implements Cwtch {
   void StopSharing(String profile, String filekey) {
     cwtchPlatform.invokeMethod("StopSharing", {"ProfileOnion": profile, "filekey": filekey});
   }
+
+  @override
+  void UpdateSettings(String json) {
+    cwtchPlatform.invokeMethod("UpdateSettings", {"json": json});
+  }
+
+  @override
+  bool IsServersCompiled() {
+    // never for android builds...
+    return false;
+  }
 }

@@ -307,12 +307,13 @@ class _ContactsViewState extends State<ContactsView> {
   }
 
   void _pushServers() {
-    var profile = Provider.of<ProfileInfoState>(context);
+    var profileInfoState = Provider.of<ProfileInfoState>(context, listen: false);
+
     Navigator.of(context).push(
       PageRouteBuilder(
         pageBuilder: (bcontext, a1, a2) {
           return MultiProvider(
-            providers: [ChangeNotifierProvider(create: (context) => profile), Provider.value(value: Provider.of<FlwtchState>(context))],
+            providers: [ChangeNotifierProvider.value(value: profileInfoState), Provider.value(value: Provider.of<FlwtchState>(context))],
             child: ProfileServersView(),
           );
         },

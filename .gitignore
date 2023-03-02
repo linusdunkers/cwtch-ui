@@ -8,6 +8,11 @@
 .buildlog/
 .history
 .svn/
+package.json
+package-lock.json
+libCwtch*
+cwtch.aar
+node_modules
 
 # IntelliJ related
 *.iml

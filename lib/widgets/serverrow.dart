@@ -91,16 +91,12 @@ class _ServerRowState extends State<ServerRow> {
   }
 
   void _pushEditServer(ServerInfoState server) {
-    Provider.of<ErrorHandler>(context).reset();
+    Provider.of<ErrorHandler>(context, listen: false).reset();
     Navigator.of(context).push(MaterialPageRoute<void>(
       settings: RouteSettings(name: "serveraddedit"),
       builder: (BuildContext context) {
         return MultiProvider(
-          providers: [
-            ChangeNotifierProvider<ServerInfoState>(
-              create: (_) => server,
-            )
-          ],
+          providers: [ChangeNotifierProvider.value(value: server)],
           child: AddEditServerView(),
         );
       },

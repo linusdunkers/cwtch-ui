@@ -377,22 +377,27 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                               Visibility(
                                   visible: !Platform.isAndroid && !Platform.isIOS,
                                   child: SwitchListTile(
-                                    title: Text(AppLocalizations.of(context)!.settingServers, style: TextStyle(color: settings.current().mainTextColor)),
-                                    subtitle: Text(AppLocalizations.of(context)!.settingServersDescription),
-                                    value: settings.isExperimentEnabled(ServerManagementExperiment),
-                                    onChanged: (bool value) {
-                                      Provider.of<ServerListState>(context, listen: false).clear();
-                                      if (value) {
-                                        settings.enableExperiment(ServerManagementExperiment);
-                                      } else {
-                                        settings.disableExperiment(ServerManagementExperiment);
-                                      }
-                                      // Save Settings...
-                                      saveSettings(context);
-                                    },
+                                    title: Text(AppLocalizations.of(context)!.settingServers),
+                                    subtitle: Provider.of<FlwtchState>(context, listen: false).cwtch.IsServersCompiled()
+                                        ? Text(AppLocalizations.of(context)!.settingServersDescription)
+                                        : Text("This version of Cwtch has been compiled without support for the server hosting experiment."),
+                                    value: Provider.of<FlwtchState>(context, listen: false).cwtch.IsServersCompiled() && settings.isExperimentEnabled(ServerManagementExperiment),
+                                    onChanged: Provider.of<FlwtchState>(context, listen: false).cwtch.IsServersCompiled()
+                                        ? (bool value) {
+                                            Provider.of<ServerListState>(context, listen: false).clear();
+                                            if (value) {
+                                              settings.enableExperiment(ServerManagementExperiment);
+                                            } else {
+                                              settings.disableExperiment(ServerManagementExperiment);
+                                            }
+                                            // Save Settings...
+                                            saveSettings(context);
+                                          }
+                                        : null,
                                     activeTrackColor: settings.theme.defaultButtonColor,
                                     inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
-                                    secondary: Icon(CwtchIcons.dns_24px, color: settings.current().mainTextColor),
+                                    inactiveThumbColor: settings.theme.defaultButtonDisabledColor,
+                                    secondary: Icon(CwtchIcons.dns_24px),
                                   )),
                               SwitchListTile(
                                 title: Text(AppLocalizations.of(context)!.settingFileSharing, style: TextStyle(color: settings.current().mainTextColor)),
@@ -694,10 +699,5 @@ String getThemeName(context, String theme) {
 /// Send an UpdateGlobalSettings to the Event Bus
 saveSettings(context) {
   var settings = Provider.of<Settings>(context, listen: false);
-  final updateSettingsEvent = {
-    "EventType": "UpdateGlobalSettings",
-    "Data": {"Data": jsonEncode(settings.asJson())},
-  };
-  final updateSettingsEventJson = jsonEncode(updateSettingsEvent);
-  Provider.of<FlwtchState>(context, listen: false).cwtch.SendAppEvent(updateSettingsEventJson);
+  Provider.of<FlwtchState>(context, listen: false).cwtch.UpdateSettings(jsonEncode(settings.asJson()));
 }

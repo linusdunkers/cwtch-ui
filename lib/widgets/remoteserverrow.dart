@@ -81,7 +81,7 @@ class _RemoteServerRowState extends State<RemoteServerRow> {
                     settings: RouteSettings(name: "remoteserverview"),
                     pageBuilder: (bcontext, a1, a2) {
                       return MultiProvider(
-                        providers: [Provider.value(value: profile), ChangeNotifierProvider(create: (context) => server), Provider.value(value: Provider.of<FlwtchState>(context))],
+                        providers: [ChangeNotifierProvider.value(value: profile), ChangeNotifierProvider.value(value: server), Provider.value(value: Provider.of<FlwtchState>(context))],
                         child: RemoteServerView(),
                       );
                     },

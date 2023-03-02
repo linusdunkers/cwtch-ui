@@ -32,12 +32,7 @@ abstract class Cwtch {
 
   // ignore: non_constant_identifier_names
   void ResetTor();
-
-  // todo: remove these
-  // ignore: non_constant_identifier_names
-  void SendProfileEvent(String onion, String jsonEvent);
-  // ignore: non_constant_identifier_names
-  void SendAppEvent(String jsonEvent);
+  void UpdateSettings(String json);
 
   // ignore: non_constant_identifier_names
   void AcceptContact(String profileOnion, int contactHandle);
@@ -136,4 +131,6 @@ abstract class Cwtch {
   void dispose();
 
   Future<dynamic> GetDebugInfo();
+
+  bool IsServersCompiled();
 }
