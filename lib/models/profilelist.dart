@@ -10,13 +10,6 @@ class ProfileListState extends ChangeNotifier {
   List<ProfileInfoState> _profiles = [];
   int get num => _profiles.length;
 
-  @override
-  void dispose() {
-    EnvironmentConfig.debugLog("disposal of profile infostate called...");
-    EnvironmentConfig.debugLog(StackTrace.current.toString());
-    super.dispose();
-  }
-
   void add(String onion, String name, String picture, String defaultPicture, String contactsJson, String serverJson, bool online, bool autostart, bool encrypted) {
     var idx = _profiles.indexWhere((element) => element.onion == onion);
     if (idx == -1) {
