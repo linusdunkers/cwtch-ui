@@ -70,7 +70,7 @@ class CwtchNotifier {
         if (data["Online"] == null) {
           break;
         }
-        EnvironmentConfig.debugLog("NewPeer $data");
+       // EnvironmentConfig.debugLog("NewPeer $data");
         // if tag != v1-defaultPassword then it is either encrypted OR it is an unencrypted account created during pre-beta...
         profileCN.add(data["Identity"], data["name"], data["picture"], data["defaultPicture"], data["ContactsJson"], data["ServerList"], data["Online"] == "true", data["autostart"] == "true",
             data["tag"] != "v1-defaultPassword");
