@@ -460,7 +460,7 @@ class CwtchFfi implements Cwtch {
 
   @override
   // ignore: non_constant_identifier_names
-  void CreateDownloadableFile(String profileOnion, int contactHandle, String filenameSuggestion, String filekey) {
+  void CreateDownloadableFile(String profileOnion, int contactHandle, String filenameSuggestion, String filekey, String manifestPath) {
     // android only - do nothing
   }
 

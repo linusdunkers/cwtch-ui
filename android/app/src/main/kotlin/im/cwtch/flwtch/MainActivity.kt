@@ -68,6 +68,7 @@ class MainActivity: FlutterActivity() {
     private val PROFILE_EXPORT_REQUEST_CODE = 236
     private val REQUEST_DOZE_WHITELISTING_CODE:Int = 9
     private var dlToProfile = ""
+    private var dlManifestPath = ""
     private var dlToHandle = 0
     private var dlToFileKey = ""
     private var exportFromPath = ""
@@ -127,13 +128,14 @@ class MainActivity: FlutterActivity() {
 
         if (requestCode == FILEPICKER_REQUEST_CODE) {
             val filePath = intent!!.getData().toString();
-            val manifestPath = StringBuilder().append(this.applicationContext.cacheDir).append("/").append(this.dlToFileKey).toString();
             Log.d("MainActivity:FILEPICKER_REQUEST_CODE", "DownloadableFileCreated");
+            Log.d("MainActivity:FILEPICKER_REQUEST_CODE", this.dlManifestPath);
+            Log.d("MainActivity:FILEPICKER_REQUEST_CODE", filePath);
             handleCwtch(MethodCall("DownloadFile", mapOf(
                     "ProfileOnion" to this.dlToProfile,
                     "conversation" to this.dlToHandle.toInt(),
                     "filepath" to filePath,
-                    "manifestpath" to manifestPath,
+                    "manifestpath" to this.dlManifestPath,
                     "filekey" to this.dlToFileKey
             )), ErrorLogResult(""));//placeholder; this Result is never actually invoked
         } else if (requestCode == PREVIEW_EXPORT_REQUEST_CODE) {
@@ -257,6 +259,7 @@ class MainActivity: FlutterActivity() {
             "CreateDownloadableFile" -> {
                 this.dlToProfile = argmap["ProfileOnion"] ?: ""
                 this.dlToHandle =  call.argument("conversation")!!
+                this.dlManifestPath = argmap["manifestpath"] ?: ""
                 val suggestedName = argmap["filename"] ?: "filename.ext"
                 this.dlToFileKey = argmap["filekey"] ?: ""
                 val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
@@ -429,6 +432,7 @@ class MainActivity: FlutterActivity() {
                 val filekey: String = call.argument("filekey") ?: ""
                 // FIXME: Prevent spurious calls by Intent
                 if (profile != "") {
+                    Log.d("MainActivity.kt", "Cwtch Download File Calling...")
                     Cwtch.downloadFileDefaultLimit(profile, conversation.toLong(), filepath, manifestpath, filekey)
                 }
             }
