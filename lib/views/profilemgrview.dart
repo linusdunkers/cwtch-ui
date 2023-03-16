@@ -106,7 +106,10 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
     ));
 
     // Servers
-    if (Provider.of<Settings>(context).isExperimentEnabled(ServerManagementExperiment) && !Platform.isAndroid && !Platform.isIOS) {
+    if (Provider.of<FlwtchState>(context, listen: false).cwtch.IsServersCompiled() &&
+        Provider.of<Settings>(context).isExperimentEnabled(ServerManagementExperiment) &&
+        !Platform.isAndroid &&
+        !Platform.isIOS) {
       actions.add(
           IconButton(icon: Icon(CwtchIcons.dns_black_24dp), splashRadius: Material.defaultSplashRadius / 2, tooltip: AppLocalizations.of(context)!.serversManagerTitleShort, onPressed: _pushServers));
     }
@@ -150,7 +153,7 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
         settings: RouteSettings(name: "servers"),
         pageBuilder: (bcontext, a1, a2) {
           return MultiProvider(
-            providers: [Provider.value(value: Provider.of<FlwtchState>(context))],
+            providers: [ChangeNotifierProvider.value(value: globalServersList), Provider.value(value: Provider.of<FlwtchState>(context))],
             child: ServersView(),
           );
         },
@@ -226,7 +229,7 @@ class _ProfileMgrViewState extends State<ProfileMgrView> {
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.horizontal(left: Radius.circular(180), right: Radius.circular(180))),
                               ),
                               child: Text(
-                                key:Key("addNewProfileActual"),
+                                key: Key("addNewProfileActual"),
                                 AppLocalizations.of(context)!.addProfileTitle,
                                 semanticsLabel: AppLocalizations.of(context)!.addProfileTitle,
                                 style: TextStyle(fontWeight: FontWeight.bold),

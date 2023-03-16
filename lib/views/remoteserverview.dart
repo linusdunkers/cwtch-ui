@@ -37,10 +37,6 @@ class _RemoteServerViewState extends State<RemoteServerView> {
   @override
   void initState() {
     super.initState();
-    var serverInfoState = Provider.of<RemoteServerInfoState>(context, listen: false);
-    if (serverInfoState.description.isNotEmpty) {
-      ctrlrDesc.text = serverInfoState.description;
-    }
   }
 
   @override
@@ -50,6 +46,11 @@ class _RemoteServerViewState extends State<RemoteServerView> {
 
   @override
   Widget build(BuildContext context) {
+    var serverInfoState = Provider.of<RemoteServerInfoState>(context, listen: false);
+    if (serverInfoState.description.isNotEmpty) {
+      ctrlrDesc.text = serverInfoState.description;
+    }
+
     return Consumer3<ProfileInfoState, RemoteServerInfoState, Settings>(builder: (context, profile, serverInfoState, settings, child) {
       return Scaffold(
           appBar: AppBar(title: Text(ctrlrDesc.text.isNotEmpty ? ctrlrDesc.text : serverInfoState.onion)),

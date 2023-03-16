@@ -299,10 +299,6 @@ class _MessageViewState extends State<MessageView> {
   static const GroupMessageLengthMax = 1600;
 
   void _sendMessage([String? ignoredParam]) {
-    // Trim message
-    final messageWithoutNewLine = ctrlrCompose.value.text.trimRight();
-    ctrlrCompose.value = TextEditingValue(text: messageWithoutNewLine, selection: TextSelection.fromPosition(TextPosition(offset: messageWithoutNewLine.length)));
-
     // Do this after we trim to preserve enter-behaviour...
     bool isOffline = Provider.of<ContactInfoState>(context, listen: false).isOnline() == false;
     bool performingAntiSpam = Provider.of<ContactInfoState>(context, listen: false).antispamTickets == 0;
@@ -310,6 +306,10 @@ class _MessageViewState extends State<MessageView> {
     if (isOffline || (isGroup && performingAntiSpam)) {
       return;
     }
+
+    // Trim message
+    final messageWithoutNewLine = ctrlrCompose.value.text.trimRight();
+    ctrlrCompose.value = TextEditingValue(text: messageWithoutNewLine, selection: TextSelection.fromPosition(TextPosition(offset: messageWithoutNewLine.length)));
 
     // peers and groups currently have different length constraints (servers can store less)...
     var actualMessageLength = ctrlrCompose.value.text.length;
@@ -368,6 +368,11 @@ class _MessageViewState extends State<MessageView> {
       return;
     }
 
+    // At this point we have decided to send the text to the backend, failure is still possible
+    // but it will show as an error-ed message, as such the draft can be purged.
+    Provider.of<ContactInfoState>(context, listen: false).messageDraft = null;
+    ctrlrCompose.clear();
+
     var profileOnion = Provider.of<ContactInfoState>(context, listen: false).profileOnion;
     var identifier = Provider.of<ContactInfoState>(context, listen: false).identifier;
     var profile = Provider.of<ProfileInfoState>(context, listen: false);
@@ -388,11 +393,8 @@ class _MessageViewState extends State<MessageView> {
       );
     }
 
-    Provider.of<ContactInfoState>(context, listen: false).messageDraft = null;
-    ctrlrCompose.clear();
-    focusNode.requestFocus();
-
     Provider.of<FlwtchState>(context, listen: false).cwtch.SetConversationAttribute(profileOnion, identifier, LastMessageSeenTimeKey, DateTime.now().toIso8601String());
+    focusNode.requestFocus();
   }
 
   Widget _buildPreviewBox() {

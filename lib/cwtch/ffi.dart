@@ -29,6 +29,7 @@ typedef FreeFn = void Function(Pointer<Utf8>);
 
 typedef void_from_string_string_function = Void Function(Pointer<Utf8>, Int32, Pointer<Utf8>, Int32);
 typedef VoidFromStringStringFn = void Function(Pointer<Utf8>, int, Pointer<Utf8>, int);
+typedef VoidFromStringFn = void Function(Pointer<Utf8>, int);
 
 typedef void_from_string_string_string_function = Void Function(Pointer<Utf8>, Int32, Pointer<Utf8>, Int32, Pointer<Utf8>, Int32);
 typedef VoidFromStringStringStringFn = void Function(Pointer<Utf8>, int, Pointer<Utf8>, int, Pointer<Utf8>, int);
@@ -363,30 +364,6 @@ class CwtchFfi implements Cwtch {
 
   @override
   // ignore: non_constant_identifier_names
-  void SendProfileEvent(String onion, String json) {
-    var sendAppBusEvent = library.lookup<NativeFunction<string_string_to_void_function>>("c_SendProfileEvent");
-    // ignore: non_constant_identifier_names
-    final SendAppBusEvent = sendAppBusEvent.asFunction<StringStringFn>();
-    final utf8onion = onion.toNativeUtf8();
-    final utf8json = json.toNativeUtf8();
-    SendAppBusEvent(utf8onion, utf8onion.length, utf8json, utf8json.length);
-    malloc.free(utf8onion);
-    malloc.free(utf8json);
-  }
-
-  @override
-  // ignore: non_constant_identifier_names
-  void SendAppEvent(String json) {
-    var sendAppBusEvent = library.lookup<NativeFunction<string_to_void_function>>("c_SendAppEvent");
-    // ignore: non_constant_identifier_names
-    final SendAppBusEvent = sendAppBusEvent.asFunction<StringFn>();
-    final utf8json = json.toNativeUtf8();
-    SendAppBusEvent(utf8json, utf8json.length);
-    malloc.free(utf8json);
-  }
-
-  @override
-  // ignore: non_constant_identifier_names
   void AcceptContact(String profileOnion, int contactHandle) {
     var acceptContact = library.lookup<NativeFunction<string_int_to_void_function>>("c_AcceptConversation");
     // ignore: non_constant_identifier_names
@@ -437,7 +414,7 @@ class CwtchFfi implements Cwtch {
   @override
   // ignore: non_constant_identifier_names
   Future<dynamic> SendInvitation(String profileOnion, int contactHandle, int target) async {
-    var sendInvitation = library.lookup<NativeFunction<get_json_blob_from_str_int_int_function>>("c_SendInvitation");
+    var sendInvitation = library.lookup<NativeFunction<get_json_blob_from_str_int_int_function>>("c_SendInviteMessage");
     // ignore: non_constant_identifier_names
     final SendInvitation = sendInvitation.asFunction<GetJsonBlobFromStrIntIntFn>();
     final u1 = profileOnion.toNativeUtf8();
@@ -467,7 +444,7 @@ class CwtchFfi implements Cwtch {
   @override
   // ignore: non_constant_identifier_names
   void DownloadFile(String profileOnion, int contactHandle, String filepath, String manifestpath, String filekey) {
-    var dlFile = library.lookup<NativeFunction<void_from_string_int_string_string_string_function>>("c_DownloadFile");
+    var dlFile = library.lookup<NativeFunction<void_from_string_int_string_string_string_function>>("c_DownloadFileDefaultLimit");
     // ignore: non_constant_identifier_names
     final DownloadFile = dlFile.asFunction<VoidFromStringIntStringStringStringFn>();
     final u1 = profileOnion.toNativeUtf8();
@@ -546,12 +523,12 @@ class CwtchFfi implements Cwtch {
   @override
   // ignore: non_constant_identifier_names
   void CreateGroup(String profileOnion, String server, String groupName) {
-    var createGroup = library.lookup<NativeFunction<void_from_string_string_string_function>>("c_CreateGroup");
+    var createGroup = library.lookup<NativeFunction<void_from_string_string_string_function>>("c_StartGroup");
     // ignore: non_constant_identifier_names
     final CreateGroup = createGroup.asFunction<VoidFromStringStringStringFn>();
     final u1 = profileOnion.toNativeUtf8();
-    final u2 = server.toNativeUtf8();
-    final u3 = groupName.toNativeUtf8();
+    final u3 = server.toNativeUtf8();
+    final u2 = groupName.toNativeUtf8();
     CreateGroup(u1, u1.length, u2, u2.length, u3, u3.length);
 
     malloc.free(u1);
@@ -627,7 +604,7 @@ class CwtchFfi implements Cwtch {
   @override
   // ignore: non_constant_identifier_names
   void SetMessageAttribute(String profile, int conversation, int channel, int message, String key, String val) {
-    var setMessageAttribute = library.lookup<NativeFunction<void_from_string_int_int_int_string_string_function>>("c_SetMessageAttribute");
+    var setMessageAttribute = library.lookup<NativeFunction<void_from_string_int_int_int_string_string_function>>("c_UpdateMessageAttribute");
     // ignore: non_constant_identifier_names
     final SetMessageAttribute = setMessageAttribute.asFunction<VoidFromStringIntIntIntStringStringFn>();
     final u1 = profile.toNativeUtf8();
@@ -762,7 +739,7 @@ class CwtchFfi implements Cwtch {
   @override
   // ignore: non_constant_identifier_names
   Future GetMessageByContentHash(String profile, int handle, String contentHash) async {
-    var getMessagesByContentHashC = library.lookup<NativeFunction<get_json_blob_from_str_int_string_function>>("c_GetMessagesByContentHash");
+    var getMessagesByContentHashC = library.lookup<NativeFunction<get_json_blob_from_str_int_string_function>>("c_GetMessageByContentHash");
     // ignore: non_constant_identifier_names
     final GetMessagesByContentHash = getMessagesByContentHashC.asFunction<GetJsonBlobFromStrIntStringFn>();
     final utf8profile = profile.toNativeUtf8();
@@ -910,5 +887,20 @@ class CwtchFfi implements Cwtch {
     StopSharing(utf8profile, utf8profile.length, ut8filekey, ut8filekey.length);
     malloc.free(utf8profile);
     malloc.free(ut8filekey);
+  }
+
+  @override
+  void UpdateSettings(String json) {
+    var updateSettings = library.lookup<NativeFunction<string_to_void_function>>("c_UpdateSettings");
+    // ignore: non_constant_identifier_names
+    final UpdateSettingsFn = updateSettings.asFunction<VoidFromStringFn>();
+    final u1 = json.toNativeUtf8();
+    UpdateSettingsFn(u1, u1.length);
+    malloc.free(u1);
+  }
+
+  @override
+  bool IsServersCompiled() {
+    return library.providesSymbol("c_LoadServers");
   }
 }

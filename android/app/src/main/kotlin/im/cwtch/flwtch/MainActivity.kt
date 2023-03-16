@@ -323,7 +323,7 @@ class MainActivity: FlutterActivity() {
                 val profile: String = call.argument("ProfileOnion") ?: ""
                 val conversation: Int = call.argument("conversation") ?: 0
                 val target: Int = call.argument("target") ?: 0
-                result.success(Cwtch.sendInvitation(profile, conversation.toLong(), target.toLong()))
+                result.success(Cwtch.sendInviteMessage(profile, conversation.toLong(), target.toLong()))
                 return
             }
 
@@ -345,14 +345,14 @@ class MainActivity: FlutterActivity() {
             "RestartSharing" -> {
                 val profile: String = call.argument("ProfileOnion") ?: ""
                 val filepath: String = call.argument("filekey") ?: ""
-                result.success(Cwtch.restartSharing(profile, filepath))
+                result.success(Cwtch.restartFileShare(profile, filepath))
                 return
             }
 
             "StopSharing" -> {
                 val profile: String = call.argument("ProfileOnion") ?: ""
                 val filepath: String = call.argument("filekey") ?: ""
-                result.success(Cwtch.stopSharing(profile, filepath))
+                result.success(Cwtch.stopFileShare(profile, filepath))
                 return
             }
 
@@ -381,25 +381,18 @@ class MainActivity: FlutterActivity() {
                 val passNew2: String = call.argument("NewPassAgain") ?: ""
                 Cwtch.changePassword(profile, pass, passNew, passNew2)
             }
-            "GetMessage" -> {
-                val profile: String = call.argument("ProfileOnion") ?: ""
-                val conversation: Int = call.argument("conversation") ?: 0
-                val indexI: Int = call.argument("index") ?: 0
-                result.success(Cwtch.getMessage(profile, conversation.toLong(), indexI.toLong()))
-                return
-            }
             "GetMessageByID" -> {
                 val profile: String = call.argument("ProfileOnion") ?: ""
                 val conversation: Int = call.argument("conversation") ?: 0
                 val id: Int = call.argument("id") ?: 0
-                result.success(Cwtch.getMessageByID(profile, conversation.toLong(), id.toLong()))
+                result.success(Cwtch.getMessageById(profile, conversation.toLong(), id.toLong()))
                 return
             }
             "GetMessageByContentHash" -> {
                 val profile: String = call.argument("ProfileOnion") ?: ""
                 val conversation: Int = call.argument("conversation") ?: 0
                 val contentHash: String = call.argument("contentHash") ?: ""
-                result.success(Cwtch.getMessagesByContentHash(profile, conversation.toLong(), contentHash))
+                result.success(Cwtch.getMessageByContentHash(profile, conversation.toLong(), contentHash))
                 return
             }
             "SetMessageAttribute" -> {
@@ -409,7 +402,7 @@ class MainActivity: FlutterActivity() {
                 val midx: Int = call.argument("Message") ?: 0
                 val key: String = call.argument("key") ?: ""
                 val value: String = call.argument("value") ?: ""
-                Cwtch.setMessageAttribute(profile, conversation.toLong(), channel.toLong(), midx.toLong(), key, value)
+                Cwtch.updateMessageAttribute(profile, conversation.toLong(), channel.toLong(), midx.toLong(), key, value)
             }
             "AcceptConversation" -> {
                 val profile: String = call.argument("ProfileOnion") ?: ""
@@ -419,12 +412,12 @@ class MainActivity: FlutterActivity() {
             "BlockContact" -> {
                 val profile: String = call.argument("ProfileOnion") ?: ""
                 val conversation: Int = call.argument("conversation") ?: 0
-                Cwtch.blockContact(profile, conversation.toLong())
+                Cwtch.blockConversation(profile, conversation.toLong())
             }
             "UnblockContact" -> {
                 val profile: String = call.argument("ProfileOnion") ?: ""
                 val conversation: Int = call.argument("conversation") ?: 0
-                Cwtch.unblockContact(profile, conversation.toLong())
+                Cwtch.unblockConversation(profile, conversation.toLong())
             }
 
             "DownloadFile" -> {
@@ -436,7 +429,7 @@ class MainActivity: FlutterActivity() {
                 val filekey: String = call.argument("filekey") ?: ""
                 // FIXME: Prevent spurious calls by Intent
                 if (profile != "") {
-                    Cwtch.downloadFile(profile, conversation.toLong(), filepath, manifestpath, filekey)
+                    Cwtch.downloadFileDefaultLimit(profile, conversation.toLong(), filepath, manifestpath, filekey)
                 }
             }
             "CheckDownloadStatus" -> {
@@ -450,14 +443,9 @@ class MainActivity: FlutterActivity() {
                 val fileKey: String = call.argument("fileKey") ?: ""
                 Cwtch.verifyOrResumeDownload(profile, conversation.toLong(), fileKey)
             }
-            "SendProfileEvent" -> {
-                val onion: String= call.argument("onion") ?: ""
-                val jsonEvent: String = call.argument("jsonEvent") ?: ""
-                Cwtch.sendProfileEvent(onion, jsonEvent)
-            }
-            "SendAppEvent" -> {
-                val jsonEvent: String = call.argument("jsonEvent") ?: ""
-                Cwtch.sendAppEvent(jsonEvent)
+            "UpdateSettings" -> {
+                val json: String = call.argument("json") ?: ""
+                Cwtch.updateSettings(json)
             }
             "ResetTor" -> {
                 Cwtch.resetTor()
@@ -471,7 +459,7 @@ class MainActivity: FlutterActivity() {
                 val profile: String = call.argument("ProfileOnion") ?: ""
                 val server: String = call.argument("server") ?: ""
                 val groupName: String = call.argument("groupName") ?: ""
-                Cwtch.createGroup(profile, server, groupName)
+                Cwtch.startGroup(profile, server, groupName)
             }
             "DeleteProfile" -> {
                 val profile: String = call.argument("ProfileOnion") ?: ""
@@ -486,7 +474,7 @@ class MainActivity: FlutterActivity() {
             "DeleteConversation" -> {
                 val profile: String = call.argument("ProfileOnion") ?: ""
                 val conversation: Int = call.argument("conversation") ?: 0
-                Cwtch.deleteContact(profile, conversation.toLong())
+                Cwtch.deleteConversation(profile, conversation.toLong())
             }
             "SetProfileAttribute" -> {
                 val profile: String = call.argument("ProfileOnion") ?: ""
@@ -500,44 +488,6 @@ class MainActivity: FlutterActivity() {
                 val key: String = call.argument("Key") ?: ""
                 val v: String = call.argument("Val") ?: ""
                 Cwtch.setConversationAttribute(profile, conversation.toLong(), key, v)
-            }
-            "LoadServers" -> {
-                val password: String = call.argument("Password") ?: ""
-                Cwtch.loadServers(password)
-            }
-            "CreateServer" -> {
-                val password: String = call.argument("Password") ?: ""
-                val desc: String = call.argument("Description") ?: ""
-                val autostart: Boolean = call.argument("Autostart") ?: false
-                Cwtch.createServer(password, desc, autostart)
-            }
-            "DeleteServer" -> {
-                val serverOnion: String = call.argument("ServerOnion") ?: ""
-                val password: String = call.argument("Password") ?: ""
-                Cwtch.deleteServer(serverOnion, password)
-            }
-            "LaunchServers" -> {
-                Cwtch.launchServers()
-            }
-            "LaunchServer" -> {
-                val serverOnion: String = call.argument("ServerOnion") ?: ""
-                Cwtch.launchServer(serverOnion)
-            }
-            "StopServer" -> {
-                val serverOnion: String = call.argument("ServerOnion") ?: ""
-                Cwtch.stopServer(serverOnion)
-            }
-            "StopServers" -> {
-                Cwtch.stopServers()
-            }
-            "DestroyServers" -> {
-                Cwtch.destroyServers()
-            }
-            "SetServerAttribute" -> {
-                val serverOnion: String = call.argument("ServerOnion") ?: ""
-                val key: String = call.argument("Key") ?: ""
-                val v: String = call.argument("Val") ?: ""
-                Cwtch.setServerAttribute(serverOnion, key, v)
             }
             "ImportProfile" -> {
                 val file: String = call.argument("file") ?: ""
