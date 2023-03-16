@@ -129,8 +129,6 @@ class MainActivity: FlutterActivity() {
         if (requestCode == FILEPICKER_REQUEST_CODE) {
             val filePath = intent!!.getData().toString();
             Log.d("MainActivity:FILEPICKER_REQUEST_CODE", "DownloadableFileCreated");
-            Log.d("MainActivity:FILEPICKER_REQUEST_CODE", this.dlManifestPath);
-            Log.d("MainActivity:FILEPICKER_REQUEST_CODE", filePath);
             handleCwtch(MethodCall("DownloadFile", mapOf(
                     "ProfileOnion" to this.dlToProfile,
                     "conversation" to this.dlToHandle.toInt(),
@@ -432,7 +430,6 @@ class MainActivity: FlutterActivity() {
                 val filekey: String = call.argument("filekey") ?: ""
                 // FIXME: Prevent spurious calls by Intent
                 if (profile != "") {
-                    Log.d("MainActivity.kt", "Cwtch Download File Calling...")
                     Cwtch.downloadFileDefaultLimit(profile, conversation.toLong(), filepath, manifestpath, filekey)
                 }
             }
