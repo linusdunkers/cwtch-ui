@@ -168,8 +168,9 @@ class CwtchGomobile implements Cwtch {
   }
 
   // ignore: non_constant_identifier_names
-  void CreateDownloadableFile(String profileOnion, int conversation, String filenameSuggestion, String filekey) {
-    cwtchPlatform.invokeMethod("CreateDownloadableFile", {"ProfileOnion": profileOnion, "conversation": conversation, "filename": filenameSuggestion, "filekey": filekey});
+  void CreateDownloadableFile(String profileOnion, int conversation, String filenameSuggestion, String filekey, String manifestpath) {
+    cwtchPlatform
+        .invokeMethod("CreateDownloadableFile", {"ProfileOnion": profileOnion, "conversation": conversation, "manifestpath": manifestpath, "filename": filenameSuggestion, "filekey": filekey});
   }
 
   // ignore: non_constant_identifier_names

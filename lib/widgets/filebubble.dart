@@ -265,7 +265,9 @@ class FileBubbleState extends State<FileBubble> {
       Provider.of<FlwtchState>(context, listen: false).cwtch.SetMessageAttribute(profileOnion, conversation, 0, idx, "file-downloaded", "true");
       ContactInfoState? contact = Provider.of<ProfileInfoState>(context, listen: false).contactList.findContact(Provider.of<MessageMetadata>(context, listen: false).senderHandle);
       if (contact != null) {
-        Provider.of<FlwtchState>(context, listen: false).cwtch.CreateDownloadableFile(profileOnion, contact.identifier, widget.nameSuggestion, widget.fileKey());
+        var manifestPath = Provider.of<Settings>(context, listen: false).downloadPath + "/" + widget.fileKey() + ".manifest";
+
+        Provider.of<FlwtchState>(context, listen: false).cwtch.CreateDownloadableFile(profileOnion, contact.identifier, widget.nameSuggestion, widget.fileKey(), manifestPath);
       }
     } else {
       try {
