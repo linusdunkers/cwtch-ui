@@ -89,7 +89,9 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
                 tooltip: AppLocalizations.of(context)!.tooltipReplyToThisMessage,
                 splashRadius: Material.defaultSplashRadius / 2,
                 onPressed: () {
-                  Provider.of<AppState>(context, listen: false).selectedIndex = Provider.of<MessageMetadata>(context, listen: false).messageID;
+                  Provider.of<ContactInfoState>(context, listen: false).messageDraft.quotedReference = Provider.of<MessageMetadata>(context, listen: false).messageID;
+                  Provider.of<ContactInfoState>(context, listen: false).notifyMessageDraftUpdate();
+                  setState(() {});
                 },
                 icon: Icon(Icons.reply, color: Provider.of<Settings>(context).theme.dropShadowColor)));
 
@@ -243,7 +245,9 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
             },
             onPanEnd: (details) {
               _runAnimation(details.velocity.pixelsPerSecond, size);
-              Provider.of<AppState>(context, listen: false).selectedIndex = Provider.of<MessageMetadata>(context, listen: false).messageID;
+              Provider.of<ContactInfoState>(context, listen: false).messageDraft.quotedReference = Provider.of<MessageMetadata>(context, listen: false).messageID;
+              Provider.of<ContactInfoState>(context, listen: false).notifyMessageDraftUpdate();
+              setState(() {});
             },
             onLongPress: () async {
               modalShowReplies(context, AppLocalizations.of(context)!.headingReplies, AppLocalizations.of(context)!.messageNoReplies, settings, pis, cis, borderColor, cache, messageID);

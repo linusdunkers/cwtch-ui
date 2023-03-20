@@ -9,6 +9,7 @@ import 'package:cwtch/models/appstate.dart';
 import 'package:cwtch/models/chatmessage.dart';
 import 'package:cwtch/models/contact.dart';
 import 'package:cwtch/models/message.dart';
+import 'package:cwtch/models/message_draft.dart';
 import 'package:cwtch/models/messagecache.dart';
 import 'package:cwtch/models/messages/quotedmessage.dart';
 import 'package:cwtch/models/profile.dart';
@@ -66,7 +67,7 @@ class _MessageViewState extends State<MessageView> {
         showDown = false;
       }
     });
-    ctrlrCompose.text = Provider.of<ContactInfoState>(context, listen: false).messageDraft ?? "";
+    ctrlrCompose.text = Provider.of<ContactInfoState>(context, listen: false).messageDraft.messageText ?? "";
     super.initState();
   }
 
@@ -226,7 +227,7 @@ class _MessageViewState extends State<MessageView> {
               child: MessageList(
                 scrollListener,
               )),
-          bottomSheet: showPreview && showMessageFormattingPreview ? _buildPreviewBox() : _buildComposeBox(),
+          bottomSheet: showPreview && showMessageFormattingPreview ? _buildPreviewBox() : _buildComposeBox(context),
         ));
   }
 
@@ -316,10 +317,10 @@ class _MessageViewState extends State<MessageView> {
     var lengthOk = (isGroup && actualMessageLength < GroupMessageLengthMax) || actualMessageLength <= P2PMessageLengthMax;
 
     if (ctrlrCompose.value.text.isNotEmpty && lengthOk) {
-      if (Provider.of<AppState>(context, listen: false).selectedConversation != null && Provider.of<AppState>(context, listen: false).selectedIndex != null) {
+      if (Provider.of<AppState>(context, listen: false).selectedConversation != null && Provider.of<ContactInfoState>(context, listen: false).messageDraft.getQuotedMessage() != null) {
         var conversationId = Provider.of<AppState>(context, listen: false).selectedConversation!;
         MessageCache? cache = Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(conversationId)?.messageCache;
-        ById(Provider.of<AppState>(context, listen: false).selectedIndex!)
+        ById(Provider.of<ContactInfoState>(context, listen: false).messageDraft.getQuotedMessage()!.index)
             .get(Provider.of<FlwtchState>(context, listen: false).cwtch, Provider.of<AppState>(context, listen: false).selectedProfile!, conversationId, cache!)
             .then((MessageInfo? data) {
           try {
@@ -335,7 +336,7 @@ class _MessageViewState extends State<MessageView> {
           } catch (e) {
             EnvironmentConfig.debugLog("Exception: reply to message could not be found: " + e.toString());
           }
-          Provider.of<AppState>(context, listen: false).selectedIndex = null;
+          Provider.of<ContactInfoState>(context, listen: false).messageDraft.clearQuotedReference();
         });
       } else {
         ChatMessage cm = new ChatMessage(o: TextMessageOverlay, d: ctrlrCompose.value.text);
@@ -370,7 +371,7 @@ class _MessageViewState extends State<MessageView> {
 
     // At this point we have decided to send the text to the backend, failure is still possible
     // but it will show as an error-ed message, as such the draft can be purged.
-    Provider.of<ContactInfoState>(context, listen: false).messageDraft = null;
+    Provider.of<ContactInfoState>(context, listen: false).messageDraft = MessageDraft.empty();
     ctrlrCompose.clear();
 
     var profileOnion = Provider.of<ContactInfoState>(context, listen: false).profileOnion;
@@ -456,7 +457,7 @@ class _MessageViewState extends State<MessageView> {
         color: Provider.of<Settings>(context).theme.backgroundMainColor, child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [composeBox]));
   }
 
-  Widget _buildComposeBox() {
+  Widget _buildComposeBox(BuildContext context) {
     bool isOffline = Provider.of<ContactInfoState>(context).isOnline() == false;
     bool isGroup = Provider.of<ContactInfoState>(context).isGroup;
     var showToolbar = Provider.of<Settings>(context).isExperimentEnabled(FormattingExperiment);
@@ -589,7 +590,7 @@ class _MessageViewState extends State<MessageView> {
                   enabled: true, // always allow editing...
 
                   onChanged: (String x) {
-                    Provider.of<ContactInfoState>(context, listen: false).messageDraft = x;
+                    Provider.of<ContactInfoState>(context, listen: false).messageDraft.messageText = x;
                     setState(() {
                       // we need to force a rerender here to update the max length count
                     });
@@ -625,9 +626,10 @@ class _MessageViewState extends State<MessageView> {
         Container(color: Provider.of<Settings>(context).theme.backgroundMainColor, padding: EdgeInsets.all(2), margin: EdgeInsets.all(2), height: 164, child: Column(children: textEditChildren));
 
     var children;
-    if (Provider.of<AppState>(context).selectedConversation != null && Provider.of<AppState>(context).selectedIndex != null) {
+    if (Provider.of<AppState>(context).selectedConversation != null && Provider.of<ContactInfoState>(context).messageDraft.getQuotedMessage() != null) {
       var quoted = FutureBuilder(
-        future: messageHandler(context, Provider.of<AppState>(context).selectedProfile!, Provider.of<AppState>(context).selectedConversation!, ById(Provider.of<AppState>(context).selectedIndex!)),
+        future: messageHandler(context, Provider.of<AppState>(context).selectedProfile!, Provider.of<AppState>(context).selectedConversation!,
+            ById(Provider.of<ContactInfoState>(context).messageDraft.getQuotedMessage()!.index)),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             var message = snapshot.data! as Message;
@@ -669,7 +671,8 @@ class _MessageViewState extends State<MessageView> {
                           splashRadius: Material.defaultSplashRadius / 2,
                           tooltip: AppLocalizations.of(context)!.tooltipRemoveThisQuotedMessage,
                           onPressed: () {
-                            Provider.of<AppState>(context, listen: false).selectedIndex = null;
+                            Provider.of<ContactInfoState>(context, listen: false).messageDraft.clearQuotedReference();
+                            setState(() {});
                           },
                         )),
                   ]),

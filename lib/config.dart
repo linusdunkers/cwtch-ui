@@ -10,7 +10,8 @@ class EnvironmentConfig {
 
   static void debugLog(String log) {
     if (EnvironmentConfig.BUILD_VER == dev_version) {
-      print(log);
+      String datetime = DateTime.now().toIso8601String();
+      print("$datetime $log");
     }
   }
 }
