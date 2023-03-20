@@ -9,6 +9,7 @@ import 'package:cwtch/models/message.dart';
 import 'package:cwtch/models/profile.dart';
 import 'package:cwtch/widgets/malformedbubble.dart';
 import 'package:file_picker_desktop/file_picker_desktop.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../main.dart';
@@ -172,7 +173,7 @@ class FileBubbleState extends State<FileBubble> {
                   child: GestureDetector(
                     child: Padding(padding: EdgeInsets.all(1.0), child: getPreview(context)),
                     onTap: () {
-                      pop(bcontext, myFile!, wdgMessage);
+                      pop(bcontext, myFile!, widget.nameSuggestion);
                     },
                   )));
         } else {
@@ -406,37 +407,49 @@ class FileBubbleState extends State<FileBubble> {
     );
   }
 
-  void pop(context, File myFile, Widget meta) async {
+  void pop(context, File myFile, String meta) async {
     await showDialog(
         context: context,
         builder: (bcontext) => Dialog(
-            alignment: Alignment.center,
-            child: Container(
-              padding: EdgeInsets.all(10),
-              child: Column(children: [
-                ListTile(
-                    title: meta,
-                    trailing: IconButton(
-                        icon: Icon(Icons.close),
-                        color: Provider.of<Settings>(bcontext, listen: false).theme.toolbarIconColor,
-                        iconSize: 32,
-                        onPressed: () {
-                          Navigator.pop(bcontext, true);
-                        })),
-                Image.file(
-                  myFile,
-                  cacheWidth: (MediaQuery.of(bcontext).size.width * 0.6).floor(),
-                  width: (MediaQuery.of(bcontext).size.width * 0.6),
-                  height: (MediaQuery.of(bcontext).size.height * 0.6),
-                  fit: BoxFit.scaleDown,
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Visibility(visible: !Platform.isAndroid, child: Text(myFile.path, textAlign: TextAlign.center)),
-                Visibility(visible: Platform.isAndroid, child: IconButton(icon: Icon(Icons.arrow_downward), onPressed: androidExport)),
-              ]),
-            )));
+            alignment: Alignment.topCenter,
+            child: SingleChildScrollView(
+                controller: ScrollController(),
+                child: Container(
+                  padding: EdgeInsets.all(10),
+                  child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.center, children: [
+                    ListTile(
+                        leading: Icon(CwtchIcons.attached_file_2),
+                        title: Text(meta),
+                        trailing: IconButton(
+                            icon: Icon(Icons.close),
+                            color: Provider.of<Settings>(bcontext, listen: false).theme.toolbarIconColor,
+                            iconSize: 32,
+                            onPressed: () {
+                              Navigator.pop(bcontext, true);
+                            })),
+                    Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Image.file(
+                          myFile,
+                          cacheWidth: (MediaQuery.of(bcontext).size.width * 0.6).floor(),
+                          width: (MediaQuery.of(bcontext).size.width * 0.6),
+                          height: (MediaQuery.of(bcontext).size.height * 0.6),
+                          fit: BoxFit.scaleDown,
+                        )),
+                    Visibility(visible: !Platform.isAndroid, maintainSize: false, child: Text(myFile.path, textAlign: TextAlign.center)),
+                    Visibility(
+                        visible: Platform.isAndroid,
+                        maintainSize: false,
+                        child: Padding(
+                            padding: EdgeInsets.all(10),
+                            child: ElevatedButton.icon(
+                                icon: Icon(Icons.arrow_downward),
+                                onPressed: androidExport,
+                                label: Text(
+                                  AppLocalizations.of(context)!.saveBtn,
+                                )))),
+                  ]),
+                ))));
   }
 
   void androidExport() async {
