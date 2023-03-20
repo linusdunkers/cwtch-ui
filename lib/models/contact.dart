@@ -1,4 +1,5 @@
 import 'package:cwtch/main.dart';
+import 'package:cwtch/models/message_draft.dart';
 import 'package:cwtch/models/profile.dart';
 import 'package:cwtch/widgets/messagerow.dart';
 import 'package:flutter/widgets.dart';
@@ -58,24 +59,28 @@ class ContactInfoState extends ChangeNotifier {
 
   int _antispamTickets = 0;
   String? _acnCircuit;
-  String? _messageDraft;
+  MessageDraft _messageDraft = MessageDraft.empty();
 
-  ContactInfoState(this.profileOnion, this.identifier, this.onion,
-      {nickname = "",
-      isGroup = false,
-      accepted = false,
-      blocked = false,
-      status = "",
-      imagePath = "",
-      defaultImagePath = "",
-      savePeerHistory = "DeleteHistoryConfirmed",
-      numMessages = 0,
-      numUnread = 0,
-      lastMessageTime,
-      server,
-      archived = false,
-      notificationPolicy = "ConversationNotificationPolicy.Default",
-      pinned = false}) {
+  ContactInfoState(
+    this.profileOnion,
+    this.identifier,
+    this.onion, {
+    nickname = "",
+    isGroup = false,
+    accepted = false,
+    blocked = false,
+    status = "",
+    imagePath = "",
+    defaultImagePath = "",
+    savePeerHistory = "DeleteHistoryConfirmed",
+    numMessages = 0,
+    numUnread = 0,
+    lastMessageTime,
+    server,
+    archived = false,
+    notificationPolicy = "ConversationNotificationPolicy.Default",
+    pinned = false,
+  }) {
     this._nickname = nickname;
     this._isGroup = isGroup;
     this._accepted = accepted;
@@ -95,13 +100,13 @@ class ContactInfoState extends ChangeNotifier {
     keys = Map<String, GlobalKey<MessageRowState>>();
   }
 
-  String get nickname => this._nickname + (this._messageDraft != null && this._messageDraft != "" ? "*" : "");
+  String get nickname => this._nickname + (this._messageDraft.isNotEmpty() ? "*" : "");
 
   String get savePeerHistory => this._savePeerHistory;
 
   String? get acnCircuit => this._acnCircuit;
 
-  String? get messageDraft => this._messageDraft;
+  MessageDraft get messageDraft => this._messageDraft;
 
   set antispamTickets(int antispamTickets) {
     this._antispamTickets = antispamTickets;
@@ -163,8 +168,12 @@ class ContactInfoState extends ChangeNotifier {
     notifyListeners();
   }
 
-  set messageDraft(String? newVal) {
+  set messageDraft(MessageDraft newVal) {
     this._messageDraft = newVal;
+    notifyListeners();
+  }
+
+  void notifyMessageDraftUpdate() {
     notifyListeners();
   }
 
