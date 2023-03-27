@@ -101,8 +101,7 @@ class ContactInfoState extends ChangeNotifier {
     keys = Map<String, GlobalKey<MessageRowState>>();
   }
 
-  String get nickname => this._nickname + (this._messageDraft.isNotEmpty() ? "*" : "");
-
+  String get nickname => this._nickname + (this._messageDraft.isEmpty() ? "" : "*");
   String get savePeerHistory => this._savePeerHistory;
 
   String? get acnCircuit => this._acnCircuit;
