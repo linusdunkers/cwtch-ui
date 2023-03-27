@@ -51,8 +51,9 @@ class FileBubbleState extends State<FileBubble> {
   Widget getPreview(context) {
     return Image.file(
       myFile!,
-      cacheWidth: (MediaQuery.of(context).size.width * 0.6).floor(),
       // limit the amount of space the image can decode too, we keep this high-ish to allow quality previews...
+      cacheWidth: 1024,
+      cacheHeight: 1024,
       filterQuality: FilterQuality.medium,
       fit: BoxFit.scaleDown,
       alignment: Alignment.center,
