@@ -72,6 +72,16 @@ typedef GetJsonBlobFromStrStrIntFn = Pointer<Utf8> Function(Pointer<Utf8>, int, 
 typedef get_json_blob_from_str_int_function = Pointer<Utf8> Function(Pointer<Utf8>, Int32, Int32);
 typedef GetJsonBlobFromStrIntFn = Pointer<Utf8> Function(Pointer<Utf8>, int, int);
 
+typedef get_json_blob_from_str_int_int_str_function = Pointer<Utf8> Function(Pointer<Utf8>, Int32, Int32, Int32, Pointer<Utf8>, Int32);
+typedef GetJsonBlobFromStrIntIntStrFn = Pointer<Utf8> Function(
+  Pointer<Utf8>,
+  int,
+  int,
+  int,
+  Pointer<Utf8>,
+  int,
+);
+
 typedef get_json_blob_from_str_int_int_function = Pointer<Utf8> Function(Pointer<Utf8>, Int32, Int32, Int32);
 typedef GetJsonBlobFromStrIntIntFn = Pointer<Utf8> Function(Pointer<Utf8>, int, int, int);
 
@@ -902,5 +912,54 @@ class CwtchFfi implements Cwtch {
   @override
   bool IsServersCompiled() {
     return library.providesSymbol("c_LoadServers");
+  }
+
+  @override
+  Future<String> SummarizeConversation(String profile, int conversation) async {
+    if (!library.providesSymbol("c_Summarize")) {
+      return Future.value("");
+    }
+    var summarize = library.lookup<NativeFunction<get_json_blob_from_str_int_function>>("c_Summarize");
+    // ignore: non_constant_identifier_names
+    final SummarizeFn = summarize.asFunction<GetJsonBlobFromStrIntFn>();
+    final utf8profile = profile.toNativeUtf8();
+    Pointer<Utf8> jsonMessageBytes = SummarizeFn(utf8profile, utf8profile.length, conversation);
+    String jsonMessage = jsonMessageBytes.toDartString();
+    _UnsafeFreePointerAnyUseOfThisFunctionMustBeDoubleApproved(jsonMessageBytes);
+    malloc.free(utf8profile);
+    return jsonMessage;
+  }
+
+  @override
+  Future<String> TranslateMessage(String profile, int conversation, int message, String language) async {
+    if (!library.providesSymbol("c_Translate")) {
+      return Future.value("");
+    }
+    var translate = library.lookup<NativeFunction<get_json_blob_from_str_int_int_str_function>>("c_Translate");
+    // ignore: non_constant_identifier_names
+    final TranslateFn = translate.asFunction<GetJsonBlobFromStrIntIntStrFn>();
+    final utf8profile = profile.toNativeUtf8();
+    final utf8lang = language.toNativeUtf8();
+    Pointer<Utf8> jsonMessageBytes = TranslateFn(
+      utf8profile,
+      utf8profile.length,
+      conversation,
+      message,
+      utf8lang,
+      utf8lang.length,
+    );
+    String jsonMessage = jsonMessageBytes.toDartString();
+    _UnsafeFreePointerAnyUseOfThisFunctionMustBeDoubleApproved(jsonMessageBytes);
+    malloc.free(utf8profile);
+    malloc.free(utf8lang);
+    return jsonMessage;
+  }
+
+  @override
+  bool IsBlodeuweddSupported() {
+    if (library.providesSymbol("c_Translate")) {
+      return true;
+    }
+    return false;
   }
 }

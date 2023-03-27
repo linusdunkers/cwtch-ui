@@ -16,6 +16,7 @@ const ImagePreviewsExperiment = "filesharing-images";
 const ClickableLinksExperiment = "clickable-links";
 const FormattingExperiment = "message-formatting";
 const QRCodeExperiment = "qrcode-support";
+const BlodeuweddExperiment = "blodeuwedd";
 
 enum DualpaneMode {
   Single,
@@ -137,6 +138,7 @@ class Settings extends ChangeNotifier {
 
     // auto-download folder
     _downloadPath = settings["DownloadPath"] ?? "";
+    _blodeuweddPath = settings["BlodeuweddPath"] ?? "";
 
     // allow a custom tor config
     _allowAdvancedTorConfig = settings["AllowAdvancedTorConfig"] ?? false;
@@ -409,6 +411,13 @@ class Settings extends ChangeNotifier {
   /// Construct a default settings object.
   Settings(this.locale, this.theme);
 
+  String _blodeuweddPath = "";
+  String get blodeuweddPath => _blodeuweddPath;
+  set blodeuweddPath(String newval) {
+    _blodeuweddPath = newval;
+    notifyListeners();
+  }
+
   /// Convert this Settings object to a JSON representation for serialization on the
   /// event bus.
   dynamic asJson() {
@@ -435,7 +444,8 @@ class Settings extends ChangeNotifier {
       "CustomControlPort": _controlPort,
       "CustomAuth": _customTorAuth,
       "UseTorCache": _useTorCache,
-      "TorCacheDir": _torCacheDir
+      "TorCacheDir": _torCacheDir,
+      "BlodeuweddPath": _blodeuweddPath
     };
   }
 }

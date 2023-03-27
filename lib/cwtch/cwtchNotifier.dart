@@ -408,6 +408,16 @@ class CwtchNotifier {
       case "DoneStorageMigration":
         appState.SetModalState(ModalState.none);
         break;
+      case "BlodeuweddSummary":
+        var identifier = int.parse(data["ConversationID"]);
+        profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)?.updateSummaryEvent(data["Summary"]);
+        break;
+      case "BlodeuweddTranslation":
+        var identifier = int.parse(data["ConversationID"]);
+        var mid = int.parse(data["Index"]);
+        EnvironmentConfig.debugLog("received translation event: $identifier $mid $data");
+        profileCN.getProfile(data["ProfileOnion"])?.contactList.getContact(identifier)?.updateTranslationEvent(mid, data["Translation"]);
+        break;
       case "ACNInfo":
         var key = data["Key"];
         var handle = data["Handle"];

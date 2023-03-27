@@ -460,6 +460,41 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                   ),
                                 ]),
                               ),
+                              SwitchListTile(
+                                title: Text(AppLocalizations.of(context)!.blodeuweddExperimentEnable, style: TextStyle(color: settings.current().mainTextColor)),
+                                subtitle: Provider.of<FlwtchState>(context, listen: false).cwtch.IsBlodeuweddSupported()
+                                    ? Text(AppLocalizations.of(context)!.blodeuweddDescription)
+                                    : Text(AppLocalizations.of(context)!.blodeuweddNotSupported),
+                                value: Provider.of<FlwtchState>(context, listen: false).cwtch.IsBlodeuweddSupported() && settings.isExperimentEnabled(BlodeuweddExperiment),
+                                onChanged: Provider.of<FlwtchState>(context, listen: false).cwtch.IsBlodeuweddSupported()
+                                    ? (bool value) {
+                                        if (value) {
+                                          settings.enableExperiment(BlodeuweddExperiment);
+                                        } else {
+                                          settings.disableExperiment(BlodeuweddExperiment);
+                                        }
+                                        saveSettings(context);
+                                      }
+                                    : null,
+                                activeTrackColor: settings.theme.defaultButtonColor,
+                                inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
+                                inactiveThumbColor: settings.theme.defaultButtonDisabledColor,
+                                secondary: Icon(Icons.assistant, color: settings.current().mainTextColor),
+                              ),
+                              Visibility(
+                                visible: Provider.of<FlwtchState>(context, listen: false).cwtch.IsBlodeuweddSupported() && settings.isExperimentEnabled(BlodeuweddExperiment),
+                                child: CwtchFolderPicker(
+                                  testKey: Key("DownloadFolderPicker"),
+                                  label: AppLocalizations.of(context)!.settingDownloadFolder,
+                                  initialValue: settings.blodeuweddPath,
+                                  description: AppLocalizations.of(context)!.blodeuweddPath,
+                                  tooltip: AppLocalizations.of(context)!.blodeuweddPath,
+                                  onSave: (newVal) {
+                                    settings.blodeuweddPath = newVal;
+                                    saveSettings(context);
+                                  },
+                                ),
+                              ),
                             ],
                           )),
                       Visibility(

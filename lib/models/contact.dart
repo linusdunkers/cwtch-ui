@@ -2,6 +2,7 @@ import 'package:cwtch/main.dart';
 import 'package:cwtch/models/message_draft.dart';
 import 'package:cwtch/models/profile.dart';
 import 'package:cwtch/widgets/messagerow.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -342,5 +343,16 @@ class ContactInfoState extends ChangeNotifier {
   // returns true only if the conversation has been accepted, and has not been blocked
   bool isAccepted() {
     return _accepted && !_blocked;
+  }
+
+  String summary = "";
+  void updateSummaryEvent(String summary) {
+    this.summary += summary;
+    notifyListeners();
+  }
+
+  void updateTranslationEvent(int messageID, String translation) {
+    this.messageCache.updateTranslationEvent(messageID, translation);
+    notifyListeners();
   }
 }
