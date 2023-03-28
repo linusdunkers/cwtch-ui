@@ -11,8 +11,8 @@ class MessageDraft extends ChangeNotifier {
     return MessageDraft();
   }
 
-  bool isNotEmpty() {
-    return this._messageText != null || this._quotedReference != null;
+  bool isEmpty() {
+    return (this._messageText == null && this._quotedReference == null) || (this._messageText != null && this._messageText!.isEmpty);
   }
 
   String? get messageText => _messageText;

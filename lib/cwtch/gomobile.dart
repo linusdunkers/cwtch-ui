@@ -370,4 +370,22 @@ class CwtchGomobile implements Cwtch {
     // never for android builds...
     return false;
   }
+
+  @override
+  Future<String> SummarizeConversation(String profile, int conversation) {
+    // TODO: implement SummarizeConversation
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<String> TranslateMessage(String profile, int conversation, int message, String language) {
+    // TODO: implement TranslateMessage
+    throw UnimplementedError();
+  }
+
+  @override
+  bool IsBlodeuweddSupported() {
+    // Blodeuwedd is not currently supported on lower end devices.
+    return false;
+  }
 }

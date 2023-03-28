@@ -133,4 +133,9 @@ abstract class Cwtch {
   Future<dynamic> GetDebugInfo();
 
   bool IsServersCompiled();
+
+  Future<String> SummarizeConversation(String profile, int conversation);
+  Future<String> TranslateMessage(String profile, int conversation, int message, String language);
+
+  bool IsBlodeuweddSupported();
 }

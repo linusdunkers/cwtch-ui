@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
@@ -16,8 +17,10 @@ import 'package:cwtch/models/profile.dart';
 import 'package:cwtch/third_party/linkify/flutter_linkify.dart';
 import 'package:cwtch/widgets/malformedbubble.dart';
 import 'package:cwtch/widgets/messageloadingbubble.dart';
+import 'package:cwtch/widgets/messagerow.dart';
 import 'package:cwtch/widgets/profileimage.dart';
 import 'package:cwtch/controllers/filesharing.dart' as filesharing;
+import 'package:cwtch/widgets/staticmessagebubble.dart';
 import 'package:file_picker/file_picker.dart';
 
 import 'package:flutter/cupertino.dart';
@@ -50,7 +53,7 @@ class _MessageViewState extends State<MessageView> {
   File? imagePreview;
   bool showDown = false;
   bool showPreview = false;
-
+  final scaffoldKey = GlobalKey<ScaffoldState>(); // <---- Another instance variable
   @override
   void initState() {
     scrollListener.itemPositions.addListener(() {
@@ -105,6 +108,22 @@ class _MessageViewState extends State<MessageView> {
     if (showFileSharing) {
       appBarButtons.add(IconButton(
           splashRadius: Material.defaultSplashRadius / 2, icon: Icon(CwtchIcons.manage_files), tooltip: AppLocalizations.of(context)!.manageSharedFiles, onPressed: _pushFileSharingSettings));
+    }
+
+    var profile = Provider.of<ContactInfoState>(context, listen: false).profileOnion;
+    var conversation = Provider.of<ContactInfoState>(context, listen: false).identifier;
+
+    if (Provider.of<FlwtchState>(context, listen: false).cwtch.IsBlodeuweddSupported() && Provider.of<Settings>(context).isExperimentEnabled(BlodeuweddExperiment)) {
+      appBarButtons.add(IconButton(
+          splashRadius: Material.defaultSplashRadius / 2,
+          icon: Icon(Icons.summarize),
+          tooltip: AppLocalizations.of(context)!.blodeuweddSummarize,
+          onPressed: () async {
+            Provider.of<ContactInfoState>(context, listen: false).summary = "";
+            Provider.of<ContactInfoState>(context, listen: false).updateSummaryEvent("");
+            Provider.of<FlwtchState>(context, listen: false).cwtch.SummarizeConversation(profile, conversation);
+            _summarizeConversation(context, Provider.of<ProfileInfoState>(context, listen: false), Provider.of<Settings>(context, listen: false));
+          }));
     }
 
     if (Provider.of<ContactInfoState>(context).isOnline()) {
@@ -823,4 +842,58 @@ class _MessageViewState extends State<MessageView> {
               ));
         });
   }
+}
+
+void _summarizeConversation(BuildContext context, ProfileInfoState profile, Settings settings) async {
+  showModalBottomSheet<void>(
+      builder: (
+        BuildContext bcontext,
+      ) {
+        return StatefulBuilder(builder: (BuildContext scontext, StateSetter setState /*You can rename this!*/) {
+          if (scontext.mounted) {
+            new Timer.periodic(Duration(seconds: 1), (Timer t) {
+              if (scontext.mounted) {
+                setState(() {});
+              }
+            });
+          }
+
+          var bubble = StaticMessageBubble(
+              profile,
+              settings,
+              MessageMetadata(profile.onion, Provider.of<ContactInfoState>(context).identifier, 1, DateTime.now(), "blodeuwedd", null, null, null, true, false, false, ""),
+              Row(children: [
+                Provider.of<ContactInfoState>(context).summary == ""
+                    ? Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                        CircularProgressIndicator(color: settings.theme.defaultButtonActiveColor),
+                        Padding(padding: EdgeInsets.all(5.0), child: Text(AppLocalizations.of(context)!.blodeuweddProcessing))
+                      ])
+                    : Flexible(child: Text(Provider.of<ContactInfoState>(context).summary))
+              ]));
+
+          var image = Padding(
+              padding: EdgeInsets.all(4.0),
+              child: ProfileImage(
+                imagePath: "assets/blodeuwedd.png",
+                diameter: 48.0,
+                border: settings.theme.portraitOnlineBorderColor,
+                badgeTextColor: Colors.red,
+                badgeColor: Colors.red,
+              ));
+
+          return Container(
+              height: 300, // bespoke value courtesy of the [TextField] docs
+              child: Container(
+                  alignment: Alignment.center,
+                  child: Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Padding(
+                          padding: EdgeInsets.all(10.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [image, Flexible(child: bubble)],
+                          )))));
+        });
+      },
+      context: context);
 }

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:cwtch/config.dart';
@@ -118,6 +119,30 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
                 },
                 icon: Icon(CwtchIcons.view_replies, color: Provider.of<Settings>(context).theme.dropShadowColor)));
 
+    var profile = Provider.of<ProfileInfoState>(context, listen: false);
+    var conversation = Provider.of<ContactInfoState>(context, listen: false);
+    var message = Provider.of<MessageMetadata>(context, listen: false);
+
+    Widget wdgTranslateMessage = Platform.isAndroid
+        ? SizedBox.shrink()
+        : Visibility(
+            visible: Provider.of<FlwtchState>(context, listen: false).cwtch.IsBlodeuweddSupported() &&
+                Provider.of<Settings>(context).isExperimentEnabled(BlodeuweddExperiment) &&
+                (EnvironmentConfig.TEST_MODE || Provider.of<AppState>(context).hoveredIndex == Provider.of<MessageMetadata>(context).messageID),
+            maintainSize: false,
+            maintainAnimation: true,
+            maintainState: true,
+            maintainInteractivity: false,
+            child: IconButton(
+                tooltip: AppLocalizations.of(context)!.blodeuweddTranslate,
+                splashRadius: Material.defaultSplashRadius / 2,
+                onPressed: () {
+                  Provider.of<MessageMetadata>(context, listen: false).translation = "";
+                  Provider.of<FlwtchState>(context, listen: false).cwtch.TranslateMessage(profile.onion, conversation.identifier, message.messageID, "French");
+                  modalShowTranslation(context, profile, settings);
+                },
+                icon: Icon(Icons.translate, color: Provider.of<Settings>(context).theme.dropShadowColor)));
+
     Widget wdgSpacer = Flexible(flex: 1, child: SizedBox(width: Platform.isAndroid ? 20 : 60, height: 10));
     var widgetRow = <Widget>[];
 
@@ -125,6 +150,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
       widgetRow = <Widget>[
         wdgSpacer,
         wdgSeeReplies,
+        wdgTranslateMessage,
         wdgReply,
         actualMessage,
       ];
@@ -172,8 +198,6 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
                             });
                           })),
                 ]))),
-        wdgReply,
-        wdgSeeReplies,
         wdgSpacer,
       ];
     } else {
@@ -213,6 +237,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
         actualMessage,
         wdgReply,
         wdgSeeReplies,
+        wdgTranslateMessage,
         wdgSpacer,
       ];
     }
@@ -461,6 +486,60 @@ void modalShowReplies(
               });
             });
       });
+}
+
+void modalShowTranslation(BuildContext context, ProfileInfoState profile, Settings settings) async {
+  showModalBottomSheet<void>(
+      builder: (
+        BuildContext bcontext,
+      ) {
+        return StatefulBuilder(builder: (BuildContext scontext, StateSetter setState /*You can rename this!*/) {
+          if (scontext.mounted) {
+            new Timer.periodic(Duration(seconds: 1), (Timer t) {
+              if (scontext.mounted) {
+                setState(() {});
+              }
+            });
+          }
+
+          var bubble = StaticMessageBubble(
+              profile,
+              settings,
+              MessageMetadata(profile.onion, Provider.of<ContactInfoState>(context).identifier, 1, DateTime.now(), "blodeuwedd", null, null, null, true, false, false, ""),
+              Row(children: [
+                Provider.of<MessageMetadata>(context).translation == ""
+                    ? Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                        CircularProgressIndicator(color: settings.theme.defaultButtonActiveColor),
+                        Padding(padding: EdgeInsets.all(5.0), child: Text(AppLocalizations.of(context)!.blodeuweddProcessing))
+                      ])
+                    : Flexible(child: SelectableText(Provider.of<MessageMetadata>(context).translation))
+              ]));
+
+          var image = Padding(
+              padding: EdgeInsets.all(4.0),
+              child: ProfileImage(
+                imagePath: "assets/blodeuwedd.png",
+                diameter: 48.0,
+                border: settings.theme.portraitOnlineBorderColor,
+                badgeTextColor: Colors.red,
+                badgeColor: Colors.red,
+              ));
+
+          return Container(
+              height: 300, // bespoke value courtesy of the [TextField] docs
+              child: Container(
+                  alignment: Alignment.center,
+                  child: Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Padding(
+                          padding: EdgeInsets.all(10.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [image, Flexible(child: bubble)],
+                          )))));
+        });
+      },
+      context: context);
 }
 
 // temporary until we do real picture selection

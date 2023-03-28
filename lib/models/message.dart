@@ -316,6 +316,12 @@ class MessageMetadata extends ChangeNotifier {
 
   bool get ackd => this._ackd;
 
+  String translation = "";
+  void updateTranslationEvent(String translation) {
+    this.translation += translation;
+    notifyListeners();
+  }
+
   set ackd(bool newVal) {
     this._ackd = newVal;
     notifyListeners();
