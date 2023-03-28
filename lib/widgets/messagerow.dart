@@ -127,10 +127,9 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
         ? SizedBox.shrink()
         : Visibility(
             visible: Provider.of<FlwtchState>(context, listen: false).cwtch.IsBlodeuweddSupported() &&
-                    Provider.of<Settings>(context).isExperimentEnabled(BlodeuweddExperiment) &&
-                    EnvironmentConfig.TEST_MODE ||
-                Provider.of<AppState>(context).hoveredIndex == Provider.of<MessageMetadata>(context).messageID,
-            maintainSize: true,
+                Provider.of<Settings>(context).isExperimentEnabled(BlodeuweddExperiment) &&
+                (EnvironmentConfig.TEST_MODE || Provider.of<AppState>(context).hoveredIndex == Provider.of<MessageMetadata>(context).messageID),
+            maintainSize: false,
             maintainAnimation: true,
             maintainState: true,
             maintainInteractivity: false,
