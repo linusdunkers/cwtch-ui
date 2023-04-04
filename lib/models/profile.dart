@@ -1,9 +1,12 @@
 import 'dart:convert';
 
+import 'package:cwtch/config.dart';
 import 'package:cwtch/models/remoteserver.dart';
 import 'package:flutter/widgets.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
+import '../themes/opaque.dart';
+import '../views/contactsview.dart';
 import 'contact.dart';
 import 'contactlist.dart';
 import 'filedownloadprogress.dart';
@@ -397,5 +400,41 @@ class ProfileInfoState extends ChangeNotifier {
   void downloadReset(String fileKey) {
     this._downloads.remove(fileKey);
     notifyListeners();
+  }
+
+  // Profile Attributes. Can be set in Profile Edit View...
+  List<String?> attributes = [null, null, null];
+  void setAttribute(int i, String? value) {
+    this.attributes[i] = value;
+    notifyListeners();
+  }
+
+  ProfileStatusMenu availabilityStatus = ProfileStatusMenu.available;
+  void setAvailabilityStatus(String status) {
+    switch (status) {
+      case "available":
+        availabilityStatus = ProfileStatusMenu.available;
+        break;
+      case "busy":
+        availabilityStatus = ProfileStatusMenu.busy;
+        break;
+      case "away":
+        availabilityStatus = ProfileStatusMenu.away;
+        break;
+      default:
+        ProfileStatusMenu.available;
+    }
+    notifyListeners();
+  }
+
+  Color getBorderColor(OpaqueThemeType theme) {
+    switch (this.availabilityStatus) {
+      case ProfileStatusMenu.available:
+        return theme.portraitOnlineBorderColor;
+      case ProfileStatusMenu.away:
+        return theme.portraitOnlineAwayColor;
+      case ProfileStatusMenu.busy:
+        return theme.portraitOnlineBusyColor;
+    }
   }
 }

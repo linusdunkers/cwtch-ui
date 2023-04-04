@@ -96,8 +96,8 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
                     child: Container(
                         margin: EdgeInsets.all(10),
                         padding: EdgeInsets.all(2),
-                        child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+                        child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.center, children: [
+                          Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
                             ProfileImage(
                                 imagePath: Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment)
                                     ? Provider.of<ContactInfoState>(context).imagePath
@@ -107,7 +107,23 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
                                 border: settings.theme.portraitOnlineBorderColor,
                                 badgeTextColor: settings.theme.portraitContactBadgeTextColor,
                                 badgeColor: settings.theme.portraitContactBadgeColor,
-                                badgeEdit: false)
+                                badgeEdit: false),
+                            SizedBox(
+                                width: MediaQuery.of(context).size.width / 2,
+                                child: Column(children: [
+                                  Padding(
+                                    padding: EdgeInsets.all(1),
+                                    child: SelectableText(Provider.of<ContactInfoState>(context, listen: false).attributes[0] ?? ""),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.all(1),
+                                    child: SelectableText(Provider.of<ContactInfoState>(context, listen: false).attributes[1] ?? ""),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.all(1),
+                                    child: SelectableText(Provider.of<ContactInfoState>(context, listen: false).attributes[2] ?? ""),
+                                  )
+                                ]))
                           ]),
 
                           Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [

@@ -68,6 +68,7 @@ class _CwtchTextFieldState extends State<CwtchTextField> {
             decoration: InputDecoration(
                 errorMaxLines: 2,
                 hintText: widget.hintText,
+                hintStyle: TextStyle(color: (theme.current().mainTextColor as Color).withOpacity(0.5)),
                 floatingLabelBehavior: FloatingLabelBehavior.never,
                 filled: true,
                 focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(6.0), borderSide: BorderSide(color: theme.current().textfieldBorderColor, width: 1.0)),

@@ -44,20 +44,16 @@ class _ContactRowState extends State<ContactRow> {
           color: Provider.of<AppState>(context).selectedConversation == contact.identifier ? Provider.of<Settings>(context).theme.backgroundHilightElementColor : Colors.transparent,
           child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             Padding(
-              padding: const EdgeInsets.all(6.0), //border size
-              child: ProfileImage(
+                padding: const EdgeInsets.all(6.0), //border size
+                child: ProfileImage(
                   badgeCount: contact.unreadMessages,
                   badgeColor: Provider.of<Settings>(context).theme.portraitContactBadgeColor,
                   badgeTextColor: Provider.of<Settings>(context).theme.portraitContactBadgeTextColor,
                   diameter: 64.0,
                   imagePath: Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment) ? contact.imagePath : contact.defaultImagePath,
                   disabled: !contact.isOnline(),
-                  border: contact.isOnline()
-                      ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor
-                      : contact.isBlocked
-                          ? Provider.of<Settings>(context).theme.portraitBlockedBorderColor
-                          : Provider.of<Settings>(context).theme.portraitOfflineBorderColor),
-            ),
+                  border: contact.getBorderColor(Provider.of<Settings>(context).theme),
+                )),
             Expanded(
                 child: Padding(
                     padding: EdgeInsets.all(10.0),
@@ -69,7 +65,7 @@ class _ContactRowState extends State<ContactRow> {
                             clipBehavior: Clip.hardEdge,
                             decoration: BoxDecoration(),
                             child: Text(
-                              contact.nickname, //(contact.isInvitation ? "invite " : "non-invite ") + (contact.isBlocked ? "blokt" : "nonblokt"),//
+                              contact.augmentedNickname(context) + (contact.messageDraft.isEmpty() ? "" : "*"),
 
                               style: TextStyle(
                                   fontSize: Provider.of<Settings>(context).theme.contactOnionTextSize(),

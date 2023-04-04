@@ -196,7 +196,7 @@ class _MessageViewState extends State<MessageView> {
                       ? Provider.of<ContactInfoState>(context).imagePath
                       : Provider.of<ContactInfoState>(context).defaultImagePath,
                   diameter: 42,
-                  border: Provider.of<Settings>(context).current().portraitOnlineBorderColor,
+                  border: Provider.of<ContactInfoState>(context).getBorderColor(Provider.of<Settings>(context).theme),
                   badgeTextColor: Colors.red,
                   badgeColor: Provider.of<Settings>(context).theme.portraitContactBadgeColor,
                   badgeIcon: Provider.of<ContactInfoState>(context).isGroup
@@ -230,14 +230,15 @@ class _MessageViewState extends State<MessageView> {
               ),
               Expanded(
                   child: Container(
-                      height: 24,
-                      clipBehavior: Clip.hardEdge,
-                      decoration: BoxDecoration(),
-                      child: Text(
-                        Provider.of<ContactInfoState>(context).nickname,
-                        overflow: TextOverflow.clip,
-                        maxLines: 1,
-                      )))
+                          height: 42,
+                          clipBehavior: Clip.hardEdge,
+                          decoration: BoxDecoration(),
+                          child:  Align(
+                              alignment: Alignment.centerLeft, child: Text(
+                            Provider.of<ContactInfoState>(context).augmentedNickname(context),
+                            overflow: TextOverflow.clip,
+                            maxLines: 1,
+                          ))))
             ]),
             actions: appBarButtons,
           ),

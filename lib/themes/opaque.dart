@@ -106,6 +106,9 @@ abstract class OpaqueThemeType {
   get portraitProfileBadgeColor => red;
   get portraitProfileBadgeTextColor => red;
 
+  get portraitOnlineAwayColor => Color(0xFFFFF59D);
+  get portraitOnlineBusyColor => Color(0xFFEF9A9A);
+
   // dropshaddpow
   // todo: probably should not be reply icon color in messagerow
   get dropShadowColor => red;
