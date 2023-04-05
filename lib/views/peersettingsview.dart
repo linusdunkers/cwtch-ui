@@ -113,15 +113,15 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
                                 child: Column(children: [
                                   Padding(
                                     padding: EdgeInsets.all(1),
-                                    child: SelectableText(Provider.of<ContactInfoState>(context, listen: false).attributes[0] ?? ""),
+                                    child: SelectableText(Provider.of<ContactInfoState>(context, listen: false).attributes[0] ?? "", textAlign: TextAlign.center,),
                                   ),
                                   Padding(
                                     padding: EdgeInsets.all(1),
-                                    child: SelectableText(Provider.of<ContactInfoState>(context, listen: false).attributes[1] ?? ""),
+                                    child: SelectableText(Provider.of<ContactInfoState>(context, listen: false).attributes[1] ?? "", textAlign: TextAlign.center,),
                                   ),
                                   Padding(
                                     padding: EdgeInsets.all(1),
-                                    child: SelectableText(Provider.of<ContactInfoState>(context, listen: false).attributes[2] ?? ""),
+                                    child: SelectableText(Provider.of<ContactInfoState>(context, listen: false).attributes[2] ?? "", textAlign: TextAlign.center,),
                                   )
                                 ]))
                           ]),
