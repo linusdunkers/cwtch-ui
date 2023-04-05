@@ -483,6 +483,17 @@ class MainActivity: FlutterActivity() {
                 val v: String = call.argument("Val") ?: ""
                 Cwtch.setProfileAttribute(profile, key, v)
             }
+            "GetProfileAttribute" -> {
+                val profile: String = call.argument("ProfileOnion") ?: ""
+                val key: String = call.argument("Key") ?: ""
+                Data.Builder().putString("result", Cwtch.getProfileAttribute(profile, key)).build()
+            }
+            "GetConversationAttribute" -> {
+                val profile: String = call.argument("ProfileOnion") ?: ""
+                val conversation: Int = call.argument("conversation") ?: 0
+                val key: String = call.argument("Key") ?: ""
+                Data.Builder().putString("result", Cwtch.getConversationAttribute(profile, conversation.toLong(), key)).build()
+            }
             "SetConversationAttribute" -> {
                 val profile: String = call.argument("ProfileOnion") ?: ""
                 val conversation: Int = call.argument("conversation") ?: 0

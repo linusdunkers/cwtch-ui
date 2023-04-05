@@ -33,11 +33,11 @@ class FileMessage extends Message {
             int fileSize = shareObj['s'] as int;
             String fileKey = rootHash + "." + nonce;
 
-            if (metadata.attributes["file-downloaded"] == "true") {
-              if (!Provider.of<ProfileInfoState>(context).downloadKnown(fileKey)) {
-                Provider.of<FlwtchState>(context, listen: false).cwtch.CheckDownloadStatus(Provider.of<ProfileInfoState>(context, listen: false).onion, fileKey);
-              }
-            }
+            // if (metadata.attributes["file-downloaded"] == "true") {
+            // if (!Provider.of<ProfileInfoState>(context).downloadKnown(fileKey)) {
+            Provider.of<FlwtchState>(context, listen: false).cwtch.CheckDownloadStatus(Provider.of<ProfileInfoState>(context, listen: false).onion, fileKey);
+            // }
+            //}
 
             if (!validHash(rootHash, nonce)) {
               return MessageRow(MalformedBubble(), index);

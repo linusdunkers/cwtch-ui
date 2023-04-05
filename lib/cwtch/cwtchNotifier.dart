@@ -30,14 +30,15 @@ class CwtchNotifier {
   late NotificationsManager notificationManager;
   late AppState appState;
   late ServerListState serverListState;
+  late FlwtchState flwtchState;
 
   String? notificationSimple;
   String? notificationConversationInfo;
 
   SeenMessageCallback? seenMessageCallback;
 
-  CwtchNotifier(
-      ProfileListState pcn, Settings settingsCN, ErrorHandler errorCN, TorStatus torStatusCN, NotificationsManager notificationManagerP, AppState appStateCN, ServerListState serverListStateCN) {
+  CwtchNotifier(ProfileListState pcn, Settings settingsCN, ErrorHandler errorCN, TorStatus torStatusCN, NotificationsManager notificationManagerP, AppState appStateCN,
+      ServerListState serverListStateCN, FlwtchState flwtchStateCN) {
     profileCN = pcn;
     settings = settingsCN;
     error = errorCN;
@@ -45,6 +46,7 @@ class CwtchNotifier {
     notificationManager = notificationManagerP;
     appState = appStateCN;
     serverListState = serverListStateCN;
+    flwtchState = flwtchStateCN;
   }
 
   void l10nInit(String notificationSimple, String notificationConversationInfo) {
@@ -74,6 +76,19 @@ class CwtchNotifier {
         // if tag != v1-defaultPassword then it is either encrypted OR it is an unencrypted account created during pre-beta...
         profileCN.add(data["Identity"], data["name"], data["picture"], data["defaultPicture"], data["ContactsJson"], data["ServerList"], data["Online"] == "true", data["autostart"] == "true",
             data["tag"] != "v1-defaultPassword");
+
+        // Update Profile Attributes
+        profileCN.getProfile(data["Identity"])?.setAttribute(0, flwtchState.cwtch.GetProfileAttribute(data["Identity"], "profile.profile-attribute-1"));
+        profileCN.getProfile(data["Identity"])?.setAttribute(1, flwtchState.cwtch.GetProfileAttribute(data["Identity"], "profile.profile-attribute-2"));
+        profileCN.getProfile(data["Identity"])?.setAttribute(2, flwtchState.cwtch.GetProfileAttribute(data["Identity"], "profile.profile-attribute-3"));
+        profileCN.getProfile(data["Identity"])?.setAvailabilityStatus(flwtchState.cwtch.GetProfileAttribute(data["Identity"], "profile.profile-status") ?? "");
+        profileCN.getProfile(data["Identity"])?.contactList.contacts.forEach((contact) {
+          contact.setAttribute(0, flwtchState.cwtch.GetConversationAttribute(data["Identity"], contact.identifier, "public.profile.profile-attribute-1"));
+          contact.setAttribute(1, flwtchState.cwtch.GetConversationAttribute(data["Identity"], contact.identifier, "public.profile.profile-attribute-2"));
+          contact.setAttribute(2, flwtchState.cwtch.GetConversationAttribute(data["Identity"], contact.identifier, "public.profile.profile-attribute-3"));
+          contact.setAvailabilityStatus(flwtchState.cwtch.GetConversationAttribute(data["Identity"], contact.identifier, "public.profile.profile-status") ?? "");
+        });
+
         break;
       case "ContactCreated":
         EnvironmentConfig.debugLog("ContactCreated $data");
@@ -291,6 +306,10 @@ class CwtchNotifier {
               profileCN.getProfile(data["ProfileOnion"])?.downloadSetPathForSender(filekey, data["Data"]);
             }
           }
+        } else if (data["Key"].toString().startsWith("public.profile.profile-attribute")) {
+          // ignore these events...
+        } else if (data["Key"].toString().startsWith("public.profile.profile-status")) {
+          profileCN.getProfile(data["ProfileOnion"])?.setAvailabilityStatus(data["Data"]);
         } else {
           EnvironmentConfig.debugLog("unhandled set attribute event: ${data['Key']}");
         }
@@ -375,6 +394,30 @@ class CwtchNotifier {
             var contact = profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(data["RemotePeer"]);
             if (contact != null) {
               profileCN.getProfile(data["ProfileOnion"])?.waitForDownloadComplete(contact.identifier, fileKey);
+            }
+          }
+        } else if (data['Path'] == "profile.profile-attribute-1" || data['Path'] == "profile.profile-attribute-2" || data['Path'] == "profile.profile-attribute-3") {
+          if (data["Exists"] == "true") {
+            var contact = profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(data["RemotePeer"]);
+            if (contact != null) {
+              switch (data['Path']) {
+                case "profile.profile-attribute-1":
+                  contact.setAttribute(0, data["Data"]);
+                  break;
+                case "profile.profile-attribute-2":
+                  contact.setAttribute(1, data["Data"]);
+                  break;
+                case "profile.profile-attribute-3":
+                  contact.setAttribute(2, data["Data"]);
+                  break;
+              }
+            }
+          }
+        } else if (data['Path'] == "profile.profile-status") {
+          if (data["Exists"] == "true") {
+            var contact = profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(data["RemotePeer"]);
+            if (contact != null) {
+              contact.setAvailabilityStatus(data['Data']);
             }
           }
         } else {

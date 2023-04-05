@@ -1,6 +1,10 @@
+import 'dart:ffi';
+
 import 'package:cwtch/main.dart';
 import 'package:cwtch/models/message_draft.dart';
 import 'package:cwtch/models/profile.dart';
+import 'package:cwtch/themes/opaque.dart';
+import 'package:cwtch/views/contactsview.dart';
 import 'package:cwtch/widgets/messagerow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -101,7 +105,7 @@ class ContactInfoState extends ChangeNotifier {
     keys = Map<String, GlobalKey<MessageRowState>>();
   }
 
-  String get nickname => this._nickname + (this._messageDraft.isEmpty() ? "" : "*");
+  String get nickname => this._nickname;
   String get savePeerHistory => this._savePeerHistory;
 
   String? get acnCircuit => this._acnCircuit;
@@ -353,5 +357,62 @@ class ContactInfoState extends ChangeNotifier {
   void updateTranslationEvent(int messageID, String translation) {
     this.messageCache.updateTranslationEvent(messageID, translation);
     notifyListeners();
+  }
+
+  // Contact Attributes. Can be set in Profile Edit View...
+  List<String?> attributes = [null, null, null];
+  void setAttribute(int i, String? value) {
+    this.attributes[i] = value;
+    notifyListeners();
+  }
+
+  ProfileStatusMenu availabilityStatus = ProfileStatusMenu.available;
+  void setAvailabilityStatus(String status) {
+    switch (status) {
+      case "available":
+        availabilityStatus = ProfileStatusMenu.available;
+        break;
+      case "busy":
+        availabilityStatus = ProfileStatusMenu.busy;
+        break;
+      case "away":
+        availabilityStatus = ProfileStatusMenu.away;
+        break;
+      default:
+        ProfileStatusMenu.available;
+    }
+    notifyListeners();
+  }
+
+  Color getBorderColor(OpaqueThemeType theme) {
+    if (this.isBlocked) {
+      return theme.portraitBlockedBorderColor;
+    }
+    if (this.isOnline()) {
+      switch (this.availabilityStatus) {
+        case ProfileStatusMenu.available:
+          return theme.portraitOnlineBorderColor;
+        case ProfileStatusMenu.away:
+          return theme.portraitOnlineAwayColor;
+        case ProfileStatusMenu.busy:
+          return theme.portraitOnlineBusyColor;
+      }
+    }
+    return theme.portraitOfflineBorderColor;
+  }
+
+  String augmentedNickname(BuildContext context) {
+    return this.nickname + (this.availabilityStatus == ProfileStatusMenu.available ? "" : " (" +this.statusString(context) +  ")");
+  }
+
+  String statusString(BuildContext context) {
+    switch (this.availabilityStatus) {
+      case ProfileStatusMenu.available:
+        return AppLocalizations.of(context)!.availabilityStatusAvailable;
+      case ProfileStatusMenu.away:
+        return AppLocalizations.of(context)!.availabilityStatusAway;
+      case ProfileStatusMenu.busy:
+        return AppLocalizations.of(context)!.availabilityStatusBusy;
+    }
   }
 }

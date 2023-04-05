@@ -388,4 +388,22 @@ class CwtchGomobile implements Cwtch {
     // Blodeuwedd is not currently supported on lower end devices.
     return false;
   }
+
+  @override
+  String? GetProfileAttribute(String profile, String key) {
+    dynamic attributeResult = cwtchPlatform.invokeMethod("GetProfileAttribute", {"ProfileOnion": profile, "key": key});
+    if (attributeResult["Exists"]) {
+      return attributeResult["Value"];
+    }
+    return null;
+  }
+
+  @override
+  String? GetConversationAttribute(String profile, int conversation, String key) {
+    dynamic attributeResult = cwtchPlatform.invokeMethod("GetProfileAttribute", {"ProfileOnion": profile, "conversation": conversation, "key": key});
+    if (attributeResult["Exists"]) {
+      return attributeResult["Value"];
+    }
+    return null;
+  }
 }

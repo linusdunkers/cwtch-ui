@@ -505,7 +505,7 @@ void modalShowTranslation(BuildContext context, ProfileInfoState profile, Settin
           var bubble = StaticMessageBubble(
               profile,
               settings,
-              MessageMetadata(profile.onion, Provider.of<ContactInfoState>(context).identifier, 1, DateTime.now(), "blodeuwedd", null, null, null, true, false, false, ""),
+              MessageMetadata(profile.onion, Provider.of<ContactInfoState>(context, listen: false).identifier, 1, DateTime.now(), "blodeuwedd", null, null, null, true, false, false, ""),
               Row(children: [
                 Provider.of<MessageMetadata>(context).translation == ""
                     ? Column(crossAxisAlignment: CrossAxisAlignment.center, children: [

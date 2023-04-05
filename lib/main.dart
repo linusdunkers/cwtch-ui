@@ -88,13 +88,15 @@ class FlwtchState extends State<Flwtch> with WindowListener {
     shutdownLinuxMethodChannel.setMethodCallHandler(shutdownDirect);
     print("initState: creating cwtchnotifier, ffi");
     if (Platform.isAndroid) {
-      var cwtchNotifier = new CwtchNotifier(profs, globalSettings, globalErrorHandler, globalTorStatus, NullNotificationsManager(), globalAppState, globalServersList);
+      var cwtchNotifier = new CwtchNotifier(profs, globalSettings, globalErrorHandler, globalTorStatus, NullNotificationsManager(), globalAppState, globalServersList, this);
       cwtch = CwtchGomobile(cwtchNotifier);
     } else if (Platform.isLinux) {
-      var cwtchNotifier = new CwtchNotifier(profs, globalSettings, globalErrorHandler, globalTorStatus, newDesktopNotificationsManager(_notificationSelectConvo), globalAppState, globalServersList);
+      var cwtchNotifier =
+          new CwtchNotifier(profs, globalSettings, globalErrorHandler, globalTorStatus, newDesktopNotificationsManager(_notificationSelectConvo), globalAppState, globalServersList, this);
       cwtch = CwtchFfi(cwtchNotifier);
     } else {
-      var cwtchNotifier = new CwtchNotifier(profs, globalSettings, globalErrorHandler, globalTorStatus, newDesktopNotificationsManager(_notificationSelectConvo), globalAppState, globalServersList);
+      var cwtchNotifier =
+          new CwtchNotifier(profs, globalSettings, globalErrorHandler, globalTorStatus, newDesktopNotificationsManager(_notificationSelectConvo), globalAppState, globalServersList, this);
       cwtch = CwtchFfi(cwtchNotifier);
     }
     print("initState: invoking cwtch.Start()");

@@ -38,6 +38,11 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
   final ctrlrPass = TextEditingController(text: "");
   final ctrlrPass2 = TextEditingController(text: "");
   final ctrlrOnion = TextEditingController(text: "");
+
+  final ctrlrAttribute1 = TextEditingController(text: "");
+  final ctrlrAttribute2 = TextEditingController(text: "");
+  final ctrlrAttribute3 = TextEditingController(text: "");
+
   ScrollController controller = ScrollController();
   late bool usePassword;
   late bool deleted;
@@ -93,42 +98,89 @@ class _AddEditProfileViewState extends State<AddEditProfileView> {
                             child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.center, children: [
                               Visibility(
                                   visible: Provider.of<ProfileInfoState>(context).onion.isNotEmpty,
-                                  child: Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-                                    MouseRegion(
-                                        cursor: Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment) ? SystemMouseCursors.click : SystemMouseCursors.basic,
-                                        child: GestureDetector(
-                                            // don't allow setting of profile images if the image previews experiment is disabled.
-                                            onTap: Provider.of<AppState>(context, listen: false).disableFilePicker ||
-                                                    !Provider.of<Settings>(context, listen: false).isExperimentEnabled(ImagePreviewsExperiment)
-                                                ? null
-                                                : () {
-                                                    filesharing.showFilePicker(context, MaxImageFileSharingSize, (File file) {
-                                                      var profile = Provider.of<ProfileInfoState>(context, listen: false).onion;
-                                                      // Share this image publicly (conversation handle == -1)
-                                                      Provider.of<FlwtchState>(context, listen: false).cwtch.ShareFile(profile, -1, file.path);
-                                                      // update the image cache locally
-                                                      Provider.of<ProfileInfoState>(context, listen: false).imagePath = file.path;
-                                                    }, () {
-                                                      final snackBar = SnackBar(
-                                                        content: Text(AppLocalizations.of(context)!.msgFileTooBig),
-                                                        duration: Duration(seconds: 4),
-                                                      );
-                                                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                                    }, () {});
-                                                  },
-                                            child: ProfileImage(
-                                                imagePath: Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment)
-                                                    ? Provider.of<ProfileInfoState>(context).imagePath
-                                                    : Provider.of<ProfileInfoState>(context).defaultImagePath,
-                                                diameter: 120,
-                                                tooltip:
-                                                    Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment) ? AppLocalizations.of(context)!.tooltipSelectACustomProfileImage : "",
-                                                maskOut: false,
-                                                border: theme.theme.portraitOnlineBorderColor,
-                                                badgeTextColor: theme.theme.portraitContactBadgeTextColor,
-                                                badgeColor: theme.theme.portraitContactBadgeColor,
-                                                badgeEdit: Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment))))
-                                  ])),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+                                        MouseRegion(
+                                            cursor: Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment) ? SystemMouseCursors.click : SystemMouseCursors.basic,
+                                            child: GestureDetector(
+                                                // don't allow setting of profile images if the image previews experiment is disabled.
+                                                onTap: Provider.of<AppState>(context, listen: false).disableFilePicker ||
+                                                        !Provider.of<Settings>(context, listen: false).isExperimentEnabled(ImagePreviewsExperiment)
+                                                    ? null
+                                                    : () {
+                                                        filesharing.showFilePicker(context, MaxImageFileSharingSize, (File file) {
+                                                          var profile = Provider.of<ProfileInfoState>(context, listen: false).onion;
+                                                          // Share this image publicly (conversation handle == -1)
+                                                          Provider.of<FlwtchState>(context, listen: false).cwtch.ShareFile(profile, -1, file.path);
+                                                          // update the image cache locally
+                                                          Provider.of<ProfileInfoState>(context, listen: false).imagePath = file.path;
+                                                        }, () {
+                                                          final snackBar = SnackBar(
+                                                            content: Text(AppLocalizations.of(context)!.msgFileTooBig),
+                                                            duration: Duration(seconds: 4),
+                                                          );
+                                                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                                        }, () {});
+                                                      },
+                                                child: ProfileImage(
+                                                    imagePath: Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment)
+                                                        ? Provider.of<ProfileInfoState>(context).imagePath
+                                                        : Provider.of<ProfileInfoState>(context).defaultImagePath,
+                                                    diameter: 120,
+                                                    tooltip: Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment)
+                                                        ? AppLocalizations.of(context)!.tooltipSelectACustomProfileImage
+                                                        : "",
+                                                    maskOut: false,
+                                                    border: theme.theme.portraitOnlineBorderColor,
+                                                    badgeTextColor: theme.theme.portraitContactBadgeTextColor,
+                                                    badgeColor: theme.theme.portraitContactBadgeColor,
+                                                    badgeEdit: Provider.of<Settings>(context).isExperimentEnabled(ImagePreviewsExperiment))))
+                                      ]),
+                                      SizedBox(
+                                          width: MediaQuery.of(context).size.width / 2,
+                                          child: Column(
+                                            children: [
+                                              Padding(
+                                                  padding: EdgeInsets.all(5.0),
+                                                  child: CwtchTextField(
+                                                      controller: ctrlrAttribute1,
+                                                      multiLine: false,
+                                                      onChanged: (profileAttribute1) {
+                                                        String onion = Provider.of<ProfileInfoState>(context, listen: false).onion;
+                                                        Provider.of<FlwtchState>(context, listen: false).cwtch.SetProfileAttribute(onion, "profile.profile-attribute-1", profileAttribute1);
+                                                        Provider.of<ProfileInfoState>(context, listen: false).attributes[0] = profileAttribute1;
+                                                      },
+                                                      hintText: Provider.of<ProfileInfoState>(context).attributes[0] ?? AppLocalizations.of(context)!.profileInfoHint!)),
+                                              Padding(
+                                                  padding: EdgeInsets.all(5.0),
+                                                  child: CwtchTextField(
+                                                      controller: ctrlrAttribute2,
+                                                      multiLine: false,
+                                                      onChanged: (profileAttribute2) {
+                                                        String onion = Provider.of<ProfileInfoState>(context, listen: false).onion;
+                                                        Provider.of<FlwtchState>(context, listen: false).cwtch.SetProfileAttribute(onion, "profile.profile-attribute-2", profileAttribute2);
+                                                        Provider.of<ProfileInfoState>(context, listen: false).attributes[1] = profileAttribute2;
+                                                      },
+                                                      hintText: Provider.of<ProfileInfoState>(context).attributes[1] ?? AppLocalizations.of(context)!.profileInfoHint2!)),
+                                              Padding(
+                                                  padding: EdgeInsets.all(5.0),
+                                                  child: CwtchTextField(
+                                                      controller: ctrlrAttribute3,
+                                                      multiLine: false,
+                                                      onChanged: (profileAttribute3) {
+                                                        String onion = Provider.of<ProfileInfoState>(context, listen: false).onion;
+                                                        Provider.of<FlwtchState>(context, listen: false).cwtch.SetProfileAttribute(onion, "profile.profile-attribute-3", profileAttribute3);
+                                                        Provider.of<ProfileInfoState>(context, listen: false).attributes[2] = profileAttribute3;
+                                                      },
+                                                      hintText: Provider.of<ProfileInfoState>(context).attributes[2] ?? AppLocalizations.of(context)!.profileInfoHint3!)),
+                                            ],
+                                          ))
+                                    ],
+                                  )),
                               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                                 SizedBox(
                                   height: 20,

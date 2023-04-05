@@ -25,6 +25,8 @@ import 'messageview.dart';
 
 enum ShareMenu { copyCode, qrcode }
 
+enum ProfileStatusMenu { available, away, busy }
+
 class ContactsView extends StatefulWidget {
   const ContactsView({Key? key}) : super(key: key);
 
@@ -137,11 +139,42 @@ class _ContactsViewState extends State<ContactsView> {
                       ? Provider.of<ProfileInfoState>(context).imagePath
                       : Provider.of<ProfileInfoState>(context).defaultImagePath,
                   diameter: 42,
-                  border: Provider.of<ProfileInfoState>(context).isOnline
-                      ? Provider.of<Settings>(context).current().portraitOnlineBorderColor
-                      : Provider.of<Settings>(context).current().portraitOfflineBorderColor,
+                  border: Provider.of<ProfileInfoState>(context).getBorderColor(Provider.of<Settings>(context).theme),
                   badgeTextColor: Colors.red,
                   badgeColor: Colors.red,
+                ),
+                PopupMenuButton<ProfileStatusMenu>(
+                  icon: Icon(Icons.online_prediction),
+                  tooltip: AppLocalizations.of(context)!.availabilityStatusTooltip,
+                  splashRadius: Material.defaultSplashRadius / 2,
+                  onSelected: (ProfileStatusMenu item) {
+                    String onion = Provider.of<ProfileInfoState>(context, listen: false).onion;
+                    switch (item) {
+                      case ProfileStatusMenu.available:
+                        Provider.of<FlwtchState>(context, listen: false).cwtch.SetProfileAttribute(onion, "profile.profile-status", "available");
+                        break;
+                      case ProfileStatusMenu.away:
+                        Provider.of<FlwtchState>(context, listen: false).cwtch.SetProfileAttribute(onion, "profile.profile-status", "away");
+                        break;
+                      case ProfileStatusMenu.busy:
+                        Provider.of<FlwtchState>(context, listen: false).cwtch.SetProfileAttribute(onion, "profile.profile-status", "busy");
+                        break;
+                    }
+                  },
+                  itemBuilder: (BuildContext context) => <PopupMenuEntry<ProfileStatusMenu>>[
+                    PopupMenuItem<ProfileStatusMenu>(
+                      value: ProfileStatusMenu.available,
+                      child: Text(AppLocalizations.of(context)!.availabilityStatusAvailable!,),
+                    ),
+                    PopupMenuItem<ProfileStatusMenu>(
+                      value: ProfileStatusMenu.away,
+                      child: Text(AppLocalizations.of(context)!.availabilityStatusAway!,),
+                    ),
+                    PopupMenuItem<ProfileStatusMenu>(
+                      value: ProfileStatusMenu.busy,
+                      child: Text(AppLocalizations.of(context)!.availabilityStatusBusy!,),
+                    ),
+                  ],
                 ),
                 SizedBox(
                   width: 10,
