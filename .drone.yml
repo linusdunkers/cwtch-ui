@@ -99,8 +99,8 @@ steps:
       # cant do debug for final release, this is just a stop gap
       - flutter build apk --dart-define BUILD_VER=`cat VERSION` --dart-define BUILD_DATE=`cat COMMIT_DATE`
       # or build apk --split-per-abi ?
-      - cp build/app/outputs/bundle/release/app-release.aab deploy/cwtch-`cat ../VERSION`.aad
-      - cp build/app/outputs/apk/release/app-release.apk deploy/cwtch-`cat ../VERSION`.apk
+      - cp build/app/outputs/bundle/release/app-release.aab deploy/cwtch-`cat VERSION`.aab
+      - cp build/app/outputs/apk/release/app-release.apk deploy/cwtch-`cat VERSION`.apk
       #- cp build/app/outputs/flutter-apk/app-debug.apk deploy/android
 
   - name: widget-tests
@@ -236,8 +236,6 @@ steps:
       - $Env:releasedir = "build\\windows\\runner\\Release\\"
       - $Env:zip = 'cwtch-' + $Env:version + '.zip'
       - $Env:zipsha = $Env:zip + '.sha512'
-      - $Env:msix = 'cwtch-install-' + $Env:version + '.msix'
-      - $Env:msixsha = $Env:msix + '.sha512'
       - $Env:buildname = 'flwtch-' + $Env:commitdate + '-' + $Env:version
       - $Env:builddir = $Env:buildname
       - echo $Env:pfx > codesign.pfx.b64
@@ -255,7 +253,7 @@ steps:
       - move $Env:releasedir $Env:builddir
       - powershell -command "Compress-Archive -Path $Env:builddir -DestinationPath cwtch.zip"
       - powershell -command "(Get-FileHash cwtch.zip -Algorithm sha512).Hash" > $Env:zipsha
-      - move cwtch-installer.exe deploy\$Env:builddir\cwtch-installer.exe
+      - move cwtch-installer.exe deploy\$Env:builddir\cwtch-installer-$Env:version.exe
       - move cwtch.zip deploy\$Env:builddir\$Env:zip
       - move *.sha512 deploy\$Env:builddir
 
