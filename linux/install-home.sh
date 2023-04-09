@@ -1,18 +1,3 @@
 #!/bin/sh
 
-mkdir -p ~/.local/bin
-sed "s|~|$HOME|g" cwtch.home.sh > ~/.local/bin/cwtch
-chmod a+x ~/.local/bin/cwtch
-
-mkdir -p ~/.local/share/icons
-cp cwtch.png ~/.local/share/icons
-
-mkdir -p ~/.local/share/cwtch
-cp -r data ~/.local/share/cwtch
-
-mkdir -p ~/.local/lib/cwtch
-cp -r lib/* ~/.local/lib/cwtch
-
-mkdir -p ~/.local/share/applications
-sed "s|~|$HOME|g" cwtch.home.desktop > $HOME/.local/share/applications/cwtch.desktop
-chmod a+x $HOME/.local/share/applications/cwtch.desktop
+INSTALL_PREFIX=$HOME/.local DESKTOP_PREFIX=$INSTALL_PREFIX ./install.sh

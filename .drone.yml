@@ -31,7 +31,7 @@ steps:
     commands:
       - ./fetch-tor.sh
       - echo `git describe --tags --abbrev=1` > VERSION
-      - echo `date +%G-%m-%d-%H-%M` > BUILDDATE
+      - echo `git log -1 --format=%cd --date=format:%G-%m-%d-%H-%M` > COMMIT_DATE
       - flutter pub get
       - mkdir deploy
       - ./fetch-libcwtch-go.sh
@@ -52,7 +52,7 @@ steps:
       - name: deps
         path: /root/.pub-cache
     commands:
-      - flutter build linux --dart-define BUILD_VER=`cat VERSION` --dart-define BUILD_DATE=`cat BUILDDATE`
+      - flutter build linux --dart-define BUILD_VER=`cat VERSION` --dart-define BUILD_DATE=`cat COMMIT_DATE`
       - linux/package-release.sh
       - mkdir -p deploy/cwtch
       - cp -r build/linux/x64/release/bundle/* deploy/cwtch
@@ -66,7 +66,6 @@ steps:
       - name: deps
         path: /root/.pub-cache
     commands:
-      - ./fetch-tor.sh
       # Run 01_general, 02_global_settings, and 04_profile_mgmt features...
       - ./run-tests-headless.sh "01_general|02_global_settings|04_profile_mgmt"
 
@@ -96,12 +95,12 @@ steps:
       - echo $upload_jks_file_b64 > upload-keystore.jks.b64
       - base64 -i --decode upload-keystore.jks.b64 > android/app/upload-keystore.jks
       - sed -i "s/%jks-password%/$upload_jks_pass/g" android/key.properties
-      - flutter build appbundle --dart-define BUILD_VER=`cat VERSION` --dart-define BUILD_DATE=`cat BUILDDATE`
+      - flutter build appbundle --dart-define BUILD_VER=`cat VERSION` --dart-define BUILD_DATE=`cat COMMIT_DATE`
       # cant do debug for final release, this is just a stop gap
-      - flutter build apk --dart-define BUILD_VER=`cat VERSION` --dart-define BUILD_DATE=`cat BUILDDATE`
+      - flutter build apk --dart-define BUILD_VER=`cat VERSION` --dart-define BUILD_DATE=`cat COMMIT_DATE`
       # or build apk --split-per-abi ?
-      - cp build/app/outputs/bundle/release/app-release.aab deploy/
-      - cp build/app/outputs/apk/release/app-release.apk deploy/
+      - cp build/app/outputs/bundle/release/app-release.aab deploy/cwtch-`cat ../VERSION`.aad
+      - cp build/app/outputs/apk/release/app-release.apk deploy/cwtch-`cat ../VERSION`.apk
       #- cp build/app/outputs/flutter-apk/app-debug.apk deploy/android
 
   - name: widget-tests
@@ -128,13 +127,13 @@ steps:
       - echo $BUILDFILES_KEY > ~/id_rsab64
       - base64 -d ~/id_rsab64 > ~/id_rsa
       - chmod 400 ~/id_rsa
-      - export DIR=flwtch-`cat BUILDDATE`-`cat VERSION`
+      - export DIR=flwtch-`cat COMMIT_DATE`-`cat VERSION`
       - mv deploy $DIR
       - cp -r coverage/html $DIR/coverage-tests
       - cp -r test/failures $DIR/test-failures || true
       - cd $DIR
-      - find . -type f -exec sha256sum {} \; > ./../sha256s.txt
-      - mv ./../sha256s.txt .
+      - find . -type f -exec sha512sum {} \; > ./../sha512s.txt
+      - mv ./../sha512s.txt .
       - cd ..
       - scp -r -o StrictHostKeyChecking=no -i ~/id_rsa $DIR buildfiles@build.openprivacy.ca:/home/buildfiles/buildfiles/
 
@@ -197,7 +196,7 @@ steps:
     image: openpriv/flutter-desktop:windows-sdk30-fstable-3.7.1
     commands:
       - git describe --tags --abbrev=1 > VERSION
-      - powershell -command "Get-Date -Format 'yyyy-MM-dd-HH-mm'" > BUILDDATE
+      - git log -1 --format=%cd --date=format:'%Y-%m-%d-%H-%M' > COMMIT_DATE
       - .\fetch-tor-win.ps1
       - .\fetch-libcwtch-go.ps1
 
@@ -206,9 +205,9 @@ steps:
     commands:
       - flutter pub get
       - $Env:version += type .\VERSION
-      - $Env:builddate += type .\BUILDDATE
+      - $Env:commitdate += type .\COMMIT_DATE
       - $Env:releasedir = "build\\windows\\runner\\Release\\"
-      - flutter build windows --dart-define BUILD_VER=$Env:version --dart-define BUILD_DATE=$Env:builddate
+      - flutter build windows --dart-define BUILD_VER=$Env:version --dart-define BUILD_DATE=$Env:commitdate
       - copy windows\libCwtch.dll $Env:releasedir
       # flutter hasn't worked out it's packaging of required dll's so we have to resort to this manual nonsense
       # https://github.com/google/flutter-desktop-embedding/issues/587
@@ -233,13 +232,13 @@ steps:
         from_secret: pfx_pass
     commands:
       - $Env:version += type .\VERSION
-      - $Env:builddate += type .\BUILDDATE
+      - $Env:commitdate += type .\COMMIT_DATE
       - $Env:releasedir = "build\\windows\\runner\\Release\\"
       - $Env:zip = 'cwtch-' + $Env:version + '.zip'
       - $Env:zipsha = $Env:zip + '.sha512'
       - $Env:msix = 'cwtch-install-' + $Env:version + '.msix'
       - $Env:msixsha = $Env:msix + '.sha512'
-      - $Env:buildname = 'flwtch-win-' + $Env:builddate + '-' + $Env:version
+      - $Env:buildname = 'flwtch-' + $Env:commitdate + '-' + $Env:version
       - $Env:builddir = $Env:buildname
       - echo $Env:pfx > codesign.pfx.b64
       - certutil -decode codesign.pfx.b64 codesign.pfx
@@ -318,7 +317,7 @@ steps:
     commands:
       - ./fetch-tor-macos.sh
       - echo `git describe --tags --abbrev=1` > VERSION
-      - echo `date +%G-%m-%d-%H-%M` > BUILDDATE
+      - echo `git log -1 --format=%cd --date=format:%G-%m-%d-%H-%M` > COMMIT_DATE
       - export PATH=$PATH:/Users/Dan/development/flutter/bin
       - flutter pub get
       - mkdir deploy
@@ -331,11 +330,11 @@ steps:
       - export GEM_HOME=$HOME/.gem
       - export PATH=$GEM_HOME/ruby/2.6.0/bin:$PATH
       - flutter config --enable-macos-desktop
-      - flutter build macos --dart-define BUILD_VER=`cat VERSION` --dart-define BUILD_DATE=`cat BUILDDATE`
+      - flutter build macos --dart-define BUILD_VER=`cat VERSION` --dart-define BUILD_DATE=`cat COMMIT_DATE`
       - export PATH=$PATH:/usr/local/bin #create-dmg
       - macos/package-release.sh
       - mkdir -p deploy
-      - mv Cwtch.dmg deploy
+      - mv Cwtch.dmg deploy/Cwtch-`cat BUILD_VER`.dmg
 
   - name: deploy-buildfiles
     environment:
@@ -348,11 +347,11 @@ steps:
       - echo $BUILDFILES_KEY > ~/id_rsab64
       - base64 -d ~/id_rsab64 > ~/id_rsa
       - chmod 400 ~/id_rsa
-      - export DIR=flwtch-macos-`cat BUILDDATE`-`cat VERSION`
+      - export DIR=flwtch-`cat COMMIT_DATE`-`cat VERSION`
       - mv deploy $DIR
       - cd $DIR
       - find . -type f -exec shasum -a 512 {} \; > ./../sha512s.txt
-      - mv ./../sha512s.txt .
+      - mv ./../mac-sha512s.txt .
       - cd ..
       - scp -r -o StrictHostKeyChecking=no -i ~/id_rsa $DIR buildfiles@build.openprivacy.ca:/home/buildfiles/buildfiles/
 

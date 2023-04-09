@@ -1,21 +1,9 @@
 #!/bin/sh
 
-mkdir -p ~/.local/bin
-sed "s|~|$HOME|g" cwtch.home.sh > ~/.local/bin/cwtch
-chmod a+x ~/.local/bin/cwtch
+INSTALL_PREFIX=$HOME/.local DESKTOP_PREFIX=$INSTALL_PREFIX ./install.sh
 
-mkdir -p ~/.local/share/icons
-cp cwtch.png ~/.local/share/icons
-
-mkdir -p ~/.local/share/cwtch
-cp -r data ~/.local/share/cwtch
-
-mkdir -p ~/.local/lib/cwtch
-cp -r lib/* ~/.local/lib/cwtch
-
-mkdir -p ~/.local/share/applications
-sed "s|~|$HOME|g" cwtch.home.desktop > $HOME/.local/share/applications/cwtch.desktop
-chmod a+x $HOME/.local/share/applications/cwtch.desktop
+# Add CWTCH_TAILS=true to run script
+sed -i "s|env LD|env CWTCH_TAILS=true LD|g" $INSTALL_PREFIX/bin/cwtch
 
 # Tails needs to be have been setup up with an Administration account
 # https://tails.boum.org/doc/first_steps/welcome_screen/administration_password/
