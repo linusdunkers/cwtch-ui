@@ -348,7 +348,7 @@ steps:
       - export DIR=flwtch-`cat COMMIT_DATE`-`cat VERSION`
       - mv deploy $DIR
       - cd $DIR
-      - find . -type f -exec shasum -a 512 {} \; > ./../sha512s.txt
+      - find . -type f -exec shasum -a 512 {} \; > ./../mac-sha512s.txt
       - mv ./../mac-sha512s.txt .
       - cd ..
       - scp -r -o StrictHostKeyChecking=no -i ~/id_rsa $DIR buildfiles@build.openprivacy.ca:/home/buildfiles/buildfiles/
