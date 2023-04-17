@@ -66,6 +66,8 @@ class ContactInfoState extends ChangeNotifier {
   String? _acnCircuit;
   MessageDraft _messageDraft = MessageDraft.empty();
 
+  var _hoveredIndex = -1;
+
   ContactInfoState(
     this.profileOnion,
     this.identifier,
@@ -402,7 +404,15 @@ class ContactInfoState extends ChangeNotifier {
   }
 
   String augmentedNickname(BuildContext context) {
-    return this.nickname + (this.availabilityStatus == ProfileStatusMenu.available ? "" : " (" +this.statusString(context) +  ")");
+    return this.nickname + (this.availabilityStatus == ProfileStatusMenu.available ? "" : " (" + this.statusString(context) + ")");
+  }
+
+  // Never use this for message lookup - can be a non-indexed value
+  // e.g. -1
+  int get hoveredIndex => _hoveredIndex;
+  set hoveredIndex(int newVal) {
+    this._hoveredIndex = newVal;
+    notifyListeners();
   }
 
   String statusString(BuildContext context) {
