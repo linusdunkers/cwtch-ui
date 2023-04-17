@@ -17,11 +17,9 @@ import 'package:cwtch/models/profile.dart';
 import 'package:cwtch/third_party/linkify/flutter_linkify.dart';
 import 'package:cwtch/widgets/malformedbubble.dart';
 import 'package:cwtch/widgets/messageloadingbubble.dart';
-import 'package:cwtch/widgets/messagerow.dart';
 import 'package:cwtch/widgets/profileimage.dart';
 import 'package:cwtch/controllers/filesharing.dart' as filesharing;
 import 'package:cwtch/widgets/staticmessagebubble.dart';
-import 'package:file_picker/file_picker.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

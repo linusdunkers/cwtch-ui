@@ -50,7 +50,7 @@ void selectConversation(BuildContext context, int handle) {
   // triggers update in Double/TripleColumnView
   Provider.of<AppState>(context, listen: false).initialScrollIndex = unread;
   Provider.of<AppState>(context, listen: false).selectedConversation = handle;
-  Provider.of<AppState>(context, listen: false).hoveredIndex = -1;
+  Provider.of<ContactInfoState>(context, listen: false).hoveredIndex = -1;
   // if in singlepane mode, push to the stack
   var isLandscape = Provider.of<AppState>(context, listen: false).isLandscape(context);
   if (Provider.of<Settings>(context, listen: false).uiColumns(isLandscape).length == 1) _pushMessageView(context, handle);

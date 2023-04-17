@@ -12,8 +12,6 @@ class AppState extends ChangeNotifier {
   String? _selectedProfile;
   int? _selectedConversation;
   int _initialScrollIndex = 0;
-  int _hoveredIndex = -1;
-  int? _selectedIndex;
   bool _unreadMessagesBelow = false;
   bool _disableFilePicker = false;
   bool _focus = true;
@@ -56,14 +54,6 @@ class AppState extends ChangeNotifier {
   bool get disableFilePicker => _disableFilePicker;
   set disableFilePicker(bool newVal) {
     this._disableFilePicker = newVal;
-    notifyListeners();
-  }
-
-  // Never use this for message lookup - can be a non-indexed value
-  // e.g. -1
-  int get hoveredIndex => _hoveredIndex;
-  set hoveredIndex(int newVal) {
-    this._hoveredIndex = newVal;
     notifyListeners();
   }
 
