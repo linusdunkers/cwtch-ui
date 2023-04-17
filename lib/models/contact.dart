@@ -402,7 +402,7 @@ class ContactInfoState extends ChangeNotifier {
   }
 
   String augmentedNickname(BuildContext context) {
-    return this.nickname + (this.availabilityStatus == ProfileStatusMenu.available ? "" : " (" +this.statusString(context) +  ")");
+    return this.nickname + (this.availabilityStatus == ProfileStatusMenu.available ? "" : " (" + this.statusString(context) + ")");
   }
 
   String statusString(BuildContext context) {

@@ -230,11 +230,12 @@ class _MessageViewState extends State<MessageView> {
               ),
               Expanded(
                   child: Container(
-                          height: 42,
-                          clipBehavior: Clip.hardEdge,
-                          decoration: BoxDecoration(),
-                          child:  Align(
-                              alignment: Alignment.centerLeft, child: Text(
+                      height: 42,
+                      clipBehavior: Clip.hardEdge,
+                      decoration: BoxDecoration(),
+                      child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
                             Provider.of<ContactInfoState>(context).augmentedNickname(context),
                             overflow: TextOverflow.clip,
                             maxLines: 1,
