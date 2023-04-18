@@ -69,6 +69,15 @@ class Settings extends ChangeNotifier {
 
   String get torCacheDir => _torCacheDir;
 
+  // Whether to show the profiling interface, not saved
+  bool _profileMode = false;
+
+  bool get profileMode => _profileMode;
+  set profileMode(bool newval) {
+    this._profileMode = newval;
+    notifyListeners();
+  }
+
   set useSemanticDebugger(bool newval) {
     this._useSemanticDebugger = newval;
     notifyListeners();

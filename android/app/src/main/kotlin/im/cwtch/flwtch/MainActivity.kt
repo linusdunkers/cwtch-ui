@@ -442,7 +442,7 @@ class MainActivity: FlutterActivity() {
                 val profile: String = call.argument("ProfileOnion") ?: ""
                 val conversation: Int = call.argument("conversation") ?: 0
                 val fileKey: String = call.argument("fileKey") ?: ""
-                Cwtch.verifyOrResumeDownload(profile, conversation.toLong(), fileKey)
+                Cwtch.verifyOrResumeDownloadDefaultLimit(profile, conversation.toLong(), fileKey)
             }
             "UpdateSettings" -> {
                 val json: String = call.argument("json") ?: ""

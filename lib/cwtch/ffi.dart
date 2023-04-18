@@ -498,7 +498,7 @@ class CwtchFfi implements Cwtch {
   @override
   // ignore: non_constant_identifier_names
   void VerifyOrResumeDownload(String profileOnion, int contactHandle, String filekey) {
-    var fn = library.lookup<NativeFunction<void_from_string_int_string_function>>("c_VerifyOrResumeDownload");
+    var fn = library.lookup<NativeFunction<void_from_string_int_string_function>>("c_VerifyOrResumeDownloadDefaultLimit");
     // ignore: non_constant_identifier_names
     final VerifyOrResumeDownload = fn.asFunction<VoidFromStringIntStringFn>();
     final u1 = profileOnion.toNativeUtf8();
