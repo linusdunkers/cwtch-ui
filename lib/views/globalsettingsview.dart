@@ -545,6 +545,23 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                               child: SelectableText(AppLocalizations.of(context)!.versionBuilddate.replaceAll("%1", EnvironmentConfig.BUILD_VER).replaceAll("%2", EnvironmentConfig.BUILD_DATE)),
                             )
                           ]),
+                      SwitchListTile(
+                        title: Text("Show Performance Overlay", style: TextStyle(color: settings.current().mainTextColor)),
+                        subtitle: Text("Display an overlay graph of render time."),
+                        value: settings.profileMode,
+                        onChanged: (bool value) {
+                          setState(() {
+                            if (value) {
+                              settings.profileMode = value;
+                            } else {
+                              settings.profileMode = value;
+                            }
+                          });
+                        },
+                        activeTrackColor: settings.theme.defaultButtonActiveColor,
+                        inactiveTrackColor: settings.theme.defaultButtonDisabledColor,
+                        secondary: Icon(Icons.bar_chart, color: settings.current().mainTextColor),
+                      ),
                       Visibility(
                           visible: EnvironmentConfig.BUILD_VER == dev_version && !Platform.isAndroid,
                           child: SwitchListTile(
