@@ -546,6 +546,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                             )
                           ]),
                       SwitchListTile(
+                        // TODO: Translate, Remove, OR Hide Prior to Release
                         title: Text("Show Performance Overlay", style: TextStyle(color: settings.current().mainTextColor)),
                         subtitle: Text("Display an overlay graph of render time."),
                         value: settings.profileMode,
