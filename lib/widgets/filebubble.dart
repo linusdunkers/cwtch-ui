@@ -165,7 +165,7 @@ class FileBubbleState extends State<FileBubble> {
         wdgDecorations = Text('\u202F');
       } else if (downloadComplete && path != null) {
         // in this case, whatever marked download.complete would have also set the path
-        if (Provider.of<Settings>(context).shouldPreview(path)) {
+        if (myFile != null && Provider.of<Settings>(context).shouldPreview(path)) {
           isPreview = true;
           wdgDecorations = Center(
               widthFactor: 1.0,
@@ -196,6 +196,7 @@ class FileBubbleState extends State<FileBubble> {
         // so we probably have to request an info lookup
         if (!downloadInterrupted) {
           wdgDecorations = Text(AppLocalizations.of(context)!.fileCheckingStatus + '...' + '\u202F');
+          // We should have already requested this...
         } else {
           var path = Provider.of<ProfileInfoState>(context).downloadFinalPath(widget.fileKey()) ?? "";
           wdgDecorations = Visibility(

@@ -146,7 +146,7 @@ class _PeerSettingsViewState extends State<PeerSettingsView> {
                               onPressed: () {
                                 var profileOnion = Provider.of<ContactInfoState>(context, listen: false).profileOnion;
                                 var conversation = Provider.of<ContactInfoState>(context, listen: false).identifier;
-                                Provider.of<ContactInfoState>(context, listen: false).nickname = ctrlrNick.text;
+                                Provider.of<ContactInfoState>(context, listen: false).localNickname = ctrlrNick.text;
                                 Provider.of<FlwtchState>(context, listen: false).cwtch.SetConversationAttribute(profileOnion, conversation, "profile.name", ctrlrNick.text);
                                 final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.nickChangeSuccess));
                                 ScaffoldMessenger.of(context).showSnackBar(snackBar);

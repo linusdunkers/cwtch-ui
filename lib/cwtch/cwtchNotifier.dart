@@ -379,8 +379,8 @@ class CwtchNotifier {
         });
         profileCN.getProfile(data["ProfileOnion"])?.contactList.resort();
         break;
-      case "NewRetValMessageFromPeer":
-        if (data["Path"] == "profile.name" && data["Exists"] == "true") {
+      case "UpdatedConversationAttribute":
+        if (data["Path"] == "profile.name") {
           if (data["Data"].toString().trim().length > 0) {
             // Update locally on the UI...
             if (profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(data["RemotePeer"]) != null) {
@@ -388,37 +388,31 @@ class CwtchNotifier {
             }
           }
         } else if (data['Path'] == "profile.custom-profile-image") {
-          if (data["Exists"] == "true") {
-            EnvironmentConfig.debugLog("received ret val of custom profile image: $data");
-            String fileKey = data['Data'];
-            var contact = profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(data["RemotePeer"]);
-            if (contact != null) {
-              profileCN.getProfile(data["ProfileOnion"])?.waitForDownloadComplete(contact.identifier, fileKey);
-            }
+          EnvironmentConfig.debugLog("received ret val of custom profile image: $data");
+          String fileKey = data['Data'];
+          var contact = profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(data["RemotePeer"]);
+          if (contact != null) {
+            profileCN.getProfile(data["ProfileOnion"])?.waitForDownloadComplete(contact.identifier, fileKey);
           }
         } else if (data['Path'] == "profile.profile-attribute-1" || data['Path'] == "profile.profile-attribute-2" || data['Path'] == "profile.profile-attribute-3") {
-          if (data["Exists"] == "true") {
-            var contact = profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(data["RemotePeer"]);
-            if (contact != null) {
-              switch (data['Path']) {
-                case "profile.profile-attribute-1":
-                  contact.setAttribute(0, data["Data"]);
-                  break;
-                case "profile.profile-attribute-2":
-                  contact.setAttribute(1, data["Data"]);
-                  break;
-                case "profile.profile-attribute-3":
-                  contact.setAttribute(2, data["Data"]);
-                  break;
-              }
+          var contact = profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(data["RemotePeer"]);
+          if (contact != null) {
+            switch (data['Path']) {
+              case "profile.profile-attribute-1":
+                contact.setAttribute(0, data["Data"]);
+                break;
+              case "profile.profile-attribute-2":
+                contact.setAttribute(1, data["Data"]);
+                break;
+              case "profile.profile-attribute-3":
+                contact.setAttribute(2, data["Data"]);
+                break;
             }
           }
         } else if (data['Path'] == "profile.profile-status") {
-          if (data["Exists"] == "true") {
-            var contact = profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(data["RemotePeer"]);
-            if (contact != null) {
-              contact.setAvailabilityStatus(data['Data']);
-            }
+          var contact = profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(data["RemotePeer"]);
+          if (contact != null) {
+            contact.setAvailabilityStatus(data['Data']);
           }
         } else {
           EnvironmentConfig.debugLog("unhandled ret val event: ${data['Path']}");

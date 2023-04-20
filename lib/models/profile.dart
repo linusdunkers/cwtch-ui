@@ -67,6 +67,7 @@ class ProfileInfoState extends ChangeNotifier {
         this._unreadMessages += contact["numUnread"] as int;
         return ContactInfoState(this.onion, contact["identifier"], contact["onion"],
             nickname: contact["name"],
+            localNickname: contact["localname"],
             status: contact["status"],
             imagePath: contact["picture"],
             defaultImagePath: contact["isGroup"] ? contact["picture"] : contact["defaultPicture"],
@@ -268,6 +269,7 @@ class ProfileInfoState extends ChangeNotifier {
       }
       this._downloads[fileKey]!.chunksDownloaded = progress;
       this._downloads[fileKey]!.chunksTotal = numChunks;
+      this._downloads[fileKey]!.markUpdate();
     }
     notifyListeners();
   }
@@ -277,6 +279,7 @@ class ProfileInfoState extends ChangeNotifier {
       this._downloads[fileKey] = FileDownloadProgress(1, DateTime.now());
     }
     this._downloads[fileKey]!.gotManifest = true;
+    this._downloads[fileKey]!.markUpdate();
     notifyListeners();
   }
 
@@ -301,6 +304,7 @@ class ProfileInfoState extends ChangeNotifier {
       this._downloads[fileKey]!.timeEnd = DateTime.now();
       this._downloads[fileKey]!.downloadedTo = finalPath;
       this._downloads[fileKey]!.complete = true;
+      this._downloads[fileKey]!.markUpdate();
       notifyListeners();
     }
   }
@@ -333,9 +337,13 @@ class ProfileInfoState extends ChangeNotifier {
           this._downloads[fileKey]!.interrupted = true;
           return true;
         }
+        if (DateTime.now().difference(this._downloads[fileKey]!.lastUpdate) > Duration(minutes: 1)) {
+          this._downloads[fileKey]!.requested = null;
+          this._downloads[fileKey]!.interrupted = true;
+          return true;
+        }
       }
     }
-
     return false;
   }
 
@@ -343,6 +351,7 @@ class ProfileInfoState extends ChangeNotifier {
     if (this._downloads.containsKey(fileKey)) {
       this._downloads[fileKey]!.interrupted = false;
       this._downloads[fileKey]!.requested = DateTime.now();
+      this._downloads[fileKey]!.markUpdate();
       notifyListeners();
     }
   }
