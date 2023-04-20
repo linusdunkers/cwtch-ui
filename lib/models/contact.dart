@@ -39,6 +39,7 @@ class ContactInfoState extends ChangeNotifier {
   final int identifier;
   final String onion;
   late String _nickname;
+  late String _localNickname;
 
   late ConversationNotificationPolicy _notificationPolicy;
 
@@ -73,6 +74,7 @@ class ContactInfoState extends ChangeNotifier {
     this.identifier,
     this.onion, {
     nickname = "",
+    localNickname = "",
     isGroup = false,
     accepted = false,
     blocked = false,
@@ -89,6 +91,7 @@ class ContactInfoState extends ChangeNotifier {
     pinned = false,
   }) {
     this._nickname = nickname;
+    this._localNickname = localNickname;
     this._isGroup = isGroup;
     this._accepted = accepted;
     this._blocked = blocked;
@@ -107,7 +110,13 @@ class ContactInfoState extends ChangeNotifier {
     keys = Map<String, GlobalKey<MessageRowState>>();
   }
 
-  String get nickname => this._nickname;
+  String get nickname {
+    if (this._localNickname != "") {
+      return this._localNickname;
+    }
+    return this._nickname;
+  }
+
   String get savePeerHistory => this._savePeerHistory;
 
   String? get acnCircuit => this._acnCircuit;
@@ -143,6 +152,11 @@ class ContactInfoState extends ChangeNotifier {
 
   set nickname(String newVal) {
     this._nickname = newVal;
+    notifyListeners();
+  }
+
+  set localNickname(String newVal) {
+    this._localNickname = newVal;
     notifyListeners();
   }
 

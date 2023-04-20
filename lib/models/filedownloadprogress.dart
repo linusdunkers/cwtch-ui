@@ -8,11 +8,16 @@ class FileDownloadProgress {
   DateTime? timeStart;
   DateTime? timeEnd;
   DateTime? requested;
+  DateTime lastUpdate = DateTime.now();
 
   FileDownloadProgress(this.chunksTotal, this.timeStart);
 
   double progress() {
     return 1.0 * chunksDownloaded / chunksTotal;
+  }
+
+  void markUpdate() {
+    lastUpdate = DateTime.now();
   }
 }
 
