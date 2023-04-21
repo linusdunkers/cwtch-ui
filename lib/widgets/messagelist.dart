@@ -1,3 +1,4 @@
+import 'package:cwtch/config.dart';
 import 'package:cwtch/models/appstate.dart';
 import 'package:cwtch/models/contact.dart';
 import 'package:cwtch/models/message.dart';

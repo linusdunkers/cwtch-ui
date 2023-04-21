@@ -81,7 +81,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
     Widget wdgReply = Platform.isAndroid
         ? SizedBox.shrink()
         : Visibility(
-            visible: EnvironmentConfig.TEST_MODE || Provider.of<AppState>(context).hoveredIndex == Provider.of<MessageMetadata>(context).messageID,
+            visible: EnvironmentConfig.TEST_MODE || Provider.of<ContactInfoState>(context).hoveredIndex == Provider.of<MessageMetadata>(context).messageID,
             maintainSize: true,
             maintainAnimation: true,
             maintainState: true,
@@ -106,7 +106,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
     Widget wdgSeeReplies = Platform.isAndroid
         ? SizedBox.shrink()
         : Visibility(
-            visible: EnvironmentConfig.TEST_MODE || Provider.of<AppState>(context).hoveredIndex == Provider.of<MessageMetadata>(context).messageID,
+            visible: EnvironmentConfig.TEST_MODE || Provider.of<ContactInfoState>(context).hoveredIndex == Provider.of<MessageMetadata>(context).messageID,
             maintainSize: true,
             maintainAnimation: true,
             maintainState: true,
@@ -128,8 +128,8 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
         : Visibility(
             visible: Provider.of<FlwtchState>(context, listen: false).cwtch.IsBlodeuweddSupported() &&
                 Provider.of<Settings>(context).isExperimentEnabled(BlodeuweddExperiment) &&
-                (EnvironmentConfig.TEST_MODE || Provider.of<AppState>(context).hoveredIndex == Provider.of<MessageMetadata>(context).messageID),
-            maintainSize: false,
+                (EnvironmentConfig.TEST_MODE || Provider.of<ContactInfoState>(context).hoveredIndex == Provider.of<MessageMetadata>(context).messageID),
+            maintainSize: true,
             maintainAnimation: true,
             maintainState: true,
             maintainInteractivity: false,
@@ -245,16 +245,12 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
     var mr = MouseRegion(
         // For desktop...
         onHover: (event) {
-          if (Provider.of<AppState>(context, listen: false).hoveredIndex != Provider.of<MessageMetadata>(context, listen: false).messageID) {
-            setState(() {
-              Provider.of<AppState>(context, listen: false).hoveredIndex = Provider.of<MessageMetadata>(context, listen: false).messageID;
-            });
+          if (Provider.of<ContactInfoState>(context, listen: false).hoveredIndex != Provider.of<MessageMetadata>(context, listen: false).messageID) {
+            Provider.of<ContactInfoState>(context, listen: false).hoveredIndex = Provider.of<MessageMetadata>(context, listen: false).messageID;
           }
         },
         onExit: (event) {
-          // setState(() {
-          //   Provider.of<AppState>(context, listen: false).hoveredIndex = -1;
-          //});
+          Provider.of<ContactInfoState>(context, listen: false).hoveredIndex = -1;
         },
         child: GestureDetector(
             onPanUpdate: (details) {
@@ -270,12 +266,16 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
             },
             onPanEnd: (details) {
               _runAnimation(details.velocity.pixelsPerSecond, size);
-              Provider.of<ContactInfoState>(context, listen: false).messageDraft.quotedReference = Provider.of<MessageMetadata>(context, listen: false).messageID;
-              Provider.of<ContactInfoState>(context, listen: false).notifyMessageDraftUpdate();
-              setState(() {});
+              if (Platform.isAndroid) {
+                Provider.of<ContactInfoState>(context, listen: false).messageDraft.quotedReference = Provider.of<MessageMetadata>(context, listen: false).messageID;
+                Provider.of<ContactInfoState>(context, listen: false).notifyMessageDraftUpdate();
+                setState(() {});
+              }
             },
             onLongPress: () async {
-              modalShowReplies(context, AppLocalizations.of(context)!.headingReplies, AppLocalizations.of(context)!.messageNoReplies, settings, pis, cis, borderColor, cache, messageID);
+              if (Platform.isAndroid) {
+                modalShowReplies(context, AppLocalizations.of(context)!.headingReplies, AppLocalizations.of(context)!.messageNoReplies, settings, pis, cis, borderColor, cache, messageID);
+              }
             },
             child: Padding(
                 padding: EdgeInsets.all(2),

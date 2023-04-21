@@ -39,6 +39,7 @@ class ContactInfoState extends ChangeNotifier {
   final int identifier;
   final String onion;
   late String _nickname;
+  late String _localNickname;
 
   late ConversationNotificationPolicy _notificationPolicy;
 
@@ -66,11 +67,14 @@ class ContactInfoState extends ChangeNotifier {
   String? _acnCircuit;
   MessageDraft _messageDraft = MessageDraft.empty();
 
+  var _hoveredIndex = -1;
+
   ContactInfoState(
     this.profileOnion,
     this.identifier,
     this.onion, {
     nickname = "",
+    localNickname = "",
     isGroup = false,
     accepted = false,
     blocked = false,
@@ -87,6 +91,7 @@ class ContactInfoState extends ChangeNotifier {
     pinned = false,
   }) {
     this._nickname = nickname;
+    this._localNickname = localNickname;
     this._isGroup = isGroup;
     this._accepted = accepted;
     this._blocked = blocked;
@@ -105,7 +110,13 @@ class ContactInfoState extends ChangeNotifier {
     keys = Map<String, GlobalKey<MessageRowState>>();
   }
 
-  String get nickname => this._nickname;
+  String get nickname {
+    if (this._localNickname != "") {
+      return this._localNickname;
+    }
+    return this._nickname;
+  }
+
   String get savePeerHistory => this._savePeerHistory;
 
   String? get acnCircuit => this._acnCircuit;
@@ -141,6 +152,11 @@ class ContactInfoState extends ChangeNotifier {
 
   set nickname(String newVal) {
     this._nickname = newVal;
+    notifyListeners();
+  }
+
+  set localNickname(String newVal) {
+    this._localNickname = newVal;
     notifyListeners();
   }
 
@@ -402,7 +418,15 @@ class ContactInfoState extends ChangeNotifier {
   }
 
   String augmentedNickname(BuildContext context) {
-    return this.nickname + (this.availabilityStatus == ProfileStatusMenu.available ? "" : " (" +this.statusString(context) +  ")");
+    return this.nickname + (this.availabilityStatus == ProfileStatusMenu.available ? "" : " (" + this.statusString(context) + ")");
+  }
+
+  // Never use this for message lookup - can be a non-indexed value
+  // e.g. -1
+  int get hoveredIndex => _hoveredIndex;
+  set hoveredIndex(int newVal) {
+    this._hoveredIndex = newVal;
+    notifyListeners();
   }
 
   String statusString(BuildContext context) {
