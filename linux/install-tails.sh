@@ -1,6 +1,7 @@
 #!/bin/sh
 
-INSTALL_PREFIX=$HOME/.local DESKTOP_PREFIX=$INSTALL_PREFIX ./install.sh
+INSTALL_PREFIX=$HOME/.local
+INSTALL_PREFIX=$INSTALL_PREFIX DESKTOP_PREFIX=$INSTALL_PREFIX ./install.sh
 
 # Add CWTCH_TAILS=true to run script
 sed -i "s|env LD|env CWTCH_TAILS=true LD|g" $INSTALL_PREFIX/bin/cwtch
