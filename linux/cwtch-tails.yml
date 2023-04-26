@@ -12,6 +12,7 @@
       - 'CIRC ORCONN INFO NOTICE WARN ERR HS_DESC HS_DESC_CONTENT'
     GETINFO:
       - 'net/listeners/socks'
+      - '.*'
     GETCONF:
       - 'DisableNetwork'
     SETCONF:
