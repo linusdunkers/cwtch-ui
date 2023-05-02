@@ -14,7 +14,7 @@ import 'package:flutter_local_notifications_linux/src/model/icon.dart';
 
 import 'package:path/path.dart' as path;
 
-import 'config.dart';
+import '../../config.dart';
 
 // NotificationsManager provides a wrapper around platform specific notifications logic.
 abstract class NotificationsManager {
