@@ -46,6 +46,11 @@ dependencies:
   win_toast: ^0.0.2
   flutter_local_notifications: ^9.6.1
   desktop_notifications: ^0.6.3
+  # network management plugins
+  dbus: ^0.7.0
+  connectivity_plus:
+    path: lib/third_party/connectivity_plus/connectivity_plus
+  # misc plugins
   qr_flutter: ^4.0.0
 
 dev_dependencies:

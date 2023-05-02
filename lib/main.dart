@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:cwtch/config.dart';
 import 'package:cwtch/notification_manager.dart';
@@ -29,6 +30,8 @@ import 'views/splashView.dart';
 import 'dart:io' show Platform, exit;
 import 'themes/opaque.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+
 
 import 'package:intl/intl.dart' as intl;
 
@@ -53,6 +56,8 @@ class Flwtch extends StatefulWidget {
   FlwtchState createState() => FlwtchState();
 }
 
+enum ConnectivityState { assumed_online, confirmed_offline, confirmed_online }
+
 class FlwtchState extends State<Flwtch> with WindowListener {
   final TextStyle biggerFont = const TextStyle(fontSize: 18);
   late Cwtch cwtch;
@@ -60,6 +65,8 @@ class FlwtchState extends State<Flwtch> with WindowListener {
   final MethodChannel notificationClickChannel = MethodChannel('im.cwtch.flwtch/notificationClickHandler');
   final MethodChannel shutdownMethodChannel = MethodChannel('im.cwtch.flwtch/shutdownClickHandler');
   final MethodChannel shutdownLinuxMethodChannel = MethodChannel('im.cwtch.linux.shutdown');
+  late StreamSubscription connectivityStream;
+  ConnectivityState connectivityState = ConnectivityState.assumed_online;
 
   final GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
 
@@ -99,6 +106,19 @@ class FlwtchState extends State<Flwtch> with WindowListener {
           new CwtchNotifier(profs, globalSettings, globalErrorHandler, globalTorStatus, newDesktopNotificationsManager(_notificationSelectConvo), globalAppState, globalServersList, this);
       cwtch = CwtchFfi(cwtchNotifier);
     }
+    connectivityStream = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+      // Got a new connectivity status!
+      if (result == ConnectivityResult.none) {
+        connectivityState = ConnectivityState.confirmed_offline;
+      } else {
+        // were we offline?
+        if (connectivityState == ConnectivityState.confirmed_offline) {
+          EnvironmentConfig.debugLog("Network appears to have come back online, restarting Tor");
+          cwtch.ResetTor();
+        }
+        connectivityState = ConnectivityState.confirmed_online;
+      }
+    });
     print("initState: invoking cwtch.Start()");
     cwtch.Start();
     print("initState: done!");
@@ -275,6 +295,7 @@ class FlwtchState extends State<Flwtch> with WindowListener {
     cwtch.Shutdown();
     windowManager.removeListener(this);
     cwtch.dispose();
+    connectivityStream.cancel();
     super.dispose();
   }
 }
