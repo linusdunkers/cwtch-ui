@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:dbus/dbus.dart';
 
@@ -311,6 +312,17 @@ class NetworkManagerClient {
   Future<void> connect() async {
     // Already connected
     if (_objectManagerSubscription != null) {
+      return;
+    }
+
+    // Big old grody Hack
+    // DBus/nm doesnt seem to offer a way to deter ine if dbus is available on system
+    // worse the first connections get triggered in dbus_client onListen an isn't a catahable exception so crashes the app
+    // this is a hacky way to force an exception on thread if dbus isn't available and bail with out crashing
+    try {
+      await _root.client.getNameOwner(_root.name);
+    } on SocketException catch (e) {
+      print("nm dbus connect/emit test threw exception, dbus likely unavailable on system, aborting connect: $e");
       return;
     }
 
