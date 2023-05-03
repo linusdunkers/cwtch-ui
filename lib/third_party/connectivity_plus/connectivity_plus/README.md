@@ -1,5 +1,7 @@
 # connectivity_plus
 
+- Open Privacy has updated this package to use local and stripped down version of `nm` package
+
 [![Flutter Community: connectivity_plus](https://fluttercommunity.dev/_github/header/connectivity_plus)](https://github.com/fluttercommunity/community)
 
 [![pub package](https://img.shields.io/pub/v/connectivity_plus.svg)](https://pub.dev/packages/connectivity_plus)

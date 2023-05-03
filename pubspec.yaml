@@ -47,7 +47,8 @@ dependencies:
   flutter_local_notifications: ^9.6.1
   desktop_notifications: ^0.6.3
   # network management plugins
-  dbus: ^0.7.0
+  # dbus >=0.7.5 depends on ffi ^2.0.0 and cwtch depends on ffi ^1.2.1, dbus >=0.7.5 is forbidden.
+  dbus: 0.7.4
   connectivity_plus:
     path: lib/third_party/connectivity_plus/connectivity_plus
   # misc plugins

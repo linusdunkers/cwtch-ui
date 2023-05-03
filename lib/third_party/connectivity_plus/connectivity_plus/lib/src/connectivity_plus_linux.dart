@@ -44,18 +44,7 @@ class ConnectivityPlusLinuxPlugin extends ConnectivityPlatform {
     if (client.connectivity != NetworkManagerConnectivityState.full) {
       return ConnectivityResult.none;
     }
-    if (client.primaryConnectionType.contains('wireless')) {
-      return ConnectivityResult.wifi;
-    }
-    if (client.primaryConnectionType.contains('ethernet')) {
-      return ConnectivityResult.ethernet;
-    }
-    if (client.primaryConnectionType.contains('vpn')) {
-      return ConnectivityResult.vpn;
-    }
-    if (client.primaryConnectionType.contains('bluetooth')) {
-      return ConnectivityResult.bluetooth;
-    }
+    // Open privacy update: we only need online/offline, so deleting type specificity
     return ConnectivityResult.mobile;
   }
 
