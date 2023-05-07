@@ -8,7 +8,8 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.4.2'
+        classpath 'com.android.tools.build:gradle:4.1.0'
+
     }
 }
 
@@ -21,10 +22,12 @@ rootProject.allprojects {
 
 apply plugin: 'com.android.library'
 
+
 android {
     compileSdkVersion 31
 
-    namespace 'dev.fluttercommunity.plus.connectivity'
+    // as third_party include, don't need seperate namespace
+    //namespace 'dev.fluttercommunity.plus.connectivity'
 
     compileOptions {
       sourceCompatibility JavaVersion.VERSION_1_8
@@ -33,9 +36,12 @@ android {
 
     defaultConfig {
         minSdkVersion 16
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        targetSdkVersion 31
+        //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     lintOptions {
         disable 'InvalidPackage'
+        abortOnError false
     }
+
 }
