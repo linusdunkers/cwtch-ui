@@ -722,6 +722,9 @@ String getLanguageFull(context, String languageCode, String? countryCode) {
   if (languageCode == "ko") {
     return AppLocalizations.of(context)!.localeKo;
   }
+  if (languageCode == "ja") {
+    return AppLocalizations.of(context)!.localeJa;
+  }
   return languageCode;
 }
 

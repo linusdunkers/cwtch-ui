@@ -46,6 +46,16 @@ class _MessageListState extends State<MessageList> {
     // With the message cache in place this is no longer necessary
     bool loadMessages = true;
 
+    var reconnectButton = Visibility(visible: isP2P, child: Padding(padding: EdgeInsets.all(2), child: Tooltip(
+      message: AppLocalizations.of(context)!.retryConnectionTooltip,
+        child:ElevatedButton(
+      style: ButtonStyle(padding: MaterialStateProperty.all(EdgeInsets.all(20))),
+      child: Text(AppLocalizations.of(context)!.retryConnection),
+      onPressed: () {
+        Provider.of<FlwtchState>(context, listen: false).cwtch.AttemptReconnection(Provider.of<ProfileInfoState>(context,listen: false).onion, Provider.of<ContactInfoState>(context, listen: false).onion);
+      },
+    ))));
+
     return RepaintBoundary(
         child: Container(
             color: Provider.of<Settings>(context).theme.backgroundMainColor,
@@ -60,8 +70,8 @@ class _MessageListState extends State<MessageList> {
                         child: showSyncing
                             ? Text(AppLocalizations.of(context)!.serverNotSynced, textAlign: TextAlign.center)
                             : showOfflineWarning
-                                ? Text(Provider.of<ContactInfoState>(context).isGroup ? AppLocalizations.of(context)!.serverConnectivityDisconnected : AppLocalizations.of(context)!.peerOfflineMessage,
-                                    textAlign: TextAlign.center)
+                                ? Column(crossAxisAlignment: CrossAxisAlignment.center, children: [Text(Provider.of<ContactInfoState>(context).isGroup ? AppLocalizations.of(context)!.serverConnectivityDisconnected : AppLocalizations.of(context)!.peerOfflineMessage,
+                                    textAlign: TextAlign.center),  reconnectButton])
                                 // Only show the ephemeral status for peer conversations, not for groups...
                                 : (showEphemeralWarning
                                     ? Text(AppLocalizations.of(context)!.chatHistoryDefault, textAlign: TextAlign.center)

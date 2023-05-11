@@ -1015,4 +1015,16 @@ class CwtchFfi implements Cwtch {
 
     return null;
   }
+
+  @override
+  void AttemptReconnection(String profile, String onion) {
+    // ignore: non_constant_identifier_names
+    var peerWithOnionC = library.lookup<NativeFunction<void_from_string_string_function>>("c_PeerWithOnion");
+    final PeerWithOnionF = peerWithOnionC.asFunction<VoidFromStringStringFn>();
+    final utf8profile = profile.toNativeUtf8();
+    final utf8onion = onion.toNativeUtf8();
+    PeerWithOnionF(utf8profile, utf8profile.length, utf8onion, utf8onion.length);
+    malloc.free(utf8profile);
+    malloc.free(utf8onion);
+  }
 }

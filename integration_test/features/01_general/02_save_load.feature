@@ -28,7 +28,9 @@ Feature: Settings pane opens and can save settings persistently
     And I expect the switch that contains the text "Streamer/Presentation Mode" to be checked
     And I expect the switch that contains the text "Enable Experiments" to be checked
     And I expect the switch that contains the text "Enable Group Chat" to be checked
-    And I expect the switch that contains the text "Hosting Servers" to be checked
+    # Not every version of Cwtch Supports Hosting Servers..
+    # Leaving this undeleted for future documentation / interest
+    # And I expect the switch that contains the text "Hosting Servers" to be checked
     And I expect the switch that contains the text "File Sharing" to be checked
     And I expect the switch that contains the text "Image Previews and Profile Pictures" to be checked
     And I expect the "DownloadFolderPicker" to be "/this/is/a/test"
@@ -43,7 +45,7 @@ Feature: Settings pane opens and can save settings persistently
     And I expect the switch that contains the text "Streamer/Presentation Mode" to be checked
     And I expect the switch that contains the text "Enable Experiments" to be checked
     And I expect the switch that contains the text "Enable Group Chat" to be checked
-    And I expect the switch that contains the text "Hosting Servers" to be checked
+    # And I expect the switch that contains the text "Hosting Servers" to be checked
     And I expect the switch that contains the text "File Sharing" to be checked
     And I expect the switch that contains the text "Image Previews and Profile Pictures" to be checked
     And I expect the "DownloadFolderPicker" to be "/this/is/a/test"

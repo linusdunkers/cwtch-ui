@@ -357,6 +357,14 @@ class MainActivity: FlutterActivity() {
                 return
             }
 
+            "PeerWithOnion" -> {
+                val profile: String = call.argument("ProfileOnion") ?: ""
+                val onion: String = call.argument("onion") ?: ""
+                result.success(Cwtch.peerWithOnion(profile, onion))
+                return
+            }
+
+
             "CreateProfile" -> {
                 val nick: String = call.argument("nick") ?: ""
                 val pass: String = call.argument("pass") ?: ""

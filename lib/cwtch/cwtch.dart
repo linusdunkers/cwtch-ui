@@ -41,6 +41,8 @@ abstract class Cwtch {
   // ignore: non_constant_identifier_names
   void UnblockContact(String profileOnion, int contactHandle);
 
+  void AttemptReconnection(String profileOnion, String onion);
+
   // ignore: non_constant_identifier_names
   Future<dynamic> GetMessage(String profile, int handle, int index);
 

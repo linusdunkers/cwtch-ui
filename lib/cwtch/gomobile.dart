@@ -406,4 +406,10 @@ class CwtchGomobile implements Cwtch {
     }
     return null;
   }
+
+  @override
+  void AttemptReconnection(String profile, String onion) {
+    cwtchPlatform.invokeMethod("PeerWithOnion", {"ProfileOnion": profile, "onion": onion});
+
+  }
 }

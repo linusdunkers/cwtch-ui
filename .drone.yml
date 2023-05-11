@@ -136,6 +136,8 @@ steps:
       - mv ./../sha512s.txt .
       - cd ..
       - scp -r -o StrictHostKeyChecking=no -i ~/id_rsa $DIR buildfiles@build.openprivacy.ca:/home/buildfiles/buildfiles/
+      - ./gen-nightly-index.sh $DIR
+      - scp -r -o StrictHostKeyChecking=no -i ~/id_rsa cwtch-nightly.html buildfiles@build.openprivacy.ca:/home/buildfiles/buildfiles/
 
   - name: notify-gogs
     image: openpriv/drone-gogs
