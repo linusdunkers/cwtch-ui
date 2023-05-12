@@ -10,8 +10,7 @@ import 'package:connectivity_plus_platform_interface/connectivity_plus_platform_
 export 'package:connectivity_plus_platform_interface/connectivity_plus_platform_interface.dart'
     show ConnectivityResult;
 
-export 'src/connectivity_plus_linux.dart'
-    if (dart.library.html) 'src/connectivity_plus_web.dart';
+export 'src/connectivity_plus_linux.dart';
 
 /// Discover network connectivity configurations: Distinguish between WI-FI and cellular, check WI-FI status and more.
 class Connectivity {

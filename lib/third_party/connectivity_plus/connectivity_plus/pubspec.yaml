@@ -21,9 +21,6 @@ flutter:
         dartPluginClass: ConnectivityPlusLinuxPlugin
       macos:
         pluginClass: ConnectivityPlugin
-      web:
-        pluginClass: ConnectivityPlusWebPlugin
-        fileName: src/connectivity_plus_web.dart
       windows:
         pluginClass: ConnectivityPlusWindowsPlugin
 
