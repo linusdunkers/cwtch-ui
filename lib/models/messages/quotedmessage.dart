@@ -45,8 +45,8 @@ class QuotedMessage extends Message {
                 linkifiers: [UrlLinkifier()],
                 onOpen: null,
                 textAlign: TextAlign.left,
-                style: TextStyle(overflow: TextOverflow.ellipsis),
-                codeStyle: TextStyle(overflow: TextOverflow.ellipsis),
+                style: TextStyle(fontSize: 12.0 * Provider.of<Settings>(context).fontScaling, fontWeight: FontWeight.normal, fontFamily: "Inter", overflow: TextOverflow.ellipsis),
+                codeStyle: TextStyle(fontSize: 12.0 * Provider.of<Settings>(context).fontScaling, fontWeight: FontWeight.normal, fontFamily: "Inter", overflow: TextOverflow.ellipsis),
                 textWidthBasis: TextWidthBasis.longestLine);
           } catch (e) {
             return MalformedBubble();

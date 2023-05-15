@@ -50,8 +50,7 @@ class _RemoteServerRowState extends State<RemoteServerRow> {
                     Text(
                       description,
                       semanticsLabel: description,
-                      style: Provider.of<FlwtchState>(context)
-                          .biggerFont
+                      style: TextStyle(fontFamily: "Inter", fontSize: 10.0 * Provider.of<Settings>(context).fontScaling, fontWeight: FontWeight.bold)
                           .apply(color: running ? Provider.of<Settings>(context).theme.portraitOnlineBorderColor : Provider.of<Settings>(context).theme.portraitOfflineBorderColor),
                       softWrap: true,
                       overflow: TextOverflow.ellipsis,

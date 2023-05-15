@@ -28,7 +28,11 @@ class _MessageBubbleDecoration extends State<MessageBubbleDecoration> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(prettyDate,
-                style: TextStyle(fontSize: 9.0, color: widget.fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor),
+                style: TextStyle(
+                    fontSize: 9.0 * Provider.of<Settings>(context).fontScaling,
+                    fontWeight: FontWeight.w200,
+                    fontFamily: "Inter",
+                    color: widget.fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor),
                 textAlign: widget.fromMe ? TextAlign.right : TextAlign.left),
             !widget.fromMe
                 ? SizedBox(width: 1, height: 1)

@@ -1,6 +1,8 @@
 {
     "@@locale": "cy",
-    "@@last_modified": "2023-05-11T23:17:05+02:00",
+    "@@last_modified": "2023-05-15T21:16:36+02:00",
+    "fontScalingDescription": "Adjust the relative font scaling factor applied to text and widgets.",
+    "defaultScalingText": "Testun maint rhagosodedig (ffactor graddfa:",
     "localeJa": "Japanese \/ 日本語",
     "retryConnectionTooltip": "Cwtch retries peers regularly, but you can tell Cwtch to try sooner by pushing this button.",
     "retryConnection": "Retry",
@@ -103,7 +105,6 @@
     "settingUIColumnLandscape": "Colofnau UI yn y Modd Tirwedd",
     "settingUIColumnPortrait": "Colofnau UI yn y Modd Portread",
     "addNewItem": "Ychwanegu eitem newydd at y rhestr",
-    "defaultScalingText": "Testun maint rhagosodedig (ffactor graddfa:",
     "zoomLabel": "Chwyddo rhyngwyneb (yn effeithio ar faint testun a botymau yn bennaf)",
     "torSettingsEnabledAdvancedDescription": "Defnyddiwch wasanaeth Tor presennol ar eich system, neu newidiwch baramedrau Gwasanaeth Cwtch Tor",
     "torSettingsCustomControlPortDescription": "Defnyddiwch borthladd wedi'i deilwra ar gyfer cysylltiadau rheoli i'r dirprwy Tor",

@@ -3,6 +3,7 @@ import 'package:cwtch/models/message.dart';
 import 'package:cwtch/models/profile.dart';
 import 'package:cwtch/widgets/malformedbubble.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../settings.dart';
 import 'messagebubbledecorations.dart';
@@ -39,7 +40,12 @@ class StaticMessageBubbleState extends State<StaticMessageBubble> {
       senderDisplayStr = widget.profile.nickname;
     }
 
-    var wdgSender = SelectableText(senderDisplayStr, style: TextStyle(fontSize: 9.0, color: fromMe ? widget.settings.theme.messageFromMeTextColor : widget.settings.theme.messageFromOtherTextColor));
+    var wdgSender = SelectableText(senderDisplayStr,
+        style: TextStyle(
+            fontSize: 9.0 * Provider.of<Settings>(context).fontScaling,
+            fontWeight: FontWeight.bold,
+            fontFamily: "Inter",
+            color: fromMe ? widget.settings.theme.messageFromMeTextColor : widget.settings.theme.messageFromOtherTextColor));
 
     var wdgDecorations = MessageBubbleDecoration(ackd: widget.metadata.ackd, errored: widget.metadata.error, fromMe: fromMe, messageDate: messageDate);
 

@@ -159,7 +159,9 @@ class _AddEditServerViewState extends State<AddEditServerView> {
                                     SizedBox(
                                       height: 20,
                                     ),
-                                    Text(AppLocalizations.of(context)!.serverMetricsLabel, style: Provider.of<FlwtchState>(context).biggerFont),
+                                    Text(
+                                      AppLocalizations.of(context)!.serverMetricsLabel,
+                                    ),
                                     Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                                       Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                                         Text(AppLocalizations.of(context)!.serverTotalMessagesLabel),

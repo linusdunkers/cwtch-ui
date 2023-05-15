@@ -110,7 +110,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                     child: Column(children: [
                       Row(mainAxisAlignment: MainAxisAlignment.center, children: [Text(AppLocalizations.of(context)!.settingsGroupAppearance, style: TextStyle(fontWeight: FontWeight.bold))]),
                       ListTile(
-                          title: Text(AppLocalizations.of(context)!.settingLanguage, style: TextStyle(color: settings.current().mainTextColor)),
+                          title: Text(AppLocalizations.of(context)!.settingLanguage),
                           leading: Icon(CwtchIcons.change_language, color: settings.current().mainTextColor),
                           trailing: Container(
                               width: MediaQuery.of(context).size.width / 4,
@@ -132,7 +132,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                     );
                                   }).toList()))),
                       SwitchListTile(
-                        title: Text(AppLocalizations.of(context)!.settingTheme, style: TextStyle(color: settings.current().mainTextColor)),
+                        title: Text(AppLocalizations.of(context)!.settingTheme),
                         value: settings.current().mode == mode_light,
                         onChanged: (bool value) {
                           if (value) {
@@ -171,7 +171,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                         leading: Icon(Icons.palette, color: settings.current().mainTextColor),
                       ),
                       ListTile(
-                          title: Text(AppLocalizations.of(context)!.settingUIColumnPortrait, style: TextStyle(color: settings.current().mainTextColor)),
+                          title: Text(AppLocalizations.of(context)!.settingUIColumnPortrait),
                           leading: Icon(Icons.table_chart, color: settings.current().mainTextColor),
                           trailing: Container(
                               width: MediaQuery.of(context).size.width / 4,
@@ -216,8 +216,30 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                           ),
                                         );
                                       }).toList())))),
+                      ListTile(
+                        title: Text(AppLocalizations.of(context)!.defaultScalingText),
+                        subtitle: Text(AppLocalizations.of(context)!.fontScalingDescription),
+                        trailing: Container(
+                            width: MediaQuery.of(context).size.width / 4,
+                            child: Slider(
+                                onChanged: (double value) {
+                                  settings.fontScaling = value;
+                                  // Save Settings...
+                                  saveSettings(context);
+                                  EnvironmentConfig.debugLog("Font Scaling: $value");
+                                },
+                                min: 0.5,
+                                divisions: 6,
+                                max: 2.0,
+                                activeColor: settings.current().defaultButtonColor,
+                                thumbColor: settings.current().mainTextColor,
+                                overlayColor: MaterialStateProperty.all(settings.current().mainTextColor),
+                                inactiveColor: settings.theme.defaultButtonDisabledColor,
+                                value: settings.fontScaling)),
+                        leading: Icon(Icons.format_size, color: settings.current().mainTextColor),
+                      ),
                       SwitchListTile(
-                        title: Text(AppLocalizations.of(context)!.streamerModeLabel, style: TextStyle(color: settings.current().mainTextColor)),
+                        title: Text(AppLocalizations.of(context)!.streamerModeLabel),
                         subtitle: Text(AppLocalizations.of(context)!.descriptionStreamerMode),
                         value: settings.streamerMode,
                         onChanged: (bool value) {
@@ -230,7 +252,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                         secondary: Icon(CwtchIcons.streamer_bunnymask, color: settings.current().mainTextColor),
                       ),
                       SwitchListTile(
-                        title: Text(AppLocalizations.of(context)!.formattingExperiment, style: TextStyle(color: settings.current().mainTextColor)),
+                        title: Text(AppLocalizations.of(context)!.formattingExperiment),
                         subtitle: Text(AppLocalizations.of(context)!.messageFormattingDescription),
                         value: settings.isExperimentEnabled(FormattingExperiment),
                         onChanged: (bool value) {
@@ -252,7 +274,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                       Visibility(
                         visible: Platform.isAndroid,
                         child: SwitchListTile(
-                          title: Text(AppLocalizations.of(context)!.settingAndroidPowerExemption, style: TextStyle(color: settings.current().mainTextColor)),
+                          title: Text(AppLocalizations.of(context)!.settingAndroidPowerExemption),
                           subtitle: Text(AppLocalizations.of(context)!.settingAndroidPowerExemptionDescription),
                           value: powerExempt,
                           onChanged: (bool value) {
@@ -315,7 +337,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                         leading: Icon(CwtchIcons.chat_bubble_empty_24px, color: settings.current().mainTextColor),
                       ),
                       SwitchListTile(
-                        title: Text(AppLocalizations.of(context)!.blockUnknownLabel, style: TextStyle(color: settings.current().mainTextColor)),
+                        title: Text(AppLocalizations.of(context)!.blockUnknownLabel),
                         subtitle: Text(AppLocalizations.of(context)!.descriptionBlockUnknownConnections),
                         value: settings.blockUnknownConnections,
                         onChanged: (bool value) {
@@ -337,7 +359,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                       ),
                       Row(mainAxisAlignment: MainAxisAlignment.center, children: [Text(AppLocalizations.of(context)!.settingsGroupExperiments, style: TextStyle(fontWeight: FontWeight.bold))]),
                       SwitchListTile(
-                        title: Text(AppLocalizations.of(context)!.experimentsEnabled, style: TextStyle(color: settings.current().mainTextColor)),
+                        title: Text(AppLocalizations.of(context)!.experimentsEnabled),
                         subtitle: Text(AppLocalizations.of(context)!.descriptionExperiments),
                         value: settings.experimentsEnabled,
                         onChanged: (bool value) {
@@ -358,7 +380,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                           child: Column(
                             children: [
                               SwitchListTile(
-                                title: Text(AppLocalizations.of(context)!.enableGroups, style: TextStyle(color: settings.current().mainTextColor)),
+                                title: Text(AppLocalizations.of(context)!.enableGroups),
                                 subtitle: Text(AppLocalizations.of(context)!.descriptionExperimentsGroups),
                                 value: settings.isExperimentEnabled(TapirGroupsExperiment),
                                 onChanged: (bool value) {
@@ -400,7 +422,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                     secondary: Icon(CwtchIcons.dns_24px),
                                   )),
                               SwitchListTile(
-                                title: Text(AppLocalizations.of(context)!.settingFileSharing, style: TextStyle(color: settings.current().mainTextColor)),
+                                title: Text(AppLocalizations.of(context)!.settingFileSharing),
                                 subtitle: Text(AppLocalizations.of(context)!.descriptionFileSharing),
                                 value: settings.isExperimentEnabled(FileSharingExperiment),
                                 onChanged: (bool value) {
@@ -425,7 +447,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                 visible: settings.isExperimentEnabled(FileSharingExperiment),
                                 child: Column(children: [
                                   SwitchListTile(
-                                    title: Text(AppLocalizations.of(context)!.settingImagePreviews, style: TextStyle(color: settings.current().mainTextColor)),
+                                    title: Text(AppLocalizations.of(context)!.settingImagePreviews),
                                     subtitle: Text(AppLocalizations.of(context)!.settingImagePreviewsDescription),
                                     value: settings.isExperimentEnabled(ImagePreviewsExperiment),
                                     onChanged: (bool value) {
@@ -461,7 +483,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                 ]),
                               ),
                               SwitchListTile(
-                                title: Text(AppLocalizations.of(context)!.blodeuweddExperimentEnable, style: TextStyle(color: settings.current().mainTextColor)),
+                                title: Text(AppLocalizations.of(context)!.blodeuweddExperimentEnable),
                                 subtitle: Provider.of<FlwtchState>(context, listen: false).cwtch.IsBlodeuweddSupported()
                                     ? Text(AppLocalizations.of(context)!.blodeuweddDescription)
                                     : Text(AppLocalizations.of(context)!.blodeuweddNotSupported),
@@ -500,7 +522,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                       Visibility(
                           visible: settings.experimentsEnabled,
                           child: SwitchListTile(
-                            title: Text(AppLocalizations.of(context)!.enableExperimentClickableLinks, style: TextStyle(color: settings.current().mainTextColor)),
+                            title: Text(AppLocalizations.of(context)!.enableExperimentClickableLinks),
                             subtitle: Text(AppLocalizations.of(context)!.experimentClickableLinksDescription),
                             value: settings.isExperimentEnabled(ClickableLinksExperiment),
                             onChanged: (bool value) {
@@ -518,7 +540,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                       Visibility(
                           visible: settings.experimentsEnabled,
                           child: SwitchListTile(
-                            title: Text(AppLocalizations.of(context)!.enableExperimentQRCode, style: TextStyle(color: settings.current().mainTextColor)),
+                            title: Text(AppLocalizations.of(context)!.enableExperimentQRCode),
                             subtitle: Text(AppLocalizations.of(context)!.experimentQRCodeDescription),
                             value: settings.isExperimentEnabled(QRCodeExperiment),
                             onChanged: (bool value) {
@@ -547,7 +569,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                           ]),
                       SwitchListTile(
                         // TODO: Translate, Remove, OR Hide Prior to Release
-                        title: Text("Show Performance Overlay", style: TextStyle(color: settings.current().mainTextColor)),
+                        title: Text("Show Performance Overlay"),
                         subtitle: Text("Display an overlay graph of render time."),
                         value: settings.profileMode,
                         onChanged: (bool value) {
@@ -566,7 +588,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                       Visibility(
                           visible: EnvironmentConfig.BUILD_VER == dev_version && !Platform.isAndroid,
                           child: SwitchListTile(
-                            title: Text("Show Semantic Debugger", style: TextStyle(color: settings.current().mainTextColor)),
+                            title: Text("Show Semantic Debugger"),
                             subtitle: Text("Show Accessibility Debugging View"),
                             value: settings.useSemanticDebugger,
                             onChanged: (bool value) {

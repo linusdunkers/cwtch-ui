@@ -57,7 +57,11 @@ class InvitationBubbleState extends State<InvitationBubble> {
     var wdgSender = Center(
         widthFactor: 1,
         child: SelectableText(senderDisplayStr + '\u202F',
-            style: TextStyle(fontSize: 9.0, color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor)));
+            style: TextStyle(
+                fontSize: 9.0 * Provider.of<Settings>(context).fontScaling,
+                fontWeight: FontWeight.bold,
+                fontFamily: "Inter",
+                color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor)));
 
     // If we receive an invite for ourselves, treat it as a bug. The UI no longer allows this so it could have only come from
     // some kind of malfeasance.

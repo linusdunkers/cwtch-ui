@@ -66,6 +66,7 @@ class Settings extends ChangeNotifier {
   bool _useTorCache = false;
   String _torCacheDir = "";
   bool _useSemanticDebugger = false;
+  double _fontScaling = 1.0;
 
   String get torCacheDir => _torCacheDir;
 
@@ -129,6 +130,9 @@ class Settings extends ChangeNotifier {
     // Set Locale and notify listeners
     switchLocaleByCode(settings["Locale"]);
 
+    // Decide whether to enable Experiments
+    _fontScaling = double.parse(settings["FontScaling"].toString()).clamp(0.5, 2.0);
+
     blockUnknownConnections = settings["BlockUnknownConnections"] ?? false;
     streamerMode = settings["StreamerMode"] ?? false;
 
@@ -179,6 +183,14 @@ class Settings extends ChangeNotifier {
       this.switchLocale(Locale(code[0], code[1]));
     }
   }
+
+  /// Handle Font Scaling
+  set fontScaling(double newFontScaling) {
+    this._fontScaling = newFontScaling;
+    notifyListeners();
+  }
+
+  double get fontScaling => _fontScaling;
 
   /// Switch the Locale of the App
   switchLocale(Locale newLocale) {
@@ -454,7 +466,8 @@ class Settings extends ChangeNotifier {
       "CustomAuth": _customTorAuth,
       "UseTorCache": _useTorCache,
       "TorCacheDir": _torCacheDir,
-      "BlodeuweddPath": _blodeuweddPath
+      "BlodeuweddPath": _blodeuweddPath,
+      "FontScaling": _fontScaling
     };
   }
 }

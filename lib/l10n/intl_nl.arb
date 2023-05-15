@@ -1,6 +1,8 @@
 {
     "@@locale": "nl",
-    "@@last_modified": "2023-05-11T23:17:05+02:00",
+    "@@last_modified": "2023-05-15T21:16:36+02:00",
+    "fontScalingDescription": "Adjust the relative font scaling factor applied to text and widgets.",
+    "defaultScalingText": "Standaardtekstgrootte (schaalfactor:",
     "localeJa": "Japanese \/ 日本語",
     "retryConnectionTooltip": "Cwtch retries peers regularly, but you can tell Cwtch to try sooner by pushing this button.",
     "retryConnection": "Retry",
@@ -61,7 +63,6 @@
     "serverAutostartDescription": "Bepaalt of de applicatie de server automatisch start bij het opstarten",
     "serverDescriptionDescription": "Je beschrijving van de server alleen voor persoonlijk beheer, zal nooit worden gedeeld",
     "membershipDescription": "Hieronder staat een lijst met gebruikers die berichten naar de groep hebben gestuurd. Deze lijst bevat mogelijk niet alle gebruikers die toegang hebben tot de groep.",
-    "defaultScalingText": "Standaardtekstgrootte (schaalfactor:",
     "fileSharingSettingsDownloadFolderTooltip": "Bladeren om een andere standaardmap voor gedownloade bestanden te selecteren.",
     "fileDownloadUnavailable": "Dit bestand lijkt niet beschikbaar om te downloaden. Het kan zijn dat de verzender downlaoden voor dit bestand heeft uitgeschakeld.",
     "errorDownloadDirectoryDoesNotExist": "Bestanden delen kan niet worden ingeschakeld omdat de downloadmap niet is ingesteld of is ingesteld op een map die niet bestaat.",

@@ -44,11 +44,15 @@ class QuotedMessageBubbleState extends State<QuotedMessageBubble> {
     }
 
     var wdgSender = Container(
-        height: 11,
+        height: 14 * Provider.of<Settings>(context).fontScaling,
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(),
         child: SelectableText(senderDisplayStr,
-            style: TextStyle(fontSize: 9.0, color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor)));
+            style: TextStyle(
+                fontSize: 9.0 * Provider.of<Settings>(context).fontScaling,
+                fontWeight: FontWeight.bold,
+                fontFamily: "Inter",
+                color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor)));
 
     var showClickableLinks = Provider.of<Settings>(context).isExperimentEnabled(ClickableLinksExperiment);
     var formatMessages = Provider.of<Settings>(context).isExperimentEnabled(FormattingExperiment);
@@ -66,10 +70,20 @@ class QuotedMessageBubbleState extends State<QuotedMessageBubble> {
       //key: Key(myKey),
       focusNode: _focus,
       style: TextStyle(
+        fontSize: 12.0 * Provider.of<Settings>(context).fontScaling,
+        fontWeight: FontWeight.normal,
+        fontFamily: "Inter",
         color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor,
       ),
-      linkStyle: TextStyle(color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor),
+      linkStyle: TextStyle(
+          fontSize: 12.0 * Provider.of<Settings>(context).fontScaling,
+          fontWeight: FontWeight.normal,
+          fontFamily: "Inter",
+          color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor),
       codeStyle: TextStyle(
+          fontSize: 12.0 * Provider.of<Settings>(context).fontScaling,
+          fontWeight: FontWeight.normal,
+          fontFamily: "RobotoMono",
           // note: these colors are flipped
           color: fromMe ? Provider.of<Settings>(context).theme.messageFromOtherTextColor : Provider.of<Settings>(context).theme.messageFromMeTextColor,
           backgroundColor: fromMe ? Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor : Provider.of<Settings>(context).theme.messageFromMeBackgroundColor),

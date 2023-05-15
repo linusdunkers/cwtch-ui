@@ -1,6 +1,8 @@
 {
     "@@locale": "da",
-    "@@last_modified": "2023-05-11T23:17:05+02:00",
+    "@@last_modified": "2023-05-15T21:16:36+02:00",
+    "fontScalingDescription": "Adjust the relative font scaling factor applied to text and widgets.",
+    "defaultScalingText": "Standard størrelse tekst (skaleringsfaktor:",
     "localeJa": "Japanese \/ 日本語",
     "retryConnectionTooltip": "Cwtch retries peers regularly, but you can tell Cwtch to try sooner by pushing this button.",
     "retryConnection": "Retry",
@@ -282,7 +284,6 @@
     "viewGroupMembershipTooltip": "Se gruppe-medlemsskab",
     "loadingTor": "Åbner Tor...",
     "smallTextLabel": "Lille",
-    "defaultScalingText": "Standard størrelse tekst (skaleringsfaktor:",
     "builddate": "Bygget den: %2",
     "version": "Version %1",
     "versionTor": "Version %1 med tor %2",

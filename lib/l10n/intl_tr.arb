@@ -1,6 +1,8 @@
 {
     "@@locale": "tr",
-    "@@last_modified": "2023-05-11T23:17:05+02:00",
+    "@@last_modified": "2023-05-15T21:16:36+02:00",
+    "fontScalingDescription": "Adjust the relative font scaling factor applied to text and widgets.",
+    "defaultScalingText": "Varsayılan metin boyutu (ölçek faktörü: ",
     "localeJa": "Japanese \/ 日本語",
     "retryConnectionTooltip": "Cwtch retries peers regularly, but you can tell Cwtch to try sooner by pushing this button.",
     "retryConnection": "Retry",
@@ -177,7 +179,6 @@
     "versionTor": "Sürüm %1 ve tor %2",
     "version": "Sürüm %1",
     "builddate": "Derlendiği tarih: %2",
-    "defaultScalingText": "Varsayılan metin boyutu (ölçek faktörü: ",
     "smallTextLabel": "Küçük",
     "loadingTor": "Tor yükleniyor...",
     "viewGroupMembershipTooltip": "Grup Üyeliğini Görüntüle",

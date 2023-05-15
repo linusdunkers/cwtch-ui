@@ -187,7 +187,12 @@ class _ContactsViewState extends State<ContactsView> {
                 ),
                 Expanded(
                     child: Text("%1 » %2".replaceAll("%1", Provider.of<ProfileInfoState>(context).nickname).replaceAll("%2", AppLocalizations.of(context)!.titleManageContacts),
-                        overflow: TextOverflow.ellipsis, style: TextStyle(color: Provider.of<Settings>(context).current().mainTextColor))),
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            color: Provider.of<Settings>(context).current().mainTextColor,
+                            fontFamily: "Inter",
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14.0 * Provider.of<Settings>(context).fontScaling))),
               ]),
               actions: getActions(context),
             ),
@@ -397,7 +402,7 @@ class _ContactsViewState extends State<ContactsView> {
                                         AppLocalizations.of(context)!.addContact,
                                         semanticsLabel: AppLocalizations.of(context)!.addContact,
                                         textAlign: TextAlign.center,
-                                        style: TextStyle(fontWeight: FontWeight.bold),
+                                        style: TextStyle(fontFamily: "Inter", fontSize: 10.0 * Provider.of<Settings>(context).fontScaling, fontWeight: FontWeight.bold),
                                       ),
                                       onPressed: () {
                                         _pushAddContact(false);
@@ -419,7 +424,7 @@ class _ContactsViewState extends State<ContactsView> {
                                       AppLocalizations.of(context)!.addServerTitle,
                                       semanticsLabel: AppLocalizations.of(context)!.addServerTitle,
                                       textAlign: TextAlign.center,
-                                      style: TextStyle(fontWeight: FontWeight.bold),
+                                      style: TextStyle(fontFamily: "Inter", fontSize: 10.0 * Provider.of<Settings>(context).fontScaling, fontWeight: FontWeight.bold),
                                     ),
                                     onPressed: groupsEnabled
                                         ? () {
@@ -444,7 +449,7 @@ class _ContactsViewState extends State<ContactsView> {
                                         AppLocalizations.of(context)!.createGroupTitle,
                                         semanticsLabel: AppLocalizations.of(context)!.createGroupTitle,
                                         textAlign: TextAlign.center,
-                                        style: TextStyle(fontWeight: FontWeight.bold),
+                                        style: TextStyle(fontFamily: "Inter", fontSize: 10.0 * Provider.of<Settings>(context).fontScaling, fontWeight: FontWeight.bold),
                                       ),
                                       onPressed: groupsEnabled
                                           ? () {

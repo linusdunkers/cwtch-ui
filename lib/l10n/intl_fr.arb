@@ -1,6 +1,8 @@
 {
     "@@locale": "fr",
-    "@@last_modified": "2023-05-11T23:17:05+02:00",
+    "@@last_modified": "2023-05-15T21:16:36+02:00",
+    "fontScalingDescription": "Adjust the relative font scaling factor applied to text and widgets.",
+    "defaultScalingText": "Taille par défaut du texte (échelle:",
     "localeJa": "Japanese \/ 日本語",
     "retryConnectionTooltip": "Cwtch retries peers regularly, but you can tell Cwtch to try sooner by pushing this button.",
     "retryConnection": "Retry",
@@ -359,7 +361,6 @@
     "notificationNewMessageFromPeer": "Nouveau message d'un contact !",
     "notificationNewMessageFromGroup": "Nouveau message dans un groupe !",
     "smallTextLabel": "Petit",
-    "defaultScalingText": "Taille par défaut du texte (échelle:",
     "largeTextLabel": "Large",
     "cwtchSettingsTitle": "Préférences Cwtch",
     "saveBtn": "Sauvegarder",

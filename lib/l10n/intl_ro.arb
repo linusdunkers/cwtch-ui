@@ -1,6 +1,8 @@
 {
     "@@locale": "ro",
-    "@@last_modified": "2023-05-11T23:17:05+02:00",
+    "@@last_modified": "2023-05-15T21:16:36+02:00",
+    "fontScalingDescription": "Adjust the relative font scaling factor applied to text and widgets.",
+    "defaultScalingText": "Dimensiunea implicită a textului (factor de scară:",
     "localeJa": "Japanese \/ 日本語",
     "retryConnectionTooltip": "Cwtch retries peers regularly, but you can tell Cwtch to try sooner by pushing this button.",
     "retryConnection": "Retry",
@@ -192,7 +194,6 @@
     "experimentsEnabled": "Activați experimentele",
     "versionTor": "Versiunea %1 cu tor %2",
     "version": "Versiunea %1",
-    "defaultScalingText": "Dimensiunea implicită a textului (factor de scară:",
     "smallTextLabel": "Mic",
     "loadingTor": "Se încarcă tor...",
     "viewGroupMembershipTooltip": "Vizualizați membrii grupului",
