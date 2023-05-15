@@ -226,9 +226,10 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                   settings.fontScaling = value;
                                   // Save Settings...
                                   saveSettings(context);
+                                  EnvironmentConfig.debugLog("Font Scaling: $value");
                                 },
-                                min: -1.0,
-                                divisions: 10,
+                                min: 0.5,
+                                divisions: 6,
                                 max: 2.0,
                                 activeColor: settings.current().defaultButtonColor,
                                 thumbColor: settings.current().mainTextColor,

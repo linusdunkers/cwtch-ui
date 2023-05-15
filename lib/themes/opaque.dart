@@ -120,7 +120,6 @@ abstract class OpaqueThemeType {
   get messageFromOtherTextColor => red;
 
   // Sizes
-
   double contactOnionTextSize() {
     return 18;
   }
@@ -154,9 +153,7 @@ ThemeData mkThemeData(Settings opaque) {
         iconTheme: IconThemeData(
           color: opaque.current().mainTextColor,
         ),
-        titleTextStyle: TextStyle(
-          color: opaque.current().mainTextColor,
-        ),
+        titleTextStyle: TextStyle(color: opaque.current().mainTextColor, fontSize: opaque.fontScaling * 18.0),
         actionsIconTheme: IconThemeData(
           color: opaque.current().mainTextColor,
         )),
@@ -186,6 +183,7 @@ ThemeData mkThemeData(Settings opaque) {
         )),
       ),
     ),
+
     scrollbarTheme: ScrollbarThemeData(isAlwaysShown: false, thumbColor: MaterialStateProperty.all(opaque.current().scrollbarDefaultColor)),
     tabBarTheme: TabBarTheme(
         labelColor: opaque.current().mainTextColor,
@@ -198,19 +196,22 @@ ThemeData mkThemeData(Settings opaque) {
           color: opaque.current().mainTextColor,
         )),
     textTheme: TextTheme(
-        headline1: TextStyle(color: opaque.current().mainTextColor),
-        headline2: TextStyle(color: opaque.current().mainTextColor),
-        headline3: TextStyle(color: opaque.current().mainTextColor),
-        headline4: TextStyle(color: opaque.current().mainTextColor),
-        headline5: TextStyle(color: opaque.current().mainTextColor),
-        headline6: TextStyle(color: opaque.current().mainTextColor),
-        bodyText1: TextStyle(color: opaque.current().mainTextColor),
-        bodyText2: TextStyle(color: opaque.current().mainTextColor),
-        subtitle1: TextStyle(color: opaque.current().mainTextColor),
-        subtitle2: TextStyle(color: opaque.current().mainTextColor),
-        caption: TextStyle(color: opaque.current().mainTextColor),
-        button: TextStyle(color: opaque.current().mainTextColor),
-        overline: TextStyle(color: opaque.current().mainTextColor)),
+      displayMedium: TextStyle(fontSize: opaque.fontScaling * 16.0, color: opaque.current().mainTextColor),
+      displaySmall: TextStyle(fontSize: opaque.fontScaling * 14.0, color: opaque.current().mainTextColor),
+      displayLarge: TextStyle(fontSize: opaque.fontScaling * 18.0, color: opaque.current().mainTextColor),
+      titleSmall: TextStyle(fontSize: opaque.fontScaling * 16.0, color: opaque.current().mainTextColor),
+      titleLarge: TextStyle(fontSize: opaque.fontScaling * 18.0, color: opaque.current().mainTextColor),
+      titleMedium: TextStyle(fontSize: opaque.fontScaling * 20.0, color: opaque.current().mainTextColor),
+      bodySmall: TextStyle(fontSize: opaque.fontScaling * 12.0, color: opaque.current().mainTextColor),
+      bodyMedium: TextStyle(fontSize: opaque.fontScaling * 14.0, color: opaque.current().mainTextColor),
+      bodyLarge: TextStyle(fontSize: opaque.fontScaling * 16.0, color: opaque.current().mainTextColor),
+      headlineSmall: TextStyle(fontSize: opaque.fontScaling * 24.0, color: opaque.current().mainTextColor),
+      headlineMedium: TextStyle(fontSize: opaque.fontScaling * 26.0, color: opaque.current().mainTextColor),
+      headlineLarge: TextStyle(fontSize: opaque.fontScaling * 28.0, color: opaque.current().mainTextColor),
+      labelSmall: TextStyle(fontSize: opaque.fontScaling * 14.0, color: opaque.current().mainTextColor),
+      labelLarge: TextStyle(fontSize: opaque.fontScaling * 16.0, color: opaque.current().mainTextColor),
+      labelMedium: TextStyle(fontSize: opaque.fontScaling * 18.0, color: opaque.current().mainTextColor),
+    ),
     switchTheme: SwitchThemeData(
       overlayColor: MaterialStateProperty.all(opaque.current().defaultButtonActiveColor),
       thumbColor: MaterialStateProperty.all(opaque.current().mainTextColor),

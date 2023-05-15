@@ -131,7 +131,7 @@ class Settings extends ChangeNotifier {
     switchLocaleByCode(settings["Locale"]);
 
     // Decide whether to enable Experiments
-    _fontScaling = double.parse(settings["FontScaling"].toString());
+    _fontScaling = double.parse(settings["FontScaling"].toString()).clamp(0.5, 2.0);
 
     blockUnknownConnections = settings["BlockUnknownConnections"] ?? false;
     streamerMode = settings["StreamerMode"] ?? false;
