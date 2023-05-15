@@ -32,7 +32,6 @@ import 'themes/opaque.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
-
 import 'package:intl/intl.dart' as intl;
 
 var globalSettings = Settings(Locale("en", ''), CwtchDark());
@@ -95,39 +94,15 @@ class FlwtchState extends State<Flwtch> with WindowListener {
     shutdownLinuxMethodChannel.setMethodCallHandler(shutdownDirect);
     print("initState: creating cwtchnotifier, ffi");
     if (Platform.isAndroid) {
-      var cwtchNotifier = new CwtchNotifier(
-          profs,
-          globalSettings,
-          globalErrorHandler,
-          globalTorStatus,
-          NullNotificationsManager(),
-          globalAppState,
-          globalServersList,
-          this);
+      var cwtchNotifier = new CwtchNotifier(profs, globalSettings, globalErrorHandler, globalTorStatus, NullNotificationsManager(), globalAppState, globalServersList, this);
       cwtch = CwtchGomobile(cwtchNotifier);
     } else if (Platform.isLinux) {
       var cwtchNotifier =
-      new CwtchNotifier(
-          profs,
-          globalSettings,
-          globalErrorHandler,
-          globalTorStatus,
-          newDesktopNotificationsManager(_notificationSelectConvo),
-          globalAppState,
-          globalServersList,
-          this);
+          new CwtchNotifier(profs, globalSettings, globalErrorHandler, globalTorStatus, newDesktopNotificationsManager(_notificationSelectConvo), globalAppState, globalServersList, this);
       cwtch = CwtchFfi(cwtchNotifier);
     } else {
       var cwtchNotifier =
-      new CwtchNotifier(
-          profs,
-          globalSettings,
-          globalErrorHandler,
-          globalTorStatus,
-          newDesktopNotificationsManager(_notificationSelectConvo),
-          globalAppState,
-          globalServersList,
-          this);
+          new CwtchNotifier(profs, globalSettings, globalErrorHandler, globalTorStatus, newDesktopNotificationsManager(_notificationSelectConvo), globalAppState, globalServersList, this);
       cwtch = CwtchFfi(cwtchNotifier);
     }
     startConnectivityListener();
@@ -139,7 +114,7 @@ class FlwtchState extends State<Flwtch> with WindowListener {
   // connectivity listening is an optional enhancement feature that tries to listen for OS events about the network
   // and if it detects coming back online, restarts the ACN/tor
   // gracefully fails and NOPs, as it's not a required functionality
-  startConnectivityListener() async  {
+  startConnectivityListener() async {
     try {
       connectivityStream = await Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
         // Got a new connectivity status!

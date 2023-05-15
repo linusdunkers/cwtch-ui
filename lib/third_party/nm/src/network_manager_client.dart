@@ -59,12 +59,10 @@ NetworkManagerConnectivityState _decodeConnectivityState(int value) {
 
 class _NetworkManagerInterface {
   final Map<String, DBusValue> properties;
-  final propertiesChangedStreamController =
-      StreamController<List<String>>.broadcast();
+  final propertiesChangedStreamController = StreamController<List<String>>.broadcast();
 
   /// Stream of property names as their values change.
-  Stream<List<String>> get propertiesChanged =>
-      propertiesChangedStreamController.stream;
+  Stream<List<String>> get propertiesChanged => propertiesChangedStreamController.stream;
 
   _NetworkManagerInterface(this.properties);
 
@@ -77,8 +75,7 @@ class _NetworkManagerInterface {
 class _NetworkManagerObject extends DBusRemoteObject {
   final interfaces = <String, _NetworkManagerInterface>{};
 
-  void updateInterfaces(
-      Map<String, Map<String, DBusValue>> interfacesAndProperties) {
+  void updateInterfaces(Map<String, Map<String, DBusValue>> interfacesAndProperties) {
     interfacesAndProperties.forEach((interfaceName, properties) {
       interfaces[interfaceName] = _NetworkManagerInterface(properties);
     });
@@ -100,8 +97,7 @@ class _NetworkManagerObject extends DBusRemoteObject {
     }
   }
 
-  void updateProperties(
-      String interfaceName, Map<String, DBusValue> changedProperties) {
+  void updateProperties(String interfaceName, Map<String, DBusValue> changedProperties) {
     var interface = interfaces[interfaceName];
     if (interface != null) {
       interface.updateProperties(changedProperties);
@@ -210,10 +206,7 @@ class _NetworkManagerObject extends DBusRemoteObject {
     if (value.signature != DBusSignature('as')) {
       return null;
     }
-    return (value as DBusArray)
-        .children
-        .map((e) => (e as DBusString).value)
-        .toList();
+    return (value as DBusArray).children.map((e) => (e as DBusString).value).toList();
   }
 
   /// Gets a cached object path property, or returns null if not present or not the correct type.
@@ -229,8 +222,7 @@ class _NetworkManagerObject extends DBusRemoteObject {
   }
 
   /// Gets a cached object path array property, or returns null if not present or not the correct type.
-  List<DBusObjectPath>? getObjectPathArrayProperty(
-      String interface, String name) {
+  List<DBusObjectPath>? getObjectPathArrayProperty(String interface, String name) {
     var value = getCachedProperty(interface, name);
     if (value == null) {
       return null;
@@ -238,15 +230,11 @@ class _NetworkManagerObject extends DBusRemoteObject {
     if (value.signature != DBusSignature('ao')) {
       return null;
     }
-    return (value as DBusArray)
-        .children
-        .map((e) => (e as DBusObjectPath))
-        .toList();
+    return (value as DBusArray).children.map((e) => (e as DBusObjectPath)).toList();
   }
 
   /// Gets a cached list of data property, or returns null if not present or not the correct type.
-  List<Map<String, dynamic>>? getDataListProperty(
-      String interface, String name) {
+  List<Map<String, dynamic>>? getDataListProperty(String interface, String name) {
     var value = getCachedProperty(interface, name);
     if (value == null) {
       return null;
@@ -261,22 +249,16 @@ class _NetworkManagerObject extends DBusRemoteObject {
           ));
     }
 
-    return (value as DBusArray)
-        .children
-        .map((value) => convertData(value))
-        .toList();
+    return (value as DBusArray).children.map((value) => convertData(value)).toList();
   }
 
-  _NetworkManagerObject(DBusClient client, DBusObjectPath path,
-      Map<String, Map<String, DBusValue>> interfacesAndProperties)
-      : super(client, name: 'org.freedesktop.NetworkManager', path: path) {
+  _NetworkManagerObject(DBusClient client, DBusObjectPath path, Map<String, Map<String, DBusValue>> interfacesAndProperties) : super(client, name: 'org.freedesktop.NetworkManager', path: path) {
     updateInterfaces(interfacesAndProperties);
   }
 }
 
 /// A client that connects to NetworkManager.
 class NetworkManagerClient {
-
   /// The bus this client is connected to.
   final DBusClient _bus;
   final bool _closeBus;
@@ -302,10 +284,7 @@ class NetworkManagerClient {
   }
 
   /// Stream of property names as their values change.
-  Stream<List<String>> get propertiesChanged =>
-      _manager?.interfaces[_managerInterfaceName]
-          ?.propertiesChangedStreamController.stream ??
-      Stream<List<String>>.empty();
+  Stream<List<String>> get propertiesChanged => _manager?.interfaces[_managerInterfaceName]?.propertiesChangedStreamController.stream ?? Stream<List<String>>.empty();
 
   /// Connects to the NetworkManager D-Bus objects.
   /// Must be called before accessing methods and properties.
@@ -333,8 +312,7 @@ class NetworkManagerClient {
         if (object != null) {
           object.updateInterfaces(signal.interfacesAndProperties);
         } else {
-          object = _NetworkManagerObject(
-              _bus, signal.changedPath, signal.interfacesAndProperties);
+          object = _NetworkManagerObject(_bus, signal.changedPath, signal.interfacesAndProperties);
           _objects[signal.changedPath] = object;
         }
       } else if (signal is DBusObjectManagerInterfacesRemovedSignal) {
@@ -351,8 +329,7 @@ class NetworkManagerClient {
       } else if (signal is DBusPropertiesChangedSignal) {
         var object = _objects[signal.path];
         if (object != null) {
-          object.updateProperties(
-              signal.propertiesInterface, signal.changedProperties);
+          object.updateProperties(signal.propertiesInterface, signal.changedProperties);
         }
       }
     });
@@ -360,8 +337,7 @@ class NetworkManagerClient {
     // Find all the objects exported.
     var objects = await _root.getManagedObjects();
     objects.forEach((objectPath, interfacesAndProperties) {
-      _objects[objectPath] =
-          _NetworkManagerObject(_bus, objectPath, interfacesAndProperties);
+      _objects[objectPath] = _NetworkManagerObject(_bus, objectPath, interfacesAndProperties);
     });
   }
 
@@ -376,8 +352,7 @@ class NetworkManagerClient {
 
   /// True is NetworkManager is still starting up.
   bool get startup {
-    return _manager?.getBooleanProperty(_managerInterfaceName, 'Startup') ??
-        false;
+    return _manager?.getBooleanProperty(_managerInterfaceName, 'Startup') ?? false;
   }
 
   /// The version of NetworkManager running.
@@ -387,20 +362,17 @@ class NetworkManagerClient {
 
   /// The result of the last connectivity check.
   NetworkManagerConnectivityState get connectivity {
-    var value =
-        _manager?.getUint32Property(_managerInterfaceName, 'Connectivity') ?? 0;
+    var value = _manager?.getUint32Property(_managerInterfaceName, 'Connectivity') ?? 0;
     return _decodeConnectivityState(value);
   }
 
   /// The overall networking state.
   NetworkManagerState get state {
-    var value =
-        _manager?.getUint32Property(_managerInterfaceName, 'State') ?? 0;
+    var value = _manager?.getUint32Property(_managerInterfaceName, 'State') ?? 0;
     return _decodeState(value);
   }
 
-  _NetworkManagerObject? get _manager =>
-      _objects[DBusObjectPath('/org/freedesktop/NetworkManager')];
+  _NetworkManagerObject? get _manager => _objects[DBusObjectPath('/org/freedesktop/NetworkManager')];
 
   /// Terminates all active connections. If a client remains unclosed, the Dart process may not terminate.
   Future<void> close() async {

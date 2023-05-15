@@ -1,6 +1,5 @@
 /// Connection status check result.
 enum ConnectivityResult {
-
   /// WiFi: Device connected via Wi-Fi
   wifi,
 

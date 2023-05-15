@@ -216,6 +216,27 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                           ),
                                         );
                                       }).toList())))),
+                      ListTile(
+                        title: Text(AppLocalizations.of(context)!.defaultScalingText, style: TextStyle(color: settings.current().mainTextColor)),
+                        subtitle: Text(AppLocalizations.of(context)!.defaultScalingText),
+                        trailing: Container(
+                            width: MediaQuery.of(context).size.width / 4,
+                            child: Slider(
+                                onChanged: (double value) {
+                                  settings.fontScaling = value;
+                                  // Save Settings...
+                                  saveSettings(context);
+                                },
+                                min: -1.0,
+                                divisions: 10,
+                                max: 2.0,
+                                activeColor: settings.current().defaultButtonColor,
+                                thumbColor: settings.current().mainTextColor,
+                                overlayColor: MaterialStateProperty.all(settings.current().mainTextColor),
+                                inactiveColor: settings.theme.defaultButtonDisabledColor,
+                                value: settings.fontScaling)),
+                        leading: Icon(Icons.format_size, color: settings.current().mainTextColor),
+                      ),
                       SwitchListTile(
                         title: Text(AppLocalizations.of(context)!.streamerModeLabel, style: TextStyle(color: settings.current().mainTextColor)),
                         subtitle: Text(AppLocalizations.of(context)!.descriptionStreamerMode),
