@@ -7,7 +7,7 @@ import Foundation
 
 import connectivity_plus
 import flutter_local_notifications
-import package_info_plus_macos
+import package_info_plus
 import path_provider_foundation
 import screen_retriever
 import url_launcher_macos

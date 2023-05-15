@@ -6,7 +6,6 @@ import 'package:cwtch/main.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:win_toast/win_toast.dart';
-import 'package:desktop_notifications/desktop_notifications.dart' as linux_notifications;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_local_notifications_linux/flutter_local_notifications_linux.dart';
 import 'package:flutter_local_notifications_linux/src/model/hint.dart';
@@ -33,9 +32,10 @@ class WindowsNotificationManager implements NotificationsManager {
   bool active = false;
   bool initialized = false;
 
+  // TODO This needs testing and redefining...
   WindowsNotificationManager() {
     scheduleMicrotask(() async {
-      initialized = await WinToast.instance().initialize(appName: 'cwtch', productName: 'Cwtch', companyName: 'Open Privacy Research Society');
+      initialized = await WinToast.instance().initialize(clsid: 'cwtch', displayName: 'Cwtch', aumId: 'Open Privacy Research Society', iconPath: '');
     });
   }
 
@@ -43,14 +43,14 @@ class WindowsNotificationManager implements NotificationsManager {
     if (initialized && !globalAppState.focus) {
       if (!active) {
         active = true;
-        WinToast.instance().clear();
-        final toast = await WinToast.instance().showToast(type: ToastType.text01, title: message);
-        toast?.eventStream.listen((event) {
-          if (event is ActivatedEvent) {
-            WinToast.instance().bringWindowToFront();
-          }
+       // WinToast.instance().clear();
+        //final toast = await WinToast.instance().showToast(toast: Toast(children: ,type: ToastType.text01, title: message));
+        //toast?.eventStream.listen((event) {
+        //  if (event is ActivatedEvent) {
+         //   WinToast.instance().bringWindowToFront();
+         // }
           active = false;
-        });
+       // });
       }
     }
   }
@@ -113,12 +113,12 @@ class NixNotificationManager implements NotificationsManager {
         linuxAssetsPath = "";
       }
 
-      final MacOSInitializationSettings initializationSettingsMacOS = MacOSInitializationSettings(defaultPresentSound: false);
+
       var linuxIcon = FilePathLinuxIcon(path.join(linuxAssetsPath, 'assets/knott.png'));
 
       final LinuxInitializationSettings initializationSettingsLinux = LinuxInitializationSettings(defaultActionName: 'Open notification', defaultIcon: linuxIcon, defaultSuppressSound: true);
 
-      final InitializationSettings initializationSettings = InitializationSettings(android: null, iOS: null, macOS: initializationSettingsMacOS, linux: initializationSettingsLinux);
+      final InitializationSettings initializationSettings = InitializationSettings(android: null, iOS: null, macOS: DarwinInitializationSettings(defaultPresentSound: false), linux: initializationSettingsLinux);
 
       flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<MacOSFlutterLocalNotificationsPlugin>()?.requestPermissions(
             alert: true,
@@ -126,7 +126,7 @@ class NixNotificationManager implements NotificationsManager {
             sound: false,
           );
 
-      await flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: selectNotification);
+      await flutterLocalNotificationsPlugin.initialize(initializationSettings, );
     });
   }
 
@@ -138,7 +138,7 @@ class NixNotificationManager implements NotificationsManager {
           message,
           '',
           NotificationDetails(
-              linux: LinuxNotificationDetails(suppressSound: true, category: LinuxNotificationCategory.imReceived(), icon: FilePathLinuxIcon(path.join(linuxAssetsPath, 'assets/knott.png')))),
+              linux: LinuxNotificationDetails(suppressSound: true, category: LinuxNotificationCategory.imReceived, icon: FilePathLinuxIcon(path.join(linuxAssetsPath, 'assets/knott.png')))),
           payload: jsonEncode(NotificationPayload(profile, conversationId)));
     }
   }

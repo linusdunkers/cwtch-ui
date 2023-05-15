@@ -18,13 +18,13 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.11.0+37
 
 environment:
-  sdk: ">=2.17.0 <3.0.0"
+  sdk: ">=2.17.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   provider: ^6.0.3
-  package_info_plus: ^1.0.0
+  package_info_plus: ^4.0.0
   #intl_translation: any
   flutter_localizations:
     sdk: flutter
@@ -32,24 +32,21 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.0
-  # Todo: upgrade to 2.x, allow other package upgrades (dbus)
-  ffi: ^1.2.1
+  ffi: ^2.0.2
   path_provider: ^2.0.0
+  # Todo: upgrade to 3.0.3 when integration test is upgraded in flutter gherkin
+  # Note: This is a non-urgent upgrade as 3.0.3 is only a dart version bump
   crypto: ^3.0.2
 
   glob: any
   scrollable_positioned_list: ^0.3.2
-  file_picker: ^4.3.2
-  file_picker_desktop: ^1.1.1
+  file_picker: ^5.3.0
   url_launcher: ^6.0.18
-  window_manager: ^0.2.8
+  window_manager: ^0.3.2
   # notification plugins
-  win_toast: ^0.0.2
-  flutter_local_notifications: ^9.6.1
-  desktop_notifications: ^0.6.3
-  # network management plugins
-  # dbus >=0.7.5 depends on ffi ^2.0.0 and cwtch depends on ffi ^1.2.1, dbus >=0.7.5 is forbidden.
-  dbus: 0.7.4
+  win_toast: ^0.3.0
+  flutter_local_notifications: ^14.0.0+2
+  dbus: ^0.7.8
   connectivity_plus:
     path: lib/third_party/connectivity_plus/connectivity_plus
   # misc plugins

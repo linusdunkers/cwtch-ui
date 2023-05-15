@@ -13,6 +13,7 @@ package-lock.json
 libCwtch*
 cwtch.aar
 node_modules
+test_home
 
 # IntelliJ related
 *.iml

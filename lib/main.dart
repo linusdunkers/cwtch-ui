@@ -84,7 +84,7 @@ class FlwtchState extends State<Flwtch> with WindowListener {
 
     print("initState: running...");
     windowManager.addListener(this);
-    super.initState();
+
 
     print("initState: registering notification, shutdown handlers...");
     profs = ProfileListState();
@@ -108,6 +108,7 @@ class FlwtchState extends State<Flwtch> with WindowListener {
     print("initState: invoking cwtch.Start()");
     cwtch.Start();
     print("initState: done!");
+    super.initState();
   }
 
   // connectivity listening is an optional enhancement feature that tries to listen for OS events about the network

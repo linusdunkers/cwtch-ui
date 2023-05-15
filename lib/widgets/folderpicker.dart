@@ -1,12 +1,7 @@
-import 'package:cwtch/config.dart';
 import 'package:cwtch/controllers/filesharing.dart';
-import 'package:cwtch/cwtch_icons_icons.dart';
 import 'package:cwtch/models/appstate.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'dart:io';
-
-import 'package:file_picker_desktop/file_picker_desktop.dart';
 import 'package:provider/provider.dart';
 import '../settings.dart';
 import 'buttontextfield.dart';

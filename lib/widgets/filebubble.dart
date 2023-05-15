@@ -8,7 +8,7 @@ import 'package:cwtch/models/filedownloadprogress.dart';
 import 'package:cwtch/models/message.dart';
 import 'package:cwtch/models/profile.dart';
 import 'package:cwtch/widgets/malformedbubble.dart';
-import 'package:file_picker_desktop/file_picker_desktop.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -278,8 +278,9 @@ class FileBubbleState extends State<FileBubble> {
       }
     } else {
       try {
-        selectedFileName = await saveFile(
-          defaultFileName: widget.nameSuggestion,
+        selectedFileName = await  FilePicker.platform.saveFile(
+          fileName: widget.nameSuggestion,
+          lockParentWindow: true,
         );
         if (selectedFileName != null) {
           file = File(selectedFileName);
