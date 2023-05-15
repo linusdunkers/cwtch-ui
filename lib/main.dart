@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:cwtch/config.dart';
 import 'package:cwtch/notification_manager.dart';
@@ -29,6 +30,8 @@ import 'views/splashView.dart';
 import 'dart:io' show Platform, exit;
 import 'themes/opaque.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+
 
 import 'package:intl/intl.dart' as intl;
 
@@ -53,6 +56,8 @@ class Flwtch extends StatefulWidget {
   FlwtchState createState() => FlwtchState();
 }
 
+enum ConnectivityState { assumed_online, confirmed_offline, confirmed_online }
+
 class FlwtchState extends State<Flwtch> with WindowListener {
   final TextStyle biggerFont = const TextStyle(fontSize: 18);
   late Cwtch cwtch;
@@ -60,6 +65,8 @@ class FlwtchState extends State<Flwtch> with WindowListener {
   final MethodChannel notificationClickChannel = MethodChannel('im.cwtch.flwtch/notificationClickHandler');
   final MethodChannel shutdownMethodChannel = MethodChannel('im.cwtch.flwtch/shutdownClickHandler');
   final MethodChannel shutdownLinuxMethodChannel = MethodChannel('im.cwtch.linux.shutdown');
+  late StreamSubscription? connectivityStream;
+  ConnectivityState connectivityState = ConnectivityState.assumed_online;
 
   final GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
 
@@ -88,20 +95,72 @@ class FlwtchState extends State<Flwtch> with WindowListener {
     shutdownLinuxMethodChannel.setMethodCallHandler(shutdownDirect);
     print("initState: creating cwtchnotifier, ffi");
     if (Platform.isAndroid) {
-      var cwtchNotifier = new CwtchNotifier(profs, globalSettings, globalErrorHandler, globalTorStatus, NullNotificationsManager(), globalAppState, globalServersList, this);
+      var cwtchNotifier = new CwtchNotifier(
+          profs,
+          globalSettings,
+          globalErrorHandler,
+          globalTorStatus,
+          NullNotificationsManager(),
+          globalAppState,
+          globalServersList,
+          this);
       cwtch = CwtchGomobile(cwtchNotifier);
     } else if (Platform.isLinux) {
       var cwtchNotifier =
-          new CwtchNotifier(profs, globalSettings, globalErrorHandler, globalTorStatus, newDesktopNotificationsManager(_notificationSelectConvo), globalAppState, globalServersList, this);
+      new CwtchNotifier(
+          profs,
+          globalSettings,
+          globalErrorHandler,
+          globalTorStatus,
+          newDesktopNotificationsManager(_notificationSelectConvo),
+          globalAppState,
+          globalServersList,
+          this);
       cwtch = CwtchFfi(cwtchNotifier);
     } else {
       var cwtchNotifier =
-          new CwtchNotifier(profs, globalSettings, globalErrorHandler, globalTorStatus, newDesktopNotificationsManager(_notificationSelectConvo), globalAppState, globalServersList, this);
+      new CwtchNotifier(
+          profs,
+          globalSettings,
+          globalErrorHandler,
+          globalTorStatus,
+          newDesktopNotificationsManager(_notificationSelectConvo),
+          globalAppState,
+          globalServersList,
+          this);
       cwtch = CwtchFfi(cwtchNotifier);
     }
+    startConnectivityListener();
     print("initState: invoking cwtch.Start()");
     cwtch.Start();
     print("initState: done!");
+  }
+
+  // connectivity listening is an optional enhancement feature that tries to listen for OS events about the network
+  // and if it detects coming back online, restarts the ACN/tor
+  // gracefully fails and NOPs, as it's not a required functionality
+  startConnectivityListener() async  {
+    try {
+      connectivityStream = await Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+        // Got a new connectivity status!
+        if (result == ConnectivityResult.none) {
+          connectivityState = ConnectivityState.confirmed_offline;
+        } else {
+          // were we offline?
+          if (connectivityState == ConnectivityState.confirmed_offline) {
+            EnvironmentConfig.debugLog("Network appears to have come back online, restarting Tor");
+            cwtch.ResetTor();
+          }
+          connectivityState = ConnectivityState.confirmed_online;
+        }
+      }, onError: (Object error) {
+        print("Error listening to connectivity for network state: {$error}");
+        return null;
+      }, cancelOnError: true);
+    } catch (e) {
+      print("Warning: Unable to open connectivity for listening to network state: {$e}");
+      connectivityStream = null;
+    }
   }
 
   ChangeNotifierProvider<TorStatus> getTorStatusProvider() => ChangeNotifierProvider.value(value: globalTorStatus);
@@ -275,6 +334,7 @@ class FlwtchState extends State<Flwtch> with WindowListener {
     cwtch.Shutdown();
     windowManager.removeListener(this);
     cwtch.dispose();
+    connectivityStream?.cancel();
     super.dispose();
   }
 }
