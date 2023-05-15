@@ -40,7 +40,7 @@ dependencies:
 
   glob: any
   scrollable_positioned_list: ^0.3.2
-  file_picker: ^5.3.0
+  file_picker: 5.2.11
   url_launcher: ^6.0.18
   window_manager: ^0.3.2
   # notification plugins
@@ -53,13 +53,13 @@ dependencies:
   qr_flutter: ^4.0.0
 
 dev_dependencies:
-  msix: ^3.6.2
+  msix: ^3.12.2
   build_runner: any
   flutter_gherkin:
-    #path: ./flutter_gherkin
-    git:
-      url: https://git.openprivacy.ca/openprivacy/flutter_gherkin
-      ref: main
+    path: ./flutter_gherkin
+   # git:
+    #  url: https://git.openprivacy.ca/openprivacy/flutter_gherkin
+   #   ref: main
 
 # Uncomment to update lokalise translations (see README for list of deps to comment out bc incompatibilities)
 #dev_dependencies:

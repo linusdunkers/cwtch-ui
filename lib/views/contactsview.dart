@@ -472,7 +472,7 @@ class _ContactsViewState extends State<ContactsView> {
       builder: (BuildContext context) {
         return Wrap(children: <Widget>[
           Center(
-            child: QrImage(
+            child: QrImageView(
               data: profile_code,
               version: QrVersions.auto,
               size: 400.0,
