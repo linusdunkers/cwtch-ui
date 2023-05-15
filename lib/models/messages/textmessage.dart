@@ -31,8 +31,12 @@ class TextMessage extends Message {
             linkifiers: [UrlLinkifier()],
             onOpen: null,
             textAlign: TextAlign.left,
-            style: TextStyle(overflow: TextOverflow.fade),
-            codeStyle: TextStyle(overflow: TextOverflow.ellipsis),
+            style: TextStyle(overflow: TextOverflow.fade, fontFamily: "Inter", fontSize: 12.0 * Provider.of<Settings>(context).fontScaling),
+            linkStyle: TextStyle(overflow: TextOverflow.fade, fontFamily: "Inter", fontSize: 12.0 * Provider.of<Settings>(context).fontScaling),
+            codeStyle: TextStyle(
+              overflow: TextOverflow.ellipsis,
+              fontFamily: "RobotoMono",
+            ),
             textWidthBasis: TextWidthBasis.parent,
           );
         });

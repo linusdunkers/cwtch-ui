@@ -138,7 +138,7 @@ class FileBubbleState extends State<FileBubble> {
       return Row(
         children: [
           Icon(CwtchIcons.attached_file_2, size: 32, color: Provider.of<Settings>(context).theme.messageFromMeTextColor),
-          Flexible(child: Text(widget.nameSuggestion, style: TextStyle(color: Provider.of<Settings>(context).theme.messageFromMeTextColor)))
+          Flexible(child: Text(widget.nameSuggestion, style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Inter", color: Provider.of<Settings>(context).theme.messageFromMeTextColor)))
         ],
       );
     }
@@ -147,11 +147,15 @@ class FileBubbleState extends State<FileBubble> {
       var wdgSender = Visibility(
           visible: widget.interactive,
           child: Container(
-              height: 11,
+              height: 14 * Provider.of<Settings>(context).fontScaling,
               clipBehavior: Clip.hardEdge,
               decoration: BoxDecoration(),
               child: SelectableText(senderDisplayStr + '\u202F',
-                  style: TextStyle(fontSize: 9.0, color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor))));
+                  style: TextStyle(
+                      fontSize: 9.0 * Provider.of<Settings>(context).fontScaling,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: "Inter",
+                      color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor))));
       var isPreview = false;
       var wdgMessage = !showFileSharing
           ? Text(AppLocalizations.of(context)!.messageEnableFileSharing)
@@ -310,6 +314,9 @@ class FileBubbleState extends State<FileBubble> {
             chrome + '\u202F',
             style: TextStyle(
               color: Provider.of<Settings>(context).theme.messageFromMeTextColor,
+              fontWeight: FontWeight.normal,
+              fontFamily: "Inter",
+              fontSize: 12 * Provider.of<Settings>(context).fontScaling,
             ),
             textAlign: TextAlign.left,
             maxLines: 2,
@@ -321,6 +328,8 @@ class FileBubbleState extends State<FileBubble> {
               color: Provider.of<Settings>(context).theme.messageFromMeTextColor,
               fontWeight: FontWeight.bold,
               overflow: TextOverflow.ellipsis,
+              fontFamily: "Inter",
+              fontSize: 12 * Provider.of<Settings>(context).fontScaling,
             ),
             textAlign: TextAlign.left,
             textWidthBasis: TextWidthBasis.parent,
@@ -330,6 +339,8 @@ class FileBubbleState extends State<FileBubble> {
             prettyBytes(fileSize) + '\u202F' + '\n',
             style: TextStyle(
               color: Provider.of<Settings>(context).theme.messageFromMeTextColor,
+              fontSize: 10 * Provider.of<Settings>(context).fontScaling,
+              fontFamily: "Inter",
             ),
             textAlign: TextAlign.left,
             maxLines: 2,
@@ -339,8 +350,8 @@ class FileBubbleState extends State<FileBubble> {
           'sha512: ' + rootHash + '\u202F',
           style: TextStyle(
             color: Provider.of<Settings>(context).theme.messageFromMeTextColor,
-            fontSize: 10,
-            fontFamily: "monospace",
+            fontSize: 10 * Provider.of<Settings>(context).fontScaling,
+            fontFamily: "RobotoMono",
           ),
           textAlign: TextAlign.left,
           maxLines: 4,
@@ -358,6 +369,8 @@ class FileBubbleState extends State<FileBubble> {
           chrome + '\u202F',
           style: TextStyle(
             color: Provider.of<Settings>(context).theme.messageFromOtherTextColor,
+            fontSize: 12 * Provider.of<Settings>(context).fontScaling,
+            fontFamily: "Inter",
           ),
           textAlign: TextAlign.left,
           maxLines: 2,
@@ -369,6 +382,7 @@ class FileBubbleState extends State<FileBubble> {
             color: Provider.of<Settings>(context).theme.messageFromOtherTextColor,
             fontWeight: FontWeight.bold,
             overflow: TextOverflow.ellipsis,
+            fontFamily: "Inter",
           ),
           textAlign: TextAlign.left,
           textWidthBasis: TextWidthBasis.parent,
@@ -378,6 +392,8 @@ class FileBubbleState extends State<FileBubble> {
           AppLocalizations.of(context)!.labelFilesize + ': ' + prettyBytes(fileSize) + '\u202F' + '\n',
           style: TextStyle(
             color: Provider.of<Settings>(context).theme.messageFromOtherTextColor,
+            fontFamily: "Inter",
+            fontSize: 10 * Provider.of<Settings>(context).fontScaling,
           ),
           textAlign: TextAlign.left,
           maxLines: 2,
@@ -387,8 +403,8 @@ class FileBubbleState extends State<FileBubble> {
         'sha512: ' + rootHash + '\u202F',
         style: TextStyle(
           color: Provider.of<Settings>(context).theme.messageFromMeTextColor,
-          fontSize: 10,
-          fontFamily: "monospace",
+          fontSize: 10 * Provider.of<Settings>(context).fontScaling,
+          fontFamily: "RobotoMono",
         ),
         textAlign: TextAlign.left,
         maxLines: 4,
@@ -401,6 +417,8 @@ class FileBubbleState extends State<FileBubble> {
             speed + '\u202F',
             style: TextStyle(
               color: Provider.of<Settings>(context).theme.messageFromMeTextColor,
+              fontFamily: "Inter",
+              fontSize: 10 * Provider.of<Settings>(context).fontScaling,
             ),
             textAlign: TextAlign.left,
             maxLines: 1,

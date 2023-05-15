@@ -68,7 +68,9 @@ class _ContactRowState extends State<ContactRow> {
                               contact.augmentedNickname(context) + (contact.messageDraft.isEmpty() ? "" : "*"),
 
                               style: TextStyle(
-                                  fontSize: Provider.of<Settings>(context).theme.contactOnionTextSize(),
+                                  fontSize: Provider.of<Settings>(context).fontScaling * 14.0,
+                                  fontFamily: "Inter",
+                                  fontWeight: FontWeight.bold,
                                   color: contact.isBlocked
                                       ? Provider.of<Settings>(context).theme.portraitBlockedTextColor
                                       : Provider.of<Settings>(context).theme.mainTextColor), //Provider.of<FlwtchState>(context).biggerFont,

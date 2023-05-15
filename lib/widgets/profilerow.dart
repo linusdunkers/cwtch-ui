@@ -51,7 +51,7 @@ class _ProfileRowState extends State<ProfileRow> {
                       child: Text(
                         profile.nickname,
                         semanticsLabel: profile.nickname,
-                        style: Provider.of<FlwtchState>(context).biggerFont,
+                        style: TextStyle(fontFamily: "Inter", fontSize: 18.0 * Provider.of<Settings>(context).fontScaling, fontWeight: FontWeight.bold),
                         softWrap: true,
                         overflow: TextOverflow.ellipsis,
                       )),

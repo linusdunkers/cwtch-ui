@@ -131,7 +131,7 @@ class _RemoteServerViewState extends State<RemoteServerView> {
         child: Column(children: [
           Text(
             group.nickname,
-            style: Provider.of<FlwtchState>(context).biggerFont.apply(color: Provider.of<Settings>(context).theme.portraitOnlineBorderColor),
+            style: TextStyle(fontWeight: FontWeight.bold, color: Provider.of<Settings>(context).theme.portraitOnlineBorderColor),
             softWrap: true,
             overflow: TextOverflow.ellipsis,
           ),

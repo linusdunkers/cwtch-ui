@@ -235,6 +235,7 @@ class _MessageViewState extends State<MessageView> {
                           alignment: Alignment.centerLeft,
                           child: Text(
                             Provider.of<ContactInfoState>(context).augmentedNickname(context),
+                            style: TextStyle(fontFamily: "Inter", fontWeight: FontWeight.bold, fontSize: 14.0 * Provider.of<Settings>(context).fontScaling),
                             overflow: TextOverflow.clip,
                             maxLines: 1,
                           ))))
@@ -429,15 +430,20 @@ class _MessageViewState extends State<MessageView> {
           onOpen: showClickableLinks ? null : null,
           style: TextStyle(
             color: Provider.of<Settings>(context).theme.messageFromMeTextColor,
-            fontSize: 16,
+            fontFamily: "Inter",
+            fontWeight: FontWeight.normal,
+            fontSize: 16.0 * Provider.of<Settings>(context).fontScaling,
           ),
           linkStyle: TextStyle(
             color: Provider.of<Settings>(context).theme.messageFromMeTextColor,
-            fontSize: 16,
+            fontFamily: "Inter",
+            fontWeight: FontWeight.normal,
+            fontSize: 16.0 * Provider.of<Settings>(context).fontScaling,
           ),
           codeStyle: TextStyle(
               // note: these colors are flipped
-              fontSize: 16,
+              fontWeight: FontWeight.normal,
+              fontSize: 16.0 * Provider.of<Settings>(context).fontScaling,
               color: Provider.of<Settings>(context).theme.messageFromOtherTextColor,
               backgroundColor: Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor),
           textAlign: TextAlign.left,
@@ -606,6 +612,11 @@ class _MessageViewState extends State<MessageView> {
                   maxLengthEnforcement: MaxLengthEnforcement.enforced,
                   maxLines: 3,
                   onFieldSubmitted: _sendMessage,
+                  style: TextStyle(
+                    fontFamily: "Inter",
+                    fontSize: 12.0 * Provider.of<Settings>(context).fontScaling,
+                    fontWeight: FontWeight.w500,
+                  ),
                   enabled: true, // always allow editing...
 
                   onChanged: (String x) {
@@ -616,7 +627,7 @@ class _MessageViewState extends State<MessageView> {
                   },
                   decoration: InputDecoration(
                       hintText: isOffline ? "" : AppLocalizations.of(context)!.placeholderEnterMessage,
-                      hintStyle: TextStyle(color: Provider.of<Settings>(context).theme.sendHintTextColor),
+                      hintStyle: TextStyle(fontFamily: "Inter", fontSize: 10.0 * Provider.of<Settings>(context).fontScaling, color: Provider.of<Settings>(context).theme.sendHintTextColor),
                       enabledBorder: InputBorder.none,
                       focusedBorder: InputBorder.none,
                       enabled: true,

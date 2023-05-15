@@ -43,13 +43,15 @@ class MessageBubbleState extends State<MessageBubble> {
       }
     }
     var wdgSender = Container(
-        height: 11,
+        height: 14 * Provider.of<Settings>(context).fontScaling,
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(),
         child: SelectableText(senderDisplayStr,
             maxLines: 1,
             style: TextStyle(
-              fontSize: 9.0,
+              fontSize: 9.0 * Provider.of<Settings>(context).fontScaling,
+              fontWeight: FontWeight.bold,
+              fontFamily: "Inter",
               overflow: TextOverflow.clip,
               color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor,
             )));
@@ -67,10 +69,20 @@ class MessageBubbleState extends State<MessageBubble> {
       //key: Key(myKey),
       focusNode: _focus,
       style: TextStyle(
+        fontSize: 12.0 * Provider.of<Settings>(context).fontScaling,
+        fontWeight: FontWeight.normal,
+        fontFamily: "Inter",
         color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor,
       ),
-      linkStyle: TextStyle(color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor),
+      linkStyle: TextStyle(
+          fontSize: 12.0 * Provider.of<Settings>(context).fontScaling,
+          fontWeight: FontWeight.normal,
+          fontFamily: "Inter",
+          color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor),
       codeStyle: TextStyle(
+          fontSize: 12.0 * Provider.of<Settings>(context).fontScaling,
+          fontWeight: FontWeight.normal,
+          fontFamily: "Inter",
           // note: these colors are flipped
           color: fromMe ? Provider.of<Settings>(context).theme.messageFromOtherTextColor : Provider.of<Settings>(context).theme.messageFromMeTextColor,
           backgroundColor: fromMe ? Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor : Provider.of<Settings>(context).theme.messageFromMeBackgroundColor),

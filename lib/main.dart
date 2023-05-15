@@ -58,7 +58,6 @@ class Flwtch extends StatefulWidget {
 enum ConnectivityState { assumed_online, confirmed_offline, confirmed_online }
 
 class FlwtchState extends State<Flwtch> with WindowListener {
-  final TextStyle biggerFont = const TextStyle(fontSize: 18);
   late Cwtch cwtch;
   late ProfileListState profs;
   final MethodChannel notificationClickChannel = MethodChannel('im.cwtch.flwtch/notificationClickHandler');
