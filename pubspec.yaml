@@ -56,10 +56,10 @@ dev_dependencies:
   msix: ^3.12.2
   build_runner: any
   flutter_gherkin:
-    path: ./flutter_gherkin
-   # git:
-    #  url: https://git.openprivacy.ca/openprivacy/flutter_gherkin
-   #   ref: main
+    #path: ./flutter_gherkin
+    git:
+     url: https://git.openprivacy.ca/openprivacy/flutter_gherkin
+     ref: main
 
 # Uncomment to update lokalise translations (see README for list of deps to comment out bc incompatibilities)
 #dev_dependencies:
