@@ -218,7 +218,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                       }).toList())))),
                       ListTile(
                         title: Text(AppLocalizations.of(context)!.defaultScalingText),
-                        subtitle: Text(AppLocalizations.of(context)!.defaultScalingText),
+                        subtitle: Text(AppLocalizations.of(context)!.fontScalingDescription),
                         trailing: Container(
                             width: MediaQuery.of(context).size.width / 4,
                             child: Slider(

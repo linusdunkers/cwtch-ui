@@ -1,6 +1,8 @@
 {
     "@@locale": "pt_BR",
-    "@@last_modified": "2023-05-11T23:17:05+02:00",
+    "@@last_modified": "2023-05-15T21:16:36+02:00",
+    "fontScalingDescription": "Adjust the relative font scaling factor applied to text and widgets.",
+    "defaultScalingText": "Texto tamanho padrão (fator de escala: ",
     "localeJa": "Japanese \/ 日本語",
     "retryConnectionTooltip": "Cwtch retries peers regularly, but you can tell Cwtch to try sooner by pushing this button.",
     "retryConnection": "Retry",
@@ -274,7 +276,6 @@
     "viewGroupMembershipTooltip": "Ver Participação em Grupo",
     "loadingTor": "Carregando Tor...",
     "smallTextLabel": "Pequeno",
-    "defaultScalingText": "Texto tamanho padrão (fator de escala: ",
     "builddate": "Construído em: %2",
     "version": "Versão %1",
     "versionTor": "Versão %1 com Tor %2",
