@@ -4,6 +4,7 @@ import 'package:cwtch/config.dart';
 import 'package:cwtch/models/message.dart';
 import 'package:cwtch/models/messages/malformedmessage.dart';
 import 'package:cwtch/widgets/malformedbubble.dart';
+import 'package:cwtch/widgets/messageBubbleWidgetHelpers.dart';
 import 'package:cwtch/widgets/messagerow.dart';
 import 'package:cwtch/widgets/quotedmessage.dart';
 import 'package:flutter/widgets.dart';
@@ -39,15 +40,7 @@ class QuotedMessage extends Message {
             );
             var content = message["body"];
             var formatMessages = Provider.of<Settings>(bcontext).isExperimentEnabled(FormattingExperiment);
-            return SelectableLinkify(
-                text: content + '\u202F',
-                options: LinkifyOptions(messageFormatting: formatMessages, parseLinks: false, looseUrl: true, defaultToHttps: true),
-                linkifiers: [UrlLinkifier()],
-                onOpen: null,
-                textAlign: TextAlign.left,
-                style: TextStyle(fontSize: 12.0 * Provider.of<Settings>(context).fontScaling, fontWeight: FontWeight.normal, fontFamily: "Inter", overflow: TextOverflow.ellipsis),
-                codeStyle: TextStyle(fontSize: 12.0 * Provider.of<Settings>(context).fontScaling, fontWeight: FontWeight.normal, fontFamily: "Inter", overflow: TextOverflow.ellipsis),
-                textWidthBasis: TextWidthBasis.longestLine);
+            return compileMessageContentWidget(context, false, content, FocusNode(), formatMessages, false);
           } catch (e) {
             return MalformedBubble();
           }

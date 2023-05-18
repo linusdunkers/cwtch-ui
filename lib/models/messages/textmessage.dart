@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 
 import '../../settings.dart';
 import '../../third_party/linkify/flutter_linkify.dart';
+import '../../widgets/messageBubbleWidgetHelpers.dart';
 
 class TextMessage extends Message {
   final MessageMetadata metadata;
@@ -25,20 +26,7 @@ class TextMessage extends Message {
         value: this.metadata,
         builder: (bcontext, child) {
           var formatMessages = Provider.of<Settings>(bcontext).isExperimentEnabled(FormattingExperiment);
-          return SelectableLinkify(
-            text: content + '\u202F',
-            options: LinkifyOptions(messageFormatting: formatMessages, parseLinks: false, looseUrl: true, defaultToHttps: true),
-            linkifiers: [UrlLinkifier()],
-            onOpen: null,
-            textAlign: TextAlign.left,
-            style: TextStyle(overflow: TextOverflow.fade, fontFamily: "Inter", fontSize: 12.0 * Provider.of<Settings>(context).fontScaling),
-            linkStyle: TextStyle(overflow: TextOverflow.fade, fontFamily: "Inter", fontSize: 12.0 * Provider.of<Settings>(context).fontScaling),
-            codeStyle: TextStyle(
-              overflow: TextOverflow.ellipsis,
-              fontFamily: "RobotoMono",
-            ),
-            textWidthBasis: TextWidthBasis.parent,
-          );
+          return compileMessageContentWidget(context, false, content, FocusNode(), formatMessages, false);;
         });
   }
 
