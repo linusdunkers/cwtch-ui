@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cwtch/controllers/open_link_modal.dart';
 import 'package:cwtch/models/contact.dart';
 import 'package:cwtch/models/message.dart';
+import 'package:cwtch/themes/opaque.dart';
 import 'package:cwtch/third_party/linkify/flutter_linkify.dart';
 import 'package:cwtch/models/profile.dart';
 import 'package:cwtch/widgets/malformedbubble.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../settings.dart';
+import 'messageBubbleWidgetHelpers.dart';
 import 'messagebubbledecorations.dart';
 
 class MessageBubble extends StatefulWidget {
@@ -42,56 +44,9 @@ class MessageBubbleState extends State<MessageBubble> {
         senderDisplayStr = Provider.of<MessageMetadata>(context).senderHandle;
       }
     }
-    var wdgSender = Container(
-        height: 14 * Provider.of<Settings>(context).fontScaling,
-        clipBehavior: Clip.hardEdge,
-        decoration: BoxDecoration(),
-        child: SelectableText(senderDisplayStr,
-            maxLines: 1,
-            style: TextStyle(
-              fontSize: 9.0 * Provider.of<Settings>(context).fontScaling,
-              fontWeight: FontWeight.bold,
-              fontFamily: "Inter",
-              overflow: TextOverflow.clip,
-              color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor,
-            )));
-
-    var wdgMessage = SelectableLinkify(
-      text: widget.content + '\u202F',
-      // TODO: onOpen breaks the "selectable" functionality. Maybe something to do with gesture handler?
-      options: LinkifyOptions(messageFormatting: formatMessages, parseLinks: showClickableLinks, looseUrl: true, defaultToHttps: true),
-      linkifiers: [UrlLinkifier()],
-      onOpen: showClickableLinks
-          ? (link) {
-              modalOpenLink(context, link);
-            }
-          : null,
-      //key: Key(myKey),
-      focusNode: _focus,
-      style: TextStyle(
-        fontSize: 12.0 * Provider.of<Settings>(context).fontScaling,
-        fontWeight: FontWeight.normal,
-        fontFamily: "Inter",
-        color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor,
-      ),
-      linkStyle: TextStyle(
-          fontSize: 12.0 * Provider.of<Settings>(context).fontScaling,
-          fontWeight: FontWeight.normal,
-          fontFamily: "Inter",
-          color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor),
-      codeStyle: TextStyle(
-          fontSize: 12.0 * Provider.of<Settings>(context).fontScaling,
-          fontWeight: FontWeight.normal,
-          fontFamily: "Inter",
-          // note: these colors are flipped
-          color: fromMe ? Provider.of<Settings>(context).theme.messageFromOtherTextColor : Provider.of<Settings>(context).theme.messageFromMeTextColor,
-          backgroundColor: fromMe ? Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor : Provider.of<Settings>(context).theme.messageFromMeBackgroundColor),
-      textAlign: TextAlign.left,
-      textWidthBasis: TextWidthBasis.longestLine,
-    );
-
+    var wdgSender = compileSenderWidget(context, fromMe, senderDisplayStr);
+    var wdgMessage = compileMessageContentWidget(context, fromMe, widget.content, _focus, formatMessages, showClickableLinks);
     var wdgDecorations = MessageBubbleDecoration(ackd: Provider.of<MessageMetadata>(context).ackd, errored: Provider.of<MessageMetadata>(context).error, fromMe: fromMe, messageDate: messageDate);
-
     var error = Provider.of<MessageMetadata>(context).error;
 
     return LayoutBuilder(builder: (context, constraints) {

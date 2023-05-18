@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../settings.dart';
+import 'messageBubbleWidgetHelpers.dart';
 import 'messagebubbledecorations.dart';
 
 class QuotedMessageBubble extends StatefulWidget {
@@ -43,53 +44,11 @@ class QuotedMessageBubbleState extends State<QuotedMessageBubble> {
       }
     }
 
-    var wdgSender = Container(
-        height: 14 * Provider.of<Settings>(context).fontScaling,
-        clipBehavior: Clip.hardEdge,
-        decoration: BoxDecoration(),
-        child: SelectableText(senderDisplayStr,
-            style: TextStyle(
-                fontSize: 9.0 * Provider.of<Settings>(context).fontScaling,
-                fontWeight: FontWeight.bold,
-                fontFamily: "Inter",
-                color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor)));
+    var wdgSender = compileSenderWidget(context, fromMe, senderDisplayStr);
 
     var showClickableLinks = Provider.of<Settings>(context).isExperimentEnabled(ClickableLinksExperiment);
     var formatMessages = Provider.of<Settings>(context).isExperimentEnabled(FormattingExperiment);
-
-    var wdgMessage = SelectableLinkify(
-      text: widget.body + '\u202F',
-      // TODO: onOpen breaks the "selectable" functionality. Maybe something to do with gesture handler?
-      options: LinkifyOptions(messageFormatting: formatMessages, parseLinks: showClickableLinks, looseUrl: true, defaultToHttps: true),
-      linkifiers: [UrlLinkifier()],
-      onOpen: showClickableLinks
-          ? (link) {
-              modalOpenLink(context, link);
-            }
-          : null,
-      //key: Key(myKey),
-      focusNode: _focus,
-      style: TextStyle(
-        fontSize: 12.0 * Provider.of<Settings>(context).fontScaling,
-        fontWeight: FontWeight.normal,
-        fontFamily: "Inter",
-        color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor,
-      ),
-      linkStyle: TextStyle(
-          fontSize: 12.0 * Provider.of<Settings>(context).fontScaling,
-          fontWeight: FontWeight.normal,
-          fontFamily: "Inter",
-          color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor),
-      codeStyle: TextStyle(
-          fontSize: 12.0 * Provider.of<Settings>(context).fontScaling,
-          fontWeight: FontWeight.normal,
-          fontFamily: "RobotoMono",
-          // note: these colors are flipped
-          color: fromMe ? Provider.of<Settings>(context).theme.messageFromOtherTextColor : Provider.of<Settings>(context).theme.messageFromMeTextColor,
-          backgroundColor: fromMe ? Provider.of<Settings>(context).theme.messageFromOtherBackgroundColor : Provider.of<Settings>(context).theme.messageFromMeBackgroundColor),
-      textAlign: TextAlign.left,
-      textWidthBasis: TextWidthBasis.longestLine,
-    );
+    var wdgMessage = compileMessageContentWidget(context, fromMe, widget.body, _focus, formatMessages, showClickableLinks);
 
     var wdgQuote = FutureBuilder(
       future: widget.quotedMessage,
@@ -118,7 +77,7 @@ class QuotedMessageBubbleState extends State<QuotedMessageBubble> {
 
             var wdgReplyingTo = SelectableText(
               AppLocalizations.of(context)!.replyingTo.replaceAll("%1", qMessageSender),
-              style: TextStyle(fontSize: 10, color: qTextColor.withOpacity(0.8)),
+              style: Provider.of<Settings>(context).scaleFonts(TextStyle(fontSize: 10, color: qTextColor.withOpacity(0.8))),
             );
             // Swap the background color for quoted tweets..
             return MouseRegion(

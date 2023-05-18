@@ -967,7 +967,7 @@ class CwtchFfi implements Cwtch {
   }
 
   @override
-  String? GetProfileAttribute(String profile, String key) {
+  Future<String?> GetProfileAttribute(String profile, String key) {
     var getProfileAttributeC = library.lookup<NativeFunction<get_json_blob_from_str_str_function>>("c_GetProfileAttribute");
     // ignore: non_constant_identifier_names
     final GetProfileAttribute = getProfileAttributeC.asFunction<GetJsonBlobFromStrStrFn>();
@@ -982,17 +982,17 @@ class CwtchFfi implements Cwtch {
     try {
       dynamic attributeResult = json.decode(jsonMessage);
       if (attributeResult["Exists"]) {
-        return attributeResult["Value"];
+        return Future.value(attributeResult["Value"]);
       }
     } catch (e) {
       EnvironmentConfig.debugLog("error getting profile attribute: $e");
     }
 
-    return null;
+    return Future.value(null);
   }
 
   @override
-  String? GetConversationAttribute(String profile, int conversation, String key) {
+  Future<String?> GetConversationAttribute(String profile, int conversation, String key) {
     var getConversationAttributeC = library.lookup<NativeFunction<get_json_blob_from_str_int_string_function>>("c_GetConversationAttribute");
     // ignore: non_constant_identifier_names
     final GetConversationAttribute = getConversationAttributeC.asFunction<GetJsonBlobFromStrIntStringFn>();
@@ -1007,13 +1007,13 @@ class CwtchFfi implements Cwtch {
     try {
       dynamic attributeResult = json.decode(jsonMessage);
       if (attributeResult["Exists"]) {
-        return attributeResult["Value"];
+        return Future.value(attributeResult["Value"]);
       }
     } catch (e) {
       EnvironmentConfig.debugLog("error getting profile attribute: $e");
     }
 
-    return null;
+    return Future.value(null);
   }
 
   @override

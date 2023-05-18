@@ -44,7 +44,6 @@ class MessageView extends StatefulWidget {
 }
 
 class _MessageViewState extends State<MessageView> {
-  final ctrlrCompose = TextEditingController();
   final focusNode = FocusNode();
   int selectedContact = -1;
   ItemPositionsListener scrollListener = ItemPositionsListener.create();
@@ -68,7 +67,6 @@ class _MessageViewState extends State<MessageView> {
         showDown = false;
       }
     });
-    ctrlrCompose.text = Provider.of<ContactInfoState>(context, listen: false).messageDraft.messageText ?? "";
     super.initState();
   }
 
@@ -88,7 +86,6 @@ class _MessageViewState extends State<MessageView> {
   @override
   void dispose() {
     focusNode.dispose();
-    ctrlrCompose.dispose();
     super.dispose();
   }
 
@@ -321,22 +318,22 @@ class _MessageViewState extends State<MessageView> {
 
   void _sendMessage([String? ignoredParam]) {
     // Do this after we trim to preserve enter-behaviour...
-    bool isOffline = Provider.of<ContactInfoState>(context, listen: false).isOnline() == false;
+    bool cannotSend = Provider.of<ContactInfoState>(context, listen: false).canSend() == false;
     bool performingAntiSpam = Provider.of<ContactInfoState>(context, listen: false).antispamTickets == 0;
     bool isGroup = Provider.of<ContactInfoState>(context, listen: false).isGroup;
-    if (isOffline || (isGroup && performingAntiSpam)) {
+    if (cannotSend || (isGroup && performingAntiSpam)) {
       return;
     }
 
     // Trim message
-    final messageWithoutNewLine = ctrlrCompose.value.text.trimRight();
-    ctrlrCompose.value = TextEditingValue(text: messageWithoutNewLine, selection: TextSelection.fromPosition(TextPosition(offset: messageWithoutNewLine.length)));
+    var messageText = Provider.of<ContactInfoState>(context, listen: false).messageDraft.messageText ?? "";
+    final messageWithoutNewLine = messageText.trimRight();
 
     // peers and groups currently have different length constraints (servers can store less)...
-    var actualMessageLength = ctrlrCompose.value.text.length;
+    var actualMessageLength = messageText.length;
     var lengthOk = (isGroup && actualMessageLength < GroupMessageLengthMax) || actualMessageLength <= P2PMessageLengthMax;
 
-    if (ctrlrCompose.value.text.isNotEmpty && lengthOk) {
+    if (messageWithoutNewLine.isNotEmpty && lengthOk) {
       if (Provider.of<AppState>(context, listen: false).selectedConversation != null && Provider.of<ContactInfoState>(context, listen: false).messageDraft.getQuotedMessage() != null) {
         var conversationId = Provider.of<AppState>(context, listen: false).selectedConversation!;
         MessageCache? cache = Provider.of<ProfileInfoState>(context, listen: false).contactList.getContact(conversationId)?.messageCache;
@@ -347,7 +344,7 @@ class _MessageViewState extends State<MessageView> {
             var bytes1 = utf8.encode(data!.metadata.senderHandle + data.wrapper);
             var digest1 = sha256.convert(bytes1);
             var contentHash = base64Encode(digest1.bytes);
-            var quotedMessage = jsonEncode(QuotedMessageStructure(contentHash, ctrlrCompose.value.text));
+            var quotedMessage = jsonEncode(QuotedMessageStructure(contentHash, messageWithoutNewLine));
             ChatMessage cm = new ChatMessage(o: QuotedMessageOverlay, d: quotedMessage);
             Provider.of<FlwtchState>(context, listen: false)
                 .cwtch
@@ -359,7 +356,7 @@ class _MessageViewState extends State<MessageView> {
           Provider.of<ContactInfoState>(context, listen: false).messageDraft.clearQuotedReference();
         });
       } else {
-        ChatMessage cm = new ChatMessage(o: TextMessageOverlay, d: ctrlrCompose.value.text);
+        ChatMessage cm = new ChatMessage(o: TextMessageOverlay, d: messageWithoutNewLine);
         Provider.of<FlwtchState>(context, listen: false)
             .cwtch
             .SendMessage(Provider.of<ContactInfoState>(context, listen: false).profileOnion, Provider.of<ContactInfoState>(context, listen: false).identifier, jsonEncode(cm))
@@ -391,8 +388,7 @@ class _MessageViewState extends State<MessageView> {
 
     // At this point we have decided to send the text to the backend, failure is still possible
     // but it will show as an error-ed message, as such the draft can be purged.
-    Provider.of<ContactInfoState>(context, listen: false).messageDraft = MessageDraft.empty();
-    ctrlrCompose.clear();
+    Provider.of<ContactInfoState>(context, listen: false).messageDraft.clearDraft();
 
     var profileOnion = Provider.of<ContactInfoState>(context, listen: false).profileOnion;
     var identifier = Provider.of<ContactInfoState>(context, listen: false).identifier;
@@ -424,7 +420,7 @@ class _MessageViewState extends State<MessageView> {
     var wdgMessage = Padding(
         padding: EdgeInsets.all(8),
         child: SelectableLinkify(
-          text: ctrlrCompose.text + '\n',
+          text: Provider.of<ContactInfoState>(context).messageDraft.messageText + '\n',
           options: LinkifyOptions(messageFormatting: true, parseLinks: showClickableLinks, looseUrl: true, defaultToHttps: true),
           linkifiers: [UrlLinkifier()],
           onOpen: showClickableLinks ? null : null,
@@ -468,7 +464,7 @@ class _MessageViewState extends State<MessageView> {
       margin: EdgeInsets.all(2),
 
       // 164 minimum height + 16px for every line of text so the entire message is displayed when previewed.
-      height: 164 + ((ctrlrCompose.text.split("\n").length - 1) * 16),
+      height: 164 + ((Provider.of<ContactInfoState>(context).messageDraft.messageText.split("\n").length - 1) * 16),
       child: Column(
         children: [
           Row(mainAxisAlignment: MainAxisAlignment.start, mainAxisSize: MainAxisSize.max, children: [preview]),
@@ -483,11 +479,11 @@ class _MessageViewState extends State<MessageView> {
   }
 
   Widget _buildComposeBox(BuildContext context) {
-    bool isOffline = Provider.of<ContactInfoState>(context).isOnline() == false;
+    bool cannotSend = Provider.of<ContactInfoState>(context).canSend() == false;
     bool isGroup = Provider.of<ContactInfoState>(context).isGroup;
     var showToolbar = Provider.of<Settings>(context).isExperimentEnabled(FormattingExperiment);
-    var charLength = ctrlrCompose.value.text.characters.length;
-    var expectedLength = ctrlrCompose.value.text.length;
+    var charLength = Provider.of<ContactInfoState>(context).messageDraft.messageText.characters.length;
+    var expectedLength = Provider.of<ContactInfoState>(context).messageDraft.messageText.length;
     var numberOfBytesMoreThanChar = (expectedLength - charLength);
 
     var bold = IconButton(
@@ -495,12 +491,14 @@ class _MessageViewState extends State<MessageView> {
         tooltip: AppLocalizations.of(context)!.tooltipBoldText,
         onPressed: () {
           setState(() {
+            var ctrlrCompose = Provider.of<ContactInfoState>(context, listen: false).messageDraft.ctrlCompose;
             var selected = ctrlrCompose.selection.textInside(ctrlrCompose.text);
             var selection = ctrlrCompose.selection;
             var start = ctrlrCompose.selection.start;
             var end = ctrlrCompose.selection.end;
             ctrlrCompose.text = ctrlrCompose.text.replaceRange(start, end, "**" + selected + "**");
             ctrlrCompose.selection = selection.copyWith(baseOffset: selection.start + 2, extentOffset: selection.start + 2);
+            Provider.of<ContactInfoState>(context, listen: false).messageDraft.ctrlCompose = ctrlrCompose;
           });
         });
 
@@ -509,12 +507,14 @@ class _MessageViewState extends State<MessageView> {
         tooltip: AppLocalizations.of(context)!.tooltipItalicize,
         onPressed: () {
           setState(() {
+            var ctrlrCompose = Provider.of<ContactInfoState>(context, listen: false).messageDraft.ctrlCompose;
             var selected = ctrlrCompose.selection.textInside(ctrlrCompose.text);
             var selection = ctrlrCompose.selection;
             var start = ctrlrCompose.selection.start;
             var end = ctrlrCompose.selection.end;
             ctrlrCompose.text = ctrlrCompose.text.replaceRange(start, end, "*" + selected + "*");
             ctrlrCompose.selection = selection.copyWith(baseOffset: selection.start + 1, extentOffset: selection.start + 1);
+            Provider.of<ContactInfoState>(context, listen: false).messageDraft.ctrlCompose = ctrlrCompose;
           });
         });
 
@@ -523,12 +523,14 @@ class _MessageViewState extends State<MessageView> {
         tooltip: AppLocalizations.of(context)!.tooltipCode,
         onPressed: () {
           setState(() {
+            var ctrlrCompose = Provider.of<ContactInfoState>(context, listen: false).messageDraft.ctrlCompose;
             var selected = ctrlrCompose.selection.textInside(ctrlrCompose.text);
             var selection = ctrlrCompose.selection;
             var start = ctrlrCompose.selection.start;
             var end = ctrlrCompose.selection.end;
             ctrlrCompose.text = ctrlrCompose.text.replaceRange(start, end, "`" + selected + "`");
             ctrlrCompose.selection = selection.copyWith(baseOffset: selection.start + 1, extentOffset: selection.start + 1);
+            Provider.of<ContactInfoState>(context, listen: false).messageDraft.ctrlCompose = ctrlrCompose;
           });
         });
 
@@ -537,12 +539,14 @@ class _MessageViewState extends State<MessageView> {
         tooltip: AppLocalizations.of(context)!.tooltipSuperscript,
         onPressed: () {
           setState(() {
+            var ctrlrCompose = Provider.of<ContactInfoState>(context, listen: false).messageDraft.ctrlCompose;
             var selected = ctrlrCompose.selection.textInside(ctrlrCompose.text);
             var selection = ctrlrCompose.selection;
             var start = ctrlrCompose.selection.start;
             var end = ctrlrCompose.selection.end;
             ctrlrCompose.text = ctrlrCompose.text.replaceRange(start, end, "^" + selected + "^");
             ctrlrCompose.selection = selection.copyWith(baseOffset: selection.start + 1, extentOffset: selection.start + 1);
+            Provider.of<ContactInfoState>(context, listen: false).messageDraft.ctrlCompose = ctrlrCompose;
           });
         });
 
@@ -551,12 +555,14 @@ class _MessageViewState extends State<MessageView> {
         tooltip: AppLocalizations.of(context)!.tooltipSubscript,
         onPressed: () {
           setState(() {
+            var ctrlrCompose = Provider.of<ContactInfoState>(context, listen: false).messageDraft.ctrlCompose;
             var selected = ctrlrCompose.selection.textInside(ctrlrCompose.text);
             var selection = ctrlrCompose.selection;
             var start = ctrlrCompose.selection.start;
             var end = ctrlrCompose.selection.end;
             ctrlrCompose.text = ctrlrCompose.text.replaceRange(start, end, "_" + selected + "_");
             ctrlrCompose.selection = selection.copyWith(baseOffset: selection.start + 1, extentOffset: selection.start + 1);
+            Provider.of<ContactInfoState>(context, listen: false).messageDraft.ctrlCompose = ctrlrCompose;
           });
         });
 
@@ -565,12 +571,14 @@ class _MessageViewState extends State<MessageView> {
         tooltip: AppLocalizations.of(context)!.tooltipStrikethrough,
         onPressed: () {
           setState(() {
+            var ctrlrCompose = Provider.of<ContactInfoState>(context, listen: false).messageDraft.ctrlCompose;
             var selected = ctrlrCompose.selection.textInside(ctrlrCompose.text);
             var selection = ctrlrCompose.selection;
             var start = ctrlrCompose.selection.start;
             var end = ctrlrCompose.selection.end;
             ctrlrCompose.text = ctrlrCompose.text.replaceRange(start, end, "~~" + selected + "~~");
             ctrlrCompose.selection = selection.copyWith(baseOffset: selection.start + 2, extentOffset: selection.start + 2);
+            Provider.of<ContactInfoState>(context, listen: false).messageDraft.ctrlCompose = ctrlrCompose;
           });
         });
 
@@ -600,7 +608,7 @@ class _MessageViewState extends State<MessageView> {
               padding: EdgeInsets.all(8),
               child: TextFormField(
                   key: Key('txtCompose'),
-                  controller: ctrlrCompose,
+                  controller: Provider.of<ContactInfoState>(context).messageDraft.ctrlCompose,
                   focusNode: focusNode,
                   autofocus: !Platform.isAndroid,
                   textInputAction: TextInputAction.newline,
@@ -615,18 +623,17 @@ class _MessageViewState extends State<MessageView> {
                   style: TextStyle(
                     fontFamily: "Inter",
                     fontSize: 12.0 * Provider.of<Settings>(context).fontScaling,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w300,
                   ),
                   enabled: true, // always allow editing...
 
                   onChanged: (String x) {
-                    Provider.of<ContactInfoState>(context, listen: false).messageDraft.messageText = x;
                     setState(() {
                       // we need to force a rerender here to update the max length count
                     });
                   },
                   decoration: InputDecoration(
-                      hintText: isOffline ? "" : AppLocalizations.of(context)!.placeholderEnterMessage,
+                      hintText: AppLocalizations.of(context)!.placeholderEnterMessage,
                       hintStyle: TextStyle(fontFamily: "Inter", fontSize: 10.0 * Provider.of<Settings>(context).fontScaling, color: Provider.of<Settings>(context).theme.sendHintTextColor),
                       enabledBorder: InputBorder.none,
                       focusedBorder: InputBorder.none,
@@ -635,13 +642,13 @@ class _MessageViewState extends State<MessageView> {
                         key: Key("btnSend"),
                         style: ElevatedButton.styleFrom(padding: EdgeInsets.all(0.0), shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(45.0))),
                         child: Tooltip(
-                            message: isOffline
+                            message: cannotSend
                                 ? (isGroup ? AppLocalizations.of(context)!.serverNotSynced : AppLocalizations.of(context)!.peerOfflineMessage)
                                 : (isGroup && Provider.of<ContactInfoState>(context, listen: false).antispamTickets == 0)
                                     ? AppLocalizations.of(context)!.acquiringTicketsFromServer
                                     : AppLocalizations.of(context)!.sendMessage,
                             child: Icon(CwtchIcons.send_24px, size: 24, color: Provider.of<Settings>(context).theme.defaultButtonTextColor)),
-                        onPressed: isOffline || (isGroup && Provider.of<ContactInfoState>(context, listen: false).antispamTickets == 0) ? null : _sendMessage,
+                        onPressed: cannotSend || (isGroup && Provider.of<ContactInfoState>(context, listen: false).antispamTickets == 0) ? null : _sendMessage,
                       ))),
             )));
 
@@ -727,15 +734,14 @@ class _MessageViewState extends State<MessageView> {
     if (event is RawKeyUpEvent) {
       if ((data.logicalKey == LogicalKeyboardKey.enter && !event.isShiftPressed) || data.logicalKey == LogicalKeyboardKey.numpadEnter && !event.isShiftPressed) {
         // Don't send when inserting a new line that is not at the end of the message
-        if (ctrlrCompose.selection.baseOffset != ctrlrCompose.text.length) {
+        if (Provider.of<ContactInfoState>(context, listen: false).messageDraft.ctrlCompose.selection.baseOffset !=
+            Provider.of<ContactInfoState>(context, listen: false).messageDraft.ctrlCompose.text.length) {
           return;
         }
         _sendMessage();
       }
     }
   }
-
-  void placeHolder() => {};
 
   // explicitly passing BuildContext ctx here is important, change at risk to own health
   // otherwise some Providers will become inaccessible to subwidgets...?

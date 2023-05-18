@@ -192,6 +192,11 @@ class Settings extends ChangeNotifier {
 
   double get fontScaling => _fontScaling;
 
+  // a convenience function to scale fonts dynamically...
+  TextStyle scaleFonts(TextStyle input) {
+    return input.copyWith(fontSize: (input.fontSize ?? 12) * this.fontScaling);
+  }
+
   /// Switch the Locale of the App
   switchLocale(Locale newLocale) {
     locale = newLocale;

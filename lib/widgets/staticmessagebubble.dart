@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../settings.dart';
+import 'messageBubbleWidgetHelpers.dart';
 import 'messagebubbledecorations.dart';
 
 class StaticMessageBubble extends StatefulWidget {
@@ -40,12 +41,7 @@ class StaticMessageBubbleState extends State<StaticMessageBubble> {
       senderDisplayStr = widget.profile.nickname;
     }
 
-    var wdgSender = SelectableText(senderDisplayStr,
-        style: TextStyle(
-            fontSize: 9.0 * Provider.of<Settings>(context).fontScaling,
-            fontWeight: FontWeight.bold,
-            fontFamily: "Inter",
-            color: fromMe ? widget.settings.theme.messageFromMeTextColor : widget.settings.theme.messageFromOtherTextColor));
+    var wdgSender = compileSenderWidget(context, fromMe, senderDisplayStr);
 
     var wdgDecorations = MessageBubbleDecoration(ackd: widget.metadata.ackd, errored: widget.metadata.error, fromMe: fromMe, messageDate: messageDate);
 

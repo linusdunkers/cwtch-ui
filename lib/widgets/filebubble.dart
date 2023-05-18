@@ -7,7 +7,9 @@ import 'package:cwtch/models/contact.dart';
 import 'package:cwtch/models/filedownloadprogress.dart';
 import 'package:cwtch/models/message.dart';
 import 'package:cwtch/models/profile.dart';
+import 'package:cwtch/themes/opaque.dart';
 import 'package:cwtch/widgets/malformedbubble.dart';
+import 'package:cwtch/widgets/messageBubbleWidgetHelpers.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -147,18 +149,10 @@ class FileBubbleState extends State<FileBubble> {
       var wdgSender = Visibility(
           visible: widget.interactive,
           child: Container(
-              height: 14 * Provider.of<Settings>(context).fontScaling,
-              clipBehavior: Clip.hardEdge,
-              decoration: BoxDecoration(),
-              child: SelectableText(senderDisplayStr + '\u202F',
-                  style: TextStyle(
-                      fontSize: 9.0 * Provider.of<Settings>(context).fontScaling,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: "Inter",
-                      color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor))));
+              height: 14 * Provider.of<Settings>(context).fontScaling, clipBehavior: Clip.hardEdge, decoration: BoxDecoration(), child: compileSenderWidget(context, fromMe, senderDisplayStr)));
       var isPreview = false;
       var wdgMessage = !showFileSharing
-          ? Text(AppLocalizations.of(context)!.messageEnableFileSharing)
+          ? Text(AppLocalizations.of(context)!.messageEnableFileSharing, style: Provider.of<Settings>(context).scaleFonts(defaultTextStyle))
           : fromMe
               ? senderFileChrome(AppLocalizations.of(context)!.messageFileSent, widget.nameSuggestion, widget.rootHash, widget.fileSize)
               : (fileChrome(AppLocalizations.of(context)!.messageFileOffered + ":", widget.nameSuggestion, widget.rootHash, widget.fileSize,
@@ -182,11 +176,13 @@ class FileBubbleState extends State<FileBubble> {
                     },
                   )));
         } else {
-          wdgDecorations = Visibility(visible: widget.interactive, child: Text(AppLocalizations.of(context)!.fileSavedTo + ': ' + path + '\u202F'));
+          wdgDecorations = Visibility(
+              visible: widget.interactive, child: Text(AppLocalizations.of(context)!.fileSavedTo + ': ' + path + '\u202F', style: Provider.of<Settings>(context).scaleFonts(defaultTextStyle)));
         }
       } else if (downloadActive) {
         if (!downloadGotManifest) {
-          wdgDecorations = Visibility(visible: widget.interactive, child: Text(AppLocalizations.of(context)!.retrievingManifestMessage + '\u202F'));
+          wdgDecorations = Visibility(
+              visible: widget.interactive, child: Text(AppLocalizations.of(context)!.retrievingManifestMessage + '\u202F', style: Provider.of<Settings>(context).scaleFonts(defaultTextStyle)));
         } else {
           wdgDecorations = Visibility(
               visible: widget.interactive,
@@ -199,19 +195,19 @@ class FileBubbleState extends State<FileBubble> {
         // in this case, the download was done in a previous application launch,
         // so we probably have to request an info lookup
         if (!downloadInterrupted) {
-          wdgDecorations = Text(AppLocalizations.of(context)!.fileCheckingStatus + '...' + '\u202F');
+          wdgDecorations = Text(AppLocalizations.of(context)!.fileCheckingStatus + '...' + '\u202F', style: Provider.of<Settings>(context).scaleFonts(defaultTextStyle));
           // We should have already requested this...
         } else {
           var path = Provider.of<ProfileInfoState>(context).downloadFinalPath(widget.fileKey()) ?? "";
           wdgDecorations = Visibility(
               visible: widget.interactive,
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(AppLocalizations.of(context)!.fileInterrupted + ': ' + path + '\u202F'),
-                ElevatedButton(onPressed: _btnResume, child: Text(AppLocalizations.of(context)!.verfiyResumeButton))
+                Text(AppLocalizations.of(context)!.fileInterrupted + ': ' + path + '\u202F', style: Provider.of<Settings>(context).scaleFonts(defaultTextStyle)),
+                ElevatedButton(onPressed: _btnResume, child: Text(AppLocalizations.of(context)!.verfiyResumeButton, style: Provider.of<Settings>(context).scaleFonts(defaultTextButtonStyle)))
               ]));
         }
       } else if (!senderIsContact) {
-        wdgDecorations = Text(AppLocalizations.of(context)!.msgAddToAccept);
+        wdgDecorations = Text(AppLocalizations.of(context)!.msgAddToAccept, style: Provider.of<Settings>(context).scaleFonts(defaultTextStyle));
       } else if (!widget.isAuto || Provider.of<MessageMetadata>(context).attributes["file-missing"] == "false") {
         //Note: we need this second case to account for scenarios where a user deletes the downloaded file, we won't automatically
         // fetch it again, so we need to offer the user the ability to restart..
@@ -220,7 +216,10 @@ class FileBubbleState extends State<FileBubble> {
             child: Center(
                 widthFactor: 1,
                 child: Wrap(children: [
-                  Padding(padding: EdgeInsets.all(5), child: ElevatedButton(child: Text(AppLocalizations.of(context)!.downloadFileButton + '\u202F'), onPressed: _btnAccept)),
+                  Padding(
+                      padding: EdgeInsets.all(5),
+                      child: ElevatedButton(
+                          child: Text(AppLocalizations.of(context)!.downloadFileButton + '\u202F', style: Provider.of<Settings>(context).scaleFonts(defaultTextButtonStyle)), onPressed: _btnAccept)),
                 ])));
       } else {
         wdgDecorations = Container();
@@ -278,7 +277,7 @@ class FileBubbleState extends State<FileBubble> {
       }
     } else {
       try {
-        selectedFileName = await  FilePicker.platform.saveFile(
+        selectedFileName = await FilePicker.platform.saveFile(
           fileName: widget.nameSuggestion,
           lockParentWindow: true,
         );
@@ -308,52 +307,35 @@ class FileBubbleState extends State<FileBubble> {
 
   // Construct an file chrome for the sender
   Widget senderFileChrome(String chrome, String fileName, String rootHash, int fileSize) {
+    var settings = Provider.of<Settings>(context);
     return ListTile(
         visualDensity: VisualDensity.compact,
         title: Wrap(direction: Axis.horizontal, alignment: WrapAlignment.start, children: [
           SelectableText(
             chrome + '\u202F',
-            style: TextStyle(
-              color: Provider.of<Settings>(context).theme.messageFromMeTextColor,
-              fontWeight: FontWeight.normal,
-              fontFamily: "Inter",
-              fontSize: 12 * Provider.of<Settings>(context).fontScaling,
-            ),
+            style: settings.scaleFonts(defaultMessageTextStyle.copyWith(color: Provider.of<Settings>(context).theme.messageFromMeTextColor)),
             textAlign: TextAlign.left,
             maxLines: 2,
             textWidthBasis: TextWidthBasis.longestLine,
           ),
           SelectableText(
             fileName + '\u202F',
-            style: TextStyle(
-              color: Provider.of<Settings>(context).theme.messageFromMeTextColor,
-              fontWeight: FontWeight.bold,
-              overflow: TextOverflow.ellipsis,
-              fontFamily: "Inter",
-              fontSize: 12 * Provider.of<Settings>(context).fontScaling,
-            ),
+            style:
+                settings.scaleFonts(defaultMessageTextStyle.copyWith(overflow: TextOverflow.ellipsis, fontWeight: FontWeight.bold, color: Provider.of<Settings>(context).theme.messageFromMeTextColor)),
             textAlign: TextAlign.left,
             textWidthBasis: TextWidthBasis.parent,
             maxLines: 2,
           ),
           SelectableText(
             prettyBytes(fileSize) + '\u202F' + '\n',
-            style: TextStyle(
-              color: Provider.of<Settings>(context).theme.messageFromMeTextColor,
-              fontSize: 10 * Provider.of<Settings>(context).fontScaling,
-              fontFamily: "Inter",
-            ),
+            style: settings.scaleFonts(defaultSmallTextStyle.copyWith(color: Provider.of<Settings>(context).theme.messageFromMeTextColor)),
             textAlign: TextAlign.left,
             maxLines: 2,
           )
         ]),
         subtitle: SelectableText(
           'sha512: ' + rootHash + '\u202F',
-          style: TextStyle(
-            color: Provider.of<Settings>(context).theme.messageFromMeTextColor,
-            fontSize: 10 * Provider.of<Settings>(context).fontScaling,
-            fontFamily: "RobotoMono",
-          ),
+          style: settings.scaleFonts(defaultSmallTextStyle.copyWith(fontFamily: "RobotoMono", color: Provider.of<Settings>(context).theme.messageFromMeTextColor)),
           textAlign: TextAlign.left,
           maxLines: 4,
           textWidthBasis: TextWidthBasis.parent,
@@ -363,50 +345,35 @@ class FileBubbleState extends State<FileBubble> {
 
   // Construct an file chrome
   Widget fileChrome(String chrome, String fileName, String rootHash, int fileSize, String speed) {
+    var settings = Provider.of<Settings>(context);
     return ListTile(
       visualDensity: VisualDensity.compact,
       title: Wrap(direction: Axis.horizontal, alignment: WrapAlignment.start, children: [
         SelectableText(
           chrome + '\u202F',
-          style: TextStyle(
-            color: Provider.of<Settings>(context).theme.messageFromOtherTextColor,
-            fontSize: 12 * Provider.of<Settings>(context).fontScaling,
-            fontFamily: "Inter",
-          ),
+          style: settings.scaleFonts(defaultMessageTextStyle.copyWith(color: Provider.of<Settings>(context).theme.messageFromOtherTextColor)),
           textAlign: TextAlign.left,
           maxLines: 2,
           textWidthBasis: TextWidthBasis.longestLine,
         ),
         SelectableText(
           fileName + '\u202F',
-          style: TextStyle(
-            color: Provider.of<Settings>(context).theme.messageFromOtherTextColor,
-            fontWeight: FontWeight.bold,
-            overflow: TextOverflow.ellipsis,
-            fontFamily: "Inter",
-          ),
+          style: settings
+              .scaleFonts(defaultMessageTextStyle.copyWith(overflow: TextOverflow.ellipsis, fontWeight: FontWeight.bold, color: Provider.of<Settings>(context).theme.messageFromOtherTextColor)),
           textAlign: TextAlign.left,
           textWidthBasis: TextWidthBasis.parent,
           maxLines: 2,
         ),
         SelectableText(
           AppLocalizations.of(context)!.labelFilesize + ': ' + prettyBytes(fileSize) + '\u202F' + '\n',
-          style: TextStyle(
-            color: Provider.of<Settings>(context).theme.messageFromOtherTextColor,
-            fontFamily: "Inter",
-            fontSize: 10 * Provider.of<Settings>(context).fontScaling,
-          ),
+          style: settings.scaleFonts(defaultSmallTextStyle.copyWith(color: Provider.of<Settings>(context).theme.messageFromOtherTextColor)),
           textAlign: TextAlign.left,
           maxLines: 2,
         )
       ]),
       subtitle: SelectableText(
         'sha512: ' + rootHash + '\u202F',
-        style: TextStyle(
-          color: Provider.of<Settings>(context).theme.messageFromMeTextColor,
-          fontSize: 10 * Provider.of<Settings>(context).fontScaling,
-          fontFamily: "RobotoMono",
-        ),
+        style: settings.scaleFonts(defaultSmallTextStyle.copyWith(fontFamily: "RobotoMono", color: Provider.of<Settings>(context).theme.messageFromOtherTextColor)),
         textAlign: TextAlign.left,
         maxLines: 4,
         textWidthBasis: TextWidthBasis.parent,
@@ -416,11 +383,7 @@ class FileBubbleState extends State<FileBubble> {
           visible: speed != "0 B/s",
           child: SelectableText(
             speed + '\u202F',
-            style: TextStyle(
-              color: Provider.of<Settings>(context).theme.messageFromMeTextColor,
-              fontFamily: "Inter",
-              fontSize: 10 * Provider.of<Settings>(context).fontScaling,
-            ),
+            style: settings.scaleFonts(defaultSmallTextStyle.copyWith(color: Provider.of<Settings>(context).theme.messageFromOtherTextColor)),
             textAlign: TextAlign.left,
             maxLines: 1,
             textWidthBasis: TextWidthBasis.longestLine,

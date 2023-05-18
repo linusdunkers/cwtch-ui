@@ -7,6 +7,7 @@ import 'package:cwtch/models/appstate.dart';
 import 'package:cwtch/models/contact.dart';
 import 'package:cwtch/models/message.dart';
 import 'package:cwtch/models/profile.dart';
+import 'package:cwtch/themes/opaque.dart';
 import 'package:cwtch/third_party/base32/base32.dart';
 import 'package:cwtch/views/contactsview.dart';
 import 'package:cwtch/widgets/staticmessagebubble.dart';
@@ -307,7 +308,7 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
             bottomRight: Radius.circular(8),
           ),
         ),
-        child: Padding(padding: EdgeInsets.all(9.0), child: Text(AppLocalizations.of(context)!.newMessagesLabel)));
+        child: Padding(padding: EdgeInsets.all(9.0), child: Text(AppLocalizations.of(context)!.newMessagesLabel, style: Provider.of<Settings>(context).scaleFonts(defaultTextButtonStyle))));
   }
 
   void _runAnimation(Offset pixelsPerSecond, Size size) {

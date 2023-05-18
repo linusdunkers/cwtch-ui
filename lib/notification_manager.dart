@@ -43,14 +43,14 @@ class WindowsNotificationManager implements NotificationsManager {
     if (initialized && !globalAppState.focus) {
       if (!active) {
         active = true;
-       // WinToast.instance().clear();
+        // WinToast.instance().clear();
         //final toast = await WinToast.instance().showToast(toast: Toast(children: ,type: ToastType.text01, title: message));
         //toast?.eventStream.listen((event) {
         //  if (event is ActivatedEvent) {
-         //   WinToast.instance().bringWindowToFront();
-         // }
-          active = false;
-       // });
+        //   WinToast.instance().bringWindowToFront();
+        // }
+        active = false;
+        // });
       }
     }
   }
@@ -113,12 +113,12 @@ class NixNotificationManager implements NotificationsManager {
         linuxAssetsPath = "";
       }
 
-
       var linuxIcon = FilePathLinuxIcon(path.join(linuxAssetsPath, 'assets/knott.png'));
 
       final LinuxInitializationSettings initializationSettingsLinux = LinuxInitializationSettings(defaultActionName: 'Open notification', defaultIcon: linuxIcon, defaultSuppressSound: true);
 
-      final InitializationSettings initializationSettings = InitializationSettings(android: null, iOS: null, macOS: DarwinInitializationSettings(defaultPresentSound: false), linux: initializationSettingsLinux);
+      final InitializationSettings initializationSettings =
+          InitializationSettings(android: null, iOS: null, macOS: DarwinInitializationSettings(defaultPresentSound: false), linux: initializationSettingsLinux);
 
       flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<MacOSFlutterLocalNotificationsPlugin>()?.requestPermissions(
             alert: true,
@@ -126,7 +126,9 @@ class NixNotificationManager implements NotificationsManager {
             sound: false,
           );
 
-      await flutterLocalNotificationsPlugin.initialize(initializationSettings, );
+      await flutterLocalNotificationsPlugin.initialize(
+        initializationSettings,
+      );
     });
   }
 

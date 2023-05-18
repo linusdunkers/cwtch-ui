@@ -390,21 +390,25 @@ class CwtchGomobile implements Cwtch {
   }
 
   @override
-  String? GetProfileAttribute(String profile, String key) {
-    dynamic attributeResult = cwtchPlatform.invokeMethod("GetProfileAttribute", {"ProfileOnion": profile, "key": key});
-    if (attributeResult["Exists"]) {
-      return attributeResult["Value"];
-    }
-    return null;
+  Future<String?> GetProfileAttribute(String profile, String key) async {
+    return await cwtchPlatform.invokeMethod("GetProfileAttribute", {"ProfileOnion": profile, "key": key}).then((dynamic json) {
+      var value = jsonDecode(json);
+      if (value["Exists"]) {
+        return value["Value"];
+      }
+      return null;
+    });
   }
 
   @override
-  String? GetConversationAttribute(String profile, int conversation, String key) {
-    dynamic attributeResult = cwtchPlatform.invokeMethod("GetProfileAttribute", {"ProfileOnion": profile, "conversation": conversation, "key": key});
-    if (attributeResult["Exists"]) {
-      return attributeResult["Value"];
-    }
-    return null;
+  Future<String?> GetConversationAttribute(String profile, int conversation, String key) async {
+    return await cwtchPlatform.invokeMethod("GetConversationAttribute", {"ProfileOnion": profile, "conversation": conversation, "key": key}).then((dynamic json) {
+      var value = jsonDecode(json);
+      if (value["Exists"]) {
+        return value["Value"];
+      }
+      return null;
+    });
   }
 
   @override

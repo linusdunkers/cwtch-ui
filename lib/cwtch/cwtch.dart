@@ -97,11 +97,11 @@ abstract class Cwtch {
   Future<dynamic> ImportBundle(String profile, String bundle);
   // ignore: non_constant_identifier_names
   void SetProfileAttribute(String profile, String key, String val);
-  String? GetProfileAttribute(String profile, String key);
+  Future<String?> GetProfileAttribute(String profile, String key);
   // ignore: non_constant_identifier_names
   void SetConversationAttribute(String profile, int conversation, String key, String val);
   // ignore: non_constant_identifier_names
-  String? GetConversationAttribute(String profile, int identifier, String s);
+  Future<String?> GetConversationAttribute(String profile, int identifier, String s);
   // ignore: non_constant_identifier_names
   void SetMessageAttribute(String profile, int conversation, int channel, int message, String key, String val);
   // ignore: non_constant_identifier_names

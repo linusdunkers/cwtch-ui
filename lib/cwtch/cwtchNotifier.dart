@@ -59,6 +59,8 @@ class CwtchNotifier {
   }
 
   void handleMessage(String type, dynamic data) {
+    EnvironmentConfig.debugLog("Handing Message $type ${data.toString()}");
+
     //EnvironmentConfig.debugLog("NewEvent $type $data");
     switch (type) {
       case "CwtchStarted":
@@ -68,25 +70,24 @@ class CwtchNotifier {
         appState.SetAppError(data["Error"]);
         break;
       case "NewPeer":
-        // empty events can be caused by the testing framework
-        if (data["Online"] == null) {
-          break;
-        }
         // EnvironmentConfig.debugLog("NewPeer $data");
         // if tag != v1-defaultPassword then it is either encrypted OR it is an unencrypted account created during pre-beta...
         profileCN.add(data["Identity"], data["name"], data["picture"], data["defaultPicture"], data["ContactsJson"], data["ServerList"], data["Online"] == "true", data["autostart"] == "true",
             data["tag"] != "v1-defaultPassword");
 
         // Update Profile Attributes
-        profileCN.getProfile(data["Identity"])?.setAttribute(0, flwtchState.cwtch.GetProfileAttribute(data["Identity"], "profile.profile-attribute-1"));
-        profileCN.getProfile(data["Identity"])?.setAttribute(1, flwtchState.cwtch.GetProfileAttribute(data["Identity"], "profile.profile-attribute-2"));
-        profileCN.getProfile(data["Identity"])?.setAttribute(2, flwtchState.cwtch.GetProfileAttribute(data["Identity"], "profile.profile-attribute-3"));
-        profileCN.getProfile(data["Identity"])?.setAvailabilityStatus(flwtchState.cwtch.GetProfileAttribute(data["Identity"], "profile.profile-status") ?? "");
+        EnvironmentConfig.debugLog("Looking up Profile Attributes ${data["Identity"]} ${profileCN.getProfile(data["Identity"])}");
+        flwtchState.cwtch.GetProfileAttribute(data["Identity"], "profile.profile-attribute-1").then((value) => profileCN.getProfile(data["Identity"])?.setAttribute(0, value));
+        flwtchState.cwtch.GetProfileAttribute(data["Identity"], "profile.profile-attribute-2").then((value) => profileCN.getProfile(data["Identity"])?.setAttribute(1, value));
+        flwtchState.cwtch.GetProfileAttribute(data["Identity"], "profile.profile-attribute-3").then((value) => profileCN.getProfile(data["Identity"])?.setAttribute(2, value));
+        flwtchState.cwtch.GetProfileAttribute(data["Identity"], "profile.profile-status").then((value) => profileCN.getProfile(data["Identity"])?.setAvailabilityStatus(value ?? ""));
+
+        EnvironmentConfig.debugLog("Looking up Profile Information for Contact...");
         profileCN.getProfile(data["Identity"])?.contactList.contacts.forEach((contact) {
-          contact.setAttribute(0, flwtchState.cwtch.GetConversationAttribute(data["Identity"], contact.identifier, "public.profile.profile-attribute-1"));
-          contact.setAttribute(1, flwtchState.cwtch.GetConversationAttribute(data["Identity"], contact.identifier, "public.profile.profile-attribute-2"));
-          contact.setAttribute(2, flwtchState.cwtch.GetConversationAttribute(data["Identity"], contact.identifier, "public.profile.profile-attribute-3"));
-          contact.setAvailabilityStatus(flwtchState.cwtch.GetConversationAttribute(data["Identity"], contact.identifier, "public.profile.profile-status") ?? "");
+          flwtchState.cwtch.GetConversationAttribute(data["Identity"], contact.identifier, "public.profile.profile-attribute-1").then((value) => contact.setAttribute(0, value));
+          flwtchState.cwtch.GetConversationAttribute(data["Identity"], contact.identifier, "public.profile.profile-attribute-2").then((value) => contact.setAttribute(1, value));
+          flwtchState.cwtch.GetConversationAttribute(data["Identity"], contact.identifier, "public.profile.profile-attribute-3").then((value) => contact.setAttribute(2, value));
+          flwtchState.cwtch.GetConversationAttribute(data["Identity"], contact.identifier, "public.profile.profile-status").then((value) => contact.setAvailabilityStatus(value ?? ""));
         });
 
         break;
@@ -392,6 +393,7 @@ class CwtchNotifier {
           String fileKey = data['Data'];
           var contact = profileCN.getProfile(data["ProfileOnion"])?.contactList.findContact(data["RemotePeer"]);
           if (contact != null) {
+            EnvironmentConfig.debugLog("waiting for download from $contact");
             profileCN.getProfile(data["ProfileOnion"])?.waitForDownloadComplete(contact.identifier, fileKey);
           }
         } else if (data['Path'] == "profile.profile-attribute-1" || data['Path'] == "profile.profile-attribute-2" || data['Path'] == "profile.profile-attribute-3") {

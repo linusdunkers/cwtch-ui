@@ -360,8 +360,7 @@ class MainActivity: FlutterActivity() {
             "PeerWithOnion" -> {
                 val profile: String = call.argument("ProfileOnion") ?: ""
                 val onion: String = call.argument("onion") ?: ""
-                result.success(Cwtch.peerWithOnion(profile, onion))
-                return
+                Cwtch.peerWithOnion(profile, onion)
             }
 
 
@@ -493,14 +492,17 @@ class MainActivity: FlutterActivity() {
             }
             "GetProfileAttribute" -> {
                 val profile: String = call.argument("ProfileOnion") ?: ""
-                val key: String = call.argument("Key") ?: ""
-                Data.Builder().putString("result", Cwtch.getProfileAttribute(profile, key)).build()
+                val key: String = call.argument("key") ?: ""
+                var resultjson =  Cwtch.getProfileAttribute(profile, key);
+                return result.success(resultjson)
             }
             "GetConversationAttribute" -> {
                 val profile: String = call.argument("ProfileOnion") ?: ""
                 val conversation: Int = call.argument("conversation") ?: 0
-                val key: String = call.argument("Key") ?: ""
-                Data.Builder().putString("result", Cwtch.getConversationAttribute(profile, conversation.toLong(), key)).build()
+                val key: String = call.argument("key") ?: ""
+                var resultjson =  Cwtch.getConversationAttribute(profile, conversation.toLong(), key);
+                result.success(resultjson)
+                return
             }
             "SetConversationAttribute" -> {
                 val profile: String = call.argument("ProfileOnion") ?: ""
@@ -512,7 +514,8 @@ class MainActivity: FlutterActivity() {
             "ImportProfile" -> {
                 val file: String = call.argument("file") ?: ""
                 val pass: String = call.argument("pass") ?: ""
-                Data.Builder().putString("result", Cwtch.importProfile(file, pass)).build()
+                result.success(Cwtch.importProfile(file, pass))
+                return
             }
             "ReconnectCwtchForeground" -> {
                 Cwtch.reconnectCwtchForeground()

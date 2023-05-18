@@ -5,6 +5,7 @@ import 'package:cwtch/cwtch_icons_icons.dart';
 import 'package:cwtch/models/contact.dart';
 import 'package:cwtch/models/message.dart';
 import 'package:cwtch/models/profile.dart';
+import 'package:cwtch/themes/opaque.dart';
 import 'package:cwtch/widgets/malformedbubble.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +14,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../settings.dart';
+import 'messageBubbleWidgetHelpers.dart';
 import 'messagebubbledecorations.dart';
 
 // Like MessageBubble but for displaying chat overlay 100/101 invitations
@@ -54,15 +56,7 @@ class InvitationBubbleState extends State<InvitationBubble> {
       }
     }
 
-    var wdgSender = Center(
-        widthFactor: 1,
-        child: SelectableText(senderDisplayStr + '\u202F',
-            style: TextStyle(
-                fontSize: 9.0 * Provider.of<Settings>(context).fontScaling,
-                fontWeight: FontWeight.bold,
-                fontFamily: "Inter",
-                color: fromMe ? Provider.of<Settings>(context).theme.messageFromMeTextColor : Provider.of<Settings>(context).theme.messageFromOtherTextColor)));
-
+    var wdgSender = compileSenderWidget(context, fromMe, senderDisplayStr);
     // If we receive an invite for ourselves, treat it as a bug. The UI no longer allows this so it could have only come from
     // some kind of malfeasance.
     var selfInvite = widget.inviteNick == Provider.of<ProfileInfoState>(context).onion;
@@ -71,7 +65,7 @@ class InvitationBubbleState extends State<InvitationBubble> {
     }
 
     var wdgMessage = isGroup && !showGroupInvite
-        ? Text(AppLocalizations.of(context)!.groupInviteSettingsWarning)
+        ? Text(AppLocalizations.of(context)!.groupInviteSettingsWarning, style: Provider.of<Settings>(context).scaleFonts(defaultTextStyle))
         : fromMe
             ? senderInviteChrome(
                 AppLocalizations.of(context)!.sendAnInvitation, isGroup ? Provider.of<ProfileInfoState>(context).contactList.findContact(widget.inviteTarget)!.nickname : widget.inviteTarget)
@@ -83,15 +77,21 @@ class InvitationBubbleState extends State<InvitationBubble> {
     } else if (fromMe) {
       wdgDecorations = MessageBubbleDecoration(ackd: Provider.of<MessageMetadata>(context).ackd, errored: Provider.of<MessageMetadata>(context).error, fromMe: fromMe, messageDate: messageDate);
     } else if (isAccepted) {
-      wdgDecorations = Text(AppLocalizations.of(context)!.accepted + '\u202F');
+      wdgDecorations = Text(AppLocalizations.of(context)!.accepted + '\u202F', style: Provider.of<Settings>(context).scaleFonts(defaultTextStyle));
     } else if (this.rejected) {
-      wdgDecorations = Text(AppLocalizations.of(context)!.rejected + '\u202F');
+      wdgDecorations = Text(AppLocalizations.of(context)!.rejected + '\u202F', style: Provider.of<Settings>(context).scaleFonts(defaultTextStyle));
     } else {
       wdgDecorations = Center(
           widthFactor: 1,
           child: Wrap(children: [
-            Padding(padding: EdgeInsets.all(5), child: ElevatedButton(child: Text(AppLocalizations.of(context)!.rejectGroupBtn + '\u202F'), onPressed: _btnReject)),
-            Padding(padding: EdgeInsets.all(5), child: ElevatedButton(child: Text(AppLocalizations.of(context)!.acceptGroupBtn + '\u202F'), onPressed: _btnAccept)),
+            Padding(
+                padding: EdgeInsets.all(5),
+                child: ElevatedButton(
+                    child: Text(AppLocalizations.of(context)!.rejectGroupBtn + '\u202F', style: Provider.of<Settings>(context).scaleFonts(defaultTextButtonStyle)), onPressed: _btnReject)),
+            Padding(
+                padding: EdgeInsets.all(5),
+                child: ElevatedButton(
+                    child: Text(AppLocalizations.of(context)!.acceptGroupBtn + '\u202F', style: Provider.of<Settings>(context).scaleFonts(defaultTextButtonStyle)), onPressed: _btnAccept)),
           ]));
     }
 
@@ -149,21 +149,19 @@ class InvitationBubbleState extends State<InvitationBubble> {
 
   // Construct an invite chrome for the sender
   Widget senderInviteChrome(String chrome, String targetName) {
+    var settings = Provider.of<Settings>(context);
+
     return Wrap(children: [
       SelectableText(
         chrome + '\u202F',
-        style: TextStyle(
-          color: Provider.of<Settings>(context).theme.messageFromMeTextColor,
-        ),
+        style: settings.scaleFonts(defaultMessageTextStyle.copyWith(color: Provider.of<Settings>(context).theme.messageFromMeTextColor)),
         textAlign: TextAlign.left,
         maxLines: 2,
         textWidthBasis: TextWidthBasis.longestLine,
       ),
       SelectableText(
         targetName + '\u202F',
-        style: TextStyle(
-          color: Provider.of<Settings>(context).theme.messageFromMeTextColor,
-        ),
+        style: settings.scaleFonts(defaultMessageTextStyle.copyWith(color: Provider.of<Settings>(context).theme.messageFromMeTextColor)),
         textAlign: TextAlign.left,
         maxLines: 2,
         textWidthBasis: TextWidthBasis.longestLine,
@@ -173,19 +171,19 @@ class InvitationBubbleState extends State<InvitationBubble> {
 
   // Construct an invite chrome
   Widget inviteChrome(String chrome, String targetName, String targetId) {
+    var settings = Provider.of<Settings>(context);
+
     return Wrap(children: [
       SelectableText(
         chrome + '\u202F',
-        style: TextStyle(
-          color: Provider.of<Settings>(context).theme.messageFromOtherTextColor,
-        ),
+        style: settings.scaleFonts(defaultMessageTextStyle.copyWith(color: Provider.of<Settings>(context).theme.messageFromOtherTextColor)),
         textAlign: TextAlign.left,
         textWidthBasis: TextWidthBasis.longestLine,
         maxLines: 2,
       ),
       SelectableText(
         targetName + '\u202F',
-        style: TextStyle(color: Provider.of<Settings>(context).theme.messageFromOtherTextColor),
+        style: settings.scaleFonts(defaultMessageTextStyle.copyWith(color: Provider.of<Settings>(context).theme.messageFromOtherTextColor)),
         textAlign: TextAlign.left,
         maxLines: 2,
         textWidthBasis: TextWidthBasis.longestLine,

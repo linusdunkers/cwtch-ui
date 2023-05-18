@@ -19,6 +19,12 @@ import 'neon2.dart';
 const mode_light = "light";
 const mode_dark = "dark";
 
+final TextStyle defaultSmallTextStyle = TextStyle(fontFamily: "Inter", fontWeight: FontWeight.normal, fontSize: 10);
+final TextStyle defaultMessageTextStyle = TextStyle(fontFamily: "Inter", fontWeight: FontWeight.normal, fontSize: 12);
+final TextStyle defaultFormLabelTextStyle = TextStyle(fontFamily: "Inter", fontWeight: FontWeight.bold, fontSize: 20);
+final TextStyle defaultTextStyle = TextStyle(fontFamily: "Inter", fontWeight: FontWeight.w500, fontSize: 12);
+final TextStyle defaultTextButtonStyle = defaultTextStyle.copyWith(fontWeight: FontWeight.bold);
+
 final themes = {
   cwtch_theme: {mode_light: CwtchLight(), mode_dark: CwtchDark()},
   ghost_theme: {mode_light: GhostLight(), mode_dark: GhostDark()},

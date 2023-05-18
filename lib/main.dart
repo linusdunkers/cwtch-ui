@@ -85,7 +85,6 @@ class FlwtchState extends State<Flwtch> with WindowListener {
     print("initState: running...");
     windowManager.addListener(this);
 
-
     print("initState: registering notification, shutdown handlers...");
     profs = ProfileListState();
     notificationClickChannel.setMethodCallHandler(_externalNotificationClicked);
