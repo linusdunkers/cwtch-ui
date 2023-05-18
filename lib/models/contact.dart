@@ -267,7 +267,7 @@ class ContactInfoState extends ChangeNotifier {
   bool canSend() {
     if (this.isGroup == true) {
       // We now have an out of sync warning so we will mark these as online...
-      return this.status == "Synced";
+      return this.status == "Synced" && this.antispamTickets > 0;
     } else {
       return this.isOnline();
     }

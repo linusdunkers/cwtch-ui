@@ -59,8 +59,6 @@ class CwtchNotifier {
   }
 
   void handleMessage(String type, dynamic data) {
-    EnvironmentConfig.debugLog("Handing Message $type ${data.toString()}");
-
     //EnvironmentConfig.debugLog("NewEvent $type $data");
     switch (type) {
       case "CwtchStarted":

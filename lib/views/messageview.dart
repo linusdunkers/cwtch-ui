@@ -319,9 +319,8 @@ class _MessageViewState extends State<MessageView> {
   void _sendMessage([String? ignoredParam]) {
     // Do this after we trim to preserve enter-behaviour...
     bool cannotSend = Provider.of<ContactInfoState>(context, listen: false).canSend() == false;
-    bool performingAntiSpam = Provider.of<ContactInfoState>(context, listen: false).antispamTickets == 0;
     bool isGroup = Provider.of<ContactInfoState>(context, listen: false).isGroup;
-    if (cannotSend || (isGroup && performingAntiSpam)) {
+    if (cannotSend) {
       return;
     }
 

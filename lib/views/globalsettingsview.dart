@@ -129,7 +129,9 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                     return DropdownMenuItem<String>(
                                       value: value.toString(),
                                       child: Text(
-                                          key: Key("dropdownLanguage" + value.languageCode), getLanguageFull(context, value.languageCode, value.countryCode), style: settings.scaleFonts(defaultDropDownMenuItemTextStyle)),
+                                          key: Key("dropdownLanguage" + value.languageCode),
+                                          getLanguageFull(context, value.languageCode, value.countryCode),
+                                          style: settings.scaleFonts(defaultDropDownMenuItemTextStyle)),
                                     );
                                   }).toList()))),
                       SwitchListTile(
