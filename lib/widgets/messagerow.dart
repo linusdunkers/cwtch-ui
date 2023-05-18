@@ -150,8 +150,8 @@ class MessageRowState extends State<MessageRow> with SingleTickerProviderStateMi
     if (fromMe) {
       widgetRow = <Widget>[
         wdgSpacer,
-        wdgSeeReplies,
         wdgTranslateMessage,
+        wdgSeeReplies,
         wdgReply,
         actualMessage,
       ];
