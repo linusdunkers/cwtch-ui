@@ -26,7 +26,8 @@ class TextMessage extends Message {
         value: this.metadata,
         builder: (bcontext, child) {
           var formatMessages = Provider.of<Settings>(bcontext).isExperimentEnabled(FormattingExperiment);
-          return compileMessageContentWidget(context, false, content, FocusNode(), formatMessages, false);;
+          return compileMessageContentWidget(context, false, content, FocusNode(), formatMessages, false);
+          ;
         });
   }
 

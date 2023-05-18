@@ -84,6 +84,7 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
 
                     Log.i(TAG, "startCwtch success, starting coroutine AppbusEvent loop...")
                     val downloadIDs = mutableMapOf<String, Int>()
+                    val downloadFinishedIDs = mutableMapOf<String, Int>()
                     var flags = PendingIntent.FLAG_UPDATE_CURRENT
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         flags = flags or PendingIntent.FLAG_IMMUTABLE
@@ -167,32 +168,36 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                                     val title = data.getString("NameSuggestion");
                                     val progress = data.getString("Progress").toInt();
                                     val progressMax = data.getString("FileSizeInChunks").toInt();
-                                    if (!downloadIDs.containsKey(fileKey)) {
-                                        downloadIDs.put(fileKey, downloadIDs.count());
-                                    }
-                                    var dlID = downloadIDs.get(fileKey);
-                                    if (dlID == null) {
-                                        dlID = 0;
-                                    }
-                                    if (progress >= 0) {
-                                        val channelId =
-                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                                    createDownloadNotificationChannel(fileKey, fileKey)
-                                                } else {
-                                                    // If earlier version channel ID is not used
-                                                    // https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#NotificationCompat.Builder(android.content.Context)
-                                                    ""
-                                                };
-                                        val newNotification = NotificationCompat.Builder(applicationContext, channelId)
-                                                .setOngoing(true)
-                                                .setContentTitle("Downloading")//todo: translate
-                                                .setContentText(title)
-                                                .setSmallIcon(android.R.drawable.stat_sys_download)
-                                                .setProgress(progressMax, progress, false)
-                                                .setSound(null)
-                                                //.setSilent(true)
-                                                .build();
-                                        notificationManager.notify(dlID, newNotification);
+
+                                    // if we have seen a download finished update for this key then ignore it
+                                    if (!downloadFinishedIDs.containsKey(fileKey)) {
+                                        if (!downloadIDs.containsKey(fileKey)) {
+                                            downloadIDs.put(fileKey, downloadIDs.count());
+                                        }
+                                        var dlID = downloadIDs.get(fileKey);
+                                        if (dlID == null) {
+                                            dlID = 0;
+                                        }
+                                        if (progress >= 0) {
+                                            val channelId =
+                                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                                        createDownloadNotificationChannel(fileKey, fileKey)
+                                                    } else {
+                                                        // If earlier version channel ID is not used
+                                                        // https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#NotificationCompat.Builder(android.content.Context)
+                                                        ""
+                                                    };
+                                            val newNotification = NotificationCompat.Builder(applicationContext, channelId)
+                                                    .setOngoing(true)
+                                                    .setContentTitle("Downloading")//todo: translate
+                                                    .setContentText(title)
+                                                    .setSmallIcon(android.R.drawable.stat_sys_download)
+                                                    .setProgress(progressMax, progress, false)
+                                                    .setSound(null)
+                                                    //.setSilent(true)
+                                                    .build();
+                                            notificationManager.notify(dlID, newNotification);
+                                        }
                                     }
                                 } catch (e: Exception) {
                                     Log.d("FlwtchWorker->FileDownloadProgressUpdate", e.toString() + " :: " + e.getStackTrace());
@@ -216,6 +221,8 @@ class FlwtchWorker(context: Context, parameters: WorkerParameters) :
                                         Files.delete(sourcePath);
                                     }
                                 }
+                                // Suppress future notifications...
+                                downloadFinishedIDs.put(fileKey, downloadIDs.count());
                                 if (downloadIDs.containsKey(fileKey)) {
                                     notificationManager.cancel(downloadIDs.get(fileKey) ?: 0);
                                 }

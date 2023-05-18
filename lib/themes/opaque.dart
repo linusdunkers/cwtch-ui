@@ -24,6 +24,7 @@ final TextStyle defaultMessageTextStyle = TextStyle(fontFamily: "Inter", fontWei
 final TextStyle defaultFormLabelTextStyle = TextStyle(fontFamily: "Inter", fontWeight: FontWeight.bold, fontSize: 20);
 final TextStyle defaultTextStyle = TextStyle(fontFamily: "Inter", fontWeight: FontWeight.w500, fontSize: 12);
 final TextStyle defaultTextButtonStyle = defaultTextStyle.copyWith(fontWeight: FontWeight.bold);
+final TextStyle defaultDropDownMenuItemTextStyle = TextStyle(fontFamily: "Inter", fontWeight: FontWeight.bold, fontSize: 16);
 
 final themes = {
   cwtch_theme: {mode_light: CwtchLight(), mode_dark: CwtchDark()},
@@ -205,8 +206,8 @@ ThemeData mkThemeData(Settings opaque) {
     textTheme: TextTheme(
       // NOTE: The following font scales were arrived at after consulting the material text scale
       // docs: https://m3.material.io/styles/typography/type-scale-tokens and some trial and error
-      displayMedium: TextStyle(fontFamily: "Inter", fontSize: opaque.fontScaling * 16.0, color: opaque.current().mainTextColor),
       displaySmall: TextStyle(fontFamily: "Inter", fontSize: opaque.fontScaling * 14.0, color: opaque.current().mainTextColor),
+      displayMedium: TextStyle(fontFamily: "Inter", fontSize: opaque.fontScaling * 16.0, color: opaque.current().mainTextColor),
       displayLarge: TextStyle(fontFamily: "Inter", fontSize: opaque.fontScaling * 18.0, color: opaque.current().mainTextColor),
       titleSmall: TextStyle(fontFamily: "Inter", fontWeight: FontWeight.bold, fontSize: opaque.fontScaling * 16.0, color: opaque.current().mainTextColor),
       titleLarge: TextStyle(fontFamily: "Inter", fontWeight: FontWeight.bold, fontSize: opaque.fontScaling * 18.0, color: opaque.current().mainTextColor),
@@ -218,8 +219,8 @@ ThemeData mkThemeData(Settings opaque) {
       headlineMedium: TextStyle(fontFamily: "Inter", fontWeight: FontWeight.bold, fontSize: opaque.fontScaling * 26.0, color: opaque.current().mainTextColor),
       headlineLarge: TextStyle(fontFamily: "Inter", fontWeight: FontWeight.bold, fontSize: opaque.fontScaling * 28.0, color: opaque.current().mainTextColor),
       labelSmall: TextStyle(fontFamily: "Inter", fontWeight: FontWeight.w100, fontSize: opaque.fontScaling * 14.0, color: opaque.current().mainTextColor),
-      labelLarge: TextStyle(fontFamily: "Inter", fontWeight: FontWeight.w200, fontSize: opaque.fontScaling * 16.0, color: opaque.current().mainTextColor),
-      labelMedium: TextStyle(fontFamily: "Inter", fontWeight: FontWeight.w300, fontSize: opaque.fontScaling * 18.0, color: opaque.current().mainTextColor),
+      labelMedium: TextStyle(fontFamily: "Inter", fontWeight: FontWeight.w300, fontSize: opaque.fontScaling * 16.0, color: opaque.current().mainTextColor),
+      labelLarge: TextStyle(fontFamily: "Inter", fontWeight: FontWeight.w200, fontSize: opaque.fontScaling * 18.0, color: opaque.current().mainTextColor),
     ),
     switchTheme: SwitchThemeData(
       overlayColor: MaterialStateProperty.all(opaque.current().defaultButtonActiveColor),

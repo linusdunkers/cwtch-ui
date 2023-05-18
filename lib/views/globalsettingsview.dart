@@ -128,7 +128,8 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                   items: AppLocalizations.supportedLocales.map<DropdownMenuItem<String>>((Locale value) {
                                     return DropdownMenuItem<String>(
                                       value: value.toString(),
-                                      child: Text(key: Key("dropdownLanguage" + value.languageCode), getLanguageFull(context, value.languageCode, value.countryCode)),
+                                      child: Text(
+                                          key: Key("dropdownLanguage" + value.languageCode), getLanguageFull(context, value.languageCode, value.countryCode), style: settings.scaleFonts(defaultDropDownMenuItemTextStyle)),
                                     );
                                   }).toList()))),
                       SwitchListTile(
@@ -165,7 +166,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                 items: themes.keys.map<DropdownMenuItem<String>>((String themeId) {
                                   return DropdownMenuItem<String>(
                                     value: themeId,
-                                    child: Text(getThemeName(context, themeId)), //"ddi_$themeId", key: Key("ddi_$themeId")),
+                                    child: Text(getThemeName(context, themeId), style: settings.scaleFonts(defaultDropDownMenuItemTextStyle)), //"ddi_$themeId", key: Key("ddi_$themeId")),
                                   );
                                 }).toList())),
                         leading: Icon(Icons.palette, color: settings.current().mainTextColor),
@@ -185,7 +186,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                   items: Settings.uiColumnModeOptions(false).map<DropdownMenuItem<String>>((DualpaneMode value) {
                                     return DropdownMenuItem<String>(
                                       value: value.toString(),
-                                      child: Text(Settings.uiColumnModeToString(value, context)),
+                                      child: Text(Settings.uiColumnModeToString(value, context), style: settings.scaleFonts(defaultDropDownMenuItemTextStyle)),
                                     );
                                   }).toList()))),
                       ListTile(
@@ -193,7 +194,6 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                             AppLocalizations.of(context)!.settingUIColumnLandscape,
                             textWidthBasis: TextWidthBasis.longestLine,
                             softWrap: true,
-                            style: TextStyle(color: settings.current().mainTextColor),
                           ),
                           leading: Icon(Icons.stay_primary_landscape, color: settings.current().mainTextColor),
                           trailing: Container(
@@ -210,10 +210,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                       items: Settings.uiColumnModeOptions(true).map<DropdownMenuItem<String>>((DualpaneMode value) {
                                         return DropdownMenuItem<String>(
                                           value: value.toString(),
-                                          child: Text(
-                                            Settings.uiColumnModeToString(value, context),
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
+                                          child: Text(Settings.uiColumnModeToString(value, context), overflow: TextOverflow.ellipsis, style: settings.scaleFonts(defaultDropDownMenuItemTextStyle)),
                                         );
                                       }).toList())))),
                       ListTile(
@@ -305,10 +302,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                 items: NotificationPolicy.values.map<DropdownMenuItem<NotificationPolicy>>((NotificationPolicy value) {
                                   return DropdownMenuItem<NotificationPolicy>(
                                     value: value,
-                                    child: Text(
-                                      Settings.notificationPolicyToString(value, context),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
+                                    child: Text(Settings.notificationPolicyToString(value, context), overflow: TextOverflow.ellipsis, style: settings.scaleFonts(defaultDropDownMenuItemTextStyle)),
                                   );
                                 }).toList())),
                         leading: Icon(CwtchIcons.chat_bubble_empty_24px, color: settings.current().mainTextColor),
@@ -328,10 +322,7 @@ class _GlobalSettingsViewState extends State<GlobalSettingsView> {
                                 items: NotificationContent.values.map<DropdownMenuItem<NotificationContent>>((NotificationContent value) {
                                   return DropdownMenuItem<NotificationContent>(
                                     value: value,
-                                    child: Text(
-                                      Settings.notificationContentToString(value, context),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
+                                    child: Text(Settings.notificationContentToString(value, context), overflow: TextOverflow.ellipsis, style: settings.scaleFonts(defaultDropDownMenuItemTextStyle)),
                                   );
                                 }).toList())),
                         leading: Icon(CwtchIcons.chat_bubble_empty_24px, color: settings.current().mainTextColor),
