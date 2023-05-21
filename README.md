@@ -59,6 +59,11 @@ To build a release version and load normal profiles, use `build-release.sh X` in
 - Follow the steps above to fetch `libCwtch-go` and `tor` (these will fetch Android versions of these binaries also)
 - run `flutter run` with an Android phone connect via USB (or some other valid debug mode)
 
+
+### Building on codemagic.io (for IOS)
+
+- flutter create --platform ios . --org im.cwtch
+
 ### Building on MacOS
 
 - Cocaopods is required, you may need to `gem install cocaopods -v 1.9.3`
